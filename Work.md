@@ -33,4 +33,17 @@ django-admin startproject fyp .
 # RUN SERVER
 python manage.py runserver 9000(Optional port number)
 
+# GET PATH OF VIRTUAL ENV
+pipenv --venv ; and append /bin/python
+
+# SELECT INTERPRETOR PYTHON IN VSCOE
+ctrl + p - add the path you got or select the existing
+
+# TO ACTIVATE
+ctrl + `
+
+# ################## CREATING APPS ####################
+
+python manage.py startapp playground
+
 
