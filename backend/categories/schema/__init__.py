@@ -1,15 +1,17 @@
 import graphene
 
-from categories.schema import categorySchema
+from categories.schema import categorySchema, competationSchema
 
 class Query(
     categorySchema.Query,
+    competationSchema.Query,
     graphene.ObjectType
 ):
     pass
 
 class Mutation(
     categorySchema.Mutation,
+    competationSchema.Mutation,
     graphene.ObjectType
 ):
     pass

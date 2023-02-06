@@ -1,19 +1,17 @@
 import graphene
 from graphene_django import DjangoObjectType
 
+# Models
 from categories.models.Category import Category
 from categories.models.Competation import Competation
 
+# Schema
+from categories.schema.competationSchema import CompetationType
 
 class CategoryType(DjangoObjectType):
     class Meta:
         model = Category
         fields = ("id", "name", "description")
-
-class CompetationType(DjangoObjectType):
-    class Meta:
-        model = Competation
-        fields = ("id", "name", "description", "category")
 
 class CategoryMutation(graphene.Mutation):
     class Arguments:
@@ -47,7 +45,7 @@ class Query(graphene.ObjectType):
     def resolve_category_details(root, info, id):
         return Category.objects.get(pk=id)
 
-    all_competations = graphene.List(CompetationType, categoryId=graphene.Int())
+    all_category_competations = graphene.List(CompetationType, categoryId=graphene.Int())
 
-    def resolve_all_competations(root, info, categoryId):
+    def resolve_all_category_competations(root, info, categoryId):
         return Competation.objects.filter(category=categoryId)

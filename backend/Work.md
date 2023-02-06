@@ -15,6 +15,9 @@ deactivate
 # INSTALL PIPENV (DEPENDENCY MANAGEMENT TOOL INSIDE A VIRTUAL ENVIRONMENT)
 pip3 install pipenv
 
+# Adding packages to pipfile
+use pipenv instead of pip to install and add package to pipfile
+
 # INSTALL DJANGO (CREATES A VIRTUAL ENVIRONMENT AND INSTALLS DJANGO INSIDE IT)
 pipenv install django
 
