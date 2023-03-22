@@ -18,6 +18,9 @@ pip3 install pipenv
 # Adding packages to pipfile
 use pipenv instead of pip to install and add package to pipfile
 
+# Install the packages specified in pipfile.lock
+pipenv sync
+
 # INSTALL DJANGO (CREATES A VIRTUAL ENVIRONMENT AND INSTALLS DJANGO INSIDE IT)
 pipenv install django
 
@@ -49,11 +52,18 @@ ctrl + `
 
 python manage.py startapp playground
 
+# pipenv install is used for installing packages into the pipenv virtual environment and updating your Pipfile and Pipfile.lock.
 
 # ############### ADD DEBUG TOOLBAR ##################
+
 # Toolbar appears for only html pages
 https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
 
+# Install the django toolbar (Adds temporarily to pip packages if you again do pipenv sync this package will not be installed again)
+python -m pip install django-debug-toolbar
+
+# TO add to pipfile and lock it.
+pipenv install django-debug-toolbar 
 
 # Change the db config in settings.py
 # Install the mysqlclient
@@ -76,6 +86,8 @@ pipenv install -U djoser
 
 # JWT Handler
 pip install -U djangorestframework_simplejwt
+(or)
+pipenv install djangorestframework_simplejwt
 
 # GraphQL
 pipenv install graphene-django

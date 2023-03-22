@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'fyp',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'root'
+        'PASSWORD': 'Prajwal@29'
     }
 }
 
