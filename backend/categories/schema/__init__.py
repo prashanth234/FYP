@@ -1,10 +1,10 @@
 import graphene
 
-from categories.schema import categorySchema, competationSchema, postSchema
+from categories.schema import categorySchema, competitionSchema, postSchema
 
 class Query(
     categorySchema.Query,
-    competationSchema.Query,
+    competitionSchema.Query,
     postSchema.Query,
     graphene.ObjectType
 ):
@@ -12,7 +12,7 @@ class Query(
 
 class Mutation(
     categorySchema.Mutation,
-    competationSchema.Mutation,
+    competitionSchema.Mutation,
     postSchema.Mutation,
     graphene.ObjectType
 ):

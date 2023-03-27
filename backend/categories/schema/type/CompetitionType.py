@@ -1,9 +1,9 @@
 from graphene_django import DjangoObjectType
 
 # Models
-from categories.models.Competation import Competation
+from categories.models.Competition import Competition
 
-class CompetationType(DjangoObjectType):
+class CompetitionType(DjangoObjectType):
     class Meta:
-        model = Competation
+        model = Competition
         fields = ("id", "name", "description", "category")

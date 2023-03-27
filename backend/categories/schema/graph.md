@@ -24,7 +24,7 @@ def resolve_category_details(root, info, id):
 #  categoryDetails (id:1) {
 #    name
 #  }
-#  allCompetations (categoryId: 1) {
+#  allCompetitions (categoryId: 1) {
 #    name,
 #    category {
 #      name
@@ -32,15 +32,15 @@ def resolve_category_details(root, info, id):
 #  }
 # }
 
-## Parameterized competations
-# query getCompetations($id: Int = 1){
+## Parameterized competitions
+# query getCompetitions($id: Int = 1){
 #  allCategories {
 #    name
 #  }
 #  categoryDetails (id:$id) {
 #    name
 #  }
-#  allCompetations (categoryId: $id) {
+#  allCompetitions (categoryId: $id) {
 #    name,
 #    category {
 #      name
@@ -49,11 +49,11 @@ def resolve_category_details(root, info, id):
 # }
 
 
-all_competations = graphene.List(CompetationType, categoryId=graphene.Int())
+all_competitions = graphene.List(CompetitionType, categoryId=graphene.Int())
 
-def resolve_all_competations(root, info, categoryId):
-    return Competation.objects.filter(category=categoryId)
-    # return Competation.objects.all()
+def resolve_all_competitions(root, info, categoryId):
+    return Competition.objects.filter(category=categoryId)
+    # return Competition.objects.all()
 
 # Create Mutation
 # mutation {

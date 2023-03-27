@@ -3,10 +3,10 @@ from graphql import GraphQLError
 
 # Models
 from categories.models.Category import Category
-from categories.models.Competation import Competation
+from categories.models.Competition import Competition
 
 # Schema
-from categories.schema.competationSchema import CompetationType
+from categories.schema.competitionSchema import CompetitionType
 
 # Type
 from categories.schema.type.CategoryType import CategoryType
@@ -90,7 +90,7 @@ class Query(graphene.ObjectType):
     def resolve_category_details(root, info, id):
         return Category.objects.get(pk=id)
 
-    all_category_competations = graphene.List(CompetationType, categoryId=graphene.Int())
+    all_category_competitions = graphene.List(CompetitionType, categoryId=graphene.Int())
 
-    def resolve_all_category_competations(root, info, categoryId):
-        return Competation.objects.filter(category=categoryId)
+    def resolve_all_category_competitions(root, info, categoryId):
+        return Competition.objects.filter(category=categoryId)

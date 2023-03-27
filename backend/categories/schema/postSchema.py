@@ -4,7 +4,7 @@ from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
 # Models
-from categories.models.Competation import Competation
+from categories.models.Competition import Competition
 from categories.models.Category import Category
 from categories.models.Post import Post, PostImage
 # **Make this model losely coupled
@@ -14,7 +14,7 @@ from core.models.User import User
 class PostType(DjangoObjectType):
     class Meta:
         model = Post
-        fields = ("id", "description", "user", "category", "competation")
+        fields = ("id", "description", "user", "category", "competition")
 
 class CreatePostMutation(graphene.Mutation):
     
@@ -23,7 +23,7 @@ class CreatePostMutation(graphene.Mutation):
         user = graphene.ID(required=True)
         description = graphene.String()
         category = graphene.ID(required=True)
-        competation = graphene.ID(required=True)
+        competition = graphene.ID(required=True)
         file = Upload()
 
 
@@ -31,16 +31,16 @@ class CreatePostMutation(graphene.Mutation):
     post = graphene.Field(PostType)
 
     @classmethod
-    def mutate(cls, root, info, user, category, competation, file, description=''):
+    def mutate(cls, root, info, user, category, competition, file, description=''):
         user = User.objects.get(pk=user)
         category = Category.objects.get(pk=category)
-        competation = Competation.objects.get(pk=competation)
+        competition = Competition.objects.get(pk=competition)
 
         post = Post(
             user=user,
             description=description,
             category=category,
-            competation=competation
+            competition=competition
         )
 
         post.save()
