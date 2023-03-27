@@ -1,3 +1,3 @@
 from .Category import *
 from .Competation import *
-from .Posts import *
+from .Post import *

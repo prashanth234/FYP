@@ -1,5 +1,5 @@
 import graphene
-from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 
 # Models
 from categories.models.Category import Category
@@ -8,10 +8,8 @@ from categories.models.Competation import Competation
 # Schema
 from categories.schema.competationSchema import CompetationType
 
-class CategoryType(DjangoObjectType):
-    class Meta:
-        model = Category
-        fields = ("id", "name", "description")
+# Type
+from categories.schema.type.CategoryType import CategoryType
 
 class CreateCategoryMutation(graphene.Mutation):
 
@@ -42,14 +40,24 @@ class UpdateCategoryMutation(graphene.Mutation):
     category = graphene.Field(CategoryType)
 
     @classmethod
-    def mutate(cls, root, info, name, id, description='', type=''):
+    def mutate(cls, root, info, id, name=None, description=None, type=None):
         category = Category.objects.get(pk=id)
-        category.name = name
-        category.description = description
-        category.type = type
+
+        if not category:
+            raise GraphQLError("Category with this ID does not exist.")
+        
+        if name:
+            category.name = name
+        
+        if description:
+            category.description = description
+        
+        if type:
+            category.type = type
+
         category.save()
         # Notice we return an instance of this mutation
-        return CategoryMutation(category=category)
+        return UpdateCategoryMutation(category=category)
 
 class DeleteCategoryMutation(graphene.Mutation):
     

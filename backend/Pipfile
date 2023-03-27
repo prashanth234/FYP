@@ -9,6 +9,7 @@ mysqlclient = "*"
 djangorestframework = "*"
 graphene-django = "*"
 djoser = "*"
+graphene-file-upload = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"

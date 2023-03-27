@@ -1,5 +1,4 @@
 import graphene
-from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
 # Models
@@ -9,15 +8,10 @@ from categories.models.Category import Category
 # Schema
 # from categories.schema.categorySchema import CategoryType
 
-class CategoryType(DjangoObjectType):
-    class Meta:
-        model = Category
-        fields = ("id", "name", "description")
+# Type
+from categories.schema.type.CategoryType import CategoryType
+from categories.schema.type.CompetationType import CompetationType
 
-class CompetationType(DjangoObjectType):
-    class Meta:
-        model = Competation
-        fields = ("id", "name", "description", "category")
 
 class CreateCompetationMutation(graphene.Mutation):
     
