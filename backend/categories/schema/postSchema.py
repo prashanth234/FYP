@@ -1,5 +1,4 @@
 import graphene
-from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from graphene_file_upload.scalars import Upload
 
@@ -10,11 +9,9 @@ from categories.models.Post import Post, PostFile
 # **Make this model losely coupled
 from core.models.User import User
 
+# Type
+from categories.schema.type.PostType import PostType
 
-class PostType(DjangoObjectType):
-    class Meta:
-        model = Post
-        fields = ("id", "description", "user", "category", "competition")
 
 class CreatePostMutation(graphene.Mutation):
     
@@ -52,9 +49,67 @@ class CreatePostMutation(graphene.Mutation):
         postFile.save()
 
         return CreatePostMutation(post=post)
+    
+class UpdatePostMutation(graphene.Mutation):
+    
+    class Arguments:
+        # The input arguments for this mutation
+        id = graphene.ID(required=True)
+        description = graphene.String()
+        category = graphene.ID()
+        competition = graphene.ID()
+        file = Upload()
+
+
+    # The class attributes define the response of the mutation
+    post = graphene.Field(PostType)
+
+    @classmethod
+    def mutate(cls, root, info, id, category=None, competition=None, file=None, description=None):
+        post = Post.objects.get(pk=id)
+
+        if not post:
+            raise GraphQLError("Post with this ID does not exist.")
+
+        if category:
+            post.category = Category.objects.get(pk=category)
+        
+        if competition:
+            post.competition = Competition.objects.get(pk=competition)
+        
+        if description:
+            post.description = description
+
+        post.save()
+
+        if file:
+            postFile = PostFile.objects.get(post=post)
+            postFile.file = file
+            postFile.save()
+
+        return UpdatePostMutation(post=post)
+    
+
+class DeletePostMutation(graphene.Mutation):
+    
+    class Arguments:
+        # The input arguments for this mutation
+        id = graphene.ID(required=True)
+
+
+    # The class attributes define the response of the mutation
+    success = graphene.Boolean()
+
+    @classmethod
+    def mutate(cls, root, info, id):
+        Post.objects.get(pk=id).delete()
+        return DeletePostMutation(success=True)
+    
 
 class Mutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()
+    update_post = UpdatePostMutation.Field()
+    delete_post = DeletePostMutation.Field()
     
 
 class Query(graphene.ObjectType):
@@ -63,3 +118,9 @@ class Query(graphene.ObjectType):
 
     def resolve_all_post(root, info):
         return Post.objects.all()
+    
+    post_details = graphene.Field(PostType, id=graphene.Int())
+
+    def resolve_post_details(root, info, id):
+        return Post.objects.get(pk=id)
+        
