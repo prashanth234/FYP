@@ -13,6 +13,6 @@ class Post(models.Model):
     def __str__(self) -> str:
       return self.description
     
-class PostImage(models.Model):
-    image = models.FileField(upload_to="files")
+class PostFile(models.Model):
+    file = models.FileField(upload_to="files")
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

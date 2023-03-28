@@ -6,7 +6,7 @@ from graphene_file_upload.scalars import Upload
 # Models
 from categories.models.Competition import Competition
 from categories.models.Category import Category
-from categories.models.Post import Post, PostImage
+from categories.models.Post import Post, PostFile
 # **Make this model losely coupled
 from core.models.User import User
 
@@ -42,15 +42,14 @@ class CreatePostMutation(graphene.Mutation):
             category=category,
             competition=competition
         )
-
         post.save()
 
-        postImage = PostImage(
-            image=file,
+        postFile = PostFile(
+            file=file,
             post=post
         )
 
-        postImage.save()
+        postFile.save()
 
         return CreatePostMutation(post=post)
 
