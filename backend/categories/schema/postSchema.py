@@ -116,7 +116,7 @@ class Query(graphene.ObjectType):
 
     all_Posts = graphene.List(PostType)
 
-    def resolve_all_post(root, info):
+    def resolve_all_posts(root, info):
         return Post.objects.all()
     
     post_details = graphene.Field(PostType, id=graphene.Int())

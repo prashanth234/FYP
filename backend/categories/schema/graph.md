@@ -114,3 +114,19 @@ class CategoryMutation(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     create_category = CategoryMutation.Field()
+
+# query {
+#   allCategories {
+#     name,
+#     description,
+#     competitions {
+#       name,
+#       posts {
+#         description,
+#         files {
+#           file
+#         }
+#       }
+#     }  
+#   }
+# }
