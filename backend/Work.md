@@ -98,3 +98,6 @@ python manage.py createsuperuser
 username: admin
 password: admin
 email: admin@admin.com
+
+# Refer to this documentation for all the authentication methods
+https://django-graphql-auth.readthedocs.io/en/latest/quickstart/

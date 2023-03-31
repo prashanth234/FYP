@@ -4,12 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+django = "==3.*"
 mysqlclient = "*"
 djangorestframework = "*"
 graphene-django = "*"
 djoser = "*"
 graphene-file-upload = "*"
+django-graphql-jwt = "==0.3.0"
+django-graphql-auth = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"

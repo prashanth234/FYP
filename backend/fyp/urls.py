@@ -16,11 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# Graphql
+from graphene_file_upload.django import FileUploadGraphQLView
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('categories.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('__debug__/', include('debug_toolbar.urls')),
     path('playground/', include('playground.urls')),
+    path("graphql", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
 ]

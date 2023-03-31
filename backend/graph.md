@@ -130,3 +130,54 @@ class Mutation(graphene.ObjectType):
 #     }  
 #   }
 # }
+
+
+# Create User
+
+mutation {
+  register(
+    email: "new_user@email.com",
+    username: "new_user",
+    password1: "supersecretpassword",
+    password2: "supersecretpassword",
+  ) {
+    success,
+    errors,
+    token,
+    refreshToken
+  }
+}
+
+# To get id of the user last user created
+
+query {
+  users (last: 1){
+    edges {
+      node {
+        id,
+        username,
+        email,
+        isActive,
+        archived,
+        verified,
+        secondaryEmail
+      }
+    }
+  }
+}
+
+query {
+  users (last: 1){
+    edges {
+      node {
+        id,
+        username,
+        email,
+        isActive,
+        archived,
+        verified,
+        secondaryEmail
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ import graphene
 
 from categories.schema import categorySchema, competitionSchema, postSchema, likeSchema
 
-class Query(
+class CategoryQuery(
     categorySchema.Query,
     competitionSchema.Query,
     postSchema.Query,
@@ -11,7 +11,7 @@ class Query(
 ):
     pass
 
-class Mutation(
+class CategoryMutation(
     categorySchema.Mutation,
     competitionSchema.Mutation,
     postSchema.Mutation,
@@ -19,5 +19,3 @@ class Mutation(
     graphene.ObjectType
 ):
     pass
-
-schema = graphene.Schema(query=Query, mutation=Mutation)

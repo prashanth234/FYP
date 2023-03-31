@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'djoser',
+    # refresh tokens are optional
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
     'playground',
     'core',
     'categories'
@@ -156,3 +159,38 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'fyp.schema.schema', # this file doesn't exist yet
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'graphql_auth.backends.GraphQLAuthBackend',
+]
+
+# Public mutations don't require user to be logged in. You should add all of them in GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"] setting.
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    # optional
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
+    ],
+}
+
+# Sending mails through console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
