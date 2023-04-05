@@ -22,37 +22,13 @@ import '@ionic/vue/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-
-/* Graphql */
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
-
-// HTTP connection to the API
-const httpLink = createHttpLink({
-  // You should use an absolute URL here
-  uri: 'http://localhost:8000/graphql',
-})
-
-// Cache implementation
-const cache = new InMemoryCache()
-
-// Create the apollo client
-const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache,
-})
-
-import { createApolloProvider } from '@vue/apollo-option'
-
-const apolloProvider = createApolloProvider({
-  defaultClient: apolloClient,
-})
+import store from './vuex';
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(apolloProvider);
+  .use(store);
 
-app.config.globalProperties.$apolloClient = apolloClient
   
 router.isReady().then(() => {
   app.mount('#app');
