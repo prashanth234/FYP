@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-MEDIA_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # refresh tokens are optional
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
+    'corsheaders',
     'playground',
     'core',
     'categories'
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -149,7 +151,7 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 
 # Where to store upload data
-MEDIA_ROOT = os.path.join(MEDIA_DIR, 'media')
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -194,3 +196,10 @@ GRAPHQL_JWT = {
 
 # Sending mails through console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Allow cross origins
+CORS_ORIGIN_ALLOW_ALL = True
+
+STATICFILES_DIRS = [
+    os.path.join(ROOT_DIR, "static"),
+]

@@ -11,6 +11,9 @@ from categories.schema.competitionSchema import CompetitionType
 # Type
 from categories.schema.type.CategoryType import CategoryType
 
+# Authentication
+from graphql_jwt.decorators import login_required
+
 class CreateCategoryMutation(graphene.Mutation):
 
     class Arguments:
@@ -80,9 +83,10 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
 
-    all_categories = graphene.List(CategoryType)
+    categories = graphene.List(CategoryType)
 
-    def resolve_all_categories(root, info):
+    # @login_required
+    def resolve_categories(root, info):
         return Category.objects.all()
     
     category_details = graphene.Field(CategoryType, id=graphene.Int())

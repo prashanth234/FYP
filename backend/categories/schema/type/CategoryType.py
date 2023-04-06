@@ -10,11 +10,11 @@ from categories.schema.type.CompetitionType import CompetitionType
 
 class CategoryType(DjangoObjectType):
 
-    competitions = graphene.List(CompetitionType)
+    # competitions = graphene.List(CompetitionType)
 
-    def resolve_competitions(self, info):
-        return Competition.objects.filter(category=self)
+    # def resolve_competitions(self, info):
+    #     return Competition.objects.filter(category=self)
 
     class Meta:
         model = Category
-        fields = ("id", "name", "description", "competitions")
+        fields = ("id", "name", "description", "type", "competition_set")
