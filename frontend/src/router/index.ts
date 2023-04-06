@@ -23,7 +23,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/category/:id',
     name: 'CategoryDetails',
-    component: CategoriesDetailsPage
+    component: CategoriesDetailsPage,
+    props: true 
   },
   {
     path: '/tabs/',

@@ -1,7 +1,9 @@
 <template>
   <ion-page>
-    <ion-content style="height: 100%;">
+    <ion-content style="height: 100%;" class="ion-padding">
       
+      <h1>Categories</h1>
+
       <ion-grid>
 
         <ion-row class="ion-justify-content-center ion-align-items-end">
@@ -31,9 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent  } from '@ionic/vue';
+import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
+
+const ionRouter = useIonRouter();
 
 const { result } = useQuery(gql`
                               query {
@@ -47,6 +51,6 @@ const { result } = useQuery(gql`
                             `)
 
 function openCategory (category: Object) {
-  console.log(category)
+  ionRouter.push(`category/${category.id}`);
 }
 </script>
