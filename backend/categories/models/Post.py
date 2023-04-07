@@ -8,7 +8,7 @@ class Post(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField()
     category = models.OneToOneField(Category, on_delete=models.CASCADE)
-    competition = models.OneToOneField(Competition, on_delete=models.CASCADE)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
       return self.description

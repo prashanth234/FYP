@@ -6,6 +6,7 @@ import LoginPage from '../views/LoginPage.vue';
 // import CategoryMainPage from '../views/CategoriesPage.vue'
 import CategoriesPage from '../views/CategoriesPage.vue';
 import CategoriesDetailsPage from '../views/CategoryDetailsPage.vue';
+import CompetitionDetailsPage from '../views/CompetitionDetailsPage.vue';
 
 import store from '../vuex';
 
@@ -24,6 +25,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/category/:id',
     name: 'CategoryDetails',
     component: CategoriesDetailsPage,
+    props: true 
+  },
+  {
+    path: '/competition/:id',
+    name: 'CompetitionDetails',
+    component: CompetitionDetailsPage,
     props: true 
   },
   {

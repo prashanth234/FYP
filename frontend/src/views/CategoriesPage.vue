@@ -51,6 +51,6 @@ const { result } = useQuery(gql`
                             `)
 
 function openCategory (category: Object) {
-  ionRouter.push(`category/${category.id}`);
+  ionRouter.push(`category/${category.id}`)
 }
 </script>

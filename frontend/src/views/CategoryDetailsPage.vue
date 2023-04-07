@@ -13,7 +13,7 @@
           <ion-grid>
             <ion-row>
               <ion-col size="3" v-for="(competition, index) in result?.categoryDetails.competitionSet" :key="index">
-                <ion-card>
+                <ion-card @click="openCompetition(competition)">
                   <ion-card-header>
                     <ion-card-title>{{ competition.name }}</ion-card-title>
                     <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
@@ -57,6 +57,8 @@ import { useQuery } from '@vue/apollo-composable'
 import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 
+const ionRouter = useIonRouter();
+
 const props = defineProps({
   id: String
 })
@@ -67,6 +69,7 @@ const { result } = useQuery(gql`
                                   name,
                                   description,
                                   competitionSet {
+                                    id,
                                     name,
                                     description
                                   }
@@ -80,6 +83,9 @@ watch(result, value => {
       console.log(value)
     })
 
+function openCompetition(competition: Object) {
+  ionRouter.push(`/competition/${competition.id}`)
+}
 
 </script>
 
