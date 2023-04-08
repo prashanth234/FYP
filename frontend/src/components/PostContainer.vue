@@ -10,7 +10,7 @@
           <!-- <p>Mar 15th at 3:20 PM</p> -->
         </ion-item>
         <ion-item style="padding-top: 20px; padding-bottom: 20px">
-          <ion-img :src="`http://localhost:8000/${[post.postfileSet[0].file]}`" alt="The Wisconsin State Capitol building in Madison, WI at night"></ion-img>
+          <ion-img :src="`${[post.postfileSet[0].file]}`" alt="The Wisconsin State Capitol building in Madison, WI at night"></ion-img>
         </ion-item>
         <ion-item>
           <p>{{post.description}}</p>

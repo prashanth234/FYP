@@ -38,7 +38,7 @@
           <ion-grid>
             <ion-row class="ion-justify-content-center">
               <ion-col size="4">
-                <post />
+                <!-- <post /> -->
               </ion-col>
             </ion-row>
           </ion-grid>
