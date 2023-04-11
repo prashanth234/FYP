@@ -11,25 +11,37 @@
 
               <ion-row>
                 <ion-col>
-                  <ion-title>Login</ion-title>
+                  <ion-title>TBD</ion-title>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-input label="Username" label-placement="floating" fill="outline" v-model="state.username" type="text" placeholder="Enter your username"></ion-input>
+                  <ion-input class="login" fill="outline" v-model="state.username" type="text" placeholder="Username"></ion-input>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-input label="Password" label-placement="floating" fill="outline" v-model="state.password" type="password" placeholder="Enter your password"></ion-input>
+                  <ion-input fill="outline" v-model="state.password" type="password" placeholder="Password"></ion-input>
                 </ion-col>
               </ion-row>
 
               <ion-row>
                 <ion-col>
-                  <ion-button @click="submitForm()">Submit</ion-button>
+                  <ion-button color="primary" expand="block" @click="submitForm()">Login</ion-button>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <a>Forgotten password?</a>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col>
+                  <ion-button color="success" expand="block">Create Account</ion-button>
                 </ion-col>
               </ion-row>
 
@@ -98,68 +110,10 @@ function submitForm () {
 
 </script>
 
-<!-- <script>
-
-
-export default {
-  name: 'LoginForm',
-  components: {
-      IonPage,
-      IonContent,
-      IonCol,
-      IonGrid,
-      IonRow,
-      IonInput,
-      IonButton,
-      IonTitle
-  },
-  data () {
-      return {
-          username: '',
-          password: ''
-      }
-  },
-  methods: {
-      submitForm () {
-        const ionRouter = useIonRouter();
-        ionRouter.push('/category');
-
-        // this.$router.push('/category')
-        return
-        this.$apollo.mutate({
-          // Query
-          mutation: gql`
-          
-            mutation ($username: String!, $password: String!) {
-              tokenAuth(username: $username, password: $password) {
-                success,
-                errors,
-                unarchiving,
-                token,
-                refreshToken,
-                unarchiving,
-                user {
-                  id,
-                  username,
-                }
-              }
-            }
-
-          `,
-          // Parameters
-          variables: {
-            username: this.username,
-            password: this.password
-          }
-        }).then((data) => {
-          // Result
-          this.$store.commit('storeUser', data.data.tokenAuth)
-          this.$router.push('/category')
-        }).catch((error) => {
-          // Error
-          console.error(error)
-        })
-      },
-  },
-};  
-</script> -->
+<style>
+ion-input.login {
+  --border-color: var(--ion-color-step-300, #b3b3b3);
+  --border-radius: 4px;
+  --border-width: 10px;
+}
+</style>

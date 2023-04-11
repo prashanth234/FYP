@@ -1,8 +1,9 @@
 /* Graphql */
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { createUploadLink } from "apollo-upload-client";
 
 // HTTP connection to the API
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   // You should use an absolute URL here
   uri: 'http://localhost:8000/graphql',
 })

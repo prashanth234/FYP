@@ -17,19 +17,18 @@ class CreatePostMutation(graphene.Mutation):
     
     class Arguments:
         # The input arguments for this mutation
-        user = graphene.ID(required=True)
         description = graphene.String()
         category = graphene.ID(required=True)
         competition = graphene.ID(required=True)
-        file = Upload()
+        file = Upload(required=True)
 
 
     # The class attributes define the response of the mutation
     post = graphene.Field(PostType)
 
     @classmethod
-    def mutate(cls, root, info, user, category, competition, file, description=''):
-        user = User.objects.get(pk=user)
+    def mutate(cls, root, info, category, competition, file, description=''):
+        user = User.objects.get(pk=6)
         category = Category.objects.get(pk=category)
         competition = Competition.objects.get(pk=competition)
 
@@ -39,6 +38,7 @@ class CreatePostMutation(graphene.Mutation):
             category=category,
             competition=competition
         )
+        
         post.save()
 
         postFile = PostFile(
@@ -88,7 +88,6 @@ class UpdatePostMutation(graphene.Mutation):
             postFile.save()
 
         return UpdatePostMutation(post=post)
-    
 
 class DeletePostMutation(graphene.Mutation):
     
