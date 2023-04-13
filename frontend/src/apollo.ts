@@ -1,6 +1,7 @@
 /* Graphql */
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
-import { createUploadLink } from "apollo-upload-client";
+import { setContext } from '@apollo/client/link/context'
+import { createUploadLink } from "apollo-upload-client"
 
 // HTTP connection to the API
 const httpLink = createUploadLink({
@@ -8,12 +9,26 @@ const httpLink = createUploadLink({
   uri: 'http://localhost:8000/graphql',
 })
 
+// create auth link
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('fyptoken');
+
+  // return the headers to the context so that httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `JWT ${token}` : ''
+    }
+  };
+});
+
 // Cache implementation
 const cache = new InMemoryCache()
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
-  link: httpLink,
+  link: authLink.concat(httpLink),
   cache,
 })
 

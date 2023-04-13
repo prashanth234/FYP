@@ -1,8 +1,8 @@
 <template>
   <ion-page>
-    <ion-content style="height: 100%;" class="ion-padding">
+    <ion-content class="ion-padding">
       
-      <h1>Categories</h1>
+      <h1 style="margin: 0px">Categories</h1>
 
       <ion-grid>
 

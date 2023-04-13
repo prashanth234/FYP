@@ -1,0 +1,24 @@
+ion-input.custom-input {
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  text-align: start !important;
+}
+
+ion-select.custom-select {
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  text-align: start !important;
+  padding-right: 10px;
+}
+
+ion-input.custom-input:focus {
+  border-color: #1b74e4;
+  box-shadow: 0 0 0 2px #e7f3ff;
+  caret-color: #1b74e4;
+}
+
+
+
+ion-button {
+  text-transform: capitalize;
+}

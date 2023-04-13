@@ -5,6 +5,19 @@ from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
 from categories.schema import CategoryQuery, CategoryMutation
 
+# from core.models.User import User
+
+# class CustomRegistrationMutation(mutations.Register):
+#     firstname = graphene.String(required=True)
+    
+#     def mutate(self, info, password, **kwargs):
+#         # get your custom fields from kwargs
+#         user = User(**kwargs)
+#         user.set_password(password)
+#         user.save()
+#         # set your custom fields to the user instance
+#         return CustomRegistrationMutation(user=user)
+
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     verify_account = mutations.VerifyAccount.Field()
