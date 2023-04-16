@@ -1,61 +1,45 @@
 <template>
-  <ion-page>
+  
+  <div v-if="result?.competitionDetails" class="ion-padding">
 
-    <ion-content v-if="result?.competitionDetails" style="height: 100%;" class="ion-padding">
+    <ion-button @click="setOpen(true)">Participate</ion-button>
 
-      <ion-title>Category: {{ result.competitionDetails.category.name }}</ion-title>
-      <ion-title>Competition: {{ result.competitionDetails.name }}</ion-title>
-      <ion-title>Description: {{ result.competitionDetails.description }}</ion-title>
+    <ion-modal :is-open="isOpen">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Create new post</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="setOpen(false)">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-textarea v-model="description" placeholder="Description" :auto-grow="true" fill="outline"
+                value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tellus sem, auctor accumsan egestas sed, venenatis at ex. Nam consequat ex odio, suscipit rhoncus orci dictum eget. Aenean sit amet ligula varius felis facilisis lacinia nec volutpat nulla. Duis ullamcorper sit amet turpis sed blandit. Integer pretium massa eu faucibus interdum.">
+              </ion-textarea>
+            </ion-col>
+            <ion-col size="12">
+              <input type="file" @change="handleFileUpload" />
+              <ion-img style="width: 200px; height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
+              <ion-button @click="uploadImage" :disabled="!imageUrl">Upload Image</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ion-modal>
 
-      <ion-button expand="block" @click="setOpen(true)">Participate</ion-button>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center" v-for="(post, index) in result.competitionDetails.postSet" :key="index">
+        <ion-col size="4">
+          <post :post="post"></post>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-      <ion-modal :is-open="isOpen">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>Create new post</ion-title>
-            <ion-buttons slot="end">
-              <ion-button @click="setOpen(false)">Close</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding">
-          <ion-grid>
-            <ion-row>
-              <ion-col size="12">
-                <ion-textarea v-model="description" placeholder="Description" :auto-grow="true" fill="outline"
-                  value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tellus sem, auctor accumsan egestas sed, venenatis at ex. Nam consequat ex odio, suscipit rhoncus orci dictum eget. Aenean sit amet ligula varius felis facilisis lacinia nec volutpat nulla. Duis ullamcorper sit amet turpis sed blandit. Integer pretium massa eu faucibus interdum.">
-                </ion-textarea>
-              </ion-col>
-              <ion-col size="12">
-                <input type="file" @change="handleFileUpload" />
-                <ion-img style="width: 200px; height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
-                <ion-button @click="uploadImage" :disabled="!imageUrl">Upload Image</ion-button>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-content>
-      </ion-modal>
-
-      <ion-card>
-
-        <ion-card-header>
-          <ion-card-title>Posts</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          <ion-grid>
-            <ion-row class="ion-justify-content-center" v-for="(post, index) in result.competitionDetails.postSet" :key="index">
-              <ion-col size="4">
-                <post :post="post"></post>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-
-      </ion-card>
-    </ion-content>
-
-  </ion-page>
+  </div>
 
 </template>  
 

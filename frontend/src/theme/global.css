@@ -17,8 +17,13 @@ ion-input.custom-input:focus {
   caret-color: #1b74e4;
 }
 
+.full-height {
+  height: 100%;
+}
 
-
+.cpointer {
+  cursor: pointer;
+}
 ion-button {
   text-transform: capitalize;
 }

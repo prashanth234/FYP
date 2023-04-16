@@ -2,14 +2,14 @@
   <ion-page>
     <ion-content style="height: 100%;" class="ion-padding">
 
-      <h1>{{ result?.categoryDetails.name }}</h1>
+      <h1 style="margin: 0px">{{ result?.categoryDetails.name }}</h1>
       
       <ion-card>
-          <ion-card-header>
-            <ion-card-title>Competitions</ion-card-title>
-          </ion-card-header>
+        <ion-card-header>
+          <ion-card-title>Competitions</ion-card-title>
+        </ion-card-header>
 
-        <ion-card-content>
+        <div>
           <ion-grid>
             <ion-row>
               <ion-col size="3" v-for="(competition, index) in result?.categoryDetails.competitionSet" :key="index">
@@ -26,7 +26,7 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-        </ion-card-content>
+        </div>
       </ion-card>
 
       <ion-card>
@@ -35,27 +35,20 @@
           </ion-card-header>
 
         <ion-card-content>
-          <ion-grid>
-            <ion-row class="ion-justify-content-center">
-              <ion-col size="4">
-                <!-- <post /> -->
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <competition-details-page v-if="competitionId" :id="competitionId"/>
         </ion-card-content>
       </ion-card>
-      
 
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue';
-import Post from '@/components/PostContainer.vue'
+import { IonPage, IonRouterOutlet, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue'
+import CompetitionDetailsPage from './CompetitionDetailsPage.vue'
 
 const ionRouter = useIonRouter();
 
@@ -83,34 +76,10 @@ watch(result, value => {
       console.log(value)
     })
 
+const competitionId = ref('')   
 function openCompetition(competition: Object) {
-  ionRouter.push(`/competition/${competition.id}`)
+  competitionId.value = competition.id
+  // ionRouter.push(`/category/${props.id}/competition/${competition.id}`)
 }
 
 </script>
-
-<!-- <script>
-import gql from 'graphql-tag'
-
-export default {
-  apollo: {
-      categories: gql`query {
-                            categories {
-                                name,
-                                description,
-                                type,
-                                id
-                            }
-                        }`,
-  },
-  data () {
-      return { 
-        categories: []
-      }
-  },
-  methods: {
-  },
-  mounted () {
-  }
-}
-</script> -->
