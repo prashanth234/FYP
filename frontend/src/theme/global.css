@@ -24,6 +24,7 @@ ion-input.custom-input:focus {
 .cpointer {
   cursor: pointer;
 }
+
 ion-button {
   text-transform: capitalize;
 }

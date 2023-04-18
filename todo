@@ -2,9 +2,12 @@ P0
 Add authentication for post creation - Frontend, Backend
 Infinate scrolling on posts - Frontend. Backend
 Profile page - Frontend, Backend
+Add Responsiveness for the login page - Frontend
+Control size of the popup for the create post - Frontend
 
 P1
 Add unlike post option and highlight heart - Frontend, Backend
+On click upload image browser popup is not opening - Frontend
 
 P2
 Add time to post created - Frontend

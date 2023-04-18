@@ -7,9 +7,9 @@
     <ion-modal :is-open="isOpen">
       <ion-header>
         <ion-toolbar>
-          <ion-title>Create new post</ion-title>
+          <ion-title>Create New Post</ion-title>
           <ion-buttons slot="end">
-            <ion-button @click="setOpen(false)">Close</ion-button>
+            <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="setOpen(false)"></ion-icon>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -17,14 +17,14 @@
         <ion-grid>
           <ion-row>
             <ion-col size="12">
-              <ion-textarea v-model="description" placeholder="Description" :auto-grow="true" fill="outline"
-                value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tellus sem, auctor accumsan egestas sed, venenatis at ex. Nam consequat ex odio, suscipit rhoncus orci dictum eget. Aenean sit amet ligula varius felis facilisis lacinia nec volutpat nulla. Duis ullamcorper sit amet turpis sed blandit. Integer pretium massa eu faucibus interdum.">
+              <ion-textarea class="textarea" v-model="description" placeholder="Description" :auto-grow="true">
               </ion-textarea>
             </ion-col>
             <ion-col size="12">
-              <input type="file" @change="handleFileUpload" />
-              <ion-img style="width: 200px; height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
-              <ion-button @click="uploadImage" :disabled="!imageUrl">Upload Image</ion-button>
+              <file-upload-container v-model="imageUrl" />
+            </ion-col>
+            <ion-col style="text-align: center;">
+              <ion-button @click="uploadImage" :disabled="!imageUrl">Upload Post</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -48,12 +48,11 @@
 import { watch, ref } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonTextarea, IonPage, IonContent, IonTitle, IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonBreadcrumbs, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue';
+import { IonTextarea, IonIcon, IonContent, IonTitle, IonButton, IonModal, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow} from '@ionic/vue';
 import { useMutation } from '@vue/apollo-composable'
-
+import { closeOutline } from 'ionicons/icons'
 import Post from '@/components/PostContainer.vue'
-
-const ionRouter = useIonRouter();
+import FileUploadContainer from '@/components/FileUploadContainer.vue'
 
 const props = defineProps({
   id: String
@@ -90,30 +89,12 @@ watch(result, value => {
       console.log(value)
     })
 
-const message = ref('This modal example uses triggers to automatically open a modal when the button is clicked.')
 const isOpen = ref(false)
+const imageUrl = ref('')
+const description = ref('')
 
 function setOpen (value: boolean) {
   isOpen.value = value;
-}
-
-const imageUrl = ref('');
-const previewImage = ref('');
-const description = ref('');
-
-function handleFileUpload({target: { validity, files: [file],},}) {
-  if (validity.valid) {
-    imageUrl.value = file
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        previewImage.value = reader.result;
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
 }
 
 function uploadImage() {
@@ -156,3 +137,11 @@ function uploadImage() {
 }
 
 </script>
+
+<style>
+.textarea {
+  border: 1px solid #dddfe2;
+  padding: 20px;
+  border-radius: 4px;
+}
+</style>
