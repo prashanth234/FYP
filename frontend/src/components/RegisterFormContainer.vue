@@ -164,7 +164,7 @@ function submitForm () {
       localStorage.setItem('fyprefreshtoken', response.refreshToken)
       response.user = { username: state.username }
       store.commit('storeUser', response)
-      ionRouter.push('/category')
+      ionRouter.push('/')
     }
   })
 }
