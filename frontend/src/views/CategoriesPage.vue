@@ -6,9 +6,9 @@
 
       <ion-grid>
 
-        <ion-row class="ion-justify-content-center ion-align-items-end">
+        <ion-row class="ion-align-items-end">
 
-          <ion-col v-for="(category, index) in result?.categories" :key="index">
+          <ion-col size="3" v-for="(category, index) in result?.categories" :key="index">
             <ion-card @click="openCategory(category)">
               
               <img :alt="category.name" :src="`http://localhost:8000/static/category/${category.type}.png`" height="100" />
@@ -39,7 +39,7 @@ import { useQuery } from '@vue/apollo-composable'
 
 const ionRouter = useIonRouter();
 
-const { result } = useQuery(gql`
+const { result, onResult } = useQuery(gql`
                               query {
                                 categories {
                                   name,
@@ -49,6 +49,10 @@ const { result } = useQuery(gql`
                                 }
                               }
                             `)
+
+onResult(({data, loading}) => {
+  console.log(data, loading)
+})
 
 function openCategory (category: Object) {
   ionRouter.push(`category/${category.id}`)

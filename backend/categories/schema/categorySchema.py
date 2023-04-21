@@ -85,12 +85,8 @@ class Query(graphene.ObjectType):
 
     categories = graphene.List(CategoryType)
 
-    # @login_required
     def resolve_categories(root, info):
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User not authenticated")
-        else:
-            return Category.objects.all()
+        return Category.objects.all()
     
     category_details = graphene.Field(CategoryType, id=graphene.Int())
 

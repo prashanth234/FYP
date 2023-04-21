@@ -28,7 +28,7 @@ class CreatePostMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, category, competition, file, description=''):
-        user = User.objects.get(pk=6)
+        user = User.objects.get(pk=info.context.user.id)
         category = Category.objects.get(pk=category)
         competition = Competition.objects.get(pk=competition)
 

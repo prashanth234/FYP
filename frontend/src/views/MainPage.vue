@@ -7,8 +7,11 @@
             <ion-col>
               <ion-title>TBD</ion-title>
             </ion-col>
-            <ion-col size="auto">
-              <ion-icon class="icon-custom" :icon="logOutOutline" @click="logout()"></ion-icon>
+            <ion-col size="auto" v-if="store.state.user.success">
+              <ion-icon class="icon-custom cpointer" :icon="logOutOutline" @click="logout()"></ion-icon>
+            </ion-col>
+            <ion-col size="auto" class="ion-padding-end" v-else>
+              <ion-button @click="login()">Login</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -21,9 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
+import { IonPage, IonButton, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
 import { logOutOutline } from 'ionicons/icons';
 import store from '@/vuex';
+import { useMutation, useQuery } from '@vue/apollo-composable';
+import gql from 'graphql-tag'
+import { storeTokens } from '@/mixims/auth'
 
 const ionRouter = useIonRouter();
 
@@ -31,8 +37,79 @@ function logout() {
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')
   store.commit('storeUser', {})
+}
+
+function login() {
   ionRouter.push('/login')
 }
+
+function checkAuthStatus() {
+  if (store.state.user.success) { return }
+
+  const token = localStorage.getItem('fyptoken')
+
+  if (token) {
+
+    // Verify if the token is vaild or not
+    const { mutate, onDone } = useMutation(gql`
+      mutation ($token: String!) {
+          verifyToken (
+            token: $token
+          ) {
+            success,
+            errors,
+            payload
+          }
+        }
+      `,
+      {
+        variables: {
+          token
+        }
+      }
+    )
+
+    mutate()
+
+    onDone(({data: {verifyToken}}) => {
+      const refreshToken = localStorage.getItem('fyprefreshtoken')
+
+      if (verifyToken.success) {
+        const user = { username: verifyToken.payload.username, token, refreshToken, success: true }
+        store.commit('storeUser', user)
+      } else {
+        // If not vaild, refresh the token
+        const { mutate, onDone } = useMutation(gql`
+          mutation ($refreshToken: String!) {
+              refreshToken (
+                refreshToken: $refreshToken
+              ) {
+                success,
+                errors,
+                payload,
+                token,
+                refreshToken
+              }
+            }
+          `,
+          {
+            variables: {
+              refreshToken
+            }
+          }
+        )
+
+        mutate()
+
+        onDone(({data: {refreshToken}}) => {
+          storeTokens(refreshToken, 'refresh')
+        })
+      }
+    })
+  }
+}
+
+checkAuthStatus()
 </script>
 
 <style scoped>
@@ -42,6 +119,6 @@ function logout() {
   ion-grid {
     --ion-grid-padding: 0px;
     padding-top: 5px;
-    font-size: 25px !important
+    font-size: 25px !important;
   }
 </style>

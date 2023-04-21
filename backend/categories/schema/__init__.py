@@ -12,8 +12,8 @@ class CategoryQuery(
     pass
 
 class CategoryMutation(
-    categorySchema.Mutation,
-    competitionSchema.Mutation,
+    # categorySchema.Mutation,
+    # competitionSchema.Mutation,
     postSchema.Mutation,
     likeSchema.Mutation,
     graphene.ObjectType

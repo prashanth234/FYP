@@ -10,7 +10,7 @@
       </ion-col>
 
       <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.username" type="text" placeholder="Username"></ion-input>
+        <ion-input class="custom-input" fill="outline" v-model="state.email" type="email" placeholder="Email"></ion-input>
       </ion-col>
 
       <ion-col size="12">
@@ -29,8 +29,8 @@
         <ion-button color="primary" :disabled="state.disabled" expand="block" @click="submitForm()">Login</ion-button>
       </ion-col>
 
-      <ion-col size="12">
-        <a>Forgotten password?</a>
+      <ion-col size="12" >
+        <ion-button fill="clear" @click="forgotPassword">Forgotten password?</ion-button>
       </ion-col>
       
       <ion-col size="12">
@@ -46,14 +46,22 @@
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonCard, IonButton, IonTitle, IonText, useIonRouter } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import store from '@/vuex'
+import { storeTokens } from '@/mixims/auth'
+import store from '@/vuex';
 
-const state = reactive({
-  username: '',
+interface State {
+  email: string,
+  password: string,
+  disabled: boolean,
+  errors: string[]
+}
+
+const state: State = reactive({
+  email: '',
   password: '',
   disabled: false,
   errors: []
@@ -65,13 +73,46 @@ const emit = defineEmits<{
 
 const ionRouter = useIonRouter();
 
+function forgotPassword () {
+
+  if (!state.email) {
+    state.errors = ["Please enter the email"]
+    return
+  }
+
+  const { mutate, onDone } = useMutation(gql`    
+      mutation ($email: String!) {
+        sendPasswordResetEmail (
+            email: $email
+          ) {
+            success,
+            errors
+          }
+      }
+    `,{
+        // Parameters
+        variables: {
+          email: state.email
+        }
+      }
+  )
+
+  mutate()
+
+  onDone(({data: {sendPasswordResetEmail}}) => {
+    if (sendPasswordResetEmail.success) {
+      store.commit('displayToast', {message: "Email sent successfully", color: 'success'})
+    }
+  })
+}
+
 function submitForm () {
 
   state.disabled = true
 
   const { mutate, onDone } = useMutation(gql`    
-      mutation ($username: String!, $password: String!) {
-        tokenAuth(username: $username, password: $password) {
+      mutation ($email: String!, $password: String!) {
+        tokenAuth(email: $email, password: $password) {
           success,
           errors,
           unarchiving,
@@ -88,7 +129,7 @@ function submitForm () {
     `,{
         // Parameters
         variables: {
-          username: state.username,
+          email: state.email,
           password: state.password
         }
       }
@@ -101,9 +142,7 @@ function submitForm () {
     state.disabled = false
 
     if (response.success) {
-      localStorage.setItem('fyptoken', response.token)
-      localStorage.setItem('fyprefreshtoken', response.refreshToken)
-      store.commit('storeUser', response)
+      storeTokens(response, 'login')
       ionRouter.push('/')
     } else {
       const keys = Object.keys(response.errors)
@@ -118,7 +157,6 @@ function submitForm () {
 }
 
 function register() {
-  // ionRouter.push('/register')
   emit('register')
 }
 

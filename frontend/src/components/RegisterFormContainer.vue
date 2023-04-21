@@ -17,7 +17,7 @@
       </ion-col> -->
 
       <ion-col size="12">
-        <ion-input class="custom-input" v-model="state.email" type="text" placeholder="Email"></ion-input>
+        <ion-input  class="custom-input" v-model="state.email" type="text" placeholder="Email"></ion-input>
       </ion-col>
 
       <ion-col size="12">
@@ -77,6 +77,7 @@ import gql from 'graphql-tag'
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
+import { storeTokens } from '@/mixims/auth'
 
 interface DatetimeChangeEventDetail {
   detail: {
@@ -160,10 +161,8 @@ function submitForm () {
         })
       })
     } else if (response.success) {
-      localStorage.setItem('fyptoken', response.token)
-      localStorage.setItem('fyprefreshtoken', response.refreshToken)
-      response.user = { username: state.username }
-      store.commit('storeUser', response)
+      response.user = { username: state.username, email: state.email }
+      storeTokens(response, 'register')
       ionRouter.push('/')
     }
   })

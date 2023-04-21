@@ -56,7 +56,7 @@ function changeContainer () {
 
 <style>
 .login-background {
-  background: linear-gradient(158.37deg, #1D5FE4 50.52%, rgba(106, 149, 236, 0.807566) 82.71%);
+  background-image: linear-gradient(314deg, #09c6f9 0%, #045de9 75%);
   height: 450px;
 }
 .fyp-intro {

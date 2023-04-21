@@ -44,11 +44,17 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from 'vue'
+import { ref } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonPage, IonRouterOutlet, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue'
+import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonList, IonItem, IonLabel, IonAvatar, IonImg } from '@ionic/vue'
 import CompetitionDetailsPage from './CompetitionDetailsPage.vue'
+
+interface competitionDetails {
+  id: number,
+  name: string,
+  description: string
+}
 
 const ionRouter = useIonRouter();
 
@@ -56,7 +62,7 @@ const props = defineProps({
   id: String
 })
 
-const { result } = useQuery(gql`
+const { result, onResult } = useQuery(gql`
                               query ($id: Int!) {
                                 categoryDetails (id: $id) {
                                   name,
@@ -72,14 +78,12 @@ const { result } = useQuery(gql`
                               id: props.id,
                             })
 
-watch(result, value => {
-      console.log(value)
-    })
+onResult(value => {
+  console.log(value)
+})
 
-const competitionId = ref('')   
-function openCompetition(competition: Object) {
+const competitionId = ref(0)
+function openCompetition(competition: competitionDetails) {
   competitionId.value = competition.id
-  // ionRouter.push(`/category/${props.id}/competition/${competition.id}`)
 }
-
 </script>
