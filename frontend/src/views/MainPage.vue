@@ -18,18 +18,29 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <ion-modal :show-backdrop="true" :is-open="state.openLogin" @didDismiss="closeLogin">
+        <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
+        <login-container />
+      </ion-modal>
       <ion-router-outlet></ion-router-outlet>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonButton, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
-import { logOutOutline } from 'ionicons/icons';
-import store from '@/vuex';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
+import { logOutOutline } from 'ionicons/icons'
+import store from '@/vuex'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
+import { reactive } from 'vue'
+import { closeOutline } from 'ionicons/icons'
+import LoginContainer from '@/components/LoginContainer.vue'
+
+const state = reactive({
+  openLogin: false
+})
 
 const ionRouter = useIonRouter();
 
@@ -39,8 +50,13 @@ function logout() {
   store.commit('storeUser', {})
 }
 
+function closeLogin() {
+  state.openLogin = false
+}
+
 function login() {
-  ionRouter.push('/login')
+  // ionRouter.push('/login')
+  state.openLogin = true
 }
 
 function checkAuthStatus() {
@@ -110,6 +126,7 @@ function checkAuthStatus() {
 }
 
 checkAuthStatus()
+
 </script>
 
 <style scoped>
@@ -120,5 +137,20 @@ checkAuthStatus()
     --ion-grid-padding: 0px;
     padding-top: 5px;
     font-size: 25px !important;
+  }
+  ion-modal {
+    --background: transparent;
+    --backdrop-opacity: 70%;
+    --border-radius: 5px;
+    --box-shadow: 0px;
+    --height: auto;
+  }
+  .close-login {
+    float: right;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    vertical-align: top;
+    z-index: 5;
   }
 </style>

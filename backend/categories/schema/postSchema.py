@@ -28,6 +28,9 @@ class CreatePostMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, category, competition, file, description=''):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+                
         user = User.objects.get(pk=info.context.user.id)
         category = Category.objects.get(pk=category)
         competition = Competition.objects.get(pk=competition)
@@ -66,10 +69,13 @@ class UpdatePostMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, id, category=None, competition=None, file=None, description=None):
-        post = Post.objects.get(pk=id)
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+        
+        post = Post.objects.filter(pk=id, user=info.context.user)
 
         if not post:
-            raise GraphQLError("Post with this ID does not exist.")
+            raise GraphQLError("Post with logged in user does not exist.")
 
         if category:
             post.category = Category.objects.get(pk=category)
@@ -101,6 +107,9 @@ class DeletePostMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, id):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+        
         Post.objects.get(pk=id).delete()
         return DeletePostMutation(success=True)
     

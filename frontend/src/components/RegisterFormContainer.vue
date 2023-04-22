@@ -3,7 +3,7 @@
   <!-- Start of register form -->
   <ion-grid>
 
-    <ion-row>
+    <ion-row class="ion-text-center">
       
       <ion-col size="12">
         <ion-title>Create Account</ion-title>

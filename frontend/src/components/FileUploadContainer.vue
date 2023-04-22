@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { IonIcon, IonImg, IonButton } from '@ionic/vue';
 import { cloudUploadOutline } from 'ionicons/icons'
 import { ref } from 'vue'
 

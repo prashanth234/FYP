@@ -11,7 +11,7 @@
           <ion-col size="3" v-for="(category, index) in result?.categories" :key="index">
             <ion-card @click="openCategory(category)">
               
-              <img :alt="category.name" :src="`http://localhost:8000/static/category/${category.type}.png`" height="100" />
+              <img :alt="category.name" :src="`http://localhost:8000/media/${category.image}`" height="100" />
 
               <ion-card-header>
                 <ion-card-title>{{category.name}}</ion-card-title>
@@ -33,11 +33,19 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
+import { IonPage, IonContent, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 
 const ionRouter = useIonRouter();
+
+interface categoryObject {
+  name: string,
+  description: string,
+  type: string,
+  id: number,
+  image: string
+}
 
 const { result, onResult } = useQuery(gql`
                               query {
@@ -45,7 +53,8 @@ const { result, onResult } = useQuery(gql`
                                   name,
                                   description,
                                   type,
-                                  id
+                                  id,
+                                  image
                                 }
                               }
                             `)
@@ -54,7 +63,7 @@ onResult(({data, loading}) => {
   console.log(data, loading)
 })
 
-function openCategory (category: Object) {
+function openCategory (category: categoryObject) {
   ionRouter.push(`category/${category.id}`)
 }
 </script>

@@ -65,17 +65,13 @@ function changeContainer () {
   height: 100%;
 }
 .fyp-start-title {
-  font-family: 'Inter';
-  font-style: normal;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 25px;
   line-height: 44px;
 }
 .fyp-start-description {
-  font-family: 'Inter';
-  font-style: normal;
   font-weight: 200;
-  font-size: 20px;
+  font-size: 17px;
   line-height: 24px;
 }
 .fyp-logo {
