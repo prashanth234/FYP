@@ -24,17 +24,22 @@ class UserType(DjangoObjectType):
         fields = ("username",)
 
 class PostType(DjangoObjectType):
-    # files = graphene.List(PostFileType)
-
-    # def resolve_files(self, info):
-    #     return PostFile.objects.filter(post=self)
     
     user = graphene.Field(UserType)    
     like_count = graphene.Int()
+    user_liked = graphene.Boolean()
 
     def resolve_like_count(self, info):
         return Like.objects.filter(item_type=ContentType.objects.get_for_model(self), item_id=self.id).count()
     
+    def resolve_user_liked(self, info):
+        if not info.context.user.is_authenticated:
+            return False
+        
+        liked = Like.objects.filter(item_type=ContentType.objects.get_for_model(self), item_id=self.id, user=info.context.user)
+
+        return True if liked else False
+    
     class Meta:
         model = Post
-        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count")
+        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked")

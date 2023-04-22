@@ -18,10 +18,12 @@ class AddLikeMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, id):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+        
         try:
             post = Post.objects.get(pk=id)
-            user = User.objects.get(pk=1)
-            like = Like(item=post, user=user)
+            like = Like(item=post, user=info.context.user)
             like.save()
             return AddLikeMutation(success=True)
         except Exception as err:
@@ -40,8 +42,16 @@ class UnLikeMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, id):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+        
         try:
-            Like.objects.get(pk=id).delete()
+            like = Like.objects.filter(item_id=id, user=info.context.user)
+
+            if not like:
+                raise GraphQLError("User has not liked the post")
+            
+            like.delete()
             return UnLikeMutation(success=True)
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")

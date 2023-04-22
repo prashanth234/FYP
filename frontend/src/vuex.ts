@@ -11,11 +11,14 @@ const store = createStore({
         message: '',
         open: false,
         color: ''
+      },
+      auth: {
+        open: false
       }
     }
   },
   mutations: {
-    storeUser (state, user) {
+    storeUser(state, user) {
       state.user = user 
     },
     displayToast(state, toast) {
@@ -23,6 +26,12 @@ const store = createStore({
     },
     dismissToast(state) {
       state.toast.open = false
+    },
+    dismissAuth(state) {
+      state.auth.open = false
+    },
+    displayAuth(state) {
+      state.auth.open = true
     }
   }
 })

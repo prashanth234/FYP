@@ -163,7 +163,9 @@ function submitForm () {
     } else if (response.success) {
       response.user = { username: state.username, email: state.email }
       storeTokens(response, 'register')
-      ionRouter.push('/')
+      store.commit('displayToast', {message: 'Registered Successfully', color: 'success'})
+      store.commit('dismissAuth')
+      // ionRouter.push('/')
     }
   })
 }

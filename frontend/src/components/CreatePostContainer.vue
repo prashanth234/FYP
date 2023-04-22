@@ -1,5 +1,5 @@
 <template>
-  <ion-button @click="setOpen(true)">Participate</ion-button>
+  <ion-button @click="setOpen(true)" class="ion-text-end">Participate</ion-button>
   <ion-modal :is-open="state.isOpen">
     <ion-header>
       <ion-toolbar>
@@ -58,10 +58,9 @@ function uploadImage() {
   try {
     const { mutate, onDone } = useMutation(gql`    
       
-      mutation ($file: Upload!, $category: ID!, $competition: ID!, $description: String!) { 
+      mutation ($file: Upload!, $competition: ID!, $description: String!) { 
         createPost (
           file: $file,
-          category: $category,
           competition: $competition,
           description: $description
         ) {
@@ -81,7 +80,6 @@ function uploadImage() {
         variables: {
           file: state.imageUrl,
           competition: props.competition.id,
-          category: props.competition.category.id,
           description: state.description
         }
       }
@@ -95,7 +93,7 @@ function uploadImage() {
 
 function setOpen (value: boolean) {
   if (!store.state.user.success) { 
-    store.commit('displayToast', {message: 'Please login to praticipate', color: 'danger'})
+    store.commit('displayAuth')
     return
   }
   state.isOpen = value;

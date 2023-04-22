@@ -11,7 +11,7 @@
         <div v-if="!previewImage">
           <ion-icon :icon="cloudUploadOutline" size="large"></ion-icon>
         </div>
-        <ion-button size="small" color="primary">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
+        <ion-button size="small" color="primary" style="pointer-events: none">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
       </div>
 
     </label>
@@ -23,25 +23,30 @@
 import { IonIcon, IonImg, IonButton } from '@ionic/vue';
 import { cloudUploadOutline } from 'ionicons/icons'
 import { ref } from 'vue'
+import type { Ref } from 'vue'
 
 defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
 
-const imageUrl = ref('');
-const previewImage = ref('');
+const imageUrl: Ref<File|undefined> = ref();
+const previewImage: Ref<string> = ref('');
 
-function handleFileUpload({target: { validity, files: [file],},}) {
-  if (validity.valid) {
-    imageUrl.value = file
-    emit('update:modelValue', file);
-    if (file) {
+function handleFileUpload(event: Event) {
+  const {validity, files} = event.target as HTMLInputElement 
+  
+  if (validity.valid && files && files.length) {
+    imageUrl.value = files[0]
+    
+    emit('update:modelValue', files[0]);
+
+    if (files[0]) {
       const reader = new FileReader();
 
       reader.onload = () => {
-        previewImage.value = reader.result;
+        previewImage.value = reader.result as string;
       };
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(files[0]);
     }
   }
 }
@@ -67,10 +72,10 @@ function handleFileUpload({target: { validity, files: [file],},}) {
   cursor: pointer;
 }
 .uploader label:hover {
-  border-color: #3880ff;
+  border-color: var(--ion-color-primary);
 }
 .uploader label.hover {
-  border: 3px solid #3880ff;
+  border: 3px solid var(--ion-color-primary);
   box-shadow: inset 0 0 0 6px #eee;
 }
 .uploader label.hover #start i.fa {

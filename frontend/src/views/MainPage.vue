@@ -18,7 +18,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-modal :show-backdrop="true" :is-open="state.openLogin" @didDismiss="closeLogin">
+      <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
         <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
         <login-container />
       </ion-modal>
@@ -34,13 +34,8 @@ import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
-import { reactive } from 'vue'
 import { closeOutline } from 'ionicons/icons'
 import LoginContainer from '@/components/LoginContainer.vue'
-
-const state = reactive({
-  openLogin: false
-})
 
 const ionRouter = useIonRouter();
 
@@ -51,12 +46,12 @@ function logout() {
 }
 
 function closeLogin() {
-  state.openLogin = false
+  store.commit('dismissAuth')
 }
 
 function login() {
+  store.commit('displayAuth')
   // ionRouter.push('/login')
-  state.openLogin = true
 }
 
 function checkAuthStatus() {

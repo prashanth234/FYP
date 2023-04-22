@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 
-import { watch, ref } from 'vue'
+import { watch, ref, reactive } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { IonCol, IonGrid, IonRow} from '@ionic/vue';
@@ -44,6 +44,7 @@ const { result, loading } = useQuery(gql`
                                   postSet {
                                     id, 
                                     likeCount,
+                                    userLiked,
                                     description,
                                     postfileSet {
                                       file
@@ -54,11 +55,9 @@ const { result, loading } = useQuery(gql`
                                   }
                                 }
                               }
-                            `, {
-                              id: props.id,
-                            })
+                            `, props)
 
 watch(result, value => {
-      console.log(value)
-    })
+  console.log(value)
+})
 </script>

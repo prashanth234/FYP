@@ -143,7 +143,9 @@ function submitForm () {
 
     if (response.success) {
       storeTokens(response, 'login')
-      ionRouter.push('/')
+      store.commit('displayToast', {message: 'Login Successful', color: 'success'})
+      store.commit('dismissAuth')
+      // ionRouter.push('/')
     } else {
       const keys = Object.keys(response.errors)
       state.errors = []
