@@ -21,15 +21,15 @@
 
 <script setup lang="ts">
 import { IonIcon, IonImg, IonButton } from '@ionic/vue';
-import { cloudUploadOutline } from 'ionicons/icons'
+import { cloudUploadOutline, image } from 'ionicons/icons'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 
-defineProps(['modelValue'])
+const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
 
 const imageUrl: Ref<File|undefined> = ref();
-const previewImage: Ref<string> = ref('');
+const previewImage: Ref<string> = ref(props.modelValue || '');
 
 function handleFileUpload(event: Event) {
   const {validity, files} = event.target as HTMLInputElement 

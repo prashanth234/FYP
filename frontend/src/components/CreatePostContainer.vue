@@ -1,11 +1,10 @@
 <template>
-  <ion-button @click="setOpen(true)" class="ion-text-end">Participate</ion-button>
-  <ion-modal :is-open="state.isOpen">
+  
     <ion-header>
       <ion-toolbar>
-        <ion-title>Create New Post</ion-title>
+        <ion-title>{{ state.title }}</ion-title>
         <ion-buttons slot="end">
-          <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="setOpen(false)"></ion-icon>
+          <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -20,17 +19,17 @@
             <file-upload-container v-model="state.imageUrl" />
           </ion-col>
           <ion-col style="text-align: center;">
-            <ion-button @click="uploadImage" :disabled="!state.imageUrl">Upload Post</ion-button>
+            <ion-button @click="state.uploadAction" :disabled="!state.imageUrl">{{ state.uploadTitle }}</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-content>
-  </ion-modal>
+
 </template>
 
 <script lang="ts" setup>
 import gql from 'graphql-tag'
-import { IonTextarea, IonModal, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow} from '@ionic/vue';
+import { IonTextarea, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import { useMutation } from '@vue/apollo-composable'
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
@@ -44,17 +43,37 @@ interface CompetitionType {
   }
 }
 
+interface PostFileType {
+  file: string
+}
+
+interface PostType {
+  id: number,
+  description: string,
+  postfileSet: PostFileType[]
+}
+
 const props = defineProps<{
-  competition: CompetitionType
+  competition?: CompetitionType
+  post?: PostType,
+  type: string
 }>()
 
 const state = reactive({
   imageUrl: '',
   description: '',
-  isOpen: false
+  title: '',
+  uploadTitle: '',
+  uploadAction: () => {}
 })
 
-function uploadImage() {
+const emit = defineEmits<{
+  (e: 'close', post?: Post): void
+}>()
+
+function uploadPost() {
+  if (!props.competition) { return }
+
   try {
     const { mutate, onDone } = useMutation(gql`    
       
@@ -65,12 +84,10 @@ function uploadImage() {
           description: $description
         ) {
             post {
-              category {
-                name 
-              },
-              competition {
-                name
-              } 
+              description,
+              postfileSet {
+                file
+              }
             }  
           } 
       }
@@ -91,16 +108,72 @@ function uploadImage() {
   }
 }
 
-function setOpen (value: boolean) {
-  if (!store.state.user.success) { 
-    store.commit('displayAuth')
-    return
+function updatePost() {
+  if (!props.post) { return }
+
+  try {
+    const { mutate, onDone } = useMutation(gql`    
+      
+      mutation ($id: ID!, $file: Upload, $description: String) { 
+        updatePost (
+          id: $id,
+          file: $file,
+          description: $description
+        ) {
+            post {
+              description,
+              postfileSet {
+                file
+              }
+            }  
+          } 
+      }
+
+    `
+    )
+
+    const variables = { id: props.post.id }
+    const {description, postfileSet} = props.post
+
+    if (description != state.description) {
+      Object.assign(variables, { description: state.description })
+    }
+
+    if (postfileSet[0].file != state.imageUrl) {
+      Object.assign(variables, { file: state.imageUrl })
+    }
+
+    if (Object.keys(variables).length == 1) {
+      store.commit('displayToast', {message: 'No changes made', color: 'warning'})
+    } else {
+      mutate(variables)
+      onDone((value) => {
+        emit('close', value.data.updatePost.post)
+      })
+    }
+  } catch (error) {
+    console.error(error)
   }
-  state.isOpen = value;
 }
+
+function intailize() {
+  if (props.type == 'edit' && props.post) {
+    state.title = 'Edit Post'
+    state.uploadTitle = 'Update Post'
+    state.description = props.post.description
+    state.imageUrl = props.post.postfileSet[0].file
+    state.uploadAction = updatePost
+  } else if (props.type == 'create') {
+    state.title = 'Create Post'
+    state.uploadTitle = 'Upload Post'
+    state.uploadAction = uploadPost
+  }
+}
+
+intailize()
 </script>
 
-<style>
+<style scoped>
 .textarea {
   border: 1px solid #dddfe2;
   padding: 20px;

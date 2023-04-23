@@ -44,8 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import type { Ref } from 'vue'
+import { reactive } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'

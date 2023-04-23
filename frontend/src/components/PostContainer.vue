@@ -7,7 +7,8 @@
             <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
           </ion-avatar>
           <ion-label>{{ post.user.username }}</ion-label>
-          <!-- <p>Mar 15th at 3:20 PM</p> -->
+          <ion-icon v-if="props.showEdit" @click="emit('editPost')" class="cpointer edit operations" :icon="pencilOutline"></ion-icon>
+          <ion-icon v-if="props.showEdit" @click="emit('deletePost')" class="cpointer delete operations" :icon="trashOutline"></ion-icon>
         </ion-item>
         <ion-item style="padding-top: 20px; padding-bottom: 20px">
           <ion-img :src="`${ [post.postfileSet[0].file] }`" alt="Image"></ion-img>
@@ -26,15 +27,20 @@
 </template>
 
 <script lang="ts" setup>
-import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonButton, IonIcon, useIonRouter  } from '@ionic/vue';
-import { heartOutline, heart } from 'ionicons/icons'
+import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonPopover, IonContent, IonIcon, useIonRouter  } from '@ionic/vue';
+import { heartOutline, heart, pencilOutline, trashOutline } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
 import gql from 'graphql-tag'
 import { reactive } from 'vue'
 
 const ionRouter = useIonRouter()
-const props = defineProps(['post'])
+const props = defineProps(['post', 'showEdit'])
+
+const emit = defineEmits<{
+  (e: 'editPost'): void
+  (e: 'deletePost'): void
+}>()
 
 const state = reactive({
   isliked: props.post.userLiked,
@@ -73,3 +79,30 @@ function likePost () {
 }
 
 </script>
+
+<style scoped>
+
+/* Edit and delete operations */
+.edit {
+  margin-right: 10px;
+}
+.edit:hover {
+  color: var(--ion-color-primary);
+  border-color: var(--ion-color-primary);
+}
+.delete:hover {
+  color: var(--ion-color-danger);
+  border-color: var(--ion-color-danger);
+}
+.operations {
+  font-size: 16px;
+  padding: 9px;
+  border: 1px solid grey;
+  border-radius: 30px;
+  opacity: 0.5;
+}
+.operations:hover {
+  border-width: 2px;
+  opacity: 1;
+}
+</style>

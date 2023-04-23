@@ -4,10 +4,7 @@ from graphene_file_upload.scalars import Upload
 
 # Models
 from categories.models.Competition import Competition
-from categories.models.Category import Category
 from categories.models.Post import Post, PostFile
-# **Make this model losely coupled
-from core.models.User import User
 
 # Type
 from categories.schema.type.PostType import PostType
@@ -67,9 +64,9 @@ class UpdatePostMutation(graphene.Mutation):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
-        post = Post.objects.filter(pk=id, user=info.context.user)
-
-        if not post:
+        try:
+            post = Post.objects.get(pk=id, user=info.context.user)
+        except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
         if description:
@@ -99,9 +96,9 @@ class DeletePostMutation(graphene.Mutation):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
-        post = Post.objects.filter(pk=id, user=info.context.user)
-
-        if not post:
+        try:
+            post = Post.objects.get(pk=id, user=info.context.user)
+        except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
         post.delete()
@@ -117,10 +114,18 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
 
-    all_Posts = graphene.List(PostType)
+    all_posts = graphene.List(PostType)
 
     def resolve_all_posts(root, info):
         return Post.objects.all()
+    
+    my_posts = graphene.List(PostType)
+    
+    def resolve_my_posts(root, info):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not authenticated")
+        
+        return Post.objects.filter(user=info.context.user)
     
     post_details = graphene.Field(PostType, id=graphene.Int())
 

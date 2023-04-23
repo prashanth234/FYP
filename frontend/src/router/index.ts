@@ -7,7 +7,7 @@ import RegisterPage from '@/views/RegisterPage.vue'
 import MainPage from '../views/MainPage.vue'
 import CategoriesPage from '../views/CategoriesPage.vue'
 import CategoriesDetailsPage from '../views/CategoryDetailsPage.vue'
-import CompetitionDetailsPage from '../views/CompetitionDetailsPage.vue'
+import MyProfilePage from '@/views/MyProfilePage.vue'
 import LoginFormContianer from '@/components/LoginFormContainer.vue'
 
 import store from '../vuex';
@@ -40,7 +40,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'CategoryDetails',
         component: CategoriesDetailsPage,
         props: true
-      }
+      },
+      {
+        path: '/profile',
+        component: MyProfilePage
+      },
     ]
   },
   {
