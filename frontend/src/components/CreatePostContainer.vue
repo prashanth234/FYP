@@ -35,6 +35,7 @@ import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
 import store from '@/vuex'
+import { updatePostVariables } from '@/mixims/interfaces'
 
 interface CompetitionType {
   id: number,
@@ -68,7 +69,8 @@ const state = reactive({
 })
 
 const emit = defineEmits<{
-  (e: 'close', post?: Post): void
+  (e: 'close'): void
+  (e: 'updatePost', variables: updatePostVariables): void
 }>()
 
 function uploadPost() {
@@ -110,53 +112,25 @@ function uploadPost() {
 
 function updatePost() {
   if (!props.post) { return }
+  const variables = { id: props.post.id }
+  const {description, postfileSet} = props.post
 
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      
-      mutation ($id: ID!, $file: Upload, $description: String) { 
-        updatePost (
-          id: $id,
-          file: $file,
-          description: $description
-        ) {
-            post {
-              description,
-              postfileSet {
-                file
-              }
-            }  
-          } 
-      }
+  if (description != state.description) {
+    Object.assign(variables, { description: state.description })
+  }
 
-    `
-    )
+  if (postfileSet[0].file != state.imageUrl) {
+    Object.assign(variables, { file: state.imageUrl })
+  }
 
-    const variables = { id: props.post.id }
-    const {description, postfileSet} = props.post
-
-    if (description != state.description) {
-      Object.assign(variables, { description: state.description })
-    }
-
-    if (postfileSet[0].file != state.imageUrl) {
-      Object.assign(variables, { file: state.imageUrl })
-    }
-
-    if (Object.keys(variables).length == 1) {
-      store.commit('displayToast', {message: 'No changes made', color: 'warning'})
-    } else {
-      mutate(variables)
-      onDone((value) => {
-        emit('close', value.data.updatePost.post)
-      })
-    }
-  } catch (error) {
-    console.error(error)
+  if (Object.keys(variables).length == 1) {
+    store.commit('displayToast', {message: 'No changes made', color: 'warning'})
+  } else {
+    emit('updatePost', variables)
   }
 }
 
-function intailize() {
+function initialize() {
   if (props.type == 'edit' && props.post) {
     state.title = 'Edit Post'
     state.uploadTitle = 'Update Post'
@@ -170,7 +144,7 @@ function intailize() {
   }
 }
 
-intailize()
+initialize()
 </script>
 
 <style scoped>
