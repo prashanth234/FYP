@@ -1,5 +1,6 @@
 import graphene
 from graphql import GraphQLError
+from django.core.paginator import Paginator
 from graphene_file_upload.scalars import Upload
 
 # Models
@@ -110,14 +111,29 @@ class Mutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()
     update_post = UpdatePostMutation.Field()
     delete_post = DeletePostMutation.Field()
-    
+
+class PostListType(graphene.ObjectType):
+    posts = graphene.List(PostType)
+    total = graphene.Int()
 
 class Query(graphene.ObjectType):
 
-    all_posts = graphene.List(PostType)
+    all_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int())
 
-    def resolve_all_posts(root, info):
-        return Post.objects.all()
+    def resolve_all_posts(root, info, category=None, competition=None, page=1, per_page=10):
+        if competition:
+            queryset = Post.objects.filter(competition=competition)
+        elif category:
+            queryset = Post.objects.filter(category=category)
+        else:
+            queryset = Post.objects.all()
+
+        paginator = Paginator(queryset, per_page)
+        page_obj = paginator.page(page)
+        posts = page_obj.object_list
+
+        # Return paginated list of posts
+        return PostListType(posts=posts, total=page_obj.paginator.count)
     
     my_posts = graphene.List(PostType)
     

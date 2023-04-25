@@ -37,11 +37,10 @@ import { reactive } from 'vue'
 import store from '@/vuex'
 import { updatePostVariables } from '@/mixims/interfaces'
 
-interface CompetitionType {
-  id: number,
-  category: {
-    id: number
-  }
+interface CompetitionDetailsType {
+  id: string,
+  name: string,
+  description: string
 }
 
 interface PostFileType {
@@ -55,7 +54,7 @@ interface PostType {
 }
 
 const props = defineProps<{
-  competition?: CompetitionType
+  competition?: CompetitionDetailsType
   post?: PostType,
   type: string
 }>()

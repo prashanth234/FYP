@@ -35,7 +35,7 @@
           </ion-card-header> -->
 
         <ion-card-content>
-          <competition-details v-if="state.competition" :id="state.competition"/>
+          <competition-details v-if="state.competition" :competition="state.competition"/>
         </ion-card-content>
       </ion-card>
 
@@ -50,14 +50,14 @@ import { useQuery } from '@vue/apollo-composable'
 import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
 import CompetitionDetails from '@/components/CompetitionDetailsContainer.vue'
 
-interface competitionDetails {
+interface CompetitionDetailsType {
   id: string,
   name: string,
   description: string
 }
 
 interface State {
-  competition: string | null
+  competition: CompetitionDetailsType | null
 }
 
 const state:State = reactive({
@@ -90,8 +90,8 @@ onResult(value => {
   console.log(value)
 })
 
-function openCompetition(competition: competitionDetails) {
-  state.competition = competition.id
+function openCompetition(competition: CompetitionDetailsType) {
+  state.competition = competition
 }
 </script>
 
