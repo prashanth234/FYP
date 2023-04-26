@@ -7,13 +7,17 @@
         <create-post v-if="state.editPost" :post="state.editPost" @close="closeEditPost" @updatePost="updatePost" type="edit" />
       </ion-modal>
 
-        <ion-grid v-if="!loading">
-          <ion-row class="ion-justify-content-center" v-for="(post, index) in result.myPosts" :key="index">
+        <ion-grid>
+          <ion-row class="ion-justify-content-center" v-for="(post, index) in posts?.myPosts?.posts" :key="index">
             <ion-col size="4">
               <post :post="post" :show-edit="true" @editPost="editPost(post, index)" @deletePost="deletePost(post, index)"></post>
             </ion-col>
           </ion-row>
         </ion-grid>
+
+        <ion-infinite-scroll @ionInfinite="getMore">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
 
     </ion-content>
   </ion-page>
@@ -24,35 +28,12 @@
 
 import { watch, reactive } from 'vue'
 import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal } from '@ionic/vue';
+import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { useMutation } from '@vue/apollo-composable'
 import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
-
-const MYPOSTS_QUERY = gql`
-                          query {
-                            myPosts {
-                              id, 
-                              likeCount,
-                              userLiked,
-                              description,
-                              postfileSet {
-                                file
-                              },
-                              user {
-                                username
-                              }
-                            }
-                          }
-                        `
-
-const { result, loading } = useQuery(MYPOSTS_QUERY)
-
-watch(result, value => {
-  console.log(value)
-})
+import { getPosts } from '@/composables/posts'
 
 interface State {
   isOpen: boolean,
@@ -63,6 +44,8 @@ const state:State = reactive({
   isOpen: false,
   editPost: null
 })
+
+const { POST_QUERY, posts, loading, getMore } = getPosts('myPosts')
 
 function editPost(post: PostType, index: number) {
   state.editPost = post
@@ -102,15 +85,15 @@ function updatePost(variables:updatePostVariables) {
       () => ({
         variables,
         update: (cache, { data: { updatePost } }) => {
-          let data = cache.readQuery({ query: MYPOSTS_QUERY })
-          data.myPosts.map((post: PostType) => {
+          let data = cache.readQuery({ query: POST_QUERY })
+          data.myPosts.posts.map((post: PostType) => {
             if (post.id == updatePost.post.id) {
               return updatePost.post
             } else {
               return post
             }
           })
-          cache.writeQuery({ query: MYPOSTS_QUERY, data })
+          cache.writeQuery({ query: POST_QUERY, data })
         },
       })
     )

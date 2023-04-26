@@ -135,13 +135,26 @@ class Query(graphene.ObjectType):
         # Return paginated list of posts
         return PostListType(posts=posts, total=page_obj.paginator.count)
     
-    my_posts = graphene.List(PostType)
+    my_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int())
     
-    def resolve_my_posts(root, info):
+    def resolve_my_posts(root, info, category=None, competition=None, page=1, per_page=10):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
-        return Post.objects.filter(user=info.context.user)
+        if competition:
+            queryset = Post.objects.filter(competition=competition, user=info.context.user)
+        elif category:
+            queryset = Post.objects.filter(category=category, user=info.context.user)
+        else:
+            queryset = Post.objects.filter(user=info.context.user)
+        
+        paginator = Paginator(queryset, per_page)
+        page_obj = paginator.page(page)
+        posts = page_obj.object_list
+
+        # Return paginated list of posts
+        return PostListType(posts=posts, total=page_obj.paginator.count)
+        
     
     post_details = graphene.Field(PostType, id=graphene.Int())
 
