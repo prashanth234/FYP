@@ -1,5 +1,5 @@
 export interface updatePostVariables {
-  id: number,
+  id?: number,
   file?: string,
   description?: string
 }

@@ -6,7 +6,7 @@ export function getPosts(type: string, competition: number = 0, category: number
 
   const POST_QUERY = gql`
     query ($category: Int, $competition: Int, $page: Int!, $perPage: Int!) {
-      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage) {
+      myPosts (category: $category, competition: $competition, page: $page, perPage: $perPage) {
         posts {
           id, 
           likeCount,
@@ -42,7 +42,7 @@ export function getPosts(type: string, competition: number = 0, category: number
   const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => (variables))
 
   function getMore(ev: IonInfiniteCustomEvent) {
-    if (page == posts.value[type].total) {
+    if (posts.value[type].posts.length == posts.value[type].total) {
       ev.target.complete() 
       return 
     }

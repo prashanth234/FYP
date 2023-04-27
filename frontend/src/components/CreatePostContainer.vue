@@ -28,9 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import gql from 'graphql-tag'
 import { IonTextarea, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow } from '@ionic/vue';
-import { useMutation } from '@vue/apollo-composable'
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
@@ -68,45 +66,21 @@ const state = reactive({
 })
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'updatePost', variables: updatePostVariables): void
+  (e: 'close'): void;
+  (e: 'updatePost', variables: updatePostVariables): void;
+  (e: 'uploadPost', variables: updatePostVariables): void;
 }>()
 
 function uploadPost() {
   if (!props.competition) { return }
 
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      
-      mutation ($file: Upload!, $competition: ID!, $description: String!) { 
-        createPost (
-          file: $file,
-          competition: $competition,
-          description: $description
-        ) {
-            post {
-              description,
-              postfileSet {
-                file
-              }
-            }  
-          } 
-      }
-
-    `, {
-        // Parameters
-        variables: {
-          file: state.imageUrl,
-          competition: props.competition.id,
-          description: state.description
-        }
-      }
-    )
-
-    mutate()
-  } catch (error) {
-    console.error(error)
+  const variables = {
+    file: state.imageUrl,
+    competition: props.competition.id,
+    description: state.description
   }
+
+  emit('uploadPost', variables)
 }
 
 function updatePost() {
