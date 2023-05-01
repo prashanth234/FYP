@@ -106,7 +106,6 @@ class DeletePostMutation(graphene.Mutation):
 
         return DeletePostMutation(success=True)
     
-
 class Mutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()
     update_post = UpdatePostMutation.Field()

@@ -1,12 +1,13 @@
 import { useQuery } from '@vue/apollo-composable'
 import { IonInfiniteCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
+import { watch } from 'vue'
 
 export function getPosts(type: string, competition: number = 0, category: number = 0) {
 
   const POST_QUERY = gql`
-    query ($category: Int, $competition: Int, $page: Int!, $perPage: Int!) {
-      myPosts (category: $category, competition: $competition, page: $page, perPage: $perPage) {
+    query ($category: Int, $competition: Int, $page: Int, $perPage: Int) {
+      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage) {
         posts {
           id, 
           likeCount,
@@ -54,6 +55,7 @@ export function getPosts(type: string, competition: number = 0, category: number
         page: page
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
+        console.log("hello")
         // No new feed posts
         if (!fetchMoreResult) return previousResult
 
@@ -63,7 +65,7 @@ export function getPosts(type: string, competition: number = 0, category: number
         // Concat previous feed with new feed posts
         return {
           ...previousResult,
-          allPosts: {
+          [type]: {
             ...previousResult[type],
             posts: [
               ...previousResult[type].posts,
@@ -75,10 +77,15 @@ export function getPosts(type: string, competition: number = 0, category: number
     })
   }
 
+  watch(posts, (value) => {
+    console.log(value)
+  })
+
   return {
     posts,
     loading,
     getMore,
-    POST_QUERY
+    POST_QUERY,
+    variables
   }
 }

@@ -9,7 +9,7 @@
     </ion-modal>
 
     <ion-grid>
-      <ion-row class="ion-justify-content-center" v-for="(post, index) in posts?.allPosts?.posts" :key="index">
+      <ion-row class="ion-justify-content-center" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
         <ion-col size="4">
           <post :post="post"></post>
         </ion-col>
@@ -32,7 +32,7 @@ import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import store from '@/vuex'
 import { getPosts } from '@/composables/posts'
-import { updatePostVariables } from '@/mixims/interfaces'
+import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 
@@ -40,6 +40,13 @@ interface CompetitionDetails {
   id: string,
   name: string,
   description: string
+}
+
+interface QueryResult {
+  allPosts: {
+    posts: PostType[],
+    total: number
+  }
 }
 
 const props = defineProps<{
@@ -50,11 +57,9 @@ const state = reactive({
   isOpen: false
 })
 
-const { POST_QUERY, posts, loading, getMore } = getPosts('allPosts')
+const { POST_QUERY, posts, loading, getMore, variables } = getPosts('allPosts')
 
-console.log(POST_QUERY)
-
-function createNewPost(variables: updatePostVariables) {
+function createNewPost(createVariables: updatePostVariables) {
   try {
     const { mutate, onDone } = useMutation(gql`    
       
@@ -80,17 +85,28 @@ function createNewPost(variables: updatePostVariables) {
       }
 
     `, () => ({
-        variables,
+        variables: createVariables,
+        // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
         update: (cache, { data: { createPost } }) => {
-          let data = cache.readQuery({ query: POST_QUERY })
-          console.log(data)
-          data.allPosts.posts = [createPost.post, ...data.allPosts.posts]
+          let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables })
+          if (!data) { return }
+          data = {
+            ...data,
+            allPosts: {
+              ...data.allPosts,
+              posts: [
+                createPost.post,
+                ...data.allPosts.posts,
+              ]
+            }
+          }
           cache.writeQuery({ query: POST_QUERY, data })
         },
       })
     )
 
     mutate()
+    state.isOpen = false
   } catch (error) {
     console.error(error)
   }
