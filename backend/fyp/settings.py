@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'djoser',
+    'django_filters',
     # refresh tokens are optional
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',

@@ -2,6 +2,7 @@ import graphene
 from graphql import GraphQLError
 from django.core.paginator import Paginator
 from graphene_file_upload.scalars import Upload
+from graphene_django.filter import DjangoFilterConnectionField
 
 # Models
 from categories.models.Competition import Competition
@@ -117,15 +118,18 @@ class PostListType(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
 
+    # post = graphene.relay.Node.Field(PostType)
+    # all_posts = DjangoFilterConnectionField(PostType)
+
     all_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int())
 
     def resolve_all_posts(root, info, category=None, competition=None, page=1, per_page=10):
         if competition:
-            queryset = Post.objects.filter(competition=competition)
+            queryset = Post.objects.filter(competition=competition).order_by('-created_at')
         elif category:
-            queryset = Post.objects.filter(category=category)
+            queryset = Post.objects.filter(category=category).order_by('-created_at')
         else:
-            queryset = Post.objects.all()
+            queryset = Post.objects.all().order_by('-created_at')
 
         paginator = Paginator(queryset, per_page)
         page_obj = paginator.page(page)
@@ -141,11 +145,11 @@ class Query(graphene.ObjectType):
             raise GraphQLError("User not authenticated")
         
         if competition:
-            queryset = Post.objects.filter(competition=competition, user=info.context.user)
+            queryset = Post.objects.filter(competition=competition, user=info.context.user).order_by('-created_at')
         elif category:
-            queryset = Post.objects.filter(category=category, user=info.context.user)
+            queryset = Post.objects.filter(category=category, user=info.context.user).order_by('-created_at')
         else:
-            queryset = Post.objects.filter(user=info.context.user)
+            queryset = Post.objects.filter(user=info.context.user).order_by('-created_at')
         
         paginator = Paginator(queryset, per_page)
         page_obj = paginator.page(page)

@@ -8,10 +8,23 @@
 
         <ion-row class="ion-align-items-end">
 
-          <ion-col size="3" v-for="(category, index) in result?.categories" :key="index">
-            <ion-card @click="openCategory(category)">
-              
-              <img :alt="category.name" :src="`http://localhost:8000/media/${category.image}`" height="100" />
+          <ion-col size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in result?.categories" :key="index">
+
+            <ion-card style="border-radius: 10px;">
+
+              <ion-card-content class="cat-card-content">
+                <ion-img class="cat-image" :src="`http://localhost:8000/media/${category.image}`" style="max-width: 100%;">
+                </ion-img>
+                <ion-card-title>{{category.name}}</ion-card-title>
+              </ion-card-content>
+
+            </ion-card>
+
+          </ion-col>
+
+          <!-- <ion-col size="auto" v-for="(category, index) in result?.categories" :key="index">
+
+            <ion-card @click="openCategory(category)" style="height: 200px; width: 200px;">
 
               <ion-card-header>
                 <ion-card-title>{{category.name}}</ion-card-title>
@@ -19,10 +32,14 @@
               </ion-card-header>
 
               <ion-card-content>
+
+                <img :alt="category.name" :src="`http://localhost:8000/media/${category.image}`" height="100" />
+                
                 {{category.description}}
               </ion-card-content>
             </ion-card>
-          </ion-col>
+
+          </ion-col> -->
           
         </ion-row>
 
@@ -33,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonContent, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
+import { IonPage, IonContent, IonImg, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 
@@ -67,3 +84,15 @@ function openCategory (category: categoryObject) {
   ionRouter.push(`category/${category.id}`)
 }
 </script>
+
+<style scoped>
+.cat-image {
+  padding-bottom: 10px;
+}
+.cat-image::part(image) {
+  border-radius: 5px;
+}
+.cat-card-content {
+  padding: 10px;
+}
+</style>

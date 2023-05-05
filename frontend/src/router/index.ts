@@ -9,11 +9,17 @@ import CategoriesPage from '../views/CategoriesPage.vue'
 import CategoriesDetailsPage from '../views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
 import LoginFormContianer from '@/components/LoginFormContainer.vue'
+import TempPage from '@/views/TempPage.vue'
 
 import store from '../vuex';
 
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/temp',
+    name: 'Temp',
+    component: TempPage
+  },
   {
     path: '/login',
     name: 'Login',
