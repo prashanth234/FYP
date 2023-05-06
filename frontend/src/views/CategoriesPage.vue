@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content class="ion-padding">
       
-      <h1 style="margin: 0px">Categories</h1>
+      <h2 style="margin: 0px; margin-left: 20px;">Explore Your Interests</h2>
 
       <ion-grid>
 
@@ -10,36 +10,23 @@
 
           <ion-col size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in result?.categories" :key="index">
 
-            <ion-card style="border-radius: 10px;">
+            <ion-card class="cpointer cat-card" style="border-radius: 10px;" @click="openCategory(category)">
 
               <ion-card-content class="cat-card-content">
+                
                 <ion-img class="cat-image" :src="`http://localhost:8000/media/${category.image}`" style="max-width: 100%;">
                 </ion-img>
-                <ion-card-title>{{category.name}}</ion-card-title>
+                
+                <div class="cat-title">
+                  {{category.name}}
+                  <ion-icon class="cat-arrow" :icon="arrowForwardOutline"></ion-icon>
+                </div>
+
               </ion-card-content>
 
             </ion-card>
 
           </ion-col>
-
-          <!-- <ion-col size="auto" v-for="(category, index) in result?.categories" :key="index">
-
-            <ion-card @click="openCategory(category)" style="height: 200px; width: 200px;">
-
-              <ion-card-header>
-                <ion-card-title>{{category.name}}</ion-card-title>
-                <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              </ion-card-header>
-
-              <ion-card-content>
-
-                <img :alt="category.name" :src="`http://localhost:8000/media/${category.image}`" height="100" />
-                
-                {{category.description}}
-              </ion-card-content>
-            </ion-card>
-
-          </ion-col> -->
           
         </ion-row>
 
@@ -53,6 +40,7 @@
 import { IonPage, IonContent, IonImg, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
+import { arrowForwardOutline } from 'ionicons/icons'
 
 const ionRouter = useIonRouter();
 
@@ -86,6 +74,9 @@ function openCategory (category: categoryObject) {
 </script>
 
 <style scoped>
+.cat-card:hover {
+  transform: translate3d(0, 10px, 0) rotateX(10deg);
+}
 .cat-image {
   padding-bottom: 10px;
 }
@@ -94,5 +85,15 @@ function openCategory (category: categoryObject) {
 }
 .cat-card-content {
   padding: 10px;
+}
+.cat-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+.cat-arrow {
+  float: right;
+  font-size: 25px;
+  padding-top: 2px;
+  opacity: 0.5;
 }
 </style>

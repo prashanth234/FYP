@@ -3,9 +3,17 @@ http://ionicframework.com/docs/theming/ */
 
 @import url("global.css");
 
+@font-face {
+  font-family: "open-sans";
+  src: url("../assets/fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
+  --ion-font-family: 'open-sans', sans-serif;
+  
   --ion-color-primary: #3880FF;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
