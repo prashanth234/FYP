@@ -2,13 +2,13 @@
   <ion-page>
     <ion-content class="ion-padding">
       
-      <h2 style="margin: 0px; margin-left: 20px;">Explore Your Interests</h2>
+      <h2 style="margin: 0px; margin-left: 15px;">Explore Your Interests</h2>
 
-      <ion-grid>
+      <ion-grid class="padding-zero">
 
         <ion-row class="ion-align-items-end">
 
-          <ion-col size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in result?.categories" :key="index">
+          <ion-col class="padding-zero" size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in result?.categories" :key="index">
 
             <ion-card class="cpointer cat-card" style="border-radius: 10px;" @click="openCategory(category)">
 
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonContent, IonImg, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
+import { IonPage, IonContent, IonImg, IonIcon, IonModal, IonCol, IonGrid, IonRow, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter  } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { arrowForwardOutline } from 'ionicons/icons'

@@ -1,6 +1,7 @@
 <template>
   <ion-page>
-    <ion-header>
+
+    <!-- <ion-header>
       <ion-toolbar color="primary">
         <ion-grid>
           <ion-row class="ion-align-items-center">
@@ -16,25 +17,54 @@
           </ion-row>
         </ion-grid>
       </ion-toolbar>
-    </ion-header>
+    </ion-header>  -->
+
     <ion-content>
       <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
         <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
         <login-container />
       </ion-modal>
-      <ion-router-outlet></ion-router-outlet>
+
+      <div slot="fixed" class="side-toolbar">
+
+        <ion-card class="full-height margin-zero">
+          <ion-row class="full-height ion-text-center">
+
+            <ion-col size="12">
+              <ion-title>TBD</ion-title>
+              <ion-icon class="ion-icon-custom cpointer" style="padding-top: 25px" :icon="homeOutline"></ion-icon>
+            </ion-col>
+
+            <ion-col size="12" class="ion-align-self-end">
+              <ion-icon
+                v-if="store.state.user.success" class="ion-icon-custom cpointer"
+                :icon="logOutOutline" @click="logout()"
+              ></ion-icon>
+              <ion-button
+                v-else fill="clear"
+                size="small" @click="login()"
+              >
+                Login
+              </ion-button>
+            </ion-col>
+
+          </ion-row>
+        </ion-card>
+      </div>
+
+      <ion-router-outlet class="ion-custom-router"></ion-router-outlet>
+      
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import { IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
-import { logOutOutline } from 'ionicons/icons'
+import { logOutOutline, closeOutline, homeOutline } from 'ionicons/icons'
 import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
-import { closeOutline } from 'ionicons/icons'
 import LoginContainer from '@/components/LoginContainer.vue'
 
 const ionRouter = useIonRouter();
@@ -147,5 +177,14 @@ checkAuthStatus()
     line-height: 1;
     vertical-align: top;
     z-index: 5;
+  }
+  .side-toolbar {
+    top: 20px;
+    left: 20px;
+    height: calc(100vh - 40px);
+    width: 60px;
+  }
+  .ion-custom-router {
+    margin-left: 75px;
   }
 </style>

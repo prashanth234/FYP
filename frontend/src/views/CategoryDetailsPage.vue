@@ -27,6 +27,7 @@
             </ion-row>
           </ion-grid>
         </div>
+        
       </ion-card>
 
       <ion-card>
