@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content class="ion-padding">
       
-      <h2 style="margin: 0px; margin-left: 15px;">Explore Your Interests</h2>
+      <p style="margin: 0px; font-size: 20px; margin-left: 15px;">Explore Your Interests</p>
 
       <ion-grid class="padding-zero">
 
@@ -74,6 +74,9 @@ function openCategory (category: categoryObject) {
 </script>
 
 <style scoped>
+.cat-card {
+  color: var(--color);
+}
 .cat-card:hover {
   transform: translate3d(0, 10px, 0) rotateX(10deg);
 }

@@ -30,7 +30,11 @@ ion-button {
 }
 
 .padding-zero {
-  padding: 0px;
+  padding: 0px !important;
+}
+
+.padding-col-zero ion-col {
+  padding: 0px !important;
 }
 
 .margin-zero {

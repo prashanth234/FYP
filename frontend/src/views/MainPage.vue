@@ -1,9 +1,9 @@
 <template>
   <ion-page>
 
-    <!-- <ion-header>
-      <ion-toolbar color="primary">
-        <ion-grid>
+    <ion-header class="ion-custom-header">
+      <ion-toolbar>
+        <ion-grid class="padding-zero padding-col-zero">
           <ion-row class="ion-align-items-center">
             <ion-col>
               <ion-title>TBD</ion-title>
@@ -17,7 +17,7 @@
           </ion-row>
         </ion-grid>
       </ion-toolbar>
-    </ion-header>  -->
+    </ion-header> 
 
     <ion-content>
       <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
@@ -25,7 +25,7 @@
         <login-container />
       </ion-modal>
 
-      <div slot="fixed" class="side-toolbar">
+      <!-- <div slot="fixed" class="side-toolbar">
 
         <ion-card class="full-height margin-zero">
           <ion-row class="full-height ion-text-center">
@@ -50,9 +50,10 @@
 
           </ion-row>
         </ion-card>
-      </div>
 
-      <ion-router-outlet class="ion-custom-router"></ion-router-outlet>
+      </div> -->
+
+      <ion-router-outlet></ion-router-outlet>
       
     </ion-content>
   </ion-page>
@@ -186,5 +187,17 @@ checkAuthStatus()
   }
   .ion-custom-router {
     margin-left: 75px;
+  }
+  .ion-custom-header {
+    position: initial;
+    padding-top: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 5px
+  }
+  ion-toolbar {
+    border-radius: 10px;
+    border: 1px solid grey;
+    --min-height: 45px;
   }
 </style>
