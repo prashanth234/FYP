@@ -2,13 +2,13 @@
   <ion-page>
     <ion-content class="ion-padding">
       
-      <p style="margin: 0px; font-size: 20px; margin-left: 15px;">Explore Your Interests</p>
+      <p style="margin: 0px; font-size: 25px; margin-left: 15px;">Explore Your Interests</p>
 
       <ion-grid class="padding-zero">
 
         <ion-row class="ion-align-items-end">
 
-          <ion-col class="padding-zero" size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in result?.categories" :key="index">
+          <ion-col class="padding-zero" size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="3" :size-xl="3" v-for="(category, index) in result?.categories" :key="index">
 
             <ion-card class="cpointer cat-card" style="border-radius: 10px;" @click="openCategory(category)">
 

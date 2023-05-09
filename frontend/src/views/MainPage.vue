@@ -1,5 +1,84 @@
 <template>
-  <ion-page>
+
+  <ion-split-pane content-id="main">
+
+    <ion-menu content-id="main">
+      <ion-content class="ion-padding">
+
+        <ion-card style="border-radius: 30px;" color="light">
+          <ion-card-content style="height: 250px;">
+            <ion-row class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
+              <ion-col size="auto">
+                <ion-avatar style="width: 85px;height: 85px;">
+                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                </ion-avatar>
+              </ion-col>
+              <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
+                <div v-if="store.state.user.success">
+                  <p style="font-size: 15px"> Welcome Back </p>
+                  <p style="font-size: 20px; font-weight: 600;"> {{ store.state.user?.username }} </p>
+                </div>
+                <ion-button
+                  v-else
+                  @click="login()"
+                >
+                  Login
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list style="margin-top: 30px">
+          <ion-item lines="none" button :detail="false">
+            <ion-icon class="ion-icon-custom cpointer" :icon="homeOutline"></ion-icon>
+            <ion-label class="list-label">
+              Home
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" button :detail="false" v-if="store.state.user.success">
+            <ion-icon class="ion-icon-custom cpointer" :icon="personOutline"></ion-icon>
+            <ion-label class="list-label">
+              Profile
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" button :detail="false" @click="logout()" v-if="store.state.user.success">
+            <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
+            <ion-label class="list-label">
+              logout
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+    </ion-menu>
+
+    <div class="ion-page" id="main">
+
+      <ion-header style="position: initial">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>
+            TBD
+          </ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
+          <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
+          <login-container />
+        </ion-modal>
+        <ion-router-outlet></ion-router-outlet>
+      </ion-content>
+
+    </div>
+
+  </ion-split-pane>
+
+  <!-- <ion-page>
 
     <ion-header class="ion-custom-header">
       <ion-toolbar>
@@ -25,7 +104,7 @@
         <login-container />
       </ion-modal>
 
-      <!-- <div slot="fixed" class="side-toolbar">
+      <div slot="fixed" class="side-toolbar">
 
         <ion-card class="full-height margin-zero">
           <ion-row class="full-height ion-text-center">
@@ -51,17 +130,18 @@
           </ion-row>
         </ion-card>
 
-      </div> -->
+      </div>
 
       <ion-router-outlet></ion-router-outlet>
       
     </ion-content>
-  </ion-page>
+    
+  </ion-page> -->
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline } from 'ionicons/icons'
+import { IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { logOutOutline, closeOutline, homeOutline, personOutline } from 'ionicons/icons'
 import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -196,8 +276,17 @@ checkAuthStatus()
     border-radius: 5px
   }
   ion-toolbar {
-    border-radius: 10px;
-    border: 1px solid grey;
     --min-height: 45px;
+  }
+  ion-split-pane {
+    --side-width: 150px;
+    --side-max-width: 150px;
+  }
+  ion-item {
+    height: 55px;
+  }
+  .list-label {
+    font-weight: 600;
+    padding-left: 12px;
   }
 </style>
