@@ -11,15 +11,13 @@
           <ion-col size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in state.categories" :key="index">
             
 
-            <ion-card class="ion-custom-card" style="position: relative">
+            <ion-card class="card" :class="'art'" style="position: relative">
 
               <ion-card-header>
-                <ion-card-title style="font-size: 30px;font-weight: 500;">Art</ion-card-title>
+                <ion-card-title style="font-size: 30px; color: white; font-weight: 500;">Art</ion-card-title>
               </ion-card-header>
 
-              <!-- <ion-card-content class="ion-padding full-height -->
-                <img src="http://localhost:8000/media/artwing.png" style="height: 100px; width: 100px; position: absolute; top: 0; left: 50%; transform: translateX(-50%);"/>
-              <!-- </ion-card-content> -->
+              <img src="http://localhost:8000/media/pens.png" style="height: 160px; width: 110px; position: absolute; bottom: 0; right: 20px;"/>
 
             </ion-card>
 
@@ -42,9 +40,13 @@ const state = reactive({
 </script>
 
 <style scoped>
-.ion-custom-card {
-  background-image: linear-gradient( 135deg, #ABDCFF 10%, #0396FF 100%);
+.art {
+  background-image: linear-gradient( 135deg,  #0396FF 10%, #ABDCFF 100%);
+}
+.photography {
+  background-image: linear-gradient( 135deg,  #EA5455 10%, #FEB692 100%);
+}
+.card {
   height: 250px;
-  --color: var(--ion-color-step-850, #262626)
 }
 </style>
