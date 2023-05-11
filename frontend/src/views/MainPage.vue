@@ -30,7 +30,7 @@
         </ion-card>
 
         <ion-list style="margin-top: 30px">
-          <ion-item lines="none" button :detail="false">
+          <ion-item lines="none" button :detail="false" @click="home()">
             <ion-icon class="ion-icon-custom cpointer" :icon="homeOutline"></ion-icon>
             <ion-label class="list-label">
               Home
@@ -154,6 +154,10 @@ function logout() {
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')
   store.commit('storeUser', {})
+}
+
+function home() {
+  ionRouter.push('/')
 }
 
 function closeLogin() {

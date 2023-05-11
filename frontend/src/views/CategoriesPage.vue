@@ -6,11 +6,12 @@
 
       <ion-grid class="padding-zero">
 
-        <ion-row class="ion-align-items-end">
+        <ion-row class="ion-align-items-center">
 
-          <ion-col class="padding-zero" size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="3" :size-xl="3" v-for="(category, index) in result?.categories" :key="index">
+          <ion-col class="cat-col ion-align-self-center" size="3" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3" v-for="(category, index) in result?.categories" :key="index">
 
-            <ion-card class="cat-card" :class="`${category.type}`" style="position: relative">
+
+            <!-- <ion-card class="cat-card" :class="`${category.type}`" style="position: relative">
 
               <ion-card-header>
                 <ion-card-title class="card-title">
@@ -19,6 +20,25 @@
               </ion-card-header>
 
               <img :src="`http://localhost:8000/media/${category.image}`" class="card-image"/>
+
+            </ion-card> -->
+
+            <ion-card class="cpointer cat-card" style="border-radius: 10px;" @click="openCategory(category)">
+
+              <ion-card-content class="cat-card-content">
+
+                <ion-img class="cat-image" :src="`http://localhost:8000/media/${category.image.replace('png', 'jpg')}`">
+                </ion-img>
+
+                <div class="cat-title">
+                  {{category.name}}
+                </div>
+
+                <div class="cat-description">
+                  {{category.description}}
+                </div>
+
+              </ion-card-content>
 
             </ion-card>
 
@@ -88,23 +108,35 @@ function openCategory (category: categoryObject) {
 <style scoped>
 .cat-card {
   color: var(--ion-text-color);
-  height: 250px;
+  width: fit-content;
+  box-shadow: none;
+  border: 1px solid #d7d8da;
+  margin-left: auto;
+  margin-right: auto;
 }
 .cat-card:hover {
-  transform: translate3d(0, 10px, 0) rotateX(10deg);
+  /* transform: translate3d(0, 5px, 0) rotateX(1deg); */
+  border: 2px solid var(--ion-color-primary);
 }
 .cat-image {
-  padding-bottom: 10px;
+  margin-bottom: 15px;
+  height: 220px;
+  width: 180px;
+  object-fit: cover;
 }
 .cat-image::part(image) {
   border-radius: 5px;
 }
 .cat-card-content {
-  padding: 10px;
+  padding: 25px;
 }
 .cat-title {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
+}
+.cat-description {
+  font-size: 13px;
+  color: grey
 }
 .cat-arrow {
   float: right;
@@ -114,7 +146,7 @@ function openCategory (category: categoryObject) {
 }
 .page-heading {
   margin: 0px;
-  font-size: 25px;
+  font-size: 23px;
   font-weight: 500;
   margin-left: 15px;
 }
@@ -132,7 +164,7 @@ function openCategory (category: categoryObject) {
   bottom: 0;
   right: 20px;
 }
-.ART {
+/* .ART {
   background-image: linear-gradient( 135deg,  #0396FF 10%, #ABDCFF 100%);
 }
 .CAMERA {
@@ -144,7 +176,7 @@ function openCategory (category: categoryObject) {
 
 .POETRY {
   background-image: linear-gradient( 135deg,  #32CCBC 10%, #90F7EC 100%);
-}
+} */
 
 .CAMERA .card-image {
   height: 120px;
@@ -165,6 +197,11 @@ function openCategory (category: categoryObject) {
   width: 150px;
   bottom: 7px;
   right: 15px;
+}
+
+.cat-col {
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 
