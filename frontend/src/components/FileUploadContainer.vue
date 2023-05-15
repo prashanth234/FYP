@@ -1,5 +1,6 @@
 <template>
-  <div id="file-upload-form" class="uploader">
+
+  <div id="file-upload-form" class="uploader" v-if="!props.simple">
 
     <input id="file-upload" @change="handleFileUpload" type="file" name="fileUpload" accept="image/*" />
 
@@ -17,6 +18,16 @@
     </label>
 
   </div>
+
+  <div class="simple-uploader" v-else>
+
+    <ion-img style="height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
+    <input v-show="ok" id="file-upload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
+    <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
+    <slot name="right-slot"></slot>
+
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -25,7 +36,7 @@ import { cloudUploadOutline, image } from 'ionicons/icons'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 
-const props = defineProps(['modelValue'])
+const props = defineProps(['modelValue', 'simple'])
 const emit = defineEmits(['update:modelValue'])
 
 const imageUrl: Ref<File|undefined> = ref();
@@ -49,6 +60,10 @@ function handleFileUpload(event: Event) {
       reader.readAsDataURL(files[0]);
     }
   }
+}
+
+function selectImage() {
+  document.getElementById('file-upload')?.click()
 }
 
 </script>

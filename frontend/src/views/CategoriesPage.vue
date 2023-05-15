@@ -144,14 +144,6 @@ function openCategory (category: categoryObject) {
   padding-top: 2px;
   opacity: 0.5;
 }
-.page-heading {
-  margin: 0px;
-  font-size: 23px;
-  font-weight: 500;
-  margin-left: 15px;
-}
-
-
 .card-title {
   font-size: 27px;
   color: white;
@@ -164,6 +156,7 @@ function openCategory (category: categoryObject) {
   bottom: 0;
   right: 20px;
 }
+
 /* .ART {
   background-image: linear-gradient( 135deg,  #0396FF 10%, #ABDCFF 100%);
 }
@@ -177,28 +170,24 @@ function openCategory (category: categoryObject) {
 .POETRY {
   background-image: linear-gradient( 135deg,  #32CCBC 10%, #90F7EC 100%);
 } */
-
 .CAMERA .card-image {
   height: 120px;
   width: 130px;
   bottom: 13px;
   right: 18px;
 }
-
 .STORY .card-image {
   height: 160px;
   width: 150px;
   bottom: 7px;
   right: 15px;
 }
-
 .POETRY .card-image {
   height: 160px;
   width: 150px;
   bottom: 7px;
   right: 15px;
 }
-
 .cat-col {
   padding-left: 30px;
   padding-right: 30px;

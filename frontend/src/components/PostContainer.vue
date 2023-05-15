@@ -1,5 +1,5 @@
 <template>
-  <ion-card>
+  <ion-card class="border-radius-std">
     <ion-card-content @dblclick="likePost()">
       <ion-list lines="none">
         <ion-item>

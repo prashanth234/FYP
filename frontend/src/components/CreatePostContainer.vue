@@ -1,34 +1,38 @@
 <template>
-  
-    <ion-header>
+
+    <!-- <ion-header>
       <ion-toolbar>
         <ion-title>{{ state.title }}</ion-title>
         <ion-buttons slot="end">
           <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
         </ion-buttons>
       </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12">
-            <ion-textarea class="textarea" v-model="state.description" placeholder="Description" :auto-grow="true">
-            </ion-textarea>
-          </ion-col>
-          <ion-col size="12">
-            <file-upload-container v-model="state.imageUrl" />
-          </ion-col>
-          <ion-col style="text-align: center;">
-            <ion-button @click="state.uploadAction" :disabled="!state.imageUrl">{{ state.uploadTitle }}</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-content>
+    </ion-header> -->
+    <!-- <ion-content class="ion-padding"> -->
+      <ion-card class="padding-zero border-radius-std">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-textarea v-model="state.description" placeholder="Description" :auto-grow="true">
+              </ion-textarea>
+            </ion-col>
+            <ion-col size="12">
+              <file-upload-container v-model="state.imageUrl" :simple="true">
+                <template v-slot:right-slot>
+                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl" style="float: right">{{ state.uploadTitle }}</ion-button>
+                  <ion-button size="small" color="light" class="ion-padding-end" style="float: right"> Clear </ion-button>
+                </template>  
+              </file-upload-container>  
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    <!-- </ion-content> -->
 
 </template>
 
 <script lang="ts" setup>
-import { IonTextarea, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow } from '@ionic/vue';
+import { IonTextarea, IonCard, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'

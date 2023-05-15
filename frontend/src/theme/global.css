@@ -60,3 +60,14 @@ ion-button {
 .ion-icon-custom {
   font-size: 25px;
 }
+
+.page-heading {
+  margin: 0px;
+  font-size: 23px;
+  font-weight: 500;
+  margin-left: 15px;
+}
+
+.border-radius-std {
+  border-radius: 20px;
+}
