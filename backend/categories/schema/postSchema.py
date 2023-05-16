@@ -6,6 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 
 # Models
 from categories.models.Competition import Competition
+from categories.models.Category import Category
 from categories.models.Post import Post, PostFile
 
 # Type
@@ -17,7 +18,8 @@ class CreatePostMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
         description = graphene.String()
-        competition = graphene.ID(required=True)
+        category = graphene.ID()
+        competition = graphene.ID()
         file = Upload(required=True)
 
 
@@ -25,17 +27,24 @@ class CreatePostMutation(graphene.Mutation):
     post = graphene.Field(PostType)
 
     @classmethod
-    def mutate(cls, root, info, competition, file, description=''):
+    def mutate(cls, root, info, file, description='', category=None, competition=None):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
-                
-        competition = Competition.objects.get(pk=competition)
+        
+        if not category and not competition:
+            raise GraphQLError("CREATION FAILED: Post should be assoiated with either category or competition", extensions={'status': 404})
+
+        if competition:
+            competition = Competition.objects.get(pk=competition)
+            category = competition.category
+        elif category:
+            category = Category.objects.get(pk=category)
 
         post = Post(
             user=info.context.user,
             description=description,
-            category=competition.category,
-            competition=competition
+            category=category,
+            competition=competition or None
         )
         
         post.save()

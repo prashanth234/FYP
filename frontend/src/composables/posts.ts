@@ -1,9 +1,16 @@
 import { useQuery } from '@vue/apollo-composable'
 import { IonInfiniteCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
-import { watch } from 'vue'
+import { ref } from 'vue'
 
-export function getPosts(type: string, competition: number = 0, category: number = 0) {
+export function getPosts(type: string, competition: number | undefined, category: number | undefined) {
+
+  const variables = {
+    competition: ref(competition),
+    category: ref(category),
+    page: 1,
+    perPage: 2
+  }
 
   const POST_QUERY = gql`
     query ($category: Int, $competition: Int, $page: Int, $perPage: Int) {
@@ -24,38 +31,28 @@ export function getPosts(type: string, competition: number = 0, category: number
       }
     }
   `
-  
-  let page = 1
-  const variables = {
-    page: 1,
-    perPage: 1
-  }
 
-  if (category) {
-    Object.assign(variables, {category})
-  }
-
-  if (competition) {
-    Object.assign(variables, {competition})
-  }
-
-
-  const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => (variables))
+  const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => ({
+    page: variables.page,
+    perPage: variables.perPage,
+    competition: variables.competition.value,
+    category: variables.category.value
+  }))
 
   function getMore(ev: IonInfiniteCustomEvent) {
     if (posts.value[type].posts.length == posts.value[type].total) {
       ev.target.complete() 
       return 
     }
-  
-    page++
+    
+    variables.page++
   
     fetchMore({
       variables: {
-        page: page
+        page: variables.page
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        console.log("hello")
+        // console.log(previousResult, fetchMoreResult)
         // No new feed posts
         if (!fetchMoreResult) return previousResult
 
@@ -77,9 +74,9 @@ export function getPosts(type: string, competition: number = 0, category: number
     })
   }
 
-  watch(posts, (value) => {
-    console.log(value)
-  })
+  // watch(posts, (value) => {
+  //   console.log(value)
+  // })
 
   return {
     posts,

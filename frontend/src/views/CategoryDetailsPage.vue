@@ -16,6 +16,7 @@
                 <create-post :competition="state.competition" @uploadPost="createNewPost" @close="state.isOpen = false" type="create">
                 </create-post>
               </ion-col>
+
               <ion-col size="11" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
               </ion-col>
@@ -71,7 +72,6 @@ import { useQuery } from '@vue/apollo-composable'
 import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
-import store from '@/vuex'
 import { getPosts } from '@/composables/posts'
 import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { useMutation } from '@vue/apollo-composable'
@@ -87,7 +87,7 @@ interface State {
   isOpen: Boolean
 }
 
-const state:State = reactive({
+const state: State = reactive({
   competition: null,
   isOpen: false
 })
@@ -118,27 +118,38 @@ onResult(value => {
   console.log(value)
 })
 
-let { POST_QUERY, posts, loading, getMore, variables } = getPosts('allPosts')
+const category =  props.id ? parseInt(props.id) : undefined
+const { POST_QUERY, posts, loading, getMore, variables } = getPosts('allPosts', undefined, category)
 
 function loadCompetitionPosts(competition: CompetitionDetailsType) {
   state.competition = competition
-
-  const { POST_QUERY: PQ, posts: pts, loading, getMore: more, variables: vars } = getPosts('allPosts', competition.id)
-
-  POST_QUERY = PQ
-  posts = pts
-  getMore = more
-  variables = vars
+  variables.page = 1
+  variables.competition.value = competition.id
 }
 
 function createNewPost(createVariables: updatePostVariables) {
+
+  let postVariables = {
+    ...createVariables,
+    competition: state.competition?.id || undefined,
+    category: props.id
+  }
+
+  const CACHE_VARIABLES = {
+    page: 1,
+    perPage: variables.perPage,
+    competition: variables.competition.value,
+    category: variables.category.value
+  }
+
   try {
     const { mutate, onDone } = useMutation(gql`    
       
-      mutation ($file: Upload!, $competition: ID!, $description: String!) { 
+      mutation ($file: Upload!, $category: ID, $competition: ID, $description: String!) { 
         createPost (
           file: $file,
           competition: $competition,
+          category: $category,
           description: $description
         ) {
             post {
@@ -157,10 +168,10 @@ function createNewPost(createVariables: updatePostVariables) {
       }
 
     `, () => ({
-        variables: createVariables,
+        variables: postVariables,
         // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
         update: (cache, { data: { createPost } }) => {
-          let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables })
+          let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
           if (!data) { return }
           data = {
             ...data,
@@ -183,14 +194,6 @@ function createNewPost(createVariables: updatePostVariables) {
     console.error(error)
   }
 }
-
-// function setOpen(value: boolean) {
-//   if (!store.state.user.success) { 
-//     store.commit('displayAuth')
-//     return
-//   }
-//   state.isOpen = value;
-// }
 </script>
 
 <style scoped>

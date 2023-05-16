@@ -40,7 +40,7 @@ import store from '@/vuex'
 import { updatePostVariables } from '@/mixims/interfaces'
 
 interface CompetitionDetailsType {
-  id: string,
+  id: number,
   name: string,
   description: string
 }
@@ -56,7 +56,7 @@ interface PostType {
 }
 
 const props = defineProps<{
-  competition?: CompetitionDetailsType
+  competition?: CompetitionDetailsType | null
   post?: PostType,
   type: string
 }>()
@@ -76,11 +76,8 @@ const emit = defineEmits<{
 }>()
 
 function uploadPost() {
-  if (!props.competition) { return }
-
   const variables = {
     file: state.imageUrl,
-    competition: props.competition.id,
     description: state.description
   }
 
