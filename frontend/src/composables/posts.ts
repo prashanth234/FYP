@@ -35,7 +35,7 @@ export function getPosts(type: string, competition: number | undefined, category
   const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => ({
     page: variables.page,
     perPage: variables.perPage,
-    competition: variables.competition.value,
+    // competition: variables.competition.value,
     category: variables.category.value
   }))
 
@@ -52,7 +52,7 @@ export function getPosts(type: string, competition: number | undefined, category
         page: variables.page
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        // console.log(previousResult, fetchMoreResult)
+        console.log(previousResult, fetchMoreResult)
         // No new feed posts
         if (!fetchMoreResult) return previousResult
 

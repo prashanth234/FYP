@@ -13,7 +13,13 @@
             <ion-row class="ion-justify-content-center">
 
               <ion-col size="11">
-                <create-post :competition="state.competition" @uploadPost="createNewPost" @close="state.isOpen = false" type="create">
+                <create-post  
+                  :key="state.refreshCreatePost"
+                  :competition="state.competition"
+                  :creatingPost="state.creatingPost"
+                  @uploadPost="createNewPost"
+                  type="create"
+                >
                 </create-post>
               </ion-col>
 
@@ -83,13 +89,15 @@ interface CompetitionDetailsType {
 }
 
 interface State {
-  competition: CompetitionDetailsType | null
-  isOpen: Boolean
+  competition: CompetitionDetailsType | null,
+  refreshCreatePost: number,
+  creatingPost: Boolean
 }
 
 const state: State = reactive({
   competition: null,
-  isOpen: false
+  creatingPost: false,
+  refreshCreatePost: 1
 })
 
 const ionRouter = useIonRouter();
@@ -129,6 +137,8 @@ function loadCompetitionPosts(competition: CompetitionDetailsType) {
 
 function createNewPost(createVariables: updatePostVariables) {
 
+  state.creatingPost = true
+
   let postVariables = {
     ...createVariables,
     competition: state.competition?.id || undefined,
@@ -138,7 +148,7 @@ function createNewPost(createVariables: updatePostVariables) {
   const CACHE_VARIABLES = {
     page: 1,
     perPage: variables.perPage,
-    competition: variables.competition.value,
+    // competition: variables.competition.value,
     category: variables.category.value
   }
 
@@ -172,6 +182,7 @@ function createNewPost(createVariables: updatePostVariables) {
         // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
         update: (cache, { data: { createPost } }) => {
           let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
+          console.log(data, CACHE_VARIABLES)
           if (!data) { return }
           data = {
             ...data,
@@ -183,13 +194,19 @@ function createNewPost(createVariables: updatePostVariables) {
               ]
             }
           }
+          console.log(data)
           cache.writeQuery({ query: POST_QUERY, data })
         },
       })
     )
 
     mutate()
-    state.isOpen = false
+
+    onDone(() => {
+      state.refreshCreatePost++
+      state.creatingPost = false
+    })
+
   } catch (error) {
     console.error(error)
   }

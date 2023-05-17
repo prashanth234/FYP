@@ -19,7 +19,7 @@
             <ion-col size="12">
               <file-upload-container v-model="state.imageUrl" :simple="true">
                 <template v-slot:right-slot>
-                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl" style="float: right">{{ state.uploadTitle }}</ion-button>
+                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl || !!props.creatingPost" style="float: right">{{ state.uploadTitle }}</ion-button>
                   <ion-button size="small" color="light" class="ion-padding-end" style="float: right"> Clear </ion-button>
                 </template>  
               </file-upload-container>  
@@ -58,7 +58,8 @@ interface PostType {
 const props = defineProps<{
   competition?: CompetitionDetailsType | null
   post?: PostType,
-  type: string
+  type: string,
+  creatingPost?: Boolean
 }>()
 
 const state = reactive({
