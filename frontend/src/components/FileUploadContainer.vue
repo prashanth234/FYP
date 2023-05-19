@@ -22,7 +22,7 @@
   <div class="simple-uploader" v-else>
 
     <ion-img style="height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
-    <input v-show="ok" id="file-upload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
+    <input id="file-upload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
     <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
     <slot name="right-slot"></slot>
 
@@ -117,5 +117,8 @@ function selectImage() {
 .uploader div {
   margin: 0 0 0.5rem 0;
   color: #5f6982;
+}
+#file-upload {
+  display: none;
 }
 </style>

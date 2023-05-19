@@ -2,7 +2,13 @@
   <ion-page>
     <ion-content style="height: 100%;" class="ion-padding">
 
-      <h1 class="page-heading">{{ result?.categoryDetails.name }}</h1>
+      <ion-breadcrumbs color="primary">
+        <ion-breadcrumb class="cpointer" @click="goBackCategory()">
+          {{ result?.categoryDetails.name }}
+          <ion-icon slot="separator" :icon="arrowForward"></ion-icon>
+        </ion-breadcrumb>
+        <ion-breadcrumb v-if="state.competition">{{ state.competition.name }}</ion-breadcrumb>
+      </ion-breadcrumbs>
 
       <ion-grid>
         <ion-row>
@@ -75,12 +81,13 @@
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonCardSubtitle, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
+import { IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
 import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { useMutation } from '@vue/apollo-composable'
+import { arrowForward } from 'ionicons/icons'
 
 interface CompetitionDetailsType {
   id: number,
@@ -127,12 +134,18 @@ onResult(value => {
 })
 
 const category =  props.id ? parseInt(props.id) : undefined
-const { POST_QUERY, posts, loading, getMore, variables } = getPosts('allPosts', undefined, category)
+const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
 
 function loadCompetitionPosts(competition: CompetitionDetailsType) {
   state.competition = competition
   variables.page = 1
   variables.competition.value = competition.id
+}
+
+function goBackCategory() {
+  if (!variables.competition.value) { return }
+  variables.competition.value = undefined
+  state.competition = null
 }
 
 function createNewPost(createVariables: updatePostVariables) {
@@ -145,12 +158,12 @@ function createNewPost(createVariables: updatePostVariables) {
     category: props.id
   }
 
-  const CACHE_VARIABLES = {
-    page: 1,
-    perPage: variables.perPage,
-    // competition: variables.competition.value,
-    category: variables.category.value
-  }
+  // const CACHE_VARIABLES = {
+  //   page: 1,
+  //   perPage: variables.perPage,
+  //   competition: variables.competition.value,
+  //   category: variables.category.value
+  // }
 
   try {
     const { mutate, onDone } = useMutation(gql`    
@@ -180,23 +193,21 @@ function createNewPost(createVariables: updatePostVariables) {
     `, () => ({
         variables: postVariables,
         // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
-        update: (cache, { data: { createPost } }) => {
-          let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
-          console.log(data, CACHE_VARIABLES)
-          if (!data) { return }
-          data = {
-            ...data,
-            allPosts: {
-              ...data.allPosts,
-              posts: [
-                createPost.post,
-                ...data.allPosts.posts,
-              ]
-            }
-          }
-          console.log(data)
-          cache.writeQuery({ query: POST_QUERY, data })
-        },
+        // update: (cache, { data: { createPost } }) => {
+        //   let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
+        //   if (!data) { return }
+        //   data = {
+        //     ...data,
+        //     allPosts: {
+        //       ...data.allPosts,
+        //       posts: [
+        //         createPost.post,
+        //         ...data.allPosts.posts,
+        //       ]
+        //     }
+        //   }
+        //   cache.writeQuery({ query: POST_QUERY, variables: CACHE_VARIABLES, data })
+        // },
       })
     )
 
@@ -205,6 +216,7 @@ function createNewPost(createVariables: updatePostVariables) {
     onDone(() => {
       state.refreshCreatePost++
       state.creatingPost = false
+      refetch()
     })
 
   } catch (error) {
@@ -220,5 +232,8 @@ function createNewPost(createVariables: updatePostVariables) {
 .competition:hover {
   border: 2px solid var(--ion-color-primary);
   box-shadow: inset 0 0 0 3px #eee;
+}
+ion-breadcrumb {
+  font-size: 20px;
 }
 </style>

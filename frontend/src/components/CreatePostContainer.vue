@@ -13,14 +13,17 @@
         <ion-grid>
           <ion-row>
             <ion-col size="12">
-              <ion-textarea v-model="state.description" placeholder="Description" :auto-grow="true">
+              <ion-textarea label="" v-model="state.description" placeholder="Description" :auto-grow="true">
               </ion-textarea>
             </ion-col>
             <ion-col size="12">
-              <file-upload-container v-model="state.imageUrl" :simple="true">
+              <file-upload-container :key="state.refreshFileUpload" v-model="state.imageUrl" :simple="true">
                 <template v-slot:right-slot>
-                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl || !!props.creatingPost" style="float: right">{{ state.uploadTitle }}</ion-button>
-                  <ion-button size="small" color="light" class="ion-padding-end" style="float: right"> Clear </ion-button>
+                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl || !!props.creatingPost" style="float: right">
+                    <ion-spinner class="button-loading-small" v-if="props.creatingPost" name="crescent"></ion-spinner>
+                    <span v-else>{{ state.uploadTitle }}</span>
+                  </ion-button>
+                  <ion-button size="small" @click="createPostForm" color="light" class="ion-padding-end" style="float: right"> Clear </ion-button>
                 </template>  
               </file-upload-container>  
             </ion-col>
@@ -32,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonTextarea, IonCard, IonIcon, IonContent, IonTitle, IonButton, IonHeader, IonToolbar, IonButtons, IonCol, IonGrid, IonRow } from '@ionic/vue';
+import { IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
@@ -67,6 +70,7 @@ const state = reactive({
   description: '',
   title: '',
   uploadTitle: '',
+  refreshFileUpload: 0,
   uploadAction: () => {}
 })
 
@@ -75,6 +79,12 @@ const emit = defineEmits<{
   (e: 'updatePost', variables: updatePostVariables): void;
   (e: 'uploadPost', variables: updatePostVariables): void;
 }>()
+
+function createPostForm () {
+  state.imageUrl = ''
+  state.description = ''
+  state.refreshFileUpload++
+}
 
 function uploadPost() {
   const variables = {

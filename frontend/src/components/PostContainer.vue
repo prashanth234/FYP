@@ -1,8 +1,8 @@
 <template>
-  <ion-card class="border-radius-std">
-    <ion-card-content @dblclick="likePost()">
-      <ion-list lines="none">
-        <ion-item>
+  <ion-card class="border-radius-std post-card cpointer">
+    <ion-card-content @click="likePost()" class="padding-zero">
+      <ion-list>
+        <ion-item lines="full">
           <ion-avatar slot="start">
             <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
           </ion-avatar>
@@ -10,16 +10,16 @@
           <ion-icon v-if="props.showEdit" @click="emit('editPost')" class="cpointer edit operations" :icon="pencilOutline"></ion-icon>
           <ion-icon v-if="props.showEdit" @click="emit('deletePost')" class="cpointer delete operations" :icon="trashOutline"></ion-icon>
         </ion-item>
-        <ion-item style="padding-top: 20px; padding-bottom: 20px">
-          <ion-img :src="`${ [post.postfileSet[0].file] }`" alt="Image"></ion-img>
+        <ion-item lines="none" style="padding-top: 20px; padding-bottom: 20px">
+          <ion-img class="ml-auto mr-auto" :src="`${ [post.postfileSet[0].file] }`" alt="Image"></ion-img>
         </ion-item>
-        <ion-item>
+        <ion-item lines="full">
           <p>{{ post.description }}</p>
         </ion-item>
-        <ion-item>
-          <ion-icon v-if="state.isliked" color="danger" :icon="heart" size="large"></ion-icon>
+        <ion-item lines="none">
+          <ion-icon v-if="state.isliked" style="color:red" :icon="heart" size="large"></ion-icon>
           <ion-icon v-else :icon="heartOutline" size="large"></ion-icon>
-          <ion-label class="ion-padding">{{ state.likeCount }} Like{{state.likeCount == 1 ? '' : 's'}}</ion-label>
+          <ion-label class="ion-padding-start">{{ state.likeCount }} Like{{state.likeCount == 1 ? '' : 's'}}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -104,5 +104,15 @@ function likePost () {
 .operations:hover {
   border-width: 2px;
   opacity: 1;
+}
+.post-card {
+  transition: all;
+  transition-timing-function: ease-out;
+}
+.post-card:hover {
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
+}
+.post-card:hover ion-icon {
+  color: red;
 }
 </style>

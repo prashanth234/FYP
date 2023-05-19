@@ -116,7 +116,8 @@ function openCategory (category: categoryObject) {
 }
 .cat-card:hover {
   /* transform: translate3d(0, 5px, 0) rotateX(1deg); */
-  border: 2px solid var(--ion-color-primary);
+  /* border: 1px solid var(--ion-color-primary); */
+  box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12)!important;
 }
 .cat-image {
   margin-bottom: 15px;
@@ -169,7 +170,7 @@ function openCategory (category: categoryObject) {
 
 .POETRY {
   background-image: linear-gradient( 135deg,  #32CCBC 10%, #90F7EC 100%);
-} */
+}
 .CAMERA .card-image {
   height: 120px;
   width: 130px;
@@ -191,7 +192,7 @@ function openCategory (category: categoryObject) {
 .cat-col {
   padding-left: 30px;
   padding-right: 30px;
-}
+} */
 
 
 </style>

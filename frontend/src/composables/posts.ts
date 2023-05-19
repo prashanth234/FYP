@@ -32,15 +32,28 @@ export function getPosts(type: string, competition: number | undefined, category
     }
   `
 
-  const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => ({
+  // let page = 1
+  // const variables1 = {
+  //   page: 1,
+  //   perPage: 1
+  // }
+  // if (category) {
+  //   Object.assign(variables1, {category})
+  // }
+  // if (competition) {
+  //   Object.assign(variables1, {competition})
+  // }
+  // const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => (variables1))
+
+  const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
     page: variables.page,
     perPage: variables.perPage,
-    // competition: variables.competition.value,
+    competition: variables.competition.value,
     category: variables.category.value
   }))
 
   function getMore(ev: IonInfiniteCustomEvent) {
-    if (posts.value[type].posts.length == posts.value[type].total) {
+    if (posts.value[type].posts.length >= posts.value[type].total) {
       ev.target.complete() 
       return 
     }
@@ -52,7 +65,6 @@ export function getPosts(type: string, competition: number | undefined, category
         page: variables.page
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        console.log(previousResult, fetchMoreResult)
         // No new feed posts
         if (!fetchMoreResult) return previousResult
 
@@ -81,8 +93,9 @@ export function getPosts(type: string, competition: number | undefined, category
   return {
     posts,
     loading,
-    getMore,
     POST_QUERY,
-    variables
+    variables,
+    getMore,
+    refetch
   }
 }
