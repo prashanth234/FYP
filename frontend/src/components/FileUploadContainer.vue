@@ -23,15 +23,22 @@
 
     <ion-img style="height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
     <input id="file-upload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
-    <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
-    <slot name="right-slot"></slot>
+
+    <ion-row class="padding-col-zero">
+      <ion-col size="auto">
+        <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">{{ previewImage ? 'Change Image' : 'Select Image' }}</ion-button>
+      </ion-col>
+      <ion-col>
+        <slot name="right-slot"></slot>
+      </ion-col>
+    </ion-row>
 
   </div>
 
 </template>
 
 <script setup lang="ts">
-import { IonIcon, IonImg, IonButton } from '@ionic/vue';
+import { IonIcon, IonImg, IonButton, IonCol, IonRow } from '@ionic/vue';
 import { cloudUploadOutline, image } from 'ionicons/icons'
 import { ref } from 'vue'
 import type { Ref } from 'vue'

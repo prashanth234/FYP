@@ -11,14 +11,15 @@
       </ion-breadcrumbs>
 
       <ion-grid>
-        <ion-row>
+
+        <ion-row class="ion-justify-content-center">
 
           <!-- Start of the create post and all posts -->
-          <ion-col size="8">
+          <ion-col class="posts" size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8">
 
-            <ion-row class="ion-justify-content-center">
+            <ion-row>
 
-              <ion-col size="11">
+              <ion-col size="12">
                 <create-post  
                   :key="state.refreshCreatePost"
                   :competition="state.competition"
@@ -29,7 +30,7 @@
                 </create-post>
               </ion-col>
 
-              <ion-col size="11" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
+              <ion-col size="12" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
               </ion-col>
 
@@ -37,16 +38,16 @@
 
           </ion-col>
           <!-- End of the create post and all posts -->
-          
+
           <!-- Start of competitions -->
-          <ion-col size="4">
+          <ion-col class="ion-hide-md-down" size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4">
 
             <ion-card class="border-radius-std">
 
               <ion-card-header>
                 <ion-card-title>Competitions</ion-card-title>
               </ion-card-header>
-
+              
               <ion-row>
                 <ion-col size="12" v-for="(competition, index) in result?.categoryDetails.competitionSet" :key="index">
                   <ion-card @click="loadCompetitionPosts(competition)" class="competition cpointer" :class="{'competition-selected': state.competition?.id == competition.id}">
@@ -60,13 +61,14 @@
                   </ion-card>
                 </ion-col>
               </ion-row>
-              
-            </ion-card>
 
+            </ion-card>
+            
           </ion-col>
           <!-- End of competitions -->
 
         </ion-row>
+
       </ion-grid>
 
       <ion-infinite-scroll @ionInfinite="getMore">
@@ -235,5 +237,9 @@ function createNewPost(createVariables: updatePostVariables) {
 }
 ion-breadcrumb {
   font-size: 20px;
+}
+.posts ion-card {
+  margin-left: 0px;
+  margin-right: 0px;
 }
 </style>

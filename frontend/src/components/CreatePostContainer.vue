@@ -118,13 +118,13 @@ function updatePost() {
 function initialize() {
   if (props.type == 'edit' && props.post) {
     state.title = 'Edit Post'
-    state.uploadTitle = 'Update Post'
+    state.uploadTitle = 'Update'
     state.description = props.post.description
     state.imageUrl = props.post.postfileSet[0].file
     state.uploadAction = updatePost
   } else if (props.type == 'create') {
     state.title = 'Create Post'
-    state.uploadTitle = 'Upload Post'
+    state.uploadTitle = 'Upload'
     state.uploadAction = uploadPost
   }
 }
