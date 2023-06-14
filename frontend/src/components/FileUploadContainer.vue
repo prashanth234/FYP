@@ -21,7 +21,10 @@
 
   <div class="simple-uploader" v-else>
 
-    <ion-img style="height: 200px" :src="previewImage" v-if="previewImage"></ion-img>
+    <div v-if="previewImage" :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 15px">
+      <ion-img :src="previewImage"></ion-img>
+    </div>
+
     <input id="file-upload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
 
     <ion-row class="padding-col-zero">
@@ -43,7 +46,12 @@ import { cloudUploadOutline, image } from 'ionicons/icons'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 
-const props = defineProps(['modelValue', 'simple'])
+const props = defineProps<{
+  simple: Boolean,
+  modelValue: String,
+  fixedPreviewHeight: Boolean
+}>()
+
 const emit = defineEmits(['update:modelValue'])
 
 const imageUrl: Ref<File|undefined> = ref();
@@ -127,5 +135,9 @@ function selectImage() {
 }
 #file-upload {
   display: none;
+}
+.preview-image {
+  height: 250px;
+  overflow: auto;
 }
 </style>

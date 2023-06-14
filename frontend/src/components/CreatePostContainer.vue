@@ -1,41 +1,73 @@
 <template>
 
-    <!-- <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ state.title }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header> -->
-    <!-- <ion-content class="ion-padding"> -->
-      <ion-card class="padding-zero border-radius-std">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="12">
-              <ion-textarea label="" v-model="state.description" placeholder="Description" :auto-grow="true">
-              </ion-textarea>
-            </ion-col>
-            <ion-col size="12">
-              <file-upload-container :key="state.refreshFileUpload" v-model="state.imageUrl" :simple="true">
-                <template v-slot:right-slot>
-                  <ion-button size="small" @click="state.uploadAction" :disabled="!state.imageUrl || !!props.creatingPost" style="float: right">
-                    <ion-spinner class="button-loading-small" v-if="props.creatingPost" name="crescent"></ion-spinner>
-                    <span v-else>{{ state.uploadTitle }}</span>
-                  </ion-button>
-                  <ion-button size="small" @click="createPostForm" color="light" class="ion-padding-end" style="float: right"> Clear </ion-button>
-                </template>  
-              </file-upload-container>  
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    <!-- </ion-content> -->
+    
+    <ion-card class="padding-zero margin-zero border-radius-std">
+
+      <ion-header v-if="props.showHeader">
+        <ion-toolbar>
+          <ion-title>{{ state.title }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-grid>
+        <ion-row>
+
+          <ion-col size="12">
+            <ion-textarea
+              label=""
+              v-model="state.description"
+              placeholder="Description"
+              :auto-grow="true"
+            />
+          </ion-col>
+
+          <ion-col size="12">
+            <file-upload-container
+              :fixed-preview-height="props.fixedPreviewHeight"
+              :key="state.refreshFileUpload"
+              v-model="state.imageUrl"
+              :simple="true"
+            >
+              <template v-slot:right-slot>
+                <ion-button
+                  size="small"
+                  @click="state.uploadAction"
+                  :disabled="!state.imageUrl || !!props.creatingPost"
+                  style="float: right"
+                >
+                  <ion-spinner 
+                    class="button-loading-small"
+                    v-if="props.creatingPost"
+                    name="crescent"
+                  />
+                  <span v-else>
+                    {{ state.uploadTitle }}
+                  </span>
+                </ion-button>
+                <ion-button
+                  size="small"
+                  @click="createPostForm"
+                  color="light"
+                  class="ion-padding-end"
+                  style="float: right"
+                >
+                  Clear
+                </ion-button>
+              </template>  
+            </file-upload-container>
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+    </ion-card>
 
 </template>
 
 <script lang="ts" setup>
-import { IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow } from '@ionic/vue';
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
@@ -60,9 +92,11 @@ interface PostType {
 
 const props = defineProps<{
   competition?: CompetitionDetailsType | null
-  post?: PostType,
+  post?: PostType | null,
   type: string,
-  creatingPost?: Boolean
+  creatingPost?: Boolean,
+  showHeader?: Boolean,
+  fixedPreviewHeight: Boolean
 }>()
 
 const state = reactive({

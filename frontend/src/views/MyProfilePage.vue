@@ -3,14 +3,37 @@
   <ion-page>
     <ion-content>
         
-      <ion-modal :is-open="state.isOpen">
-        <create-post v-if="state.editPost" :post="state.editPost" @close="closeEditPost" @updatePost="updatePost" type="edit" />
+      <ion-modal :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
+        <create-post
+          :fixed-preview-height="true"
+          :showHeader="true"
+          :post="state.editPost"
+          @close="closeEditPost"
+          @updatePost="updatePost"
+          type="edit"
+        />
       </ion-modal>
 
         <ion-grid>
-          <ion-row class="ion-justify-content-center" v-for="(post, index) in posts?.myPosts?.posts" :key="index">
-            <ion-col size="4">
-              <post :post="post" :show-edit="true" @editPost="editPost(post, index)" @deletePost="deletePost(post, index)"></post>
+          <ion-row class="ion-justify-content-center" >
+            <ion-col>
+
+            </ion-col>  
+            <ion-col size="7">
+              <h5>My Posts</h5>
+              <div
+                v-for="(post, index) in posts?.myPosts?.posts"
+                :key="index"
+                style="padding: 10px;"
+              >
+                <post
+                  :post="post"
+                  :show-edit="true"
+                  @editPost="editPost(post, index)"
+                  @deletePost="deletePost(post, index)"
+                >
+                </post>
+              </div>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -117,3 +140,15 @@ function closeEditPost() {
   state.isOpen = false
 }
 </script>
+
+<style lang="scss" scoped>
+  ion-modal::part(content) {
+    background: none;
+    overflow: auto;
+  }
+  ion-modal {
+    --height: auto;
+    --max-width: 600px;
+    --backdrop-opacity: 0.8;
+  }
+</style>

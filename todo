@@ -3,10 +3,11 @@ Profile page sub part - Frontend, Backend
 Add Responsiveness for the login page - Frontend
 Control size of the popup for the create post - Frontend
 
+3) fix my profile
+5) convert login to page
 2) add whats treding text
-3) add table to competitions
 4) customize the post (like cropping)
-6) fix the competition tab and check what happens when responsive
+6)
 
 
 Done
@@ -14,6 +15,8 @@ Add authentication for post creation - Frontend, Backend
 Infinate scrolling on posts - Frontend. Backend
 Reset Posts when competition are choosen
 add navigation for competitions (breadcrumb)
+fix the competition tab and check what happens when responsive
+add table to competitions
 
 P1
 Add unlike post option and highlight heart - Frontend, Backend

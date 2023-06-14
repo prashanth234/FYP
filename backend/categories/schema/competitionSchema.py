@@ -20,14 +20,16 @@ class CreateCompetitionMutation(graphene.Mutation):
         name = graphene.String(required=True)
         category = graphene.ID(required=True)
         description = graphene.String()
+        last_date = graphene.Date(required=True)
+        points = graphene.Int(required=True)
 
     # The class attributes define the response of the mutation
     competition = graphene.Field(CompetitionType)
 
     @classmethod
-    def mutate(cls, root, info, name, category, description=''):
+    def mutate(cls, root, info, name, category, last_date, points, description=''):
         category = Category.objects.get(pk=category)
-        competition = Competition(name=name, category=category, description=description)
+        competition = Competition(name=name, category=category, description=description, last_date=last_date, points=points)
         competition.save()
         return CreateCompetitionMutation(competition=competition)
 
@@ -39,12 +41,15 @@ class UpdateCompetitionMutation(graphene.Mutation):
         name = graphene.String()
         category = graphene.ID()
         description = graphene.String()
+        last_date = graphene.Date(required=True)
+        points = graphene.Int(required=True)
+
 
     # The class attributes define the response of the mutation
     competition = graphene.Field(CompetitionType)
 
     @classmethod
-    def mutate(cls, root, info, id, name=None, description=None, category=None):
+    def mutate(cls, root, info, id, name=None, description=None, category=None, last_date=None, points=None):
         competition = Competition.objects.get(pk=id)
 
         if not competition:
@@ -58,6 +63,12 @@ class UpdateCompetitionMutation(graphene.Mutation):
 
         if description:
             competition.description = description
+
+        if last_date:
+            competition.last_date = last_date
+
+        if points:
+            competition.points = points
 
         competition.save()
 

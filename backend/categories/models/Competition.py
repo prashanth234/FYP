@@ -5,6 +5,8 @@ class Competition(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    last_date = models.DateField()
+    points = models.IntegerField()
 
     def __str__(self) -> str:
       return self.name

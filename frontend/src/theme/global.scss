@@ -78,3 +78,15 @@ ion-button {
   margin-left: 15px;
   margin-right: 15px;
 }
+
+.two-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close-icon {
+  color: var(--ion-color-medium)
+}

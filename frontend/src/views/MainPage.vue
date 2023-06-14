@@ -36,7 +36,7 @@
               Home
             </ion-label>
           </ion-item>
-          <ion-item lines="none" button :detail="false" v-if="store.state.user.success">
+          <ion-item lines="none" button :detail="false" @click="profile()" v-if="store.state.user.success">
             <ion-icon class="ion-icon-custom cpointer" :icon="personOutline"></ion-icon>
             <ion-label class="list-label">
               Profile
@@ -158,6 +158,10 @@ function logout() {
 
 function home() {
   ionRouter.push('/')
+}
+
+function profile() {
+  ionRouter.push('/profile')
 }
 
 function closeLogin() {

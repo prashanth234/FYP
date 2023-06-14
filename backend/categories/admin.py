@@ -10,6 +10,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Competition)
 class CompetitionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'category')
+    list_display = ('name', 'description', 'category', 'last_date', 'points')
 
 # admin.site.register(Competition)
