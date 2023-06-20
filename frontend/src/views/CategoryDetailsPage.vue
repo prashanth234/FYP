@@ -289,6 +289,7 @@ function createNewPost(createVariables: updatePostVariables) {
     onDone(() => {
       state.refreshCreatePost++
       state.creatingPost = false
+      variables.page = 1
       refetch()
     })
 

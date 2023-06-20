@@ -28,6 +28,7 @@
     "ionicons": "^7.0.0",
     "requirejs": "^2.3.6",
     "vue": "^3.2.45",
+    "vue-advanced-cropper": "^2.8.8",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2"
   },

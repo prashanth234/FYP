@@ -4,49 +4,29 @@
       
       <h1 style="margin: 0px">Temp</h1>
 
-      <ion-grid>
+      {{ ` ${state.name} = ${state.firstname}  ${state.lastname}`}}
 
-        <ion-row class="ion-align-items-end">
-
-          <ion-col size="3" size-xs="12" size-sm="6" size-md="4" :size-lg="12/5" :size-xl="12/5" v-for="(category, index) in state.categories" :key="index">
-            
-
-            <ion-card class="card" :class="'art'" style="position: relative">
-
-              <ion-card-header>
-                <ion-card-title style="font-size: 30px; color: white; font-weight: 500;">Art</ion-card-title>
-              </ion-card-header>
-
-              <img src="http://localhost:8000/media/pens.png" style="height: 160px; width: 110px; position: absolute; bottom: 0; right: 20px;"/>
-
-            </ion-card>
-
-          </ion-col>
-          
-        </ion-row>
-
-      </ion-grid>
+      <child v-model="state.name" @update:first-name="firstupdate" v-model:last-name="state.lastname"/>
 
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts" setup>
-import {reactive} from 'vue'
+import { IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
+import { reactive, onMounted, ref } from 'vue'
+import Child from './tempComponent.vue'
 
 const state = reactive({
-  categories: [1]
+  firstname: '',
+  lastname: '',
+  name: ''
 })
+
+function firstupdate () {
+  console.log("parent")
+}
 </script>
 
 <style scoped>
-.art {
-  background-image: linear-gradient( 135deg,  #0396FF 10%, #ABDCFF 100%);
-}
-.photography {
-  background-image: linear-gradient( 135deg,  #EA5455 10%, #FEB692 100%);
-}
-.card {
-  height: 250px;
-}
 </style>

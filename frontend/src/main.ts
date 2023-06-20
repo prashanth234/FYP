@@ -24,6 +24,9 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/global.scss';
 
+
+import 'vue-advanced-cropper/dist/style.css';
+
 import store from './vuex';
 
 const app = createApp(App)
