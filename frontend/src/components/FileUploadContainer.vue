@@ -21,7 +21,14 @@
 
   <div class="simple-uploader" v-else>
 
-    <input id="file-upload" ref="fileupload" type="file" name="fileUpload" accept="image/*" @change="handleFileUpload" />
+    <input
+      id="file-upload"
+      ref="fileupload"
+      type="file"
+      name="fileUpload"
+      accept="image/*"
+      @change="$event => props.cropable ? loadImage($event) : handleFileUpload($event)" 
+    />
 
     <slot name="handler" :selectImage="selectImage">
       <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">Select Image</ion-button>

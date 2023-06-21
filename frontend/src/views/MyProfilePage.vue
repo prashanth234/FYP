@@ -61,13 +61,13 @@
                   @update:preview="imageSelected"
                   :key="state.refreshFileUpload"
                   :simple="true"
-                  :cropable="false"
+                  :cropable="true"
                 >
                   <template #handler="{selectImage}">
                     <ion-avatar style="width: 90px; height: 90px;" class="cpointer" @click="selectImage">
                       <img
                         alt="https://ionicframework.com/docs/img/demos/avatar.svg"
-                        src="https://ionicframework.com/docs/img/demos/avatar.svg" 
+                        src="http://localhost:8000/media/users/blob" 
                       />
                     </ion-avatar>
                     <div class="camera-icon">
@@ -299,7 +299,52 @@ function tabChanged(event: SegmentCustomEvent) {
 // Profile image
 
 function imageSelected() {
-  
+  console.log(typeof state.image)
+  // Upload to server
+  try {
+    const { mutate, onDone } = useMutation(gql`    
+      mutation ($avatar: Upload!) { 
+        updateAvatar (
+          avatar: $avatar
+        ) {
+            user {
+              avatar
+            }
+          }
+      }
+    `,
+      () => ({
+        variables: {
+          avatar: state.image
+        },
+      })
+    )
+    // const { mutate, onDone } = useMutation(gql`    
+    //   mutation ($gender: String, $avatar: Upload, $firstName: String, $lastName: String, $dateOfBirth: String) { 
+    //     updateAccount (
+    //       gender: $gender,
+    //       avatar: $avatar,
+    //       firstName: $firstName,
+    //       lastName: $lastName,
+    //       dateOfBirth: $dateOfBirth
+    //     ) {
+    //         success,
+    //         errors
+    //       } 
+    //   }
+    // `,
+    //   () => ({
+    //     variables: {
+    //       avatar: state.image
+    //     },
+    //   })
+    // )
+    mutate()
+    onDone((value) => {
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
 
