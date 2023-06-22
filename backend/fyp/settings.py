@@ -133,7 +133,7 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'core.User'
 
 GRAPHQL_AUTH = {
-    'UPDATE_MUTATION_FIELDS': ["first_name", "last_name",  "avatar", "gender", "date_of_birth"],
+    'UPDATE_MUTATION_FIELDS': ["first_name", "last_name",  "gender", "date_of_birth"],
 }
 
 

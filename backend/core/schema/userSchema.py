@@ -4,6 +4,8 @@ from graphql_auth.schema import UserQuery, MeQuery
 from graphene_file_upload.scalars import Upload
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
+from django.core.files.base import ContentFile
+
 
 from core.models.User import User
 
@@ -28,18 +30,31 @@ class UserAvatarMutation(graphene.Mutation):
 
     class Arguments:
         avatar = Upload()
+        type = graphene.String()
 
     user = graphene.Field(AvatarType)
 
     @classmethod
-    def mutate(cls, root, info, avatar):
+    def mutate(cls, root, info, avatar, type):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
         if not avatar:
             raise GraphQLError("Avatar not found", extensions={'status': 404})
+        
+        user = info.context.user
+        
+        filename = f"{user.username}.{type}"
+        file_content = ContentFile(avatar.read())
 
-        user = User(avatar=avatar,)
+        # Remove the existing file if it exists
+        if user.avatar:
+            user.avatar.storage.delete(user.avatar.name)
+
+        # Save the updated file with the new filename
+        user.avatar.save(filename, file_content, save=False)
+
+        # Save the MyModel instance to update other fields if needed
         user.save()
 
         return UserAvatarMutation(user=user)

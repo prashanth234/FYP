@@ -75,39 +75,40 @@
 
 <script setup lang="ts">
 import { IonIcon, IonImg, IonButton, IonModal, IonCard, IonRow, IonCol, IonCardContent } from '@ionic/vue'
-import { CircleStencil, Cropper } from 'vue-advanced-cropper'
+import { CircleStencil, Cropper, CropperResult } from 'vue-advanced-cropper'
 import { cloudUploadOutline } from 'ionicons/icons'
 import { reactive, ref, onUnmounted } from 'vue'
+import type { Ref } from 'vue'
 
 const props = defineProps<{
   simple: Boolean,
   modelValue: File | null,
-  preview?: string,
-  cropable: Boolean
+  cropable: Boolean,
+  preview?: string | CropperResult
 }>()
 
 const emit = defineEmits(['update:modelValue', 'update:preview'])
 
 interface State {
   // Image is blob object
-  image: File | undefined,
+  image: Blob | null,
   // ImageUrl is blob object url
   imageUrl: string,
   imageType: string,
-  previewImage: string,
+  previewImage: string | CropperResult,
   openCropper: Boolean
 }
 
 const state: State = reactive({
-  image: undefined,
+  image: null,
   imageUrl: '',
   imageType: '',
   previewImage: '',
   openCropper: false
 })
 
-const cropperRef = ref(null)
-const fileupload = ref(null)
+const cropperRef: Ref<any>  = ref(null)
+const fileupload: Ref<HTMLElement | null>  = ref(null)
 
 function handleFileUpload(event: Event) {
   const {validity, files} = event.target as HTMLInputElement 
@@ -186,13 +187,13 @@ function loadImage(event: Event) {
 }
 
 function cropImage() {
-  const { canvas } = cropperRef.value.getResult()
+  const { canvas } = cropperRef.value?.getResult()
 
   if (canvas) {
-    canvas.toBlob(blob => {
+    canvas.toBlob((blob: Blob | null) => {
       state.image = blob
       emit('update:modelValue', blob)
-      emit('update:preview', state.previewImage)
+      emit('update:preview', state.previewImage, state.imageType.split('/')[1])
       closeCropper()
     }, state.imageType)
   }
@@ -202,7 +203,7 @@ function closeCropper(){
   state.openCropper = false
 }
 
-function onCropChange(preview) {
+function onCropChange(preview: CropperResult) {
   state.previewImage = preview
 }
 

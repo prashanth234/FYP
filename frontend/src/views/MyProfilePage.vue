@@ -53,37 +53,9 @@
 
       <ion-grid>
         <ion-row class="ion-justify-content-center" >
-          <ion-col size="12">
-            <ion-row>
-              <ion-col size="auto">
-                <file-upload-container
-                  v-model="state.image"
-                  @update:preview="imageSelected"
-                  :key="state.refreshFileUpload"
-                  :simple="true"
-                  :cropable="true"
-                >
-                  <template #handler="{selectImage}">
-                    <ion-avatar style="width: 90px; height: 90px;" class="cpointer" @click="selectImage">
-                      <img
-                        alt="https://ionicframework.com/docs/img/demos/avatar.svg"
-                        src="http://localhost:8000/media/users/blob" 
-                      />
-                    </ion-avatar>
-                    <div class="camera-icon">
-                      <ion-icon :icon="cameraOutline"></ion-icon>
-                    </div>
-                  </template>  
-                </file-upload-container>
-              </ion-col>
-              <ion-col style="margin-top: 10px; margin-left: 10px">
-                <h1>Prashanth Bodduna</h1>
-              </ion-col>
-            </ion-row>
-          </ion-col>
-          <ion-col>
+          <ion-col size="5" size-xs="12" size-sm="12" size-md="5" size-lg="5" size-xl="4">
             <ion-card>
-              <ion-segment @ionChange="tabChanged">
+              <ion-segment value="about" @ionChange="tabChanged">
                 <ion-segment-button value="about">
                   <ion-label>About</ion-label>
                 </ion-segment-button>
@@ -93,12 +65,17 @@
               </ion-segment>
 
               <ion-card-content>
-                <about v-if="state.selectedTab == 'about'" />
-                <change-password v-else />
+                <div v-show="state.selectedTab == 'about' ">
+                  <about />
+                </div>
+                <div  v-show="state.selectedTab == 'password' " >
+                  <change-password />
+                </div>
               </ion-card-content>
+              
             </ion-card>
           </ion-col>  
-          <ion-col size="7">
+          <ion-col size="7" size-xs="12" size-sm="12" size-md="7" size-lg="7" size-xl="8">
             <h5>My Posts</h5>
             <div
               v-for="(post, index) in posts?.myPosts?.posts"
@@ -130,7 +107,7 @@
 
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
-import { IonAvatar, IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/aboutContainer.vue'
@@ -138,17 +115,14 @@ import ChangePassword from '@/components/changePasswordContainer.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { getPosts } from '@/composables/posts'
-import { warningOutline, cameraOutline } from 'ionicons/icons'
-import FileUploadContainer from '@/components/FileUploadContainer.vue'
+import { warningOutline } from 'ionicons/icons'
+import { CropperResult } from 'vue-advanced-cropper'
 
 interface State {
   isOpen: boolean,
   editPost: PostType | null
   openDialog: boolean,
-  selectedTab: string | undefined,
-  image: null,
-  preview: string,
-  refreshFileUpload: number
+  selectedTab: string | undefined
 }
 
 interface QueryResult {
@@ -162,10 +136,7 @@ const state: State = reactive({
   isOpen: false,
   editPost: null,
   openDialog: false,
-  selectedTab: 'about',
-  image: null,
-  preview: '',
-  refreshFileUpload: 0
+  selectedTab: 'about'
 })
 
 const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts', undefined, undefined)
@@ -296,56 +267,6 @@ function tabChanged(event: SegmentCustomEvent) {
   state.selectedTab = event.target.value
 }
 
-// Profile image
-
-function imageSelected() {
-  console.log(typeof state.image)
-  // Upload to server
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      mutation ($avatar: Upload!) { 
-        updateAvatar (
-          avatar: $avatar
-        ) {
-            user {
-              avatar
-            }
-          }
-      }
-    `,
-      () => ({
-        variables: {
-          avatar: state.image
-        },
-      })
-    )
-    // const { mutate, onDone } = useMutation(gql`    
-    //   mutation ($gender: String, $avatar: Upload, $firstName: String, $lastName: String, $dateOfBirth: String) { 
-    //     updateAccount (
-    //       gender: $gender,
-    //       avatar: $avatar,
-    //       firstName: $firstName,
-    //       lastName: $lastName,
-    //       dateOfBirth: $dateOfBirth
-    //     ) {
-    //         success,
-    //         errors
-    //       } 
-    //   }
-    // `,
-    //   () => ({
-    //     variables: {
-    //       avatar: state.image
-    //     },
-    //   })
-    // )
-    mutate()
-    onDone((value) => {
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -358,17 +279,5 @@ function imageSelected() {
   .delete-message {
     font-size: 17px;
     color: var(--ion-color-dark);
-  }
-  .camera-icon {
-    position: relative;
-    left: 58px;
-    bottom: 25px;
-    background-color: white;
-    color: black;
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    border-radius: 50%;
-    padding: 6px;
   }
 </style>

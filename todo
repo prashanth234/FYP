@@ -3,7 +3,10 @@ Profile page sub part - Frontend, Backend
 Add Responsiveness for the login page - Frontend
 Control size of the popup for the create post - Frontend
 
-3) Add about and change password tabs to profile page
+Update avatar in all places if possible
+Always replace post image on edit
+Add points icon and popup about points
+1) Add router guard for profile
 5) convert login to page
 2) add whats treding text
 4) customize the post (like cropping)
@@ -16,6 +19,7 @@ Reset Posts when competition are choosen
 add navigation for competitions (breadcrumb)
 fix the competition tab and check what happens when responsive
 add table to competitions
+Add about and change password tabs to profile page
 
 P1
 Add unlike post option and highlight heart - Frontend, Backend

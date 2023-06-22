@@ -150,7 +150,7 @@ function submitForm () {
       const keys = Object.keys(response.errors)
       state.errors = []
       keys.forEach(key => {
-        response.errors[key].forEach(({message}) => {
+        response.errors[key].forEach(({message}:{message: string}) => {
           state.errors.push(message)
         })
       })
