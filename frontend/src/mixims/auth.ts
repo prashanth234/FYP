@@ -13,10 +13,10 @@ interface tokenObject {
 
 function storeTokens (response: tokenObject, type: string) {
     // Store the tokens in the local storage and user object in vuex
-    const {token, refreshToken, payload, user} = response
+    const { token, refreshToken } = response
     localStorage.setItem('fyptoken', token)
     localStorage.setItem('fyprefreshtoken', refreshToken)
-    store.commit('storeUser', {token, refreshToken, username: user ? user.username : payload?.username, success: true })
+    store.commit('storeUser', {token, refreshToken, success: true })
 }
 
 export { storeTokens }

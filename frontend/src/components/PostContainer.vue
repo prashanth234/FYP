@@ -7,8 +7,8 @@
         <ion-item lines="full">
           <ion-avatar slot="start">
             <img
-              alt="Silhouette of a person's head"
-              src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              alt="person"
+              :src="post.user.avatar ? `http://localhost:8000/media/${post.user.avatar}`:'https://ionicframework.com/docs/img/demos/avatar.svg'"
             />
           </ion-avatar>
           <ion-label>

@@ -122,6 +122,7 @@ function submitForm () {
           user {
             id,
             username,
+            avatar,
           }
         }
       }
@@ -143,6 +144,7 @@ function submitForm () {
 
     if (response.success) {
       storeTokens(response, 'login')
+      store.commit('updateUser', response.user)
       store.commit('displayToast', {message: 'Login Successful', color: 'success'})
       store.commit('dismissAuth')
       // ionRouter.push('/')

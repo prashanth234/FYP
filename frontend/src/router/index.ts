@@ -48,7 +48,10 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: '/profile',
-        component: MyProfilePage
+        component: MyProfilePage,
+        meta: {
+          auth: true
+        }
       },
     ]
   },

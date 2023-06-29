@@ -21,7 +21,7 @@ class PostFileType(DjangoObjectType):
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("username",)
+        fields = ("username", "avatar")
 
 class PostType(DjangoObjectType):
     

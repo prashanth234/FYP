@@ -5,7 +5,9 @@ const store = createStore({
   state () {
     return {
       user: {
-        success: false
+        success: false,
+        username: '',
+        avatar: ''
       },
       toast: {
         message: '',
@@ -14,12 +16,17 @@ const store = createStore({
       },
       auth: {
         open: false
-      }
+      },
+      userUpdated: 1
     }
   },
   mutations: {
     storeUser(state, user) {
-      state.user = user 
+      state.user = user
+    },
+    updateUser(state, updates) { 
+      state.user = {...state.user, ...updates}
+      state.userUpdated += 1
     },
     displayToast(state, toast) {
       state.toast = {...toast, open: true}

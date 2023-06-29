@@ -185,7 +185,9 @@ AUTHENTICATION_BACKENDS = [
 # Public mutations don't require user to be logged in. You should add all of them in GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"] setting.
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(hours=24),
+    "JWT_EXPIRATION_DELTA": timedelta(days=7),
+    # "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=30),
+    "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
     # optional
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_ALLOW_ANY_CLASSES": [

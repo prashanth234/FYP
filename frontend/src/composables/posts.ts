@@ -24,7 +24,8 @@ export function getPosts(type: string, competition: number | undefined, category
             file
           },
           user {
-            username
+            username,
+            avatar
           }
         },
         total

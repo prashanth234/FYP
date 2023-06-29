@@ -7,10 +7,12 @@
 
         <ion-card style="border-radius: 30px;" color="light">
           <ion-card-content style="height: 250px;">
-            <ion-row class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
+            <ion-row v-if="!state.loading" class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
               <ion-col size="auto">
                 <ion-avatar style="width: 85px;height: 85px;">
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                  <img alt="person"
+                    :src="store.state.user?.avatar ? `http://localhost:8000/media/${store.state.user.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+                  />
                 </ion-avatar>
               </ion-col>
               <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
@@ -36,13 +38,13 @@
               Home
             </ion-label>
           </ion-item>
-          <ion-item lines="none" button :detail="false" @click="profile()" v-if="store.state.user.success">
+          <ion-item lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
             <ion-icon class="ion-icon-custom cpointer" :icon="personOutline"></ion-icon>
             <ion-label class="list-label">
               Profile
             </ion-label>
           </ion-item>
-          <ion-item lines="none" button :detail="false" @click="logout()" v-if="store.state.user.success">
+          <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && store.state.user.success">
             <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
             <ion-label class="list-label">
               logout
@@ -71,7 +73,8 @@
           <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
           <login-container />
         </ion-modal>
-        <ion-router-outlet></ion-router-outlet>
+        <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
+        <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
       </ion-content>
 
     </div>
@@ -140,15 +143,20 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline } from 'ionicons/icons'
+import { IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { logOutOutline, closeOutline, homeOutline, personOutline, trendingDown } from 'ionicons/icons'
 import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
+import { reactive } from 'vue'
 
 const ionRouter = useIonRouter();
+
+const state = reactive({
+  loading: true
+}) 
 
 function logout() {
   localStorage.removeItem('fyptoken')
@@ -173,8 +181,26 @@ function login() {
   // ionRouter.push('/login')
 }
 
+function getUserDetails() {
+  const { result, onResult } = useQuery(gql`   
+                              query {
+                                me {
+                                  username,
+                                  avatar
+                                }
+                              }
+                            `)
+
+  onResult(({data}) => {
+    store.commit('updateUser', data.me)
+  })
+}
+
 function checkAuthStatus() {
-  if (store.state.user.success) { return }
+  if (store.state.user.success) { 
+    state.loading = false
+    return 
+  }
 
   const token = localStorage.getItem('fyptoken')
 
@@ -205,10 +231,12 @@ function checkAuthStatus() {
       const refreshToken = localStorage.getItem('fyprefreshtoken')
 
       if (verifyToken.success) {
-        const user = { username: verifyToken.payload.username, token, refreshToken, success: true }
-        store.commit('storeUser', user)
+        store.commit('updateUser', {success: true})
+        state.loading = false
+        getUserDetails()
       } else {
         // If not vaild, refresh the token
+        logout()
         const { mutate, onDone } = useMutation(gql`
           mutation ($refreshToken: String!) {
               refreshToken (
@@ -232,10 +260,16 @@ function checkAuthStatus() {
         mutate()
 
         onDone(({data: {refreshToken}}) => {
-          storeTokens(refreshToken, 'refresh')
+          if (refreshToken.success) {
+            storeTokens(refreshToken, 'refresh')
+            getUserDetails()
+          }
+          state.loading = false
         })
       }
     })
+  } else {
+    state.loading = false
   }
 }
 
@@ -243,7 +277,7 @@ checkAuthStatus()
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .icon-custom {
     padding-right: 15px;
   }
@@ -292,6 +326,8 @@ checkAuthStatus()
   }
   ion-item {
     height: 55px;
+    --background: var(--ion-color-dark);
+    --color: var(--ion-color-light);
   }
   .list-label {
     font-weight: 600;

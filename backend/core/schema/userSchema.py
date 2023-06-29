@@ -1,4 +1,5 @@
 import graphene
+import graphql_jwt
 from graphql_auth import mutations
 from graphql_auth.schema import UserQuery, MeQuery
 from graphene_file_upload.scalars import Upload
@@ -16,10 +17,10 @@ class AuthQuery(
 ):
     pass
 
-class AvatarType(DjangoObjectType):
+class UserType1(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("avatar",)
+        fields = ("avatar",  "username")
 
     def resolve_avatar(self, info):
         if self.avatar:
@@ -32,7 +33,7 @@ class UserAvatarMutation(graphene.Mutation):
         avatar = Upload()
         type = graphene.String()
 
-    user = graphene.Field(AvatarType)
+    user = graphene.Field(UserType1)
 
     @classmethod
     def mutate(cls, root, info, avatar, type):

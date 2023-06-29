@@ -12,7 +12,7 @@
           <ion-avatar style="width: 90px; height: 90px;" class="cpointer" @click="selectImage">
             <img
               alt="https://ionicframework.com/docs/img/demos/avatar.svg"
-              :src="result?.me.avatar ? `http://localhost:8000/media/${result.me.avatar}?temp=${state.refreshAvatar}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+              :src="result?.me.avatar ? `http://localhost:8000/media/${result.me.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
             />
           </ion-avatar>
           <div class="camera-icon">
@@ -93,7 +93,6 @@ interface State {
   image: null,
   preview: string,
   refreshFileUpload: number,
-  refreshAvatar: number,
   firstName: string,
   lastName: string,
   gender: string,
@@ -104,7 +103,6 @@ const state: State = reactive({
   image: null,
   preview: '',
   refreshFileUpload: 0,
-  refreshAvatar: 0,
   firstName: '',
   lastName: '',
   gender: '',
@@ -136,7 +134,7 @@ function imageSelected(blob: CropperResult, type: string) {
     )
     mutate()
     onDone((value) => {
-      state.refreshAvatar++
+      store.commit('updateUser', {})
     })
   } catch (error) {
     console.error(error)
