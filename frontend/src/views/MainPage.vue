@@ -32,14 +32,14 @@
         </ion-card>
 
         <ion-list style="margin-top: 30px">
-          <ion-item lines="none" button :detail="false" @click="home()">
-            <ion-icon class="ion-icon-custom cpointer" :icon="homeOutline"></ion-icon>
+          <ion-item :class="{'ion-item-highlight': router.name == 'home'}" lines="none" button :detail="false" @click="home()">
+            <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'home' ? 'light' : 'dark'" :icon="homeOutline"></ion-icon>
             <ion-label class="list-label">
               Home
             </ion-label>
           </ion-item>
-          <ion-item lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
-            <ion-icon class="ion-icon-custom cpointer" :icon="personOutline"></ion-icon>
+          <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
+            <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'profile' ? 'light' : 'dark'" :icon="personOutline"></ion-icon>
             <ion-label class="list-label">
               Profile
             </ion-label>
@@ -151,12 +151,16 @@ import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import { reactive } from 'vue'
+import { useRoute } from 'vue-router';
 
 const ionRouter = useIonRouter();
+const router = useRoute();
 
 const state = reactive({
   loading: true
-}) 
+})
+
+console.log(router.name)
 
 function logout() {
   localStorage.removeItem('fyptoken')
@@ -326,7 +330,9 @@ checkAuthStatus()
   }
   ion-item {
     height: 55px;
-    --background: var(--ion-color-dark);
+  }
+  .ion-item-highlight {
+    --background: var(--ion-color-medium);
     --color: var(--ion-color-light);
   }
   .list-label {

@@ -38,7 +38,8 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '/',
-        component: CategoriesPage
+        component: CategoriesPage,
+        name: 'home'
       },
       {
         path: '/category/:id',
@@ -49,6 +50,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/profile',
         component: MyProfilePage,
+        name: 'profile',
         meta: {
           auth: true
         }
