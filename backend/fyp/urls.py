@@ -26,9 +26,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt')),
-    path('__debug__/', include('debug_toolbar.urls')),
     path('playground/', include('playground.urls')),
     path("graphql", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
 ]
