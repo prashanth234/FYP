@@ -1,14 +1,31 @@
 P0
-Profile page sub part - Frontend, Backend
-Add Responsiveness for the login page - Frontend
-Control size of the popup for the create post - Frontend
 
-.) Remove REST packages
-.) Always replace post image on edit
+.) Show top 5 posts tab
+.) Add a key for description and photos according to there category.
+.) Add Responsiveness for the login page - Frontend
+.) Email backend and user verification
 .) Add points icon and popup about points
-.) convert login to page
-.) add whats treding text
+.) Prepare for deployment
+.) Work on ui coloring
+
 .) customize the post (like cropping)
+.) convert login to page
+
+.) Fix this error on navigation
+IonRouterOutlet.js:192  [@ionic/vue Warning]: The view you are trying to render for path /profile does not have the required <ion-page> component. Transitions and lifecycle methods may not work as expected.
+
+See https://ionicframework.com/docs/vue/navigation#ionpage for more information.
+  
+IonRouterOutlet.js:7  Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'classList')
+    at isViewVisible (IonRouterOutlet.js:7:24)
+    at handlePageTransition (IonRouterOutlet.js:201:1)
+    at setupViewItem (IonRouterOutlet.js:323:1)
+    at IonRouterOutlet.js:75:17
+    at callWithErrorHandling (runtime-core.esm-bundler.js:173:22)
+    at callWithAsyncErrorHandling (runtime-core.esm-bundler.js:182:21)
+    at job (runtime-core.esm-bundler.js:1812:17)
+    at callWithErrorHandling (runtime-core.esm-bundler.js:173:36)
+    at flushJobs (runtime-core.esm-bundler.js:406:17)
 
 
 Done
@@ -21,10 +38,16 @@ add table to competitions
 Add about and change password tabs to profile page
 Update avatar in all places if possible
 Add router guard for profile
+Remove REST packages
+Always replace post image on edit
+Profile page sub part - Frontend, Backend
+Control size of the popup for the create post - Frontend
+Add time to post created - Frontend
+On click upload image browser popup is not opening - Frontend
+Add unlike post option and highlight heart - Frontend, Backend
 
 P1
-Add unlike post option and highlight heart - Frontend, Backend
-On click upload image browser popup is not opening - Frontend
+.) Alternative way to maintain likes count consistently without concurrency issues
 
 P2
-Add time to post created - Frontend
+

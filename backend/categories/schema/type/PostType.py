@@ -28,6 +28,7 @@ class PostType(DjangoObjectType):
     user = graphene.Field(UserType)    
     like_count = graphene.Int()
     user_liked = graphene.Boolean()
+    likes = graphene.Int()
 
     def resolve_like_count(self, info):
         return Like.objects.filter(item_type=ContentType.objects.get_for_model(self), item_id=self.id).count()
@@ -42,6 +43,6 @@ class PostType(DjangoObjectType):
     
     class Meta:
         model = Post
-        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked")
+        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked", "likes")
         # filter_fields = ["category", "competition"]
         # interfaces = (graphene.relay.Node, )

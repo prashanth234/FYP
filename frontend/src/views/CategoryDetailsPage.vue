@@ -95,6 +95,19 @@
                 </create-post>
               </ion-col>
 
+              <ion-col size="12" v-if="state.competition">
+                <!-- <ion-card> -->
+                  <ion-segment :value="state.tabSelected" @ionChange="tabChanged">
+                    <ion-segment-button value="allposts">
+                      <ion-label>All Posts</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="trending">
+                      <ion-label>Top 5</ion-label>
+                    </ion-segment-button>
+                  </ion-segment>
+                <!-- </ion-card> -->
+              </ion-col>
+
               <ion-col size="12" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
               </ion-col>
@@ -104,7 +117,7 @@
           </ion-col>
           <!-- End of the create post and all posts -->
 
-          <!-- Start of competitions -->
+          <!-- Start of competitions for large screens -->
           <ion-col class="ion-hide-md-down" size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4">
 
             <ion-card class="border-radius-std">
@@ -150,7 +163,7 @@
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
+import { IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
@@ -169,14 +182,20 @@ interface CompetitionDetailsType {
 interface State {
   competition: CompetitionDetailsType | null,
   refreshCreatePost: number,
-  creatingPost: Boolean
+  creatingPost: Boolean,
+  tabSelected: string | undefined
 }
 
 const state: State = reactive({
   competition: null,
   creatingPost: false,
-  refreshCreatePost: 1
+  refreshCreatePost: 1,
+  tabSelected: 'allposts'
 })
+
+const pagination: any = {
+  category: 1
+}
 
 const ionRouter = useIonRouter();
 
@@ -210,7 +229,14 @@ const category =  props.id ? parseInt(props.id) : undefined
 const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
 
 function loadCompetitionPosts(competition: CompetitionDetailsType) {
+  state.tabSelected = 'allposts'
   state.competition = competition
+
+  // Store pagination information
+  pagination.category = variables.page
+
+  // Update the api variables to fetch data
+  // variables.page = pagination[`competition-${state.competition?.id}-allposts`] || 1
   variables.page = 1
   variables.competition.value = competition.id
 }
@@ -218,6 +244,9 @@ function loadCompetitionPosts(competition: CompetitionDetailsType) {
 function goBackCategory() {
   if (!variables.competition.value) { return }
   variables.competition.value = undefined
+  // variables.page = pagination.category
+  variables.page = 1
+  variables.trending.value = false
   state.competition = null
 }
 
@@ -297,6 +326,21 @@ function createNewPost(createVariables: updatePostVariables) {
     console.error(error)
   }
 }
+
+function tabChanged(event: SegmentCustomEvent) {
+  state.tabSelected = event.target.value
+
+  // Store the pagination information upto which user scrolled for allposts and trending
+  const competitionId = state.competition?.id
+  const paginationkey = `competition-${competitionId}-${event.target.value == 'trending' ? 'allposts': 'trending'}`
+  pagination[paginationkey] = variables.page
+
+  // Update the api variables to fetch data
+  // variables.page = pagination[`competition-${competitionId}-${event.target.value}`] || 1
+  variables.page = 1
+  variables.trending.value = event.target.value == 'trending'
+}
+
 </script>
 
 <style scoped>

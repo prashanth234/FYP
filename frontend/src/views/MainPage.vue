@@ -160,8 +160,6 @@ const state = reactive({
   loading: true
 })
 
-console.log(router.name)
-
 function logout() {
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')

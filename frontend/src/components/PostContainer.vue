@@ -83,7 +83,7 @@ const emit = defineEmits<{
 
 const state = reactive({
   isliked: props.post.userLiked,
-  likeCount: props.post.likeCount
+  likeCount: props.post.likes
 })
 
 function likePost () {

@@ -130,9 +130,15 @@ class Query(graphene.ObjectType):
     # post = graphene.relay.Node.Field(PostType)
     # all_posts = DjangoFilterConnectionField(PostType)
 
-    all_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int())
+    all_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int(), trending=graphene.Boolean())
 
-    def resolve_all_posts(root, info, category=None, competition=None, page=1, per_page=10):
+    def resolve_all_posts(root, info, category=None, competition=None, page=1, per_page=10, trending=False):
+
+        # If trending flag is set return top number of posts
+        if trending:
+            top_posts = Post.objects.filter(competition=competition).order_by('-likes')[:per_page]
+            return PostListType(posts=top_posts, total=len(top_posts))
+
         if competition:
             queryset = Post.objects.filter(competition=competition).order_by('-created_at')
         elif category:
@@ -147,9 +153,9 @@ class Query(graphene.ObjectType):
         # Return paginated list of posts
         return PostListType(posts=posts, total=page_obj.paginator.count)
     
-    my_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int())
+    my_posts = graphene.Field(PostListType, category= graphene.Int(), competition=graphene.Int(), page=graphene.Int(), per_page=graphene.Int(), trending=graphene.Boolean())
     
-    def resolve_my_posts(root, info, category=None, competition=None, page=1, per_page=10):
+    def resolve_my_posts(root, info, category=None, competition=None, page=1, per_page=10, trending=False):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
@@ -166,7 +172,6 @@ class Query(graphene.ObjectType):
 
         # Return paginated list of posts
         return PostListType(posts=posts, total=page_obj.paginator.count)
-        
     
     post_details = graphene.Field(PostType, id=graphene.Int())
 

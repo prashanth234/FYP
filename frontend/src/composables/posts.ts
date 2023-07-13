@@ -3,21 +3,26 @@ import { IonInfiniteCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
 import { ref } from 'vue'
 
-export function getPosts(type: string, competition: number | undefined, category: number | undefined) {
+export function getPosts(
+  type: string,
+  competition: number | undefined, 
+  category: number | undefined
+) {
 
   const variables = {
     competition: ref(competition),
     category: ref(category),
+    trending: ref(false),
     page: 1,
     perPage: 2
   }
 
   const POST_QUERY = gql`
-    query ($category: Int, $competition: Int, $page: Int, $perPage: Int) {
-      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage) {
+    query ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean) {
+      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending) {
         posts {
-          id, 
-          likeCount,
+          id,
+          likes,
           userLiked,
           description,
           postfileSet {
@@ -50,7 +55,8 @@ export function getPosts(type: string, competition: number | undefined, category
     page: variables.page,
     perPage: variables.perPage,
     competition: variables.competition.value,
-    category: variables.category.value
+    category: variables.category.value,
+    trending: variables.trending.value
   }))
 
   function getMore(ev: IonInfiniteCustomEvent) {
