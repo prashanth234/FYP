@@ -19,6 +19,16 @@ git clone git@github.com:prashanth234/FYP.git
 
 # Download mysql community server 8.x
 
+MacOS
+
+Install mysql using homebrew
+
+START SERVICE - brew services start mysql
+
+ADD PASSWORD FOR ROOT - mysql_secure_installation
+
+Windows
+
 https://dev.mysql.com/downloads/windows/installer/8.0.html
 
 Give password as root for the root user during installation.
@@ -92,3 +102,8 @@ ionic serve
 # ########## Application has been setup ############
 
  http://localhost:8100
+
+ ### django admin ###
+
+user: root
+password: root

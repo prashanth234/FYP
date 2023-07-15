@@ -17,19 +17,19 @@
       </ion-col> -->
 
       <ion-col size="12">
-        <ion-input  class="custom-input" v-model="state.email" type="text" placeholder="Email"></ion-input>
+        <ion-input  class="custom-input" fill="outline" v-model="state.email" type="text" placeholder="Email"></ion-input>
       </ion-col>
 
       <ion-col size="12">
-        <ion-input class="custom-input" v-model="state.username" type="text" placeholder="Username"></ion-input>
+        <ion-input class="custom-input" fill="outline" v-model="state.username" type="text" placeholder="Username"></ion-input>
       </ion-col>
 
       <ion-col size="12">
-        <ion-input class="custom-input" v-model="state.password1" type="password" placeholder="Password"></ion-input>
+        <ion-input class="custom-input" fill="outline" v-model="state.password1" type="password" placeholder="Password"></ion-input>
       </ion-col>
 
       <ion-col size="12">
-        <ion-input class="custom-input" v-model="state.password2" type="password" placeholder="Confirm Password"></ion-input>
+        <ion-input class="custom-input" fill="outline" v-model="state.password2" type="password" placeholder="Confirm Password"></ion-input>
       </ion-col>
 
       <!-- <ion-col size="6">
