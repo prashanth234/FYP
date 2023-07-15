@@ -194,6 +194,7 @@ const { result, onResult } = useQuery(gql`
                             `)
 
 onResult(({data, loading}) => {
+  if (loading) return
   const { firstName, lastName, gender } = data.me
   state.firstName = firstName
   state.lastName = lastName

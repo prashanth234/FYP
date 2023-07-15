@@ -163,7 +163,7 @@
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent } from '@ionic/vue'
+import { IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
@@ -183,7 +183,7 @@ interface State {
   competition: CompetitionDetailsType | null,
   refreshCreatePost: number,
   creatingPost: Boolean,
-  tabSelected: string | undefined
+  tabSelected: SegmentValue | undefined
 }
 
 const state: State = reactive({
@@ -192,10 +192,6 @@ const state: State = reactive({
   refreshCreatePost: 1,
   tabSelected: 'allposts'
 })
-
-const pagination: any = {
-  category: 1
-}
 
 const ionRouter = useIonRouter();
 
@@ -231,21 +227,12 @@ const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('al
 function loadCompetitionPosts(competition: CompetitionDetailsType) {
   state.tabSelected = 'allposts'
   state.competition = competition
-
-  // Store pagination information
-  pagination.category = variables.page
-
-  // Update the api variables to fetch data
-  // variables.page = pagination[`competition-${state.competition?.id}-allposts`] || 1
-  variables.page = 1
   variables.competition.value = competition.id
 }
 
 function goBackCategory() {
   if (!variables.competition.value) { return }
   variables.competition.value = undefined
-  // variables.page = pagination.category
-  variables.page = 1
   variables.trending.value = false
   state.competition = null
 }
@@ -329,15 +316,6 @@ function createNewPost(createVariables: updatePostVariables) {
 
 function tabChanged(event: SegmentCustomEvent) {
   state.tabSelected = event.target.value
-
-  // Store the pagination information upto which user scrolled for allposts and trending
-  const competitionId = state.competition?.id
-  const paginationkey = `competition-${competitionId}-${event.target.value == 'trending' ? 'allposts': 'trending'}`
-  pagination[paginationkey] = variables.page
-
-  // Update the api variables to fetch data
-  // variables.page = pagination[`competition-${competitionId}-${event.target.value}`] || 1
-  variables.page = 1
   variables.trending.value = event.target.value == 'trending'
 }
 

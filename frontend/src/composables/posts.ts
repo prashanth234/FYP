@@ -60,16 +60,25 @@ export function getPosts(
   }))
 
   function getMore(ev: IonInfiniteCustomEvent) {
-    if (posts.value[type].posts.length >= posts.value[type].total) {
+
+    if (!posts.value) {
+      ev.target.complete()
+      return
+    }
+
+    const postsFetched = posts.value[type].posts.length
+    const totalPosts = posts.value[type].total
+
+    if (postsFetched >= totalPosts) {
       ev.target.complete() 
       return 
     }
-    
-    variables.page++
+
+    const page = Math.floor(postsFetched/variables.perPage) + 1
   
     fetchMore({
       variables: {
-        page: variables.page
+        page
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         // No new feed posts

@@ -1,85 +1,89 @@
 <template>
 
-  <ion-split-pane content-id="main">
+  <ion-page>
 
-    <ion-menu content-id="main">
-      <ion-content class="ion-padding">
+    <ion-split-pane content-id="main">
 
-        <ion-card style="border-radius: 30px;" color="light">
-          <ion-card-content style="height: 250px;">
-            <ion-row v-if="!state.loading" class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
-              <ion-col size="auto">
-                <ion-avatar style="width: 85px;height: 85px;">
-                  <img alt="person"
-                    :src="store.state.user?.avatar ? `http://localhost:8000/media/${store.state.user.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
-                  />
-                </ion-avatar>
-              </ion-col>
-              <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
-                <div v-if="store.state.user.success">
-                  <p style="font-size: 15px"> Welcome Back </p>
-                  <p style="font-size: 20px; font-weight: 600;"> {{ store.state.user?.username }} </p>
-                </div>
-                <ion-button
-                  v-else
-                  @click="login()"
-                >
-                  Login
-                </ion-button>
-              </ion-col>
-            </ion-row>
-          </ion-card-content>
-        </ion-card>
+      <ion-menu content-id="main">
+        <ion-content class="ion-padding">
 
-        <ion-list style="margin-top: 30px">
-          <ion-item :class="{'ion-item-highlight': router.name == 'home'}" lines="none" button :detail="false" @click="home()">
-            <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'home' ? 'light' : 'dark'" :icon="homeOutline"></ion-icon>
-            <ion-label class="list-label">
-              Home
-            </ion-label>
-          </ion-item>
-          <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
-            <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'profile' ? 'light' : 'dark'" :icon="personOutline"></ion-icon>
-            <ion-label class="list-label">
-              Profile
-            </ion-label>
-          </ion-item>
-          <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && store.state.user.success">
-            <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
-            <ion-label class="list-label">
-              logout
-            </ion-label>
-          </ion-item>
-        </ion-list>
+          <ion-card style="border-radius: 30px;" color="light">
+            <ion-card-content style="height: 250px;">
+              <ion-row v-if="!state.loading" class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
+                <ion-col size="auto">
+                  <ion-avatar style="width: 85px;height: 85px;">
+                    <img alt="person"
+                      :src="store.state.user?.avatar ? `http://localhost:8000/media/${store.state.user.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+                    />
+                  </ion-avatar>
+                </ion-col>
+                <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
+                  <div v-if="store.state.user.success">
+                    <p style="font-size: 15px"> Welcome Back </p>
+                    <p style="font-size: 20px; font-weight: 600;"> {{ store.state.user?.username }} </p>
+                  </div>
+                  <ion-button
+                    v-else
+                    @click="login()"
+                  >
+                    Login
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
 
-      </ion-content>
-    </ion-menu>
+          <ion-list style="margin-top: 30px">
+            <ion-item :class="{'ion-item-highlight': router.name == 'home'}" lines="none" button :detail="false" @click="home()">
+              <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'home' ? 'light' : 'dark'" :icon="homeOutline"></ion-icon>
+              <ion-label class="list-label">
+                Home
+              </ion-label>
+            </ion-item>
+            <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
+              <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'profile' ? 'light' : 'dark'" :icon="personOutline"></ion-icon>
+              <ion-label class="list-label">
+                Profile
+              </ion-label>
+            </ion-item>
+            <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && store.state.user.success">
+              <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
+              <ion-label class="list-label">
+                logout
+              </ion-label>
+            </ion-item>
+          </ion-list>
 
-    <div class="ion-page" id="main">
+        </ion-content>
+      </ion-menu>
 
-      <ion-header style="position: initial">
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-          </ion-buttons>
-          <ion-title>
-            TBD
-          </ion-title>
-        </ion-toolbar>
-      </ion-header>
+      <div class="ion-page" id="main">
 
-      <ion-content class="ion-padding">
-        <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
-          <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
-          <login-container />
-        </ion-modal>
-        <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
-        <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
-      </ion-content>
+        <ion-header style="position: initial">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+              TBD
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
 
-    </div>
+        <ion-content class="ion-padding">
+          <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
+            <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
+            <login-container />
+          </ion-modal>
+          <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
+          <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
+        </ion-content>
 
-  </ion-split-pane>
+      </div>
+
+    </ion-split-pane>
+
+  </ion-page>
 
   <!-- <ion-page>
 
@@ -192,8 +196,9 @@ function getUserDetails() {
                                 }
                               }
                             `)
-
-  onResult(({data}) => {
+  
+  onResult(({data, loading}) => {
+    if (loading) return
     store.commit('updateUser', data.me)
   })
 }
