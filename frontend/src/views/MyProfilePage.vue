@@ -107,7 +107,7 @@
 
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
-import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/aboutContainer.vue'
@@ -122,7 +122,7 @@ interface State {
   isOpen: boolean,
   editPost: PostType | null
   openDialog: boolean,
-  selectedTab: string | undefined
+  selectedTab: SegmentValue | undefined
 }
 
 interface QueryResult {
@@ -217,18 +217,13 @@ function updatePost(updateVariables: updatePostVariables) {
           description: $description
         ) {
             post {
-              id, 
-              likeCount,
-              userLiked,
+              id,
               description,
               postfileSet {
                 file
               },
-              user {
-                username
-              }
             }
-          } 
+          }
       }
     `,
       () => ({

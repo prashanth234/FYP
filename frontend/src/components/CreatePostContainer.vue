@@ -54,7 +54,7 @@
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="!state.image || !!props.creatingPost"
+                      :disabled="!state.preview || !!props.creatingPost"
                       style="float: right"
                     >
                       <ion-spinner 
@@ -160,7 +160,7 @@ function updatePost() {
     Object.assign(variables, { description: state.description })
   }
 
-  if (postfileSet[0].file != state.image) {
+  if (state.image && postfileSet[0].file != state.image) {
     Object.assign(variables, { file: state.image })
   }
 

@@ -265,18 +265,9 @@ function createNewPost(createVariables: updatePostVariables) {
           description: $description
         ) {
             post {
-              id, 
-              likeCount,
-              userLiked,
-              description,
-              postfileSet {
-                file
-              },
-              user {
-                username
-              }
+              id
             }  
-          } 
+          }
       }
 
     `, () => ({

@@ -1,9 +1,7 @@
 P0
 
-.) Add no competition coming soon card
-.) upon creating new post it is not showing up
-.) Show top 5 posts tab
 .) Add a key for description and photos according to there category.
+.) Add no competition coming soon card
 .) Add Responsiveness for the login page - Frontend
 .) Email backend and user verification
 .) Add points icon and popup about points
@@ -35,6 +33,15 @@ Add time to post created - Frontend
 On click upload image browser popup is not opening - Frontend
 Add unlike post option and highlight heart - Frontend, Backend
 Fix this error on navigation
+update post not working fix it
+Show top 5 posts tab
+***
+upon creating new post it is not showing up
+ERROR
+index.ts:188 Uncaught (in promise) TypeError: 'get' on proxy: property '0' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Object]' but got '[object Object]')
+SOLUTION
+Modified create post mutation response object to only id
+***
 
 P1
 .) Alternative way to maintain likes count consistently without concurrency issues
