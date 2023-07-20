@@ -79,6 +79,7 @@ import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
 import { storeTokens } from '@/mixims/auth'
 import { useToastStore } from '@/stores/toast'
+import { useUserStore } from '@/stores/user';
 
 interface DatetimeChangeEventDetail {
   detail: {
@@ -106,6 +107,7 @@ const state = reactive({
 
 const ionRouter = useIonRouter();
 const toast = useToastStore();
+const user = useUserStore();
 
 function controlDOB(value: boolean) {
   state.isOpen = value
@@ -158,12 +160,12 @@ function submitForm () {
       const keys = Object.keys(response.errors)
       state.errors = []
       keys.forEach(key => {
-        response.errors[key].forEach(({message}) => {
-          state.errors.push(message)
+        response.errors[key].forEach((response: {message: string}) => {
+          state.errors.push(response.message)
         })
       })
     } else if (response.success) {
-      response.user = { username: state.username, email: state.email, auth: false }
+      user.$patch({username: state.username, auth: false, success: true, userUpdated: user.userUpdated + 1})
       storeTokens(response, 'register')
       toast.$patch({message: 'Registered Successfully', color: 'success', open: true})
       // ionRouter.push('/')

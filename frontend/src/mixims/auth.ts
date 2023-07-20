@@ -16,7 +16,6 @@ function storeTokens (response: tokenObject, type: string) {
     const { token, refreshToken } = response
     localStorage.setItem('fyptoken', token)
     localStorage.setItem('fyprefreshtoken', refreshToken)
-    store.commit('storeUser', {token, refreshToken, success: true })
 }
 
 export { storeTokens }
