@@ -84,7 +84,7 @@
               </ion-col>
 
               <ion-col size="12">
-                <create-post 
+                <create-post
                   :fixed-preview-height="false"
                   :key="state.refreshCreatePost"
                   :competition="state.competition"
@@ -96,16 +96,14 @@
               </ion-col>
 
               <ion-col size="12" v-if="state.competition">
-                <!-- <ion-card> -->
-                  <ion-segment :value="state.tabSelected" @ionChange="tabChanged">
-                    <ion-segment-button value="allposts">
-                      <ion-label>All Posts</ion-label>
-                    </ion-segment-button>
-                    <ion-segment-button value="trending">
-                      <ion-label>Top 5</ion-label>
-                    </ion-segment-button>
-                  </ion-segment>
-                <!-- </ion-card> -->
+                <ion-segment :value="state.tabSelected" @ionChange="tabChanged">
+                  <ion-segment-button value="allposts">
+                    <ion-label>All Posts</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="trending">
+                    <ion-label>Top 5</ion-label>
+                  </ion-segment-button>
+                </ion-segment>
               </ion-col>
 
               <ion-col size="12" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">

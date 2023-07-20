@@ -27,13 +27,16 @@ import './theme/global.scss';
 
 import 'vue-advanced-cropper/dist/style.css';
 
-import store from './vuex';
+// import store from './vuex';
+import { createPinia } from 'pinia';
+
+const pinia = createPinia()
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(store);
-
+  .use(pinia);
+  // .use(store)
   
 router.isReady().then(() => {
   app.mount('#app');

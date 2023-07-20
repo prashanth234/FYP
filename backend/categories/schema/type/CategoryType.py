@@ -17,4 +17,4 @@ class CategoryType(DjangoObjectType):
 
     class Meta:
         model = Category
-        fields = ("id", "name", "description", "type", "image", "competition_set")
+        fields = ("id", "name", "description", "oftype", "key", "image", "competition_set")

@@ -35,6 +35,9 @@ import { getPosts } from '@/composables/posts'
 import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
+import { useUserStore } from '@/stores/user'
+
+const user = useUserStore()
 
 interface CompetitionDetails {
   id: string,
@@ -113,8 +116,8 @@ function createNewPost(createVariables: updatePostVariables) {
 }
 
 function setOpen(value: boolean) {
-  if (!store.state.user.success) { 
-    store.commit('displayAuth')
+  if (!user.success) {
+    user.auth = true
     return
   }
   state.isOpen = value;

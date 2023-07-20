@@ -1,7 +1,7 @@
-P0
+#### P0 #####
 
 .) Add a key for description and photos according to there category.
-.) Add no competition coming soon card
+.) Remove image on post delete and update
 .) Add Responsiveness for the login page - Frontend
 .) Email backend and user verification
 .) Add points icon and popup about points
@@ -10,12 +10,11 @@ P0
 
 .) customize the post (like cropping)
 .) convert login to page
+.) Add no competition coming soon card
 
 
+##### DONE #####
 
-
-
-Done
 Add authentication for post creation - Frontend, Backend
 Infinate scrolling on posts - Frontend. Backend
 Reset Posts when competition are choosen
@@ -42,9 +41,51 @@ index.ts:188 Uncaught (in promise) TypeError: 'get' on proxy: property '0' is a 
 SOLUTION
 Modified create post mutation response object to only id
 ***
+Page to do the activation
 
-P1
+#### P1 #####
+
+.) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues
 
-P2
+#### P2 #####
+
+Content-Type: multipart/alternative;
+ boundary="===============9192062584887903382=="
+MIME-Version: 1.0
+Subject: Activate your account on localhost:8000
+From: webmaster@localhost
+To: prashanthbobby96@gmail.com
+Date: Mon, 17 Jul 2023 18:23:20 -0000
+Message-ID: 
+ <168961820044.3691.692125944409370169@Prashanths-MacBook-Air.local>
+
+--===============9192062584887903382==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+localhost:8000
+
+Hello prashanth!
+
+Please activate your account on the link:
+
+http://localhost:8000/activate/eyJ1c2VybmFtZSI6InByYXNoYW50aCIsImFjdGlvbiI6ImFjdGl2YXRpb24ifQ:1qLSsS:21NsgWgOLh0N9DJ-tehBNj9x2bQEqZi0gh8J7FXbFzI
+
+--===============9192062584887903382==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<h3>localhost:8000</h3>
+
+<p>Hello prashanth!</p>
+
+<p>Please activate your account on the link:</p>
+
+<p>http://localhost:8000/activate/eyJ1c2VybmFtZSI6InByYXNoYW50aCIsImFjdGlvbiI6ImFjdGl2YXRpb24ifQ:1qLSsS:21NsgWgOLh0N9DJ-tehBNj9x2bQEqZi0gh8J7FXbFzI</p>
+
+--===============9192062584887903382==--
+
 

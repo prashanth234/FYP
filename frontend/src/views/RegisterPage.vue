@@ -111,6 +111,7 @@ import gql from 'graphql-tag'
 import { reactive, ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
+import { useUserStore } from '@/stores/user'
 
 interface DatetimeChangeEventDetail {
   detail: {
@@ -133,6 +134,7 @@ const state = reactive({
 })
 
 const ionRouter = useIonRouter();
+const user = useUserStore();
 
 function controlDOB(value: boolean) {
   state.isOpen = value
@@ -189,6 +191,7 @@ function submitForm () {
       localStorage.setItem('fyptoken', response.token)
       localStorage.setItem('fyprefreshtoken', response.refreshToken)
       response.user = { username: state.username, email: state.email, avatar: '' }
+      user.$patch(response.user)
       store.commit('storeUser', response)
       ionRouter.push('/category')
     }

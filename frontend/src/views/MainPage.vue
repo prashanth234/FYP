@@ -13,14 +13,14 @@
                 <ion-col size="auto">
                   <ion-avatar style="width: 85px;height: 85px;">
                     <img alt="person"
-                      :src="store.state.user?.avatar ? `http://localhost:8000/media/${store.state.user.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+                      :src="user?.avatar ? `http://localhost:8000/media/${user.avatar}?temp=${user.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
                     />
                   </ion-avatar>
                 </ion-col>
                 <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
-                  <div v-if="store.state.user.success">
+                  <div v-if="user.success">
                     <p style="font-size: 15px"> Welcome Back </p>
-                    <p style="font-size: 20px; font-weight: 600;"> {{ store.state.user?.username }} </p>
+                    <p style="font-size: 20px; font-weight: 600;"> {{ user?.username }} </p>
                   </div>
                   <ion-button
                     v-else
@@ -40,13 +40,13 @@
                 Home
               </ion-label>
             </ion-item>
-            <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && store.state.user.success">
+            <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && user.success">
               <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'profile' ? 'light' : 'dark'" :icon="personOutline"></ion-icon>
               <ion-label class="list-label">
                 Profile
               </ion-label>
             </ion-item>
-            <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && store.state.user.success">
+            <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && user.success">
               <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
               <ion-label class="list-label">
                 logout
@@ -71,7 +71,7 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-          <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
+          <ion-modal :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
             <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
             <login-container />
           </ion-modal>
@@ -94,7 +94,7 @@
             <ion-col>
               <ion-title>TBD</ion-title>
             </ion-col>
-            <ion-col size="auto" v-if="store.state.user.success">
+            <ion-col size="auto" v-if="user.success">
               <ion-icon class="icon-custom cpointer" :icon="logOutOutline" @click="logout()"></ion-icon>
             </ion-col>
             <ion-col size="auto" class="ion-padding-end" v-else>
@@ -106,7 +106,7 @@
     </ion-header> 
 
     <ion-content>
-      <ion-modal :show-backdrop="true" :is-open="store.state.auth.open" @didDismiss="closeLogin">
+      <ion-modal :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
         <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
         <login-container />
       </ion-modal>
@@ -123,7 +123,7 @@
 
             <ion-col size="12" class="ion-align-self-end">
               <ion-icon
-                v-if="store.state.user.success" class="ion-icon-custom cpointer"
+                v-if="user.success" class="ion-icon-custom cpointer"
                 :icon="logOutOutline" @click="logout()"
               ></ion-icon>
               <ion-button
@@ -155,10 +155,12 @@ import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import { reactive } from 'vue'
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const ionRouter = useIonRouter();
 const router = useRoute();
+const user = useUserStore();
 
 const state = reactive({
   loading: true
@@ -167,7 +169,7 @@ const state = reactive({
 function logout() {
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')
-  store.commit('storeUser', {})
+  user.$reset()
 }
 
 function home() {
@@ -179,11 +181,11 @@ function profile() {
 }
 
 function closeLogin() {
-  store.commit('dismissAuth')
+  user.auth = false
 }
 
 function login() {
-  store.commit('displayAuth')
+  user.auth = true
   // ionRouter.push('/login')
 }
 
@@ -199,12 +201,12 @@ function getUserDetails() {
   
   onResult(({data, loading}) => {
     if (loading) return
-    store.commit('updateUser', data.me)
+    user.$patch({...data.me, userUpdated: user.userUpdated + 1})
   })
 }
 
 function checkAuthStatus() {
-  if (store.state.user.success) { 
+  if (user.success) { 
     state.loading = false
     return 
   }
@@ -238,7 +240,7 @@ function checkAuthStatus() {
       const refreshToken = localStorage.getItem('fyprefreshtoken')
 
       if (verifyToken.success) {
-        store.commit('updateUser', {success: true})
+        user.$patch({success: true})
         state.loading = false
         getUserDetails()
       } else {

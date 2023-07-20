@@ -12,7 +12,7 @@
           <ion-avatar style="width: 90px; height: 90px;" class="cpointer" @click="selectImage">
             <img
               alt="https://ionicframework.com/docs/img/demos/avatar.svg"
-              :src="result?.me.avatar ? `http://localhost:8000/media/${result.me.avatar}?temp=${store.state.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+              :src="result?.me.avatar ? `http://localhost:8000/media/${result.me.avatar}?temp=${user.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
             />
           </ion-avatar>
           <div class="camera-icon">
@@ -88,6 +88,8 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { cameraOutline } from 'ionicons/icons'
 import store from '@/vuex';
+import { useUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
 
 interface State {
   image: null,
@@ -99,6 +101,7 @@ interface State {
   loading: boolean
 }
 
+
 const state: State = reactive({
   image: null,
   preview: '',
@@ -108,6 +111,9 @@ const state: State = reactive({
   gender: '',
   loading: false
 })
+
+const user = useUserStore();
+const toast = useToastStore();
 
 // Profile image
 
@@ -134,7 +140,7 @@ function imageSelected(blob: CropperResult, type: string) {
     )
     mutate()
     onDone((value) => {
-      store.commit('updateUser', {})
+      user.userUpdated += 1
     })
   } catch (error) {
     console.error(error)
@@ -170,7 +176,7 @@ function updateProfile () {
     )
     mutate()
     onDone((value) => {
-      store.commit('displayToast', {message: 'Update Successful', color: 'success'})
+      toast.$patch({message: 'Update Successful', color: 'success', open: true})
       state.loading = false
     })
   } catch (error) {

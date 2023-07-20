@@ -89,7 +89,6 @@ const { result, onResult } = useQuery(gql`
                                 categories {
                                   name,
                                   description,
-                                  type,
                                   id,
                                   image
                                 }

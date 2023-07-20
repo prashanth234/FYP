@@ -55,11 +55,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonInput, IonRow, IonCol, IonText, IonButton, IonSpinner } from '@ionic/vue'
+import { IonList, IonItem, IonInput, IonRow, IonCol, IonText, IonButton, IonSpinner, toastController } from '@ionic/vue'
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import store from '@/vuex'
+import { useToastStore } from '@/stores/toast'
 
 interface State {
   oldPassword: string,
@@ -76,6 +77,8 @@ const state:State = reactive({
   errors: [],
   loading: false
 })
+
+const toast = useToastStore()
 
 function clear () {
   state.newPassword1 = ''
@@ -117,7 +120,7 @@ function changePassword () {
       const response = result.data.passwordChange
 
       if (response.success) {
-        store.commit('displayToast', {message: 'Password Changed Successfully', color: 'success'})
+        toast.$patch({message: 'Password Changed Successfully', color: 'success', open: true})
         clear()
       } else {
         const keys = Object.keys(response.errors)

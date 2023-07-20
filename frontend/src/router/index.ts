@@ -7,8 +7,10 @@ import MainPage from '../views/MainPage.vue'
 import CategoriesPage from '../views/CategoriesPage.vue'
 import CategoriesDetailsPage from '../views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
+import ActivatePage from '@/views/activatePage.vue'
 import LoginFormContianer from '@/components/LoginFormContainer.vue'
 import TempPage from '@/views/TempPage.vue'
+import { useUserStore } from '@/stores/user'
 
 import store from '../vuex';
 
@@ -28,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/register',
     name: 'Register',
     component: RegisterPage
+  },
+  {
+    path: '/activate/:token',
+    name: 'Activate',
+    component: ActivatePage
   },
   {
     path: '/',
@@ -65,13 +72,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.auth && !store.state.user.success) {
+  const user = useUserStore()
+
+  if (to.meta.auth && !user.success) {
     // Redirect the user to the login page if they are not authenticated
     next('/')
   } else {
     // Allow the user to access the route
     next()
   }
+  
 });
 
 export default router

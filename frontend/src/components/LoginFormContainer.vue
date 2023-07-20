@@ -51,7 +51,9 @@ import gql from 'graphql-tag'
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens } from '@/mixims/auth'
-import store from '@/vuex';
+import store from '@/vuex'
+import { useUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
 
 interface State {
   email: string,
@@ -72,6 +74,8 @@ const emit = defineEmits<{
 }>()
 
 const ionRouter = useIonRouter();
+const user = useUserStore();
+const toast = useToastStore();
 
 function forgotPassword () {
 
@@ -101,7 +105,7 @@ function forgotPassword () {
 
   onDone(({data: {sendPasswordResetEmail}}) => {
     if (sendPasswordResetEmail.success) {
-      store.commit('displayToast', {message: "Email sent successfully", color: 'success'})
+      toast.$patch({message: "Email sent successfully", color: 'success', open: true})
     }
   })
 }
@@ -144,9 +148,8 @@ function submitForm () {
 
     if (response.success) {
       storeTokens(response, 'login')
-      store.commit('updateUser', response.user)
-      store.commit('displayToast', {message: 'Login Successful', color: 'success'})
-      store.commit('dismissAuth')
+      user.$patch({...response.user, success: true, userUpdated: user.userUpdated + 1, auth: false})
+      toast.$patch({message: 'Login Successful', color: 'success', open: true})
       // ionRouter.push('/')
     } else {
       const keys = Object.keys(response.errors)

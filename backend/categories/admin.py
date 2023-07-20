@@ -6,7 +6,7 @@ from categories.models.Competition import Competition
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'type', 'image')
+    list_display = ('name', 'description', 'oftype', 'key', 'image')
 
 @admin.register(Competition)
 class CompetitionAdmin(admin.ModelAdmin):

@@ -8,7 +8,7 @@
           <ion-avatar slot="start">
             <img
               alt="person"
-              :src="post.user.avatar ? `http://localhost:8000/media/${post.user.avatar}?temp=${store.state.userUpdated}`:'https://ionicframework.com/docs/img/demos/avatar.svg'"
+              :src="post.user.avatar ? `http://localhost:8000/media/${post.user.avatar}?temp=${user.userUpdated}`:'https://ionicframework.com/docs/img/demos/avatar.svg'"
             />
           </ion-avatar>
           <ion-label>
@@ -72,6 +72,9 @@ import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
 import gql from 'graphql-tag'
 import { reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+const user = useUserStore()
 
 const ionRouter = useIonRouter()
 const props = defineProps(['post', 'showEdit'])
@@ -87,8 +90,8 @@ const state = reactive({
 })
 
 function likePost () {
-  if (!store.state.user.success) {
-    store.commit('displayAuth')
+  if (!user.success) {
+    user.auth = true
     return
   }
 

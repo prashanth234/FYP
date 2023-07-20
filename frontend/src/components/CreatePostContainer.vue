@@ -94,6 +94,7 @@ import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
 import store from '@/vuex'
 import { updatePostVariables } from '@/mixims/interfaces'
+import { useToastStore } from '@/stores/toast'
 
 interface CompetitionDetailsType {
   id: number,
@@ -130,6 +131,8 @@ const state = reactive({
   uploadAction: () => {}
 })
 
+const toast = useToastStore()
+
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'updatePost', variables: updatePostVariables): void;
@@ -165,7 +168,7 @@ function updatePost() {
   }
 
   if (Object.keys(variables).length == 1) {
-    store.commit('displayToast', {message: 'No changes made', color: 'warning'})
+    toast.$patch({message: 'No changes made', color: 'warning', open: true})
   } else {
     emit('updatePost', variables)
   }

@@ -1,11 +1,11 @@
 <template>
   <ion-toast
     position="top"
-    :color="store.state.toast.color"
-    :is-open="store.state.toast.open"
-    :message="store.state.toast.message"
+    :color="toast.color"
+    :is-open="toast.open"
+    :message="toast.message"
     :duration="5000"
-    @didDismiss="store.commit('dismissToast')"
+    @didDismiss="toast.open = false"
     :buttons="toastButtons"
   ></ion-toast>
 </template>
@@ -15,6 +15,7 @@
 import store from '@/vuex'
 import { IonToast } from '@ionic/vue'
 import { ref } from 'vue'
+import { useToastStore } from '@/stores/toast'
 // import { closeOutline } from 'ionicons/icons'
 
 const toastButtons = ref([
@@ -23,6 +24,8 @@ const toastButtons = ref([
           role: 'cancel'
         }
       ])
+
+const toast = useToastStore()
 
 </script>
 
