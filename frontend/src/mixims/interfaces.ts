@@ -11,7 +11,10 @@ interface PostFileType {
 export interface Post {
   id: number,
   description: string,
-  postfileSet: PostFileType[]
+  postfileSet: PostFileType[],
+  category: {
+    oftype: string
+  }
 }
 
 export interface CompetitionInfo {

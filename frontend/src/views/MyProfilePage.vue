@@ -120,7 +120,7 @@ import { CropperResult } from 'vue-advanced-cropper'
 
 interface State {
   isOpen: boolean,
-  editPost: PostType | null
+  editPost: PostType | null | undefined,
   openDialog: boolean,
   selectedTab: SegmentValue | undefined
 }

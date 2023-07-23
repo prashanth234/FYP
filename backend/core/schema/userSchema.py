@@ -7,8 +7,8 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
 
-
-from core.models.User import User
+# Type
+from core.schema.type.UserType import UserType
 
 class AuthQuery(
     # UserQuery,
@@ -17,23 +17,13 @@ class AuthQuery(
 ):
     pass
 
-class UserType1(DjangoObjectType):
-    class Meta:
-        model = User
-        fields = ("avatar",  "username")
-
-    def resolve_avatar(self, info):
-        if self.avatar:
-            self.avatar = info.context.build_absolute_uri(self.avatar.url)
-        return self.avatar
-
 class UserAvatarMutation(graphene.Mutation):
 
     class Arguments:
         avatar = Upload()
         type = graphene.String()
 
-    user = graphene.Field(UserType1)
+    user = graphene.Field(UserType)
 
     @classmethod
     def mutate(cls, root, info, avatar, type):

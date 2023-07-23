@@ -3,6 +3,10 @@ from graphql import GraphQLError
 from django.core.paginator import Paginator
 from graphene_file_upload.scalars import Upload
 from graphene_django.filter import DjangoFilterConnectionField
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+
 
 # Models
 from categories.models.Competition import Competition
@@ -40,8 +44,10 @@ class CreatePostMutation(graphene.Mutation):
         elif category:
             category = Category.objects.get(pk=category)
 
+        user = info.context.user
+
         post = Post(
-            user=info.context.user,
+            user=user,
             description=description,
             category=category,
             competition=competition or None
@@ -51,9 +57,15 @@ class CreatePostMutation(graphene.Mutation):
 
         if file:
             postFile = PostFile(
-                file=file,
                 post=post
             )
+
+            filetype = file.content_type.split('/')[1]
+            filename = f"posts/user_{info.context.user.id}/post_{post.id}.{filetype}"
+            file_content = ContentFile(file.read())
+
+            # Save the updated file with the new filename
+            postFile.file.save(filename, file_content, save=False)
 
             postFile.save()
 
@@ -88,8 +100,21 @@ class UpdatePostMutation(graphene.Mutation):
 
         if file:
             postFile = PostFile.objects.get(post=post)
-            postFile.file = file
-            postFile.save()
+
+            filetype = file.content_type.split('/')[1]
+            filename = f"posts/user_{info.context.user.id}/post_{post.id}.{filetype}"
+            file_content = ContentFile(file.read())
+            original_filename = postFile.file.name
+
+            # Save the updated file with the new filename
+            postFile.file.save(filename, file_content)
+
+            # Remove the existing file if it exists
+            if original_filename:
+                file_path = os.path.join(settings.MEDIA_ROOT, original_filename)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+
 
         return UpdatePostMutation(post=post)
 
@@ -113,6 +138,11 @@ class DeletePostMutation(graphene.Mutation):
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
+        postFile = PostFile.objects.get(post=post)
+        
+        if postFile.file:
+            postFile.file.storage.delete(postFile.file.name)
+            
         post.delete()
 
         return DeletePostMutation(success=True)

@@ -5,7 +5,9 @@ from django.contrib.contenttypes.models import ContentType
 # Models
 from categories.models.Post import Post, PostFile
 from categories.models.Like import *
-from core.models.User import User
+
+# Type
+from core.schema.type.UserType import UserType
 
 class PostFileType(DjangoObjectType):
     class Meta:
@@ -17,11 +19,6 @@ class PostFileType(DjangoObjectType):
             self.file = info.context.build_absolute_uri(self.file.url)
         return self.file
 
-# ** See if you can decouple from this app
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
-        fields = ("username", "avatar")
 
 class PostType(DjangoObjectType):
     

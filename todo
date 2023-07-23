@@ -1,11 +1,11 @@
 #### P0 #####
 
-.) Add a key for description and photos according to there category.
-.) Move person image to local
 .) Remove image on post delete and update
 .) Add Responsiveness for the login page - Frontend
 .) Email backend and user verification
 .) Add points icon and popup about points
+.) Static and media assets handling and image url to send to frontend and check profile upload case
+.) Move person image to local
 .) Prepare for production
 .) Work on deployment
 .) Work on ui coloring
@@ -44,6 +44,7 @@ SOLUTION
 Modified create post mutation response object to only id
 ***
 Page to do the activation
+Add a key for description and photos according to there category.
 
 #### P1 #####
 
