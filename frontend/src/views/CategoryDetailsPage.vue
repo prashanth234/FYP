@@ -11,83 +11,38 @@
 
             <ion-row>
 
+              <!-- Breadcrumb for navigation from category to competition -->
               <ion-col size="12">
 
                 <ion-breadcrumbs color="primary">
                   <ion-breadcrumb class="cpointer" @click="goBackCategory()">
-                    {{ result?.categoryDetails.name }}
+                    {{ categoryInfo.name }}
                     <ion-icon slot="separator" style="margin-top: 5px" :icon="arrowForward"></ion-icon>
                   </ion-breadcrumb>
-                  <ion-breadcrumb v-if="state.competition">{{ state.competition.name }}</ion-breadcrumb>
-                  <ion-icon style="margin-top: 7px;" v-if="state.competition" @click="goBackCategory()" class="close-icon ml-auto cpointer" size="large" :icon="closeOutline"></ion-icon>
+                  <ion-breadcrumb v-if="categoryInfo.selectedComptn">{{ categoryInfo.selectedComptn.name }}</ion-breadcrumb>
+                  <ion-icon style="margin-top: 7px;" v-if="categoryInfo.selectedComptn" @click="goBackCategory()" class="close-icon ml-auto cpointer" size="large" :icon="closeOutline"></ion-icon>
                 </ion-breadcrumbs>
 
               </ion-col>
 
               <!-- Competitions for small screens -->
               <ion-col size="12" class="ion-hide-md-up">
-
-                <ion-card class="border-radius-std">
-
-                  <ion-card-header style="padding-bottom: 0px">
-                    <ion-card-title>Competitions</ion-card-title>
-                  </ion-card-header>
-
-                  <ion-row class="ion-nowrap" style="overflow-y: auto; padding: 5px">
-                    <ion-col v-for="(competition, index) in result?.categoryDetails.competitionSet" :key="index">
-                      <ion-card @click="loadCompetitionPosts(competition)" class="small-competitions competition cpointer" :class="{'competition-selected': state.competition?.id == competition.id}">
-                        <ion-card-header>
-                          <ion-card-title>{{ competition.name }}</ion-card-title>
-                        </ion-card-header>
-
-                        <ion-card-content>
-                          <p class="two-line-ellipsis" :title="competition.description">
-                            {{ competition.description }}
-                          </p>
-                        </ion-card-content>
-                      </ion-card>
-                    </ion-col>
-                  </ion-row>
-
-                </ion-card>
-
+                <competitions
+                  @select-competition="loadCompetitionPosts"
+                  :vertical="false"
+                />
               </ion-col>
 
-              <ion-col size="12" v-if="state.competition">
-
-                <ion-card  class="border-radius-std">
-                  <ion-accordion-group>
-                    <ion-accordion value="first">
-                      <ion-item slot="header" color="light">
-                        <ion-label>Competition Details</ion-label>
-                      </ion-item>
-                      <div class="ion-padding" slot="content">
-                        <table style="width:100%">
-                          <tr>
-                            <td class="header">Description</td>
-                            <td>{{ state.competition.description }}</td>
-                          </tr>
-                          <tr>
-                            <td class="header">Last Date</td>
-                            <td>{{ state.competition.lastDate }}</td>
-                          </tr>
-                          <tr>
-                            <td class="header">Points</td>
-                            <td>{{ state.competition.points }}</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </ion-accordion>
-                  </ion-accordion-group>
-                </ion-card>
-                
+              <!-- Competition details -->
+              <ion-col size="12" v-if="categoryInfo.selectedComptn">
+                <competition-details />
               </ion-col>
 
-              <ion-col size="12">
+              <!-- Create Post -->
+              <ion-col size="12" v-if="!categoryInfo.loading">
                 <create-post
                   :fixed-preview-height="false"
                   :key="state.refreshCreatePost"
-                  :competition="state.competition"
                   :creatingPost="state.creatingPost"
                   @uploadPost="createNewPost"
                   type="create"
@@ -95,7 +50,8 @@
                 </create-post>
               </ion-col>
 
-              <ion-col size="12" v-if="state.competition">
+              <!-- Toggle between all posts and top 5 -->
+              <ion-col size="12" v-if="categoryInfo.selectedComptn">
                 <ion-segment :value="state.tabSelected" @ionChange="tabChanged">
                   <ion-segment-button value="allposts">
                     <ion-label>All Posts</ion-label>
@@ -106,6 +62,7 @@
                 </ion-segment>
               </ion-col>
 
+              <!-- Display the posts -->
               <ion-col size="12" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
               </ion-col>
@@ -113,37 +70,14 @@
             </ion-row>
 
           </ion-col>
-          <!-- End of the create post and all posts -->
 
-          <!-- Start of competitions for large screens -->
+          <!-- Competitions for large screens -->
           <ion-col class="ion-hide-md-down" size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4">
-
-            <ion-card class="border-radius-std">
-
-              <ion-card-header style="padding-bottom: 5px">
-                <ion-card-title>Competitions</ion-card-title>
-              </ion-card-header>
-              
-              <ion-row>
-                <ion-col size="12" v-for="(competition, index) in result?.categoryDetails.competitionSet" :key="index">
-                  <ion-card @click="loadCompetitionPosts(competition)" class="competition cpointer" :class="{'competition-selected': state.competition?.id == competition.id}">
-                    <ion-card-header>
-                      <ion-card-title>{{ competition.name }}</ion-card-title>
-                    </ion-card-header>
-
-                    <ion-card-content>
-                      <p class="two-line-ellipsis" :title="competition.description">
-                        {{ competition.description }}
-                      </p>
-                    </ion-card-content>
-                  </ion-card>
-                </ion-col>
-              </ion-row>
-
-            </ion-card>
-            
+            <competitions
+              @select-competition="loadCompetitionPosts"
+              :vertical="true"
+            />
           </ion-col>
-          <!-- End of competitions -->
 
         </ion-row>
 
@@ -160,25 +94,19 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import { IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
+import { IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonBreadcrumb, IonBreadcrumbs, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
-import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
+import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
 import { useMutation } from '@vue/apollo-composable'
 import { arrowForward, closeOutline } from 'ionicons/icons'
-
-interface CompetitionDetailsType {
-  id: number,
-  name: string,
-  description: string,
-  lastDate: string,
-  points: number
-}
+import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import Competitions from '@/components/CompetitionsContainer.vue'
+import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
 
 interface State {
-  competition: CompetitionDetailsType | null,
+  competition: CompetitionInfo | null,
   refreshCreatePost: number,
   creatingPost: Boolean,
   tabSelected: SegmentValue | undefined
@@ -192,39 +120,22 @@ const state: State = reactive({
 })
 
 const ionRouter = useIonRouter();
+const categoryInfo = useCategoryInfoStore();
 
 const props = defineProps({
   id: String
 })
 
-const { result, onResult } = useQuery(gql`
-                              query ($id: Int!) {
-                                categoryDetails (id: $id) {
-                                  name,
-                                  description,
-                                  competitionSet {
-                                    id,
-                                    name,
-                                    description,
-                                    lastDate,
-                                    points
-                                  }
-                                }
-                              }
-                            `, {
-                              id: props.id,
-                            })
-
-onResult(value => {
-  console.log(value)
-})
+if (props.id) {
+  categoryInfo.getCategoryInfo(props.id)
+}
 
 const category =  props.id ? parseInt(props.id) : undefined
 const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
 
-function loadCompetitionPosts(competition: CompetitionDetailsType) {
+function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'
-  state.competition = competition
+  categoryInfo.selectedComptn = competition
   variables.competition.value = competition.id
 }
 
@@ -232,16 +143,16 @@ function goBackCategory() {
   if (!variables.competition.value) { return }
   variables.competition.value = undefined
   variables.trending.value = false
-  state.competition = null
+  categoryInfo.selectedComptn = null
 }
 
-function createNewPost(createVariables: updatePostVariables) {
+function createNewPost(createVariables: UpdatePostVariables) {
 
   state.creatingPost = true
 
   let postVariables = {
     ...createVariables,
-    competition: state.competition?.id || undefined,
+    competition: categoryInfo.selectedComptn?.id || undefined,
     category: props.id
   }
 
@@ -255,7 +166,7 @@ function createNewPost(createVariables: updatePostVariables) {
   try {
     const { mutate, onDone } = useMutation(gql`    
       
-      mutation ($file: Upload!, $category: ID, $competition: ID, $description: String!) { 
+      mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
         createPost (
           file: $file,
           competition: $competition,
@@ -294,7 +205,6 @@ function createNewPost(createVariables: updatePostVariables) {
     onDone(() => {
       state.refreshCreatePost++
       state.creatingPost = false
-      variables.page = 1
       refetch()
     })
 
@@ -311,38 +221,11 @@ function tabChanged(event: SegmentCustomEvent) {
 </script>
 
 <style scoped>
-.competition-selected {
-  border: 1px solid var(--ion-color-primary)
-}
-.competition:hover {
-  box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12)!important;
-  /* border: 1px solid var(--ion-color-primary); */
-  /* box-shadow: inset 0 0 0 3px #eee; */
-}
 ion-breadcrumb {
   font-size: 20px;
 }
 .posts ion-card {
   margin-left: 0px;
   margin-right: 0px;
-}
-.small-competitions {
-  width: 150px;
-  height: 120px;
-}
-table, th, td {
-  border-collapse: collapse;
-  padding-bottom: 13px;
-  padding-top: 13px;
-  color: var(--ion-color-dark);
-}
-tr {
-  border-bottom: 0.5px solid var(--ion-color-medium);
-}
-tr:last-child {
-  border-bottom: 0px;
-}
-table .header {
-  width: 150px;
 }
 </style>

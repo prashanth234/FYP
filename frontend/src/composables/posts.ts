@@ -31,25 +31,15 @@ export function getPosts(
           user {
             username,
             avatar
+          },
+          category {
+            oftype
           }
         },
         total
       }
     }
   `
-
-  // let page = 1
-  // const variables1 = {
-  //   page: 1,
-  //   perPage: 1
-  // }
-  // if (category) {
-  //   Object.assign(variables1, {category})
-  // }
-  // if (competition) {
-  //   Object.assign(variables1, {competition})
-  // }
-  // const { result: posts, loading, fetchMore } = useQuery(POST_QUERY, () => (variables1))
 
   const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
     page: variables.page,

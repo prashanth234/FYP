@@ -24,7 +24,7 @@
             />
           </ion-col>
 
-          <ion-col size="12">
+          <ion-col size="12" v-if="state.oftype == 'IMAGETEXT'">
             <div v-if="state.preview" :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 10px">
               <ion-img :src="state.preview"></ion-img>
             </div>
@@ -40,7 +40,7 @@
             >
               <template #handler="{selectImage}">
                 <ion-row class="padding-col-zero">
-                  <ion-col size="auto">
+                  <ion-col size="auto" v-if="state.oftype == 'IMAGETEXT'">
                     <ion-button
                       @click="selectImage()"
                       for="file-upload"
@@ -54,7 +54,7 @@
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="!state.preview || !!props.creatingPost"
+                      :disabled="(state.oftype == 'IMAGETEXT' && !state.preview) || !!props.creatingPost"
                       style="float: right"
                     >
                       <ion-spinner 
@@ -93,14 +93,9 @@ import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
 import store from '@/vuex'
-import { updatePostVariables } from '@/mixims/interfaces'
+import { UpdatePostVariables } from '@/mixims/interfaces'
 import { useToastStore } from '@/stores/toast'
-
-interface CompetitionDetailsType {
-  id: number,
-  name: string,
-  description: string
-}
+import { useCategoryInfoStore } from '@/stores/categoryInfo'
 
 interface PostFileType {
   file: string
@@ -109,16 +104,24 @@ interface PostFileType {
 interface PostType {
   id: number,
   description: string,
-  postfileSet: PostFileType[]
+  postfileSet: PostFileType[],
+  category: {
+    oftype: string
+  }
 }
 
 const props = defineProps<{
-  competition?: CompetitionDetailsType | null
   post?: PostType | null,
   type: string,
   creatingPost?: Boolean,
   showHeader?: Boolean,
   fixedPreviewHeight: Boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'close'): void;
+  (e: 'updatePost', variables: UpdatePostVariables): void;
+  (e: 'uploadPost', variables: UpdatePostVariables): void;
 }>()
 
 const state = reactive({
@@ -128,16 +131,19 @@ const state = reactive({
   title: '',
   uploadTitle: '',
   refreshFileUpload: 0,
+  oftype: '',
   uploadAction: () => {}
 })
 
 const toast = useToastStore()
 
-const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'updatePost', variables: updatePostVariables): void;
-  (e: 'uploadPost', variables: updatePostVariables): void;
-}>()
+if (props.type == 'create') {
+  const { oftype } = useCategoryInfoStore()
+  state.oftype = oftype
+} else if (props.post){
+  // Post edit case
+  state.oftype = props.post.category.oftype
+}
 
 function createPostForm () {
   state.image = null
@@ -146,8 +152,8 @@ function createPostForm () {
 }
 
 function uploadPost() {
-  const variables: updatePostVariables = {
-    file: state.image,
+  const variables: UpdatePostVariables = {
+    file: state.image || undefined,
     description: state.description
   }
 
@@ -179,7 +185,7 @@ function initialize() {
     state.title = 'Edit Post'
     state.uploadTitle = 'Update'
     state.description = props.post.description
-    state.preview = props.post.postfileSet[0].file
+    props.post.postfileSet.length && (state.preview = props.post.postfileSet[0].file)
     state.uploadAction = updatePost
   } else if (props.type == 'create') {
     state.title = 'Create Post'

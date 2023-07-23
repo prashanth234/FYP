@@ -113,7 +113,7 @@ import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/aboutContainer.vue'
 import ChangePassword from '@/components/changePasswordContainer.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { updatePostVariables, Post as PostType } from '@/mixims/interfaces'
+import { UpdatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { getPosts } from '@/composables/posts'
 import { warningOutline } from 'ionicons/icons'
 import { CropperResult } from 'vue-advanced-cropper'
@@ -206,7 +206,7 @@ function editPost(post: PostType, index: number) {
   state.isOpen = true
 }
 
-function updatePost(updateVariables: updatePostVariables) {
+function updatePost(updateVariables: UpdatePostVariables) {
   try {
     const { mutate, onDone } = useMutation(gql`    
       

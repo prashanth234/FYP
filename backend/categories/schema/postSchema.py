@@ -20,14 +20,14 @@ class CreatePostMutation(graphene.Mutation):
         description = graphene.String()
         category = graphene.ID()
         competition = graphene.ID()
-        file = Upload(required=True)
+        file = Upload()
 
 
     # The class attributes define the response of the mutation
     post = graphene.Field(PostType)
 
     @classmethod
-    def mutate(cls, root, info, file, description='', category=None, competition=None):
+    def mutate(cls, root, info, file=None, description='', category=None, competition=None):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
@@ -49,12 +49,13 @@ class CreatePostMutation(graphene.Mutation):
         
         post.save()
 
-        postFile = PostFile(
-            file=file,
-            post=post
-        )
+        if file:
+            postFile = PostFile(
+                file=file,
+                post=post
+            )
 
-        postFile.save()
+            postFile.save()
 
         return CreatePostMutation(post=post)
     

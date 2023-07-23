@@ -1,11 +1,13 @@
 #### P0 #####
 
 .) Add a key for description and photos according to there category.
+.) Move person image to local
 .) Remove image on post delete and update
 .) Add Responsiveness for the login page - Frontend
 .) Email backend and user verification
 .) Add points icon and popup about points
-.) Prepare for deployment
+.) Prepare for production
+.) Work on deployment
 .) Work on ui coloring
 
 .) customize the post (like cropping)
@@ -47,6 +49,7 @@ Page to do the activation
 
 .) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues
+.) Getting category on the post see if it can be optimized
 
 #### P2 #####
 

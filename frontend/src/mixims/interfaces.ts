@@ -1,6 +1,6 @@
-export interface updatePostVariables {
+export interface UpdatePostVariables {
   id?: number,
-  file?: File | null,
+  file?: File | null | undefined,
   description?: string
 }
 
@@ -12,4 +12,12 @@ export interface Post {
   id: number,
   description: string,
   postfileSet: PostFileType[]
+}
+
+export interface CompetitionInfo {
+  id: number,
+  name: string,
+  description: string,
+  lastDate: string,
+  points: number
 }
