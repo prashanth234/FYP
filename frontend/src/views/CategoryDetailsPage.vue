@@ -92,9 +92,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, } from 'vue-router'
 import gql from 'graphql-tag'
-import { IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonBreadcrumb, IonBreadcrumbs, useIonRouter, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
+import { IonLabel, IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonBreadcrumb, IonBreadcrumbs, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
@@ -119,16 +120,24 @@ const state: State = reactive({
   tabSelected: 'allposts'
 })
 
-const ionRouter = useIonRouter();
+const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 
 const props = defineProps({
   id: String
 })
 
-if (props.id) {
-  categoryInfo.getCategoryInfo(props.id)
-}
+watch(() => route.params.id, () => {
+  if (route.name == 'CategoryDetails' && route.params.id == props.id) {
+    categoryInfo.getCategoryInfo(props.id)
+  }
+})
+
+onBeforeRouteLeave(() => {
+  categoryInfo.name && categoryInfo.$reset()
+})
+
+props.id && categoryInfo.getCategoryInfo(props.id)
 
 const category =  props.id ? parseInt(props.id) : undefined
 const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)

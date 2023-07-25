@@ -6,16 +6,44 @@
 
       {{ ` ${state.name} = ${state.firstname}  ${state.lastname}`}}
 
-      <child v-model="state.name" @update:first-name="firstupdate" v-model:last-name="state.lastname"/>
+
+      <ion-col v-for="item in [1,2,3]" :key="item">
+        <a @click="routeTo(item)">click item {{item}}</a>
+      </ion-col>
+
+      <ion-button @click="router.push('/temp')">back</ion-button>
 
     </ion-content>
+
+      <ion-router-outlet style="margin-top: 100px;"></ion-router-outlet>
   </ion-page>
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonIcon, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
-import { reactive, onMounted, ref } from 'vue'
+import { IonPage, IonRouterOutlet, IonIcon, IonContent, IonCol, IonButton, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonCardTitle, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardContent, useIonRouter } from '@ionic/vue'
+import { reactive, onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import Child from './tempComponent.vue'
+
+onBeforeRouteUpdate(async (to, from) => {
+  // only fetch the user if the id changed as maybe only the query or the hash changed
+  // console.log(to, from)
+  // console.log("router update in parent")
+})
+
+onBeforeRouteLeave(async (to, from) => {
+  // only fetch the user if the id changed as maybe only the query or the hash changed
+  // console.log(to, from)
+  // console.log("router leave in parent")
+})
+
+const props = defineProps({
+  id: String
+})
+
+watch(() => props.id, () => {
+  // console.log("id changed", props)
+})
 
 const state = reactive({
   firstname: '',
@@ -26,6 +54,17 @@ const state = reactive({
 function firstupdate () {
   console.log("parent")
 }
+
+const router = useIonRouter()
+
+function routeTo (item: number) {
+  router.push(`/temp/child/${item}`)
+}
+
+onMounted(() => {
+  // console.log("mounted")
+})
+
 </script>
 
 <style scoped>

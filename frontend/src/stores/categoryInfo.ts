@@ -16,6 +16,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
   },
   actions: {
     getCategoryInfo (id: string) {
+      this.loading = true
       const { result, onResult } = useQuery(gql`
                                     query ($id: Int!) {
                                         categoryDetails (id: $id) {

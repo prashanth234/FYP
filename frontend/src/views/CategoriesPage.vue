@@ -96,7 +96,7 @@ const { result, onResult } = useQuery(gql`
                             `)
 
 onResult(({data, loading}) => {
-  console.log(data, loading)
+  // console.log(data, loading)
 })
 
 function openCategory (category: categoryObject) {
