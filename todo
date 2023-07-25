@@ -1,6 +1,5 @@
 #### P0 #####
 
-.) Fix issues while category navigation
 .) Add Responsiveness for the login page - Frontend
 .) Email backend and user verification
 .) Add points icon and popup about points
@@ -46,6 +45,7 @@ Modified create post mutation response object to only id
 Page to do the activation
 Add a key for description and photos according to there category.
 Remove image on post delete and update
+Fix issues while category navigation
 
 #### P1 #####
 

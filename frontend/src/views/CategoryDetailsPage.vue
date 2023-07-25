@@ -134,6 +134,7 @@ watch(() => route.params.id, () => {
 })
 
 onBeforeRouteLeave(() => {
+  goBackCategory()
   categoryInfo.name && categoryInfo.$reset()
 })
 
