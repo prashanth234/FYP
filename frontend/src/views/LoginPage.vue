@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 
-import { IonPage, IonContent, IonCol, IonGrid, IonRow, IonRouterOutlet } from '@ionic/vue';
+import { IonPage, IonContent, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import LoginContainer from '@/components/LoginContainer.vue'
 
 </script>

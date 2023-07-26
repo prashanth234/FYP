@@ -26,8 +26,10 @@
       </ion-col>
 
       <ion-col size="12">
-        <ion-button color="primary" :disabled="state.disabled" expand="block" @click="submitForm()">Login</ion-button>
+        <ion-button class="auth-button" color="primary" :disabled="state.disabled" expand="block" @click="submitForm()">Login</ion-button>
       </ion-col>
+
+      <ion-col size="12" class="line" style="margin-top: 12px; margin-bottom: 10px;"></ion-col>
 
       <ion-col size="12" >
         <ion-button fill="clear" @click="forgotPassword">Forgotten password?</ion-button>

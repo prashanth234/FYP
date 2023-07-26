@@ -1,7 +1,8 @@
 ion-input.custom-input {
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
+  border-radius: 4px;
   text-align: start !important;
+  max-height: 38px;
+  min-height: 38px !important;
 }
 
 ion-select.custom-select {
@@ -15,6 +16,11 @@ ion-input.custom-input:focus {
   border-color: #1b74e4;
   box-shadow: 0 0 0 2px #e7f3ff;
   caret-color: #1b74e4;
+}
+
+.auth-button {
+  height: 32px;
+  --border-radius: 8px;
 }
 
 .full-height {
@@ -91,7 +97,7 @@ ion-button {
   color: var(--ion-color-medium)
 }
 
-ion-modal {
+ion-modal.custom-modal {
   --height: auto;
   --backdrop-opacity: 0.8;
 
@@ -100,4 +106,8 @@ ion-modal {
     overflow: auto;
     box-shadow: none;
   }
+}
+
+.line {
+  border-bottom: 1px solid var(--ion-color-light-shade);
 }

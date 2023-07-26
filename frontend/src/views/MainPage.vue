@@ -71,10 +71,6 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-          <ion-modal :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
-            <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
-            <login-container />
-          </ion-modal>
           <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
           <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
         </ion-content>
@@ -82,6 +78,11 @@
       </div>
 
     </ion-split-pane>
+
+    <ion-modal class="login-modal" :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
+      <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
+      <login-container style="margin-top: 20px;" />
+    </ion-modal>
 
   </ion-page>
 
@@ -287,44 +288,12 @@ checkAuthStatus()
 </script>
 
 <style scoped lang="scss">
-  .icon-custom {
-    padding-right: 15px;
-  }
-  ion-grid {
-    --ion-grid-padding: 0px;
-    padding-top: 5px;
-    font-size: 25px !important;
-  }
-  ion-modal {
-    --background: transparent;
-    --backdrop-opacity: 70%;
-    --border-radius: 5px;
-    --box-shadow: 0px;
-    --height: auto;
-  }
   .close-login {
-    float: right;
-    color: white;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    color: var(--ion-color-light-shade);
     cursor: pointer;
-    line-height: 1;
-    vertical-align: top;
-    z-index: 5;
-  }
-  .side-toolbar {
-    top: 20px;
-    left: 20px;
-    height: calc(100vh - 40px);
-    width: 60px;
-  }
-  .ion-custom-router {
-    margin-left: 75px;
-  }
-  .ion-custom-header {
-    position: initial;
-    padding-top: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 5px
   }
   ion-toolbar {
     --min-height: 45px;
@@ -344,4 +313,47 @@ checkAuthStatus()
     font-weight: 600;
     padding-left: 12px;
   }
+  .login-modal {
+    --backdrop-opacity: 0.8;
+    --max-width: 100%;
+    overflow: auto;
+    
+    &::part(content) {
+      overflow: auto;
+      box-shadow: none;
+    }
+    
+  }
+  @media only screen and (min-width: 576px) {
+    // For sm and above screens
+    .login-modal {
+      --height: auto;
+      --max-width: 350px;
+    }
+  }
+  // ion-grid {
+  //   --ion-grid-padding: 0px;
+  //   padding-top: 5px;
+  //   font-size: 25px !important;
+  // }
+  // ion-modal {
+  //   --background: transparent;
+  //   --backdrop-opacity: 70%;
+  //   --border-radius: 5px;
+  //   --box-shadow: 0px;
+  //   --height: auto;
+  // }
+  // .side-toolbar {
+  //   top: 20px;
+  //   left: 20px;
+  //   height: calc(100vh - 40px);
+  //   width: 60px;
+  // }
+  // .ion-custom-header {
+  //   position: initial;
+  //   padding-top: 15px;
+  //   padding-left: 20px;
+  //   padding-right: 20px;
+  //   border-radius: 5px
+  // }
 </style>

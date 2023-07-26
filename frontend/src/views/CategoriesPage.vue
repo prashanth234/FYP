@@ -109,13 +109,11 @@ function openCategory (category: categoryObject) {
   color: var(--ion-text-color);
   width: fit-content;
   box-shadow: none;
-  border: 1px solid #d7d8da;
+  border: 1px solid var(--ion-color-light-shade);
   margin-left: auto;
   margin-right: auto;
 }
 .cat-card:hover {
-  /* transform: translate3d(0, 5px, 0) rotateX(1deg); */
-  /* border: 1px solid var(--ion-color-primary); */
   box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12)!important;
 }
 .cat-image {
@@ -138,7 +136,7 @@ function openCategory (category: categoryObject) {
   font-size: 13px;
   color: grey
 }
-.cat-arrow {
+/* .cat-arrow {
   float: right;
   font-size: 25px;
   padding-top: 2px;
@@ -155,7 +153,7 @@ function openCategory (category: categoryObject) {
   position: absolute;
   bottom: 0;
   right: 20px;
-}
+} */
 
 /* .ART {
   background-image: linear-gradient( 135deg,  #0396FF 10%, #ABDCFF 100%);

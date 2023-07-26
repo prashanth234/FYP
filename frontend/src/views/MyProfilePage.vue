@@ -3,7 +3,7 @@
   <ion-page>
     <ion-content>
         
-      <ion-modal class="edit-post-modal" :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
+      <ion-modal class="edit-post-modal custom-modal" :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
         <create-post
           :fixed-preview-height="true"
           :showHeader="true"
@@ -14,7 +14,7 @@
         />
       </ion-modal>
 
-      <ion-modal class="delete-post-modal" :is-open="state.openDialog" :show-backdrop="true" @willDismiss="closeDialog">
+      <ion-modal class="delete-post-modal custom-modal" :is-open="state.openDialog" :show-backdrop="true" @willDismiss="closeDialog">
         <ion-card style="width: 300px">
           <ion-card-content>
             <ion-row>

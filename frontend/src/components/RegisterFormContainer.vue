@@ -12,6 +12,7 @@
       <!-- <ion-col size="6">
         <ion-input class="custom-input" v-model="state.firstname" type="text" placeholder="First Name"></ion-input>
       </ion-col>
+
       <ion-col size="6">
         <ion-input class="custom-input" v-model="state.lastname" type="text" placeholder="Last Name"></ion-input>
       </ion-col> -->
@@ -56,11 +57,13 @@
       </ion-col>
 
       <ion-col size="12">
-        <ion-button color="primary" :disabled="state.disabled" expand="block" @click="submitForm()">Register</ion-button>
+        <ion-button color="primary" class="auth-button" :disabled="state.disabled" expand="block" @click="submitForm()">Register</ion-button>
       </ion-col>
 
+      <ion-col size="12" class="line" style="margin-top: 10px; margin-bottom: 15px;"></ion-col>
+
       <ion-col size="12">
-        Have an account? <a class="cpointer" @click="goToLogin()">Log in</a>
+        Have an account? <a class="cpointer" @click="goToLogin()"><b>Log in</b></a>
       </ion-col>
 
     </ion-row>

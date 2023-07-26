@@ -36,7 +36,7 @@
 
   </div>
 
-  <ion-modal class="crop-modal" :is-open="state.openCropper" :show-backdrop="true" @willDismiss="closeCropper">
+  <ion-modal class="crop-modal custom-modal" :is-open="state.openCropper" :show-backdrop="true" @willDismiss="closeCropper">
     <ion-card style="width: 300px">
       <ion-card-content>
         <ion-row>
