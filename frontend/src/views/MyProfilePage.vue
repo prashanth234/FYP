@@ -3,7 +3,7 @@
   <ion-page>
     <ion-content>
         
-      <ion-modal class="edit-post-modal custom-modal" :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
+      <ion-modal class="edit-post-modal" :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
         <create-post
           :fixed-preview-height="true"
           :showHeader="true"
@@ -14,41 +14,37 @@
         />
       </ion-modal>
 
-      <ion-modal class="delete-post-modal custom-modal" :is-open="state.openDialog" :show-backdrop="true" @willDismiss="closeDialog">
-        <ion-card style="width: 300px">
-          <ion-card-content>
+      <ion-modal class="delete-post-modal" :is-open="state.openDialog" :show-backdrop="true" @willDismiss="closeDialog">
+        <ion-row class="ion-padding">
+          <ion-col size="12" class="delete-message">
             <ion-row>
-              <ion-col size="12" class="delete-message">
-                <ion-row>
-                  <ion-col size="auto">
-                    <ion-icon :icon="warningOutline" color="warning" size="large"></ion-icon>
-                  </ion-col>
-                  <ion-col style="padding-top: 10px;">
-                    <strong> Confirm Delete? </strong>
-                  </ion-col>
-                </ion-row>
+              <ion-col size="auto">
+                <ion-icon :icon="warningOutline" color="warning" size="large"></ion-icon>
               </ion-col>
-              <ion-col size="12">
-                <ion-button
-                  size="small"
-                  color="danger"
-                  @click="deletePost"
-                  style="float: right"
-                >
-                  Delete
-                </ion-button>
-                <ion-button
-                  size="small"
-                  @click="closeDialog"
-                  color="light"
-                  style="float: right; margin-right: 15px;"
-                >
-                  Cancel
-                </ion-button>
+              <ion-col style="padding-top: 10px;">
+                <strong> Confirm Delete? </strong>
               </ion-col>
             </ion-row>
-          </ion-card-content>
-        </ion-card>
+          </ion-col>
+          <ion-col size="12">
+            <ion-button
+              size="small"
+              color="danger"
+              @click="deletePost"
+              style="float: right"
+            >
+              Delete
+            </ion-button>
+            <ion-button
+              size="small"
+              @click="closeDialog"
+              color="light"
+              style="float: right; margin-right: 15px;"
+            >
+              Cancel
+            </ion-button>
+          </ion-col>
+        </ion-row>
       </ion-modal>
 
       <ion-grid>
@@ -266,10 +262,25 @@ function tabChanged(event: SegmentCustomEvent) {
 
 <style lang="scss" scoped>
   .delete-post-modal {
-    --max-width: 350px;
+    --max-width: 90%;
+    --height: auto;
+  }
+  @media only screen and (min-width: 576px) {
+    .delete-post-modal {
+      --max-width: 400px;
+    }
+    .edit-post-modal {
+      --max-width: 600px;
+    }
   }
   .edit-post-modal {
-    --max-width: 600px;
+    --max-width: 90%;
+    --height: auto;
+
+    &::part(content) {
+      background: none;
+      box-shadow: none;
+    }
   }
   .delete-message {
     font-size: 17px;

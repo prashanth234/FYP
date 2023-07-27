@@ -232,10 +232,15 @@ function tabChanged(event: SegmentCustomEvent) {
 
 <style scoped>
 ion-breadcrumb {
-  font-size: 20px;
+  font-size: 21px !important;
+  font-weight: 500 !important;
+  line-height: 1.2;
 }
 .posts ion-card {
   margin-left: 0px;
   margin-right: 0px;
+}
+ion-content::part(scroll) {
+  padding-top: 0px;
 }
 </style>

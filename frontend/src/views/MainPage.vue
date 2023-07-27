@@ -314,15 +314,7 @@ checkAuthStatus()
     padding-left: 12px;
   }
   .login-modal {
-    --backdrop-opacity: 0.8;
     --max-width: 100%;
-    overflow: auto;
-    
-    &::part(content) {
-      overflow: auto;
-      box-shadow: none;
-    }
-    
   }
   @media only screen and (min-width: 576px) {
     // For sm and above screens
@@ -330,6 +322,10 @@ checkAuthStatus()
       --height: auto;
       --max-width: 350px;
     }
+  }
+  ion-header {
+      -webkit-box-shadow: none;
+      box-shadow: none;
   }
   // ion-grid {
   //   --ion-grid-padding: 0px;

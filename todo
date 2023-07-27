@@ -1,6 +1,6 @@
 #### P0 #####
 
-.) Add Responsiveness for the login page - Frontend
+.) cropper is not coming at center
 .) Email backend and user verification
 .) Add points icon and popup about points
 .) Static and media assets handling and image url to send to frontend and check profile upload case
@@ -46,6 +46,7 @@ Page to do the activation
 Add a key for description and photos according to there category.
 Remove image on post delete and update
 Fix issues while category navigation
+Add Responsiveness for the login page - Frontend
 
 #### P1 #####
 

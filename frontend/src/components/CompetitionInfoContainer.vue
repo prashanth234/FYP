@@ -7,18 +7,18 @@
 				</ion-item>
 				<div class="ion-padding" slot="content">
 					<table style="width:100%">
-							<tr>
+						<tr>
 							<td class="header">Description</td>
 							<td>{{ categoryInfo.selectedComptn.description }}</td>
-							</tr>
-							<tr>
+						</tr>
+						<tr>
 							<td class="header">Last Date</td>
 							<td>{{ categoryInfo.selectedComptn.lastDate }}</td>
-							</tr>
-							<tr>
+						</tr>
+						<tr>
 							<td class="header">Points</td>
 							<td>{{ categoryInfo.selectedComptn.points }}</td>
-							</tr>
+						</tr>
 					</table>
 				</div>
 			</ion-accordion>

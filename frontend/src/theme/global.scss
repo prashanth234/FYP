@@ -97,14 +97,12 @@ ion-button {
   color: var(--ion-color-medium)
 }
 
-ion-modal.custom-modal {
-  --height: auto;
+ion-modal {
   --backdrop-opacity: 0.8;
+  overflow: auto;
 
   &::part(content) {
-    background: none;
     overflow: auto;
-    box-shadow: none;
   }
 }
 

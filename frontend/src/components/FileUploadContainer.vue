@@ -36,39 +36,35 @@
 
   </div>
 
-  <ion-modal class="crop-modal custom-modal" :is-open="state.openCropper" :show-backdrop="true" @willDismiss="closeCropper">
-    <ion-card style="width: 300px">
-      <ion-card-content>
-        <ion-row>
-          <ion-col size="12">
-            <cropper
-              :stencil-component="CircleStencil"
-              :src="state.imageUrl"
-              @change="onCropChange"
-              ref="cropperRef"
-            />
-          </ion-col>
-          <ion-col size="12">
-            <ion-button
-              size="small"
-              color="danger"
-              @click="cropImage"
-              style="float: right"
-            >
-              Done
-            </ion-button>
-            <ion-button
-              size="small"
-              @click="closeCropper"
-              color="light"
-              style="float: right; margin-right: 15px;"
-            >
-              Cancel
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-card-content>
-    </ion-card>
+  <ion-modal class="crop-modal" :is-open="state.openCropper" :show-backdrop="true" @willDismiss="closeCropper">
+    <ion-row class="ion-padding">
+      <ion-col size="12">
+        <cropper
+          :stencil-component="CircleStencil"
+          :src="state.imageUrl"
+          @change="onCropChange"
+          ref="cropperRef"
+        />
+      </ion-col>
+      <ion-col size="12">
+        <ion-button
+          size="small"
+          color="primary"
+          @click="cropImage"
+          style="float: right"
+        >
+          Done
+        </ion-button>
+        <ion-button
+          size="small"
+          @click="closeCropper"
+          color="light"
+          style="float: right; margin-right: 15px;"
+        >
+          Cancel
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </ion-modal>
 
 </template>
@@ -268,6 +264,13 @@ onUnmounted(() => {
   display: none;
 }
 .crop-modal {
-  --max-width: 600px;
+  --max-width: 90%;
+  --max-height: 80%;
+  --height: auto;
+}
+@media only screen and (min-width: 576px) {
+  .crop-modal {
+    --max-width: 500px;
+  }
 }
 </style>
