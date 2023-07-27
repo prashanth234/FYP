@@ -34,20 +34,48 @@
           </ion-card>
 
           <ion-list style="margin-top: 30px">
-            <ion-item :class="{'ion-item-highlight': router.name == 'home'}" lines="none" button :detail="false" @click="home()">
-              <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'home' ? 'light' : 'dark'" :icon="homeOutline"></ion-icon>
+            <ion-item
+              :class="{'ion-item-highlight': router.name == 'home'}"
+              lines="none"
+              button
+              :detail="false"
+              @click="home()"
+            >
+              <ion-icon
+                class="ion-icon-custom cpointer"
+                :icon="homeOutline"
+              ></ion-icon>
               <ion-label class="list-label">
                 Home
               </ion-label>
             </ion-item>
-            <ion-item :class="{'ion-item-highlight': router.name == 'profile'}" lines="none" button :detail="false" @click="profile()" v-if="!state.loading && user.success">
-              <ion-icon class="ion-icon-custom cpointer" :color="router.name == 'profile' ? 'light' : 'dark'" :icon="personOutline"></ion-icon>
+            <ion-item
+              :class="{'ion-item-highlight': router.name == 'profile'}"
+              lines="none"
+              button
+              :detail="false"
+              @click="profile()"
+              v-if="!state.loading && user.success"
+            >
+              <ion-icon
+                class="ion-icon-custom cpointer"
+                :icon="personOutline"
+              ></ion-icon>
               <ion-label class="list-label">
                 Profile
               </ion-label>
             </ion-item>
-            <ion-item lines="none" button :detail="false" @click="logout()" v-if="!state.loading && user.success">
-              <ion-icon class="ion-icon-custom cpointer" :icon="logOutOutline"></ion-icon>
+            <ion-item
+              lines="none"
+              :detail="false"
+              button
+              @click="logout()"
+              v-if="!state.loading && user.success"
+            >
+              <ion-icon
+                class="ion-icon-custom cpointer"
+                :icon="logOutOutline"
+              ></ion-icon>
               <ion-label class="list-label">
                 logout
               </ion-label>
@@ -306,8 +334,12 @@ checkAuthStatus()
     height: 55px;
   }
   .ion-item-highlight {
-    --background: var(--ion-color-medium);
-    --color: var(--ion-color-light);
+    --background: var(--ion-color-light);
+    // --color: var(--ion-color-light);
+
+    &::part(native) {
+      border-left: 5px solid var(--ion-color-primary);
+    }
   }
   .list-label {
     font-weight: 600;

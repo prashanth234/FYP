@@ -1,8 +1,7 @@
 #### P0 #####
 
-.) cropper is not coming at center
-.) Email backend and user verification
 .) Add points icon and popup about points
+.) Email backend and user verification
 .) Static and media assets handling and image url to send to frontend and check profile upload case
 .) Move person image to local
 .) Prepare for production
@@ -10,7 +9,6 @@
 .) Work on ui coloring
 
 .) customize the post (like cropping)
-.) convert login to page
 .) Add no competition coming soon card
 
 
@@ -47,6 +45,7 @@ Add a key for description and photos according to there category.
 Remove image on post delete and update
 Fix issues while category navigation
 Add Responsiveness for the login page - Frontend
+cropper is not coming at center
 
 #### P1 #####
 
@@ -55,6 +54,8 @@ Add Responsiveness for the login page - Frontend
 .) Getting category on the post see if it can be optimized
 
 #### P2 #####
+
+.) convert login to page (Not Needed as of now)
 
 Content-Type: multipart/alternative;
  boundary="===============9192062584887903382=="
