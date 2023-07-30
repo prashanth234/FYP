@@ -9,11 +9,16 @@
 
           <ion-card style="border-radius: 30px;" color="light">
             <ion-card-content style="height: 250px;">
-              <ion-row v-if="!state.loading" class="ion-justify-content-center ion-align-items-center full-height" style="align-content: center;">
+              <ion-row
+                v-if="!state.loading"
+                class="ion-justify-content-center ion-align-items-center full-height"
+                style="align-content: center;"
+              >
                 <ion-col size="auto">
                   <ion-avatar style="width: 85px;height: 85px;">
-                    <img alt="person"
-                      :src="user?.avatar ? `http://localhost:8000/media/${user.avatar}?temp=${user.userUpdated}` : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+                    <img
+                      alt="person"
+                      :src="user?.avatar ? `http://localhost:8000/media/${user.avatar}?temp=${user.userUpdated}` : 'http://localhost:8000/static/avatar.svg'"
                     />
                   </ion-avatar>
                 </ion-col>
@@ -55,7 +60,7 @@
               button
               :detail="false"
               @click="profile()"
-              v-if="!state.loading && user.success"
+              v-if="isUserLogged"
             >
               <ion-icon
                 class="ion-icon-custom cpointer"
@@ -70,7 +75,7 @@
               :detail="false"
               button
               @click="logout()"
-              v-if="!state.loading && user.success"
+              v-if="isUserLogged"
             >
               <ion-icon
                 class="ion-icon-custom cpointer"
@@ -87,7 +92,7 @@
 
       <div class="ion-page" id="main">
 
-        <ion-header style="position: initial">
+        <ion-header>
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
@@ -95,6 +100,18 @@
             <ion-title>
               TBD
             </ion-title>
+            <ion-buttons slot="end" v-if="isUserLogged">
+              <ion-button
+                @click="onClickPoints"
+                class="ion-padding-end"
+              >
+                <ion-img
+                  style="width: 25px; height: 25px; margin-right: 7px;"
+                  src="http://localhost:8000/static/coins.png"
+                ></ion-img>
+                Points
+              </ion-button>
+            </ion-buttons>
           </ion-toolbar>
         </ion-header>
 
@@ -176,14 +193,14 @@
 </template>
 
 <script setup lang="ts">
-import { IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
 import { logOutOutline, closeOutline, homeOutline, personOutline, trendingDown } from 'ionicons/icons'
 import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
@@ -194,6 +211,14 @@ const user = useUserStore();
 const state = reactive({
   loading: true
 })
+
+const isUserLogged = computed(() => {
+  return !state.loading && user.success
+})
+
+function onClickPoints() {
+  ionRouter.push('/rewards')
+}
 
 function logout() {
   localStorage.removeItem('fyptoken')
@@ -356,8 +381,9 @@ checkAuthStatus()
     }
   }
   ion-header {
-      -webkit-box-shadow: none;
-      box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    position: initial;
   }
   // ion-grid {
   //   --ion-grid-padding: 0px;

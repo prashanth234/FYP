@@ -8,7 +8,7 @@
           <ion-avatar slot="start">
             <img
               alt="person"
-              :src="post.user.avatar ? `${post.user.avatar}?temp=${user.userUpdated}`:'https://ionicframework.com/docs/img/demos/avatar.svg'"
+              :src="post.user.avatar ? `${post.user.avatar}?temp=${user.userUpdated}`:'http://localhost:8000/static/avatar.svg'"
             />
           </ion-avatar>
           <ion-label>

@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router'
 import { RouteRecordRaw } from 'vue-router'
-import LoginPage from '../views/LoginPage.vue'
-import RegisterPage from '@/views/RegisterPage.vue'
 
-import MainPage from '../views/MainPage.vue'
-import CategoriesPage from '../views/CategoriesPage.vue'
-import CategoriesDetailsPage from '../views/CategoryDetailsPage.vue'
+import MainPage from '@/views/MainPage.vue'
+import CategoriesPage from '@/views/CategoriesPage.vue'
+import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
 import ActivatePage from '@/views/activatePage.vue'
-import LoginFormContianer from '@/components/LoginFormContainer.vue'
+import PointsPage from '@/views/PointsPage.vue'
+
+import { useUserStore } from '@/stores/user'
+import store from '../vuex';
+
+import TempChild from '@/views/TempChild.vue'
 import TempPage from '@/views/TempPage.vue'
 import TempMain from '@/views/TempMain.vue'
-import { useUserStore } from '@/stores/user'
 
-import store from '../vuex';
-import TempChild from '@/views/TempChild.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -33,16 +33,6 @@ const routes: Array<RouteRecordRaw> = [
         component: TempChild
       }
     ]
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: LoginPage
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: RegisterPage
   },
   {
     path: '/activate/:token',
@@ -75,8 +65,20 @@ const routes: Array<RouteRecordRaw> = [
           auth: true
         }
       },
+      {
+        path: 'rewards',
+        component: PointsPage,
+        name: 'rewards',
+        meta: {
+          auth: true
+        }
+      }
     ]
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
+  }
 ]
 
 const router = createRouter({
