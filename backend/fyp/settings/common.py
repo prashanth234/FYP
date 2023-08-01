@@ -16,18 +16,7 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Build paths inside the project like this: ROOT_DIR / 'subdir'.
-ROOT_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-beqx(l-u0_s2(%7&$jsq6o_5_$j@l_q+g9val&=tx_2f*ze4zn'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# ROOT_DIR = Path(__file__).resolve().parent.parent
 
 
 # Application definition
@@ -66,7 +55,7 @@ ROOT_URLCONF = 'fyp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(ROOT_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,22 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'fyp.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fyp',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': 'root'
-    }
-}
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -143,11 +116,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Where to collect the static files on python manage.py collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
+
 # Endpoint for accessing uploaded files
 MEDIA_URL = '/media/'
 
 # Where to store upload data
-MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -198,7 +178,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Allow cross origins
 CORS_ORIGIN_ALLOW_ALL = True
-
-STATICFILES_DIRS = [
-    os.path.join(ROOT_DIR, "static"),
-]
