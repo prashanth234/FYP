@@ -10,6 +10,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/static': 'http://localhost:8000',
+      '/media': 'http://localhost:8000'
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom'

@@ -7,8 +7,8 @@
         <ion-item lines="full">
           <ion-avatar slot="start">
             <img
-              alt="person"
-              :src="post.user.avatar ? `${post.user.avatar}?temp=${user.userUpdated}`:'http://localhost:8000/static/avatar.svg'"
+              alt="avatar"
+              :src="userAvatar"
             />
           </ion-avatar>
           <ion-label>
@@ -31,7 +31,7 @@
         <ion-item lines="none" style="padding-top: 20px; padding-bottom: 20px" v-if="post.postfileSet.length">
           <ion-img 
             class="ml-auto mr-auto"
-            :src="`${ [post.postfileSet[0].file] }`"
+            :src="`/media/${post.postfileSet[0].file}`"
             alt="Image"
           />
         </ion-item>
@@ -71,7 +71,7 @@ import { heartOutline, heart, pencilOutline, trashOutline } from 'ionicons/icons
 import { useMutation } from '@vue/apollo-composable'
 import store from '@/vuex'
 import gql from 'graphql-tag'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 
 const user = useUserStore()
@@ -83,6 +83,10 @@ const emit = defineEmits<{
   (e: 'editPost'): void
   (e: 'deletePost'): void
 }>()
+
+const userAvatar = computed(() => {
+  return props.post.user.avatar ? `/media/${props.post.user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+})
 
 const state = reactive({
   isliked: props.post.userLiked,

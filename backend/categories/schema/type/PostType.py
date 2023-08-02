@@ -14,10 +14,10 @@ class PostFileType(DjangoObjectType):
         model = PostFile
         fields = ("file",)
     
-    def resolve_file(self, info):
-        if self.file:
-            self.file = info.context.build_absolute_uri(self.file.url)
-        return self.file
+    # def resolve_file(self, info):
+    #     if self.file:
+    #         self.file = info.context.build_absolute_uri(self.file.url)
+    #     return self.file
 
 
 class PostType(DjangoObjectType):

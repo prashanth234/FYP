@@ -91,7 +91,8 @@ interface State {
   // ImageUrl is blob object url
   imageUrl: string,
   imageType: string,
-  previewImage: string | CropperResult,
+  previewImage: string,
+  cropperPreview: CropperResult | null,
   openCropper: Boolean
 }
 
@@ -100,6 +101,7 @@ const state: State = reactive({
   imageUrl: '',
   imageType: '',
   previewImage: '',
+  cropperPreview: null,
   openCropper: false
 })
 
@@ -130,7 +132,7 @@ function selectImage() {
   fileupload.value?.click()
 }
 
-function getMimeType(file: string | ArrayBuffer | null | undefined, fallback = '') {
+function getMimeType(file: any, fallback = '') {
 	const byteArray = (new Uint8Array(file)).subarray(0, 4);
 
   let header = '';
@@ -200,7 +202,7 @@ function closeCropper(){
 }
 
 function onCropChange(preview: CropperResult) {
-  state.previewImage = preview
+  state.cropperPreview = preview
 }
 
 onUnmounted(() => {

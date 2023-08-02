@@ -18,7 +18,7 @@
                   <ion-avatar style="width: 85px;height: 85px;">
                     <img
                       alt="person"
-                      :src="user?.avatar ? `http://localhost:8000/media/${user.avatar}?temp=${user.userUpdated}` : 'http://localhost:8000/static/avatar.svg'"
+                      :src="userAvatar"
                     />
                   </ion-avatar>
                 </ion-col>
@@ -107,7 +107,7 @@
               >
                 <ion-img
                   style="width: 25px; height: 25px; margin-right: 7px;"
-                  src="http://localhost:8000/static/coins.png"
+                  src="/static/core/coins.png"
                 ></ion-img>
                 Points
               </ion-button>
@@ -207,6 +207,10 @@ import { useUserStore } from '@/stores/user'
 const ionRouter = useIonRouter();
 const router = useRoute();
 const user = useUserStore();
+
+const userAvatar = computed(() => {
+  return user?.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+})
 
 const state = reactive({
   loading: true

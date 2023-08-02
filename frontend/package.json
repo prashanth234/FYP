@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "4.7.3",
+    "@types/apollo-upload-client": "^17.0.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-typescript": "^11.0.2",
     "@vue/test-utils": "^2.3.0",

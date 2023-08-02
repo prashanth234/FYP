@@ -27,7 +27,7 @@
 
               <ion-card-content class="cat-card-content">
 
-                <ion-img class="cat-image" :src="`http://localhost:8000/media/${category.image.replace('png', 'jpg')}`">
+                <ion-img class="cat-image" :src="`/media/${category.image}`">
                 </ion-img>
 
                 <div class="cat-title">

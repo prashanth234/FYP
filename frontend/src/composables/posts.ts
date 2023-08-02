@@ -1,5 +1,5 @@
 import { useQuery } from '@vue/apollo-composable'
-import { IonInfiniteCustomEvent } from '@ionic/vue'
+import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
 import { ref } from 'vue'
 
@@ -49,7 +49,7 @@ export function getPosts(
     trending: variables.trending.value
   }))
 
-  function getMore(ev: IonInfiniteCustomEvent) {
+  function getMore(ev: InfiniteScrollCustomEvent) {
 
     if (!posts.value) {
       ev.target.complete()

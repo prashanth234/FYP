@@ -94,7 +94,21 @@ const emit = defineEmits<{
   (e: 'login'): void
 }>()
 
-const state = reactive({
+interface State {
+  errors: Array<string>,
+  username: string,
+  password1: string,
+  password2: string,
+  email: string,
+  firstname: string,
+  lastname: string,
+  dob: string,
+  gender: string,
+  disabled: boolean,
+  isOpen: boolean,
+}
+
+const state: State = reactive({
   username: '',
   password1: '',
   password2: '',

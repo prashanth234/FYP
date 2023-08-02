@@ -107,3 +107,16 @@ ionic serve
 
 user: root
 password: root
+
+# TROUBLESHOOT
+
+Problem
+[pipenv.exceptions.ResolutionFailure]: Warning: Your dependencies could not be resolved. You likely have a mismatch in your sub-dependencies.
+  You can use $ pipenv run pip install <requirement_name> to bypass this mechanism, then run $ pipenv graph to inspect the versions actually installed in the virtualenv.
+  Hint: try $ pipenv lock --pre if it is a pre-release dependency.
+ERROR: Getting requirements to build wheel exited with 1
+
+Solution
+https://stackoverflow.com/questions/57461123/failed-to-build-mysqlclient-wheel-cannot-build-pip-install-mysqlclient-not-wor
+pipenv install mysqlclient==2.1.0
+(install mysqlclient version one that is before the python wheel package)

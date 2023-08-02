@@ -11,8 +11,8 @@
         <template #handler="{selectImage}">
           <ion-avatar style="width: 90px; height: 90px;" class="cpointer" @click="selectImage">
             <img
-              alt="http://localhost:8000/static/avatar.svg"
-              :src="result?.me.avatar ? `http://localhost:8000/media/${result.me.avatar}?temp=${user.userUpdated}` : 'http://localhost:8000/static/avatar.svg'"
+              alt="avatar"
+              :src="userAvatar"
             />
           </ion-avatar>
           <div class="camera-icon">
@@ -83,7 +83,7 @@
 import { IonAvatar, IonIcon, IonList, IonItem, IonInput, IonRow, IonCol, IonButton, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
 import { CropperResult } from 'vue-advanced-cropper'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { cameraOutline } from 'ionicons/icons'
@@ -100,7 +100,6 @@ interface State {
   gender: string,
   loading: boolean
 }
-
 
 const state: State = reactive({
   image: null,
@@ -180,7 +179,7 @@ function updateProfile () {
       state.loading = false
     })
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     state.loading = false
   }
 }
@@ -205,6 +204,10 @@ onResult(({data, loading}) => {
   state.firstName = firstName
   state.lastName = lastName
   state.gender = gender
+})
+
+const userAvatar = computed(() => {
+  return result.value?.me ? `/media/${result.value.me.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
 })
 
 </script>

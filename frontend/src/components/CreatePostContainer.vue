@@ -185,7 +185,7 @@ function initialize() {
     state.title = 'Edit Post'
     state.uploadTitle = 'Update'
     state.description = props.post.description
-    props.post.postfileSet.length && (state.preview = props.post.postfileSet[0].file)
+    props.post.postfileSet.length && (state.preview = `/media/${props.post.postfileSet[0].file}`)
     state.uploadAction = updatePost
   } else if (props.type == 'create') {
     state.title = 'Create Post'

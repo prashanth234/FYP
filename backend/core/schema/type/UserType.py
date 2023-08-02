@@ -6,7 +6,7 @@ class UserType(DjangoObjectType):
         model = User
         fields = ("username", "avatar")
     
-    def resolve_avatar(self, info):
-        if self.avatar:
-            self.avatar = info.context.build_absolute_uri(self.avatar.url)
-        return self.avatar
+    # def resolve_avatar(self, info):
+    #     if self.avatar:
+    #         self.avatar = info.context.build_absolute_uri(self.avatar.url)
+    #     return self.avatar

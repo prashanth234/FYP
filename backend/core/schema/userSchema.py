@@ -6,6 +6,8 @@ from graphene_file_upload.scalars import Upload
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
+# from django.conf import settings
+# import os
 
 # Type
 from core.schema.type.UserType import UserType
@@ -43,10 +45,17 @@ class UserAvatarMutation(graphene.Mutation):
             user.avatar.storage.delete(user.avatar.name)
 
         # Save the updated file with the new filename
-        user.avatar.save(filename, file_content, save=False)
+        user.avatar.save(filename, file_content)
 
         # Save the MyModel instance to update other fields if needed
-        user.save()
+        # user.avatar.save(filename, file_content, save=False)
+        # user.save()
+
+        # Remove the existing file if it exists
+        # if original_filename:
+        #     file_path = os.path.join(settings.MEDIA_ROOT, original_filename)
+        #     if os.path.exists(file_path):
+        #         os.remove(file_path)
 
         return UserAvatarMutation(user=user)
 
