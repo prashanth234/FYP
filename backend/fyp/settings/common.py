@@ -34,13 +34,14 @@ INSTALLED_APPS = [
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
     'corsheaders',
-    'playground',
+    # 'playground',
     'core',
     'categories'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,6 +176,3 @@ GRAPHQL_JWT = {
 
 # Sending mails through console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Allow cross origins
-CORS_ORIGIN_ALLOW_ALL = True

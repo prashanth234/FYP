@@ -98,7 +98,7 @@ class UpdatePostMutation(graphene.Mutation):
 
         post.save()
 
-        if file:
+        if file and post.category.oftype != 'TEXT':
             postFile = PostFile.objects.get(post=post)
 
             filetype = file.content_type.split('/')[1]
@@ -138,12 +138,13 @@ class DeletePostMutation(graphene.Mutation):
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
-        postFile = PostFile.objects.get(post=post)
-        
-        if postFile.file:
+        try:
+            postFile = PostFile.objects.get(post=post)
             postFile.file.storage.delete(postFile.file.name)
-            
-        post.delete()
+        except PostFile.DoesNotExist:
+            pass
+
+        post.delete()     
 
         return DeletePostMutation(success=True)
     

@@ -12,8 +12,9 @@ django-graphql-auth = "*"
 django-cors-headers = "*"
 pillow = "*"
 django-filter = "*"
-mysqlclient = "*"
+mysqlclient = "==2.1.0"
 gunicorn = "*"
+whitenoise = "*"
 
 [dev-packages]
 

@@ -2,12 +2,12 @@
 
 .) Add points icon and popup about points
 .) Email backend and user verification
-.) Static and media assets handling and image url to send to frontend and check profile upload case
-.) Move person image to local
+
 .) Prepare for production
 .) Work on deployment
 .) Work on ui coloring
 
+.) Reduce coins image size
 .) customize the post (like cropping)
 .) Add no competition coming soon card
 
@@ -46,9 +46,15 @@ Remove image on post delete and update
 Fix issues while category navigation
 Add Responsiveness for the login page - Frontend
 cropper is not coming at center
+Move person image to local
+Fix image url to send to frontend
+Check profile upload case - working fine
+Static assets handling
+Media assets handling - store in places where user both read and execute permissions
 
 #### P1 #####
 
+.) Learn about csrf token
 .) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues
 .) Getting category on the post see if it can be optimized
