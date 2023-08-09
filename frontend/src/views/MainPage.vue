@@ -259,7 +259,11 @@ function getUserDetails() {
   
   onResult(({data, loading}) => {
     if (loading) return
-    user.$patch({...data.me, userUpdated: user.userUpdated + 1})
+    if (data.me) {
+      user.$patch({...data.me, userUpdated: user.userUpdated + 1})
+    } else {
+      logout()
+    }
   })
 }
 

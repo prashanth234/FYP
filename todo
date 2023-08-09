@@ -3,6 +3,7 @@
 .) Add points icon and popup about points
 .) Email backend and user verification
 
+.) check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
 .) Prepare for production
 .) Work on deployment
 .) Work on ui coloring
