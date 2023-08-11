@@ -108,6 +108,14 @@ ionic serve
 user: root
 password: root
 
+#### django dev ###
+
+user: fypsuperuser
+password: FypSuper#223
+
+user: prashanth or prashanthbobby96@gmail.com
+password: Bobby#123
+
 # TROUBLESHOOT
 
 Problem

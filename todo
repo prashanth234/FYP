@@ -2,6 +2,13 @@
 
 .) Add points icon and popup about points
 .) Email backend and user verification
+.) Able to create super user without login through admin somewho
+.) Prevent user to create post without login
+.) Environment varibale nginx servername and django allowed hosts
+.) Prevent access to 8000 port
+.) css for fields missing
+.) be the first one to participate in posts
+.) delete the migrations and start fresh
 
 .) check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
 .) Prepare for production
