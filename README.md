@@ -99,6 +99,10 @@ npm i
 
 ionic serve
 
+ionic serve --external (To bind to 0.0.0.0 which allows you to access from mobile)
+
+python manage.py runserver 0.0.0.0:8000
+
 # ########## Application has been setup ############
 
  http://localhost:8100
@@ -128,3 +132,10 @@ Solution
 https://stackoverflow.com/questions/57461123/failed-to-build-mysqlclient-wheel-cannot-build-pip-install-mysqlclient-not-wor
 pipenv install mysqlclient==2.1.0
 (install mysqlclient version one that is before the python wheel package)
+
+ERROR
+pipenv not found
+
+Solution
+sudo -H pip install -U pipenv
+PATH="$PATH:/Library/Frameworks/Python.framework/Versions/3.10/bin"

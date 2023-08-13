@@ -2,10 +2,8 @@
 
 .) Add points icon and popup about points
 .) Email backend and user verification
-.) Able to create super user without login through admin somewho
+.) Able to create post through super user without login
 .) Prevent user to create post without login
-.) Environment varibale nginx servername and django allowed hosts
-.) Prevent access to 8000 port
 .) css for fields missing
 .) be the first one to participate in posts
 .) delete the migrations and start fresh
@@ -18,6 +16,7 @@
 .) Reduce coins image size
 .) customize the post (like cropping)
 .) Add no competition coming soon card
+.) Prevent access to 8000 port - Control using security rules and ip address
 
 
 ##### DONE #####
@@ -59,6 +58,7 @@ Fix image url to send to frontend
 Check profile upload case - working fine
 Static assets handling
 Media assets handling - store in places where user both read and execute permissions
+Environment varibale nginx servername and django allowed hosts
 
 #### P1 #####
 

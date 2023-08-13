@@ -353,7 +353,7 @@ checkAuthStatus()
     position: absolute;
     right: 0px;
     top: 0px;
-    color: var(--ion-color-light-shade);
+    color: var(--ion-color-medium);
     cursor: pointer;
   }
   ion-toolbar {
