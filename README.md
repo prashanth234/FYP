@@ -107,18 +107,6 @@ python manage.py runserver 0.0.0.0:8000
 
  http://localhost:8100
 
- ### django admin ###
-
-user: root
-password: root
-
-#### django dev ###
-
-user: fypsuperuser
-password: FypSuper#223
-
-user: prashanth or prashanthbobby96@gmail.com
-password: Bobby#123
 
 # TROUBLESHOOT
 
@@ -139,3 +127,7 @@ pipenv not found
 Solution
 sudo -H pip install -U pipenv
 PATH="$PATH:/Library/Frameworks/Python.framework/Versions/3.10/bin"
+
+To Get Public IP
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
+&& curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/public-ipv4
