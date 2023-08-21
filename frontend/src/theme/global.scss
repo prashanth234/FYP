@@ -75,7 +75,7 @@ ion-button {
 }
 
 .border-radius-std {
-  border-radius: 20px;
+  border-radius: 15px;
 }
 
 .button-loading-small {
@@ -108,4 +108,8 @@ ion-modal {
 
 .line {
   border-bottom: 1px solid var(--ion-color-light-shade);
+}
+
+.line-top {
+  border-top: 1px solid var(--ion-color-light-shade);
 }

@@ -68,12 +68,6 @@
             Update
           </span>
       </ion-button>
-      <!-- <ion-button
-        color="light"
-        style="float: right; margin-right: 15px;"
-      >
-        Cancel
-      </ion-button> -->
     </ion-col>
   </ion-row>
 
@@ -117,33 +111,39 @@ const toast = useToastStore();
 // Profile image
 
 function imageSelected(blob: CropperResult, type: string) {
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      mutation ($avatar: Upload!, $type: String!) { 
-        updateAvatar (
-          avatar: $avatar,
-          type: $type
-        ) {
-            user {
-              avatar
-            }
+  const { mutate, onDone, onError } = useMutation(gql`    
+    mutation ($avatar: Upload!, $type: String!) { 
+      updateAvatar (
+        avatar: $avatar,
+        type: $type
+      ) {
+          user {
+            avatar
           }
-      }
-    `,
-      {
-        variables: {
-          avatar: state.image,
-          type
-        },
-      }
-    )
-    mutate()
-    onDone((value) => {
-      user.userUpdated += 1
-    })
-  } catch (error) {
-    console.error(error)
-  }
+        }
+    }
+  `,
+    {
+      variables: {
+        avatar: state.image,
+        type
+      },
+    }
+  )
+
+  mutate()
+
+  onDone((value) => {
+    user.userUpdated += 1
+  })
+
+  onError((error: any) => {
+    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+    } else {
+      toast.$patch({message: 'Error Occured While Updating Profile', color: 'danger', open: true})
+    }
+  })
 }
 
 function updateProfile () {
@@ -151,37 +151,39 @@ function updateProfile () {
 
   state.loading = true
 
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String) { 
-        updateAccount (
-          gender: $gender,
-          firstName: $firstName,
-          lastName: $lastName,
-          dateOfBirth: $dateOfBirth
-        ) {
-            success,
-            errors
-          } 
-      }
-    `,
-      {
-        variables: {
-          firstName,
-          lastName,
-          gender
-        },
-      }
-    )
-    mutate()
-    onDone((value) => {
-      toast.$patch({message: 'Update Successful', color: 'success', open: true})
-      state.loading = false
-    })
-  } catch (error) {
-    // console.error(error)
+  const { mutate, onDone, onError } = useMutation(gql`    
+    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String) { 
+      updateAccount (
+        gender: $gender,
+        firstName: $firstName,
+        lastName: $lastName,
+        dateOfBirth: $dateOfBirth
+      ) {
+          success,
+          errors
+        } 
+    }
+  `,
+    {
+      variables: {
+        firstName,
+        lastName,
+        gender
+      },
+    }
+  )
+
+  mutate()
+
+  onDone((value) => {
+    toast.$patch({message: 'Update Successful', color: 'success', open: true})
     state.loading = false
-  }
+  })
+
+  onError((error: any) => {
+    state.loading = false
+    toast.$patch({message: 'Error Occured While Updating Profile', color: 'danger', open: true})
+  })
 }
 
 const { result, onResult } = useQuery(gql`   
@@ -207,7 +209,7 @@ onResult(({data, loading}) => {
 })
 
 const userAvatar = computed(() => {
-  return result.value?.me ? `/media/${result.value.me.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+  return result.value?.me?.avatar ? `/media/${result.value.me.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
 })
 
 </script>

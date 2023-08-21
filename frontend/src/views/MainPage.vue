@@ -264,6 +264,7 @@ function getUserDetails() {
     } else {
       logout()
     }
+    state.loading = false
   })
 }
 

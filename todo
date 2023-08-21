@@ -1,7 +1,9 @@
 #### P0 #####
 
+.) User is not able to view "0" points when logged in for the first Time.
 .) Add points icon and popup about points
 .) Email backend and user verification
+.) Forgot password functionality.
 .) Able to create post through super user without login
 .) Prevent user to create post without login
 .) css for fields missing
@@ -17,6 +19,7 @@
 .) customize the post (like cropping)
 .) Add no competition coming soon card
 .) Prevent access to 8000 port - Control using security rules and ip address
+.) Increase upload image size for https request as well
 
 
 ##### DONE #####

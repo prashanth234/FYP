@@ -1,18 +1,18 @@
 <template>
   <ion-page>
-    <ion-content style="height: 100%;" class="ion-padding">
+    <ion-content style="height: 100%;">
 
       <ion-grid>
 
-        <ion-row class="ion-justify-content-center">
+        <ion-row>
 
           <!-- Start of the create post and all posts and breadcrumbs -->
           <ion-col class="posts" size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8">
 
-            <ion-row>
+            <ion-row class="ion-justify-content-center">
 
               <!-- Breadcrumb for navigation from category to competition -->
-              <ion-col size="12">
+              <ion-col size="12" class="ion-no-padding">
 
                 <ion-breadcrumbs color="primary">
                   <ion-breadcrumb class="cpointer" @click="goBackCategory()">
@@ -39,7 +39,7 @@
               </ion-col>
 
               <!-- Create Post -->
-              <ion-col size="12" v-if="!categoryInfo.loading">
+              <ion-col size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-if="!categoryInfo.loading">
                 <create-post
                   :fixed-preview-height="false"
                   :key="state.refreshCreatePost"
@@ -63,11 +63,15 @@
               </ion-col>
 
               <!-- Display the posts -->
-              <ion-col size="12" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
+              <ion-col size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
               </ion-col>
 
             </ion-row>
+
+            <ion-infinite-scroll @ionInfinite="getMore">
+              <ion-infinite-scroll-content></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
 
           </ion-col>
 
@@ -82,10 +86,6 @@
         </ion-row>
 
       </ion-grid>
-
-      <ion-infinite-scroll @ionInfinite="getMore">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-      </ion-infinite-scroll>
 
     </ion-content>
   </ion-page>
@@ -105,6 +105,7 @@ import { arrowForward, closeOutline } from 'ionicons/icons'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
+import { useToastStore } from '@/stores/toast'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -120,6 +121,7 @@ const state: State = reactive({
   tabSelected: 'allposts'
 })
 
+const toast = useToastStore()
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 
@@ -173,54 +175,58 @@ function createNewPost(createVariables: UpdatePostVariables) {
   //   category: variables.category.value
   // }
 
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      
-      mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
-        createPost (
-          file: $file,
-          competition: $competition,
-          category: $category,
-          description: $description
-        ) {
-            post {
-              id
-            }  
-          }
-      }
+  const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
+    
+    mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
+      createPost (
+        file: $file,
+        competition: $competition,
+        category: $category,
+        description: $description
+      ) {
+          post {
+            id
+          }  
+        }
+    }
 
-    `, () => ({
-        variables: postVariables,
-        // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
-        // update: (cache, { data: { createPost } }) => {
-        //   let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
-        //   if (!data) { return }
-        //   data = {
-        //     ...data,
-        //     allPosts: {
-        //       ...data.allPosts,
-        //       posts: [
-        //         createPost.post,
-        //         ...data.allPosts.posts,
-        //       ]
-        //     }
-        //   }
-        //   cache.writeQuery({ query: POST_QUERY, variables: CACHE_VARIABLES, data })
-        // },
-      })
-    )
-
-    mutate()
-
-    onDone(() => {
-      state.refreshCreatePost++
-      state.creatingPost = false
-      refetch()
+  `, () => ({
+      variables: postVariables,
+      // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
+      // update: (cache, { data: { createPost } }) => {
+      //   let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
+      //   if (!data) { return }
+      //   data = {
+      //     ...data,
+      //     allPosts: {
+      //       ...data.allPosts,
+      //       posts: [
+      //         createPost.post,
+      //         ...data.allPosts.posts,
+      //       ]
+      //     }
+      //   }
+      //   cache.writeQuery({ query: POST_QUERY, variables: CACHE_VARIABLES, data })
+      // },
     })
+  )
 
-  } catch (error) {
-    console.error(error)
-  }
+  mutate()
+
+  onDone(() => {
+    state.refreshCreatePost++
+    state.creatingPost = false
+    refetch()
+  })
+
+  onError((error: any) => {
+    state.creatingPost = false
+    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+    } else {
+      toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
+    }
+  })
 }
 
 function tabChanged(event: SegmentCustomEvent) {
@@ -242,5 +248,9 @@ ion-breadcrumb {
 }
 ion-content::part(scroll) {
   padding-top: 0px;
+}
+ion-grid {
+  --ion-grid-padding: 0px;
+  --ion-grid-column-padding: 8px;
 }
 </style>

@@ -14,7 +14,7 @@
             :key="index"
           >
 
-            <ion-card class="cpointer cat-card" @click="openCategory(category)">
+            <ion-card class="cpointer cat-card" @click="openCategory(category)" >
 
               <ion-card-content class="cat-card-content">
 
@@ -25,7 +25,7 @@
                   {{category.name}}
                 </div>
 
-                <div class="cat-description">
+                <div class="cat-description" :title="category.description">
                   {{category.description}}
                 </div>
 
@@ -121,7 +121,13 @@ function openCategory (category: categoryObject) {
 .cat-description {
   font-size: 13px;
   color: grey;
-  line-height: 2ch;
+  height: 4.6ch;
+  line-height: 2.3ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 ion-grid {
   --ion-grid-padding: 5px;

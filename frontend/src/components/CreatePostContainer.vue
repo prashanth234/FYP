@@ -24,8 +24,8 @@
             />
           </ion-col>
 
-          <ion-col size="12" v-if="state.oftype == 'IMAGETEXT'">
-            <div v-if="state.preview" :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 10px">
+          <ion-col size="12" v-if="state.oftype == 'IMAGETEXT' && state.preview">
+            <div :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 10px">
               <ion-img :src="state.preview"></ion-img>
             </div>
           </ion-col>
@@ -68,7 +68,7 @@
                     </ion-button>
                     <ion-button
                       size="small"
-                      @click="createPostForm"
+                      @click="clearPostForm"
                       color="light"
                       class="ion-padding-end"
                       style="float: right"
@@ -145,7 +145,8 @@ if (props.type == 'create') {
   state.oftype = props.post.category.oftype
 }
 
-function createPostForm () {
+function clearPostForm () {
+  state.preview = ''
   state.image = null
   state.description = ''
   state.refreshFileUpload++

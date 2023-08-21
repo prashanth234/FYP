@@ -113,6 +113,7 @@ import { UpdatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { getPosts } from '@/composables/posts'
 import { warningOutline } from 'ionicons/icons'
 import { CropperResult } from 'vue-advanced-cropper'
+import { useToastStore } from '@/stores/toast'
 
 interface State {
   isOpen: boolean,
@@ -135,53 +136,56 @@ const state: State = reactive({
   selectedTab: 'about'
 })
 
+const toast = useToastStore()
 const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts', undefined, undefined)
 
 // Delete Post
 
 function deletePost() {
 
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      
-      mutation ($id: ID!) { 
-        deletePost (
-          id: $id,
-        ) {
-            success
-          } 
-      }
-    `,
-      () => ({
-        variables: {id: deletePostObj?.id},
-        // update: (cache) => {
-        //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
-        //   console.log(deletePostObj)
-        //   if (!data) { return }
-        //   const updatedData = {
-        //     ...data,
-        //     myPosts: {
-        //       ...data.myPosts,
-        //       posts: data.myPosts.posts.filter((post: PostType) => {
-        //         console.log(post.id != deletePostObj?.id)
-        //         return post.id != deletePostObj?.id
-        //       })
-        //     }
-        //   }
-        //   console.log(updatedData)
-        //   cache.writeQuery({ query: MYPOSTS_QUERY, data: updatedData })
-        // },
-      })
-    )
-    mutate()
-    onDone((value) => {
-      closeDialog()
-      variables.page = 1
-      refetch()
+  const { mutate, onDone, onError } = useMutation(gql`    
+    
+    mutation ($id: ID!) { 
+      deletePost (
+        id: $id,
+      ) {
+          success
+        } 
+    }
+  `,
+    () => ({
+      variables: {id: deletePostObj?.id},
+      // update: (cache) => {
+      //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
+      //   console.log(deletePostObj)
+      //   if (!data) { return }
+      //   const updatedData = {
+      //     ...data,
+      //     myPosts: {
+      //       ...data.myPosts,
+      //       posts: data.myPosts.posts.filter((post: PostType) => {
+      //         console.log(post.id != deletePostObj?.id)
+      //         return post.id != deletePostObj?.id
+      //       })
+      //     }
+      //   }
+      //   console.log(updatedData)
+      //   cache.writeQuery({ query: MYPOSTS_QUERY, data: updatedData })
+      // },
     })
-  } catch (error) {
-    console.error(error)
-  }
+  )
+
+  mutate()
+
+  onDone((value) => {
+    closeDialog()
+    variables.page = 1
+    refetch()
+  })
+
+  onError((error: any) => {
+    toast.$patch({message: 'Error Occured While Deleting Post', color: 'danger', open: true})
+  })
 }
 
 let deletePostObj:PostType | null = null
@@ -203,49 +207,55 @@ function editPost(post: PostType, index: number) {
 }
 
 function updatePost(updateVariables: UpdatePostVariables) {
-  try {
-    const { mutate, onDone } = useMutation(gql`    
-      
-      mutation ($id: ID!, $file: Upload, $description: String) { 
-        updatePost (
-          id: $id,
-          file: $file,
-          description: $description
-        ) {
-            post {
-              id,
-              description,
-              postfileSet {
-                file
-              },
-            }
+  const { mutate, onDone, onError } = useMutation(gql`    
+    
+    mutation ($id: ID!, $file: Upload, $description: String) { 
+      updatePost (
+        id: $id,
+        file: $file,
+        description: $description
+      ) {
+          post {
+            id,
+            description,
+            postfileSet {
+              file
+            },
           }
-      }
-    `,
-      () => ({
-        variables: updateVariables,
-        // update: (cache, { data: { updatePost } }) => {
-        //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
-        //   if (!data) { return }
-        //   data.myPosts.posts.map((post: PostType) => {
-        //     if (post.id == updatePost.post.id) {
-        //       return updatePost.post
-        //     } else {
-        //       return post
-        //     }
-        //   })
-        //   console.log(data.myPosts.posts)
-        //   cache.writeQuery({ query: MYPOSTS_QUERY, data })
-        // },
-      })
-    )
-    mutate()
-    onDone((value) => {
-      closeEditPost()
+        }
+    }
+  `,
+    () => ({
+      variables: updateVariables,
+      // update: (cache, { data: { updatePost } }) => {
+      //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
+      //   if (!data) { return }
+      //   data.myPosts.posts.map((post: PostType) => {
+      //     if (post.id == updatePost.post.id) {
+      //       return updatePost.post
+      //     } else {
+      //       return post
+      //     }
+      //   })
+      //   console.log(data.myPosts.posts)
+      //   cache.writeQuery({ query: MYPOSTS_QUERY, data })
+      // },
     })
-  } catch (error) {
-    console.error(error)
-  }
+  )
+  
+  mutate()
+
+  onDone((value) => {
+    closeEditPost()
+  })
+
+  onError((error: any) => {
+    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+    } else {
+      toast.$patch({message: 'Error Occured While Updating Post', color: 'danger', open: true})
+    }
+  })
 }
 
 function closeEditPost() {

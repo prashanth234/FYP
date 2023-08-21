@@ -25,6 +25,6 @@ DATABASES = {
         'NAME': 'fyp',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': ''
+        'PASSWORD': 'root'
     }
 }

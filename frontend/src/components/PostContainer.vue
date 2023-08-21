@@ -1,11 +1,11 @@
 <template>
   <ion-card class="border-radius-std post-card cpointer">
 
-    <ion-card-content @click="likePost()" class="padding-zero">
-      <ion-list>
+    <ion-card-content @click="likePost()" class="ion-no-padding">
+      <ion-list class="ion-no-padding">
 
-        <ion-item lines="full">
-          <ion-avatar slot="start">
+        <ion-item lines="none" class="line" style="padding: 5px 0px;">
+          <ion-avatar slot="start" style="margin: 0px 10px 0px 0px">
             <img
               alt="avatar"
               :src="userAvatar"
@@ -28,7 +28,7 @@
           />
         </ion-item>
 
-        <ion-item lines="none" style="padding-top: 20px; padding-bottom: 20px" v-if="post.postfileSet.length">
+        <ion-item class="image" lines="none" style="padding: 12px 0px;" v-if="post.postfileSet.length">
           <ion-img 
             class="ml-auto mr-auto"
             :src="`/media/${post.postfileSet[0].file}`"
@@ -36,14 +36,14 @@
           />
         </ion-item>
 
-        <ion-item lines="full" style="padding-left: 5px">
+        <ion-item v-if="post.description" lines="none" style="padding-left: 5px">
           <p>{{ post.description }}</p>
         </ion-item>
 
-        <ion-item lines="none">
+        <ion-item lines="none" class="line-top" style="padding: 3px 0px;">
           <ion-icon
             v-if="state.isliked"
-            style="color:red"
+            style="color:rgb(246, 73, 73)"
             :icon="heart"
             size="large"
           />
@@ -62,6 +62,7 @@
 
       </ion-list>
     </ion-card-content>
+
   </ion-card>
 </template>
 
@@ -157,13 +158,25 @@ function likePost () {
   .post-card {
     transition: all;
     transition-timing-function: ease-out;
+    margin: 0px;
 
     &:hover {
       box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
     }
     
     &:hover:not(:has(.operations:hover)) .like-icon {
-      color: red;
+      color: grey;
+    }
+  }
+
+  ion-item {
+    --min-height: 0px;
+    &.image {
+      --inner-padding-end: 0px;
+      --padding-start: 0px;
+    }
+    p {
+      margin-bottom: 10px;
     }
   }
 </style>
