@@ -154,24 +154,7 @@ function deletePost() {
     }
   `,
     () => ({
-      variables: {id: deletePostObj?.id},
-      // update: (cache) => {
-      //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
-      //   console.log(deletePostObj)
-      //   if (!data) { return }
-      //   const updatedData = {
-      //     ...data,
-      //     myPosts: {
-      //       ...data.myPosts,
-      //       posts: data.myPosts.posts.filter((post: PostType) => {
-      //         console.log(post.id != deletePostObj?.id)
-      //         return post.id != deletePostObj?.id
-      //       })
-      //     }
-      //   }
-      //   console.log(updatedData)
-      //   cache.writeQuery({ query: MYPOSTS_QUERY, data: updatedData })
-      // },
+      variables: {id: deletePostObj?.id}
     })
   )
 
@@ -226,20 +209,7 @@ function updatePost(updateVariables: UpdatePostVariables) {
     }
   `,
     () => ({
-      variables: updateVariables,
-      // update: (cache, { data: { updatePost } }) => {
-      //   let data = cache.readQuery<QueryResult>({ query: MYPOSTS_QUERY, variables: CACHE_VARIABLES })
-      //   if (!data) { return }
-      //   data.myPosts.posts.map((post: PostType) => {
-      //     if (post.id == updatePost.post.id) {
-      //       return updatePost.post
-      //     } else {
-      //       return post
-      //     }
-      //   })
-      //   console.log(data.myPosts.posts)
-      //   cache.writeQuery({ query: MYPOSTS_QUERY, data })
-      // },
+      variables: updateVariables
     })
   )
   

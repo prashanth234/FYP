@@ -168,13 +168,6 @@ function createNewPost(createVariables: UpdatePostVariables) {
     category: props.id
   }
 
-  // const CACHE_VARIABLES = {
-  //   page: 1,
-  //   perPage: variables.perPage,
-  //   competition: variables.competition.value,
-  //   category: variables.category.value
-  // }
-
   const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
     
     mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
@@ -191,23 +184,7 @@ function createNewPost(createVariables: UpdatePostVariables) {
     }
 
   `, () => ({
-      variables: postVariables,
-      // Here posts will be overriden when more posts are fetched in the posts composable (need to think, how to show new posts) 
-      // update: (cache, { data: { createPost } }) => {
-      //   let data = cache.readQuery<QueryResult>({ query: POST_QUERY, variables: CACHE_VARIABLES })
-      //   if (!data) { return }
-      //   data = {
-      //     ...data,
-      //     allPosts: {
-      //       ...data.allPosts,
-      //       posts: [
-      //         createPost.post,
-      //         ...data.allPosts.posts,
-      //       ]
-      //     }
-      //   }
-      //   cache.writeQuery({ query: POST_QUERY, variables: CACHE_VARIABLES, data })
-      // },
+      variables: postVariables
     })
   )
 
