@@ -93,7 +93,7 @@ class UpdatePostMutation(graphene.Mutation):
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
-        if description:
+        if description != None:
             post.description = description
 
         post.save()

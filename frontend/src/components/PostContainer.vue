@@ -174,6 +174,10 @@ function likePost () {
     &.image {
       --inner-padding-end: 0px;
       --padding-start: 0px;
+      ion-img::part(image) {
+        max-height: 600px;
+        object-fit: contain;
+      }
     }
     p {
       margin-bottom: 10px;

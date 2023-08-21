@@ -48,8 +48,8 @@
       </ion-modal>
 
       <ion-grid>
-        <ion-row class="ion-justify-content-center" >
-          <ion-col size="5" size-xs="12" size-sm="12" size-md="5" size-lg="5" size-xl="4">
+        <ion-row>
+          <ion-col size="5" size-xs="12" size-sm="12" size-md="6" size-lg="5" size-xl="4">
             <ion-card>
               <ion-segment value="about" @ionChange="tabChanged">
                 <ion-segment-button value="about">
@@ -71,21 +71,23 @@
               
             </ion-card>
           </ion-col>  
-          <ion-col size="7" size-xs="12" size-sm="12" size-md="7" size-lg="7" size-xl="8">
-            <h5>My Posts</h5>
-            <div
-              v-for="(post, index) in posts?.myPosts?.posts"
-              :key="post.id"
-              style="padding: 10px;"
-            >
-              <post
-                :post="post"
-                :show-edit="true"
-                @editPost="editPost(post, index)"
-                @deletePost="confirmDelete(post, index)"
+          <ion-col size="7" size-xs="12" size-sm="12" size-md="6" size-lg="7" size-xl="8">
+            <h5 class="ion-padding-start">My Posts</h5>
+            <ion-row class="ion-justify-content-center">
+              <ion-col
+                v-for="(post, index) in posts?.myPosts?.posts"
+                :key="post.id"
+                size="7" size-xs="12" size-sm="12" size-md="10" size-lg="8" size-xl="7"
               >
-              </post>
-            </div>
+                <post
+                  :post="post"
+                  :show-edit="true"
+                  @editPost="editPost(post, index)"
+                  @deletePost="confirmDelete(post, index)"
+                >
+                </post>
+              </ion-col>
+            </ion-row>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -208,9 +210,9 @@ function updatePost(updateVariables: UpdatePostVariables) {
         }
     }
   `,
-    () => ({
+    {
       variables: updateVariables
-    })
+    }
   )
   
   mutate()
