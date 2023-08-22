@@ -4,7 +4,6 @@
 .) Add points icon and popup about points
 .) Email backend and user verification
 .) Forgot password functionality.
-.) Able to create post through super user without login
 .) Prevent user to create post without login
 .) css for fields missing
 .) be the first one to participate in posts
@@ -69,6 +68,7 @@ Environment varibale nginx servername and django allowed hosts
 .) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues
 .) Getting category on the post see if it can be optimized
+.) Able to create post through super user without login
 
 #### P2 #####
 

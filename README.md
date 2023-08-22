@@ -72,6 +72,10 @@ python manage.py migrate
 
 python manage.py runserver
 
+# To generate a sceret key
+
+echo "$(openssl rand -hex 40)"
+
 # Download nvm to manage nodejs version or you can directly install nodejs 18.16.0
 
 https://github.com/coreybutler/nvm-windows
