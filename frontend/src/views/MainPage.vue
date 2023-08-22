@@ -131,65 +131,6 @@
 
   </ion-page>
 
-  <!-- <ion-page>
-
-    <ion-header class="ion-custom-header">
-      <ion-toolbar>
-        <ion-grid class="padding-zero padding-col-zero">
-          <ion-row class="ion-align-items-center">
-            <ion-col>
-              <ion-title>TBD</ion-title>
-            </ion-col>
-            <ion-col size="auto" v-if="user.success">
-              <ion-icon class="icon-custom cpointer" :icon="logOutOutline" @click="logout()"></ion-icon>
-            </ion-col>
-            <ion-col size="auto" class="ion-padding-end" v-else>
-              <ion-button @click="login()">Login</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-toolbar>
-    </ion-header> 
-
-    <ion-content>
-      <ion-modal :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
-        <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
-        <login-container />
-      </ion-modal>
-
-      <div slot="fixed" class="side-toolbar">
-
-        <ion-card class="full-height margin-zero">
-          <ion-row class="full-height ion-text-center">
-
-            <ion-col size="12">
-              <ion-title>TBD</ion-title>
-              <ion-icon class="ion-icon-custom cpointer" style="padding-top: 25px" :icon="homeOutline"></ion-icon>
-            </ion-col>
-
-            <ion-col size="12" class="ion-align-self-end">
-              <ion-icon
-                v-if="user.success" class="ion-icon-custom cpointer"
-                :icon="logOutOutline" @click="logout()"
-              ></ion-icon>
-              <ion-button
-                v-else fill="clear"
-                size="small" @click="login()"
-              >
-                Login
-              </ion-button>
-            </ion-col>
-
-          </ion-row>
-        </ion-card>
-
-      </div>
-
-      <ion-router-outlet></ion-router-outlet>
-      
-    </ion-content>
-    
-  </ion-page> -->
 </template>
 
 <script setup lang="ts">
@@ -394,29 +335,4 @@ checkAuthStatus()
     box-shadow: none;
     position: initial;
   }
-  // ion-grid {
-  //   --ion-grid-padding: 0px;
-  //   padding-top: 5px;
-  //   font-size: 25px !important;
-  // }
-  // ion-modal {
-  //   --background: transparent;
-  //   --backdrop-opacity: 70%;
-  //   --border-radius: 5px;
-  //   --box-shadow: 0px;
-  //   --height: auto;
-  // }
-  // .side-toolbar {
-  //   top: 20px;
-  //   left: 20px;
-  //   height: calc(100vh - 40px);
-  //   width: 60px;
-  // }
-  // .ion-custom-header {
-  //   position: initial;
-  //   padding-top: 15px;
-  //   padding-left: 20px;
-  //   padding-right: 20px;
-  //   border-radius: 5px
-  // }
 </style>
