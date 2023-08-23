@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
     success: false,
     username: '',
     avatar: '',
+    points: 0,
     userUpdated: 1,
     auth: false
   }),

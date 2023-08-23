@@ -106,6 +106,7 @@ import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
 import { useToastStore } from '@/stores/toast'
+import { useUserStore } from '@/stores/user'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -121,7 +122,8 @@ const state: State = reactive({
   tabSelected: 'allposts'
 })
 
-const toast = useToastStore()
+const toast = useToastStore();
+const user = useUserStore();
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 
@@ -159,6 +161,11 @@ function goBackCategory() {
 }
 
 function createNewPost(createVariables: UpdatePostVariables) {
+
+  if (!user.success) {
+    user.auth = true
+    return
+  }
 
   state.creatingPost = true
 

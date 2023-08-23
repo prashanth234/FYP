@@ -1,21 +1,18 @@
 #### P0 #####
 
-.) User is not able to view "0" points when logged in for the first Time.
-.) Add points icon and popup about points
+.) Logging for production 
 .) Email backend and user verification
 .) Forgot password functionality.
-.) Prevent user to create post without login
 .) css for fields missing
 .) be the first one to participate in posts
 .) delete the migrations and start fresh
+.) User is not able to view "0" points when logged in for the first Time.
+.) Add points icon and popup about points
 
 .) check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
-.) Prepare for production
-.) Work on deployment
 .) Work on ui coloring
 
 .) Reduce coins image size
-.) customize the post (like cropping)
 .) Add no competition coming soon card
 .) Prevent access to 8000 port - Control using security rules and ip address
 .) Increase upload image size for https request as well
@@ -61,6 +58,10 @@ Check profile upload case - working fine
 Static assets handling
 Media assets handling - store in places where user both read and execute permissions
 Environment varibale nginx servername and django allowed hosts
+Prevent user to create post without login
+Prepare for production - separate prod configuration and environment variables
+Work on deployment - Build docker containers and deploy to aws
+customize the post look - Made max size of post as 600px
 
 #### P1 #####
 
@@ -73,6 +74,7 @@ Environment varibale nginx servername and django allowed hosts
 #### P2 #####
 
 .) convert login to page (Not Needed as of now)
+.) customize the post (like cropping)
 
 Content-Type: multipart/alternative;
  boundary="===============9192062584887903382=="

@@ -136,7 +136,6 @@
 <script setup lang="ts">
 import { IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
 import { logOutOutline, closeOutline, homeOutline, personOutline, trendingDown } from 'ionicons/icons'
-import store from '@/vuex'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
@@ -185,7 +184,6 @@ function closeLogin() {
 
 function login() {
   user.auth = true
-  // ionRouter.push('/login')
 }
 
 function getUserDetails() {
@@ -193,19 +191,20 @@ function getUserDetails() {
                               query {
                                 me {
                                   username,
-                                  avatar
+                                  avatar,
+                                  points
                                 }
                               }
                             `)
   
   onResult(({data, loading}) => {
+    console.log(loading)
     if (loading) return
     if (data.me) {
       user.$patch({...data.me, userUpdated: user.userUpdated + 1})
     } else {
       logout()
     }
-    state.loading = false
   })
 }
 

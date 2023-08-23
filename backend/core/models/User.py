@@ -12,6 +12,7 @@ class User (AbstractUser):
   avatar = models.FileField(upload_to="users", blank=True, null=True)  
   gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
   date_of_birth = models.DateField(blank=True, null=True)
+  points = models.IntegerField(default=200)
 
   USERNAME_FIELD = "username"
   EMAIL_FIELD = "email"
