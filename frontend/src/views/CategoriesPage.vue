@@ -74,7 +74,7 @@ onResult(({data, loading}) => {
 })
 
 function openCategory (category: categoryObject) {
-  ionRouter.push(`category/${category.id}`)
+  ionRouter.push(`interests/${category.id}`)
 }
 </script>
 

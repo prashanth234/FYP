@@ -198,7 +198,6 @@ function getUserDetails() {
                             `)
   
   onResult(({data, loading}) => {
-    console.log(loading)
     if (loading) return
     if (data.me) {
       user.$patch({...data.me, userUpdated: user.userUpdated + 1})

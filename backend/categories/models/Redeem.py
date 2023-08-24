@@ -3,11 +3,13 @@ from django.conf import settings
   
 class Redeem(models.Model):
     STATUS_CHOICES = (
-        ('P', 'Pending'),
+        ('Q', 'Pending'),
+        ('P', 'Processing'),
         ('R', 'Redeemed'),
+        ('F', 'Failed'),
     )
 
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Q')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     points = models.IntegerField()

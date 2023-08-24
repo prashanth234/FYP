@@ -6,7 +6,7 @@ import CategoriesPage from '@/views/CategoriesPage.vue'
 import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
 import ActivatePage from '@/views/activatePage.vue'
-import PointsPage from '@/views/PointsPage.vue'
+import RewardsPage from '@/views/RewardsPage.vue'
 
 import { useUserStore } from '@/stores/user'
 import store from '../vuex';
@@ -52,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'home'
       },
       {
-        path: 'category/:id',
+        path: 'interests/:id',
         name: 'CategoryDetails',
         component: CategoriesDetailsPage,
         props: true
@@ -67,7 +67,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'rewards',
-        component: PointsPage,
+        component: RewardsPage,
         name: 'rewards',
         meta: {
           auth: true

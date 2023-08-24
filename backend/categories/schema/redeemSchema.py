@@ -20,6 +20,7 @@ class CreateRedeemMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     redeem = graphene.Field(RedeemType)
+    userpoints = graphene.Int()
 
     @classmethod
     @login_required
@@ -38,7 +39,7 @@ class CreateRedeemMutation(graphene.Mutation):
         redeem.save()
         user.save()
 
-        return CreateRedeemMutation(redeem=redeem)
+        return CreateRedeemMutation(redeem=redeem, userpoints=user.points)
 
 class UpdateRedeemMutation(graphene.Mutation):
     class Arguments:
@@ -87,6 +88,7 @@ class DeleteRedeemMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     success = graphene.Boolean()
+    userpoints = graphene.Int()
 
     @classmethod
     @login_required
@@ -98,18 +100,18 @@ class DeleteRedeemMutation(graphene.Mutation):
         if not redeem:
             raise GraphQLError("Redeem with this ID does not exist.")
 
-        if user.status == 'R':
-            raise GraphQLError("Redeemed points can't be deleted")
+        if redeem.status != 'Q':
+            raise GraphQLError("Redeem can't be canceled now")
         
         user.points += redeem.points
         
         redeem.delete()
         user.save()
-        return DeleteRedeemMutation(success=True)
+        return DeleteRedeemMutation(success=True, userpoints=user.points)
 
 class Mutation(graphene.ObjectType):
     create_redeem = CreateRedeemMutation.Field()
-    update_redeem = UpdateRedeemMutation.Field()
+    # update_redeem = UpdateRedeemMutation.Field()
     delete_redeem = DeleteRedeemMutation.Field()
 
 class Query(graphene.ObjectType):
