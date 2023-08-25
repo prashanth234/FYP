@@ -5,9 +5,8 @@ services:
     container_name: frontend
     build: 
       context: ./frontend
-      platforms:
-        - linux/amd64
-        - linux/arm64
+      # platforms:
+      #   - linux/amd64
     image: prashanth45/fyp:frontendv1
     ports:
       - "80:80"
@@ -25,9 +24,8 @@ services:
     container_name: backend
     build: 
       context: ./backend
-      platforms:
-        - linux/amd64
-        - linux/arm64
+      # platforms:
+      #   - linux/amd64
     image: prashanth45/fyp:backendv1
     ports:
       - "8000:8000"
@@ -53,10 +51,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DBNAME}
-      MYSQL_USER: ${MYSQL_USER}
+      # MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     #restart: always

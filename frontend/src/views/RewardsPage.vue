@@ -22,25 +22,26 @@
 							<th>Cancel</th>
 						</tr>
 						<tr v-for="(redemption, index) in redemptions?.redemptions" :key="redemption.id">
-							<td v-for="(col, cindex) in ['createdAt', 'points', 'status', 'operation']" :key="`${col}-${cindex}`">
-								<span v-if="col == 'status'">
-									{{ state.status[redemption[col]] }}
-								</span>
-								<span v-else-if="col == 'createdAt'">
-									{{ redemption[col].slice(0, 19) }}
-								</span>
-								<div v-else-if="col == 'operation'" class="ion-text-center">
-									<ion-icon 
-										v-if="redemption.status == 'Q'"
-										style="font-size: 20px;"
-										@click="DeleteReedem(redemption.id)"
-										class="cpointer"
-										:icon="closeCircleOutline"
-									/>
-								</div>
-								<span v-else>
-									{{ redemption[col] }}
-								</span>
+							<td>
+								{{ redemption.createdAt.slice(0, 19) }}
+							</td>
+							<td>
+								{{ redemption.points }}
+							</td>
+							<td>
+								<span v-if="redemption.status == 'Q'">Pending</span>
+								<span v-else-if="redemption.status == 'P'">Processing</span>
+								<span v-else-if="redemption.status == 'R'">Redeemed</span>
+								<span v-else-if="redemption.status == 'F'">Failed</span>
+							</td>
+							<td class="ion-text-center">
+								<ion-icon 
+									v-if="redemption.status == 'Q'"
+									style="font-size: 20px;"
+									@click="DeleteReedem(redemption.id)"
+									class="cpointer"
+									:icon="closeCircleOutline"
+								/>
 							</td>
 						</tr>
 						<tr v-if="!loading && !redemptions?.redemptions.length" >
@@ -68,12 +69,7 @@ const user = useUserStore()
 const toast = useToastStore()
 
 const state = reactive({
-	points: '',
-	status: {
-		'Q': 'Pending',
-		'P': 'Processing',
-		'R': 'Redeemed'
-	}
+	points: ''
 })
 
 const QUERY = gql`
