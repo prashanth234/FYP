@@ -97,6 +97,11 @@ AUTH_USER_MODEL = 'core.User'
 
 GRAPHQL_AUTH = {
     'UPDATE_MUTATION_FIELDS': ["first_name", "last_name",  "gender", "date_of_birth"],
+    "EMAIL_TEMPLATE_VARIABLES": {
+        "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
+        "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),
+        "site_port": os.environ.get('FYP_SITE_PORT', ':8100')
+    }
 }
 
 
@@ -175,7 +180,15 @@ GRAPHQL_JWT = {
 }
 
 # Sending mails through console
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Sending mails through smtp
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'moviesstar197@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'lznstobeaqnzsszx')
 
 LOGGING = {
     'version': 1,

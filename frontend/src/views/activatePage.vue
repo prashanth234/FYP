@@ -1,24 +1,24 @@
 <template>
 
     <ion-page>
-        <ion-content>
+      <ion-content>
 
-          <ion-loading :isOpen="state.loading" message="Verifying"></ion-loading>
+        <ion-loading :isOpen="state.loading" message="Verifying"></ion-loading>
 
-          <ion-grid v-if="!state.loading">
-            <ion-row class="ion-text-center ion-padding" style="padding-top: 100px;">
+        <ion-grid v-if="!state.loading">
+          <ion-row class="ion-text-center ion-padding" style="padding-top: 100px;">
 
-                <ion-col v-if="state.success" size="12">
-                  <h3>{{state.message}}</h3>
-                </ion-col>
+              <ion-col v-if="state.success" size="12">
+                <h3>{{state.message}}</h3>
+              </ion-col>
 
-                <ion-col v-else size="12">
-                  <h3>{{state.message}}</h3> 
-                </ion-col>
+              <ion-col v-else size="12">
+                <h3>{{state.message}}</h3> 
+              </ion-col>
 
-            </ion-row>
-          </ion-grid>
-        </ion-content>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
     </ion-page>
 
 </template>

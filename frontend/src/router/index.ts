@@ -5,11 +5,11 @@ import MainPage from '@/views/MainPage.vue'
 import CategoriesPage from '@/views/CategoriesPage.vue'
 import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
-import ActivatePage from '@/views/activatePage.vue'
+import ActivatePage from '@/views/ActivatePage.vue'
 import RewardsPage from '@/views/RewardsPage.vue'
+import PasswordResetPage from '@/views/PasswordResetPage.vue'
 
 import { useUserStore } from '@/stores/user'
-import store from '../vuex';
 
 import TempChild from '@/views/TempChild.vue'
 import TempPage from '@/views/TempPage.vue'
@@ -38,6 +38,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/activate/:token',
     name: 'Activate',
     component: ActivatePage
+  },
+  {
+    path: '/password-reset/:token',
+    name: 'PasswordReset',
+    component: PasswordResetPage
   },
   {
     path: '/',

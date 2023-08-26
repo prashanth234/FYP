@@ -11,7 +11,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-input v-model="state.newPassword2" label="Confirm Password" labelPlacement="floating"></ion-input>
+      <ion-input v-model="state.newPassword2" type="password" label="Confirm Password" labelPlacement="floating"></ion-input>
     </ion-item>
     
     <ion-item>

@@ -26,17 +26,35 @@
       </ion-col>
 
       <ion-col size="12">
-        <ion-button class="auth-button" color="primary" :disabled="state.disabled" expand="block" @click="submitForm()">Login</ion-button>
+        <ion-button class="auth-button" color="primary" :disabled="processing" expand="block" @click="submitForm()">
+          <ion-spinner 
+            class="button-loading-small"
+            v-if="state.loginLoading"
+            name="crescent"
+          />
+          <span v-else>
+            Login
+          </span>
+        </ion-button>
       </ion-col>
 
       <ion-col size="12" class="line" style="margin-top: 12px; margin-bottom: 10px;"></ion-col>
 
       <ion-col size="12" >
-        <ion-button fill="clear" @click="forgotPassword">Forgotten password?</ion-button>
+        <ion-button fill="clear" @click="forgotPassword" :disabled="processing">
+          <ion-spinner 
+            class="button-loading-small"
+            v-if="state.forgotPassLoading"
+            name="crescent"
+          />
+          <span v-else>
+            Forgotten password?
+          </span>
+        </ion-button>
       </ion-col>
       
       <ion-col size="12">
-        <ion-button :disabled="state.disabled" size="small" color="success" @click="register()">Create Account</ion-button>
+        <ion-button :disabled="processing" size="small" color="success" @click="register()">Create Account</ion-button>
       </ion-col>
       
     </ion-row>
@@ -48,28 +66,34 @@
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, useIonRouter } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens } from '@/mixims/auth'
-import store from '@/vuex'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 
 interface State {
   email: string,
   password: string,
-  disabled: boolean,
-  errors: string[]
+  errors: string[],
+  forgotPassLoading: boolean,
+  loginLoading: boolean
 }
 
 const state: State = reactive({
   email: '',
   password: '',
-  disabled: false,
-  errors: []
+  loginLoading: false,
+  errors: [],
+  forgotPassLoading: false,
 })
+
+const processing = computed(() => {
+  return state.loginLoading || state.forgotPassLoading
+})
+
 
 const emit = defineEmits<{
   (e: 'register'): void
@@ -86,7 +110,9 @@ function forgotPassword () {
     return
   }
 
-  const { mutate, onDone } = useMutation(gql`    
+  state.forgotPassLoading = true
+
+  const { mutate, onDone, onError } = useMutation(gql`    
       mutation ($email: String!) {
         sendPasswordResetEmail (
             email: $email
@@ -107,16 +133,22 @@ function forgotPassword () {
 
   onDone(({data: {sendPasswordResetEmail}}) => {
     if (sendPasswordResetEmail.success) {
-      toast.$patch({message: "Email sent successfully", color: 'success', open: true})
+      toast.$patch({message: "Password reset email sent successfully!", color: 'success', open: true})
     }
+    state.forgotPassLoading = false
+  })
+
+  onError(() => {
+    toast.$patch({message: "We're experiencing technical difficulties with our email service. Please try again later.", color: 'danger', open: true})
+    state.forgotPassLoading = false
   })
 }
 
 function submitForm () {
 
-  state.disabled = true
+  state.loginLoading = true
 
-  const { mutate, onDone } = useMutation(gql`    
+  const { mutate, onDone, onError } = useMutation(gql`    
       mutation ($email: String!, $password: String!) {
         tokenAuth(email: $email, password: $password) {
           success,
@@ -146,7 +178,7 @@ function submitForm () {
 
   onDone((result) => {
     const response = result.data.tokenAuth
-    state.disabled = false
+    state.loginLoading = false
 
     if (response.success) {
       storeTokens(response, 'login')
@@ -162,6 +194,11 @@ function submitForm () {
         })
       })
     }
+  })
+
+  onError(() => {
+    toast.$patch({message: "Login failed due to technical difficulties. Please try again later.", color: 'danger', open: true})
+    state.loginLoading = false
   })
 }
 

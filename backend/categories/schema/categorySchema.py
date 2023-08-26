@@ -90,7 +90,7 @@ class Query(graphene.ObjectType):
     categories = graphene.List(CategoryType)
 
     def resolve_categories(root, info):
-        logger.info('getting categories')
+#       logger.info('getting categories')
         return Category.objects.all()
     
     category_details = graphene.Field(CategoryType, id=graphene.Int())

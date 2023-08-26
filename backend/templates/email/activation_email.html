@@ -1,9 +1,12 @@
-<!-- activation_email.html -->
-
 <h3>{{ site_name }}</h3>
 
-<p>Hello \{{ user.username }}!</p>
+<p>Hello {{ user.username }},</p>
 
-<p>Please activate your account on the link:</p>
+<p>Thank you for signing up at our website. To activate your account, please click the link below:</p>
 
-<p>{{ protocol }}://localhost:8100/{{ path }}/{{ token }}</p>
+<p><a href="{{ protocol }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}">{{ protocol }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}</a></p>
+
+<p>If you didn't create an account with us, you can safely ignore this email.</p>
+
+<p>Best regards,</p>
+<p>{{ site_name }} Team</p>

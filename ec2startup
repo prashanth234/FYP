@@ -24,6 +24,6 @@ PUBLICIP=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aw
 
 echo $PUBLICIP  > /home/ubuntu/publicip
 
-sed -i "s/FYP_SITE_NAME='[^']*'/FYP_SITE_NAME='${PUBLICIP}'/g" /home/ubuntu/fyp/.env
+sed -i "s/FYP_SITE_DOMAIN='[^']*'/FYP_SITE_DOMAIN='${PUBLICIP}'/g" /home/ubuntu/fyp/.env
 
 (cd /home/ubuntu/fyp && docker compose up -d)
