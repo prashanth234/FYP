@@ -1,7 +1,6 @@
 #### P0 #####
 
-.) Email backend and user verification
-.) Forgot password functionality.
+
 .) css for fields missing
 .) be the first one to participate in posts
 .) delete the migrations and start fresh
@@ -62,7 +61,9 @@ Work on deployment - Build docker containers and deploy to aws
 customize the post look - Made max size of post as 600px
 User is not able to view "0" points when logged in for the first Time. - he can see rewards page
 Add points icon and points page and backend
-Logging for production 
+Logging for production
+Email backend and user verification
+Forgot password functionality.
 
 #### P1 #####
 

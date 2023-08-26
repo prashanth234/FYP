@@ -5,8 +5,8 @@ services:
     container_name: frontend
     build: 
       context: ./frontend
-      # platforms:
-      #   - linux/amd64
+      platforms:
+        - linux/amd64
     image: prashanth45/fyp:frontendv1
     ports:
       - "80:80"
@@ -24,8 +24,8 @@ services:
     container_name: backend
     build: 
       context: ./backend
-      # platforms:
-      #   - linux/amd64
+      platforms:
+        - linux/amd64
     image: prashanth45/fyp:backendv1
     ports:
       - "8000:8000"
@@ -40,6 +40,9 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
       - FYP_SITE_DOMAIN=${FYP_SITE_DOMAIN}
+      - FYP_SITE_PORT=${FYP_SITE_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     #restart: always
     depends_on:
       db:
