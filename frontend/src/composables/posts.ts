@@ -14,7 +14,7 @@ export function getPosts(
     category: ref(category),
     trending: ref(false),
     page: 1,
-    perPage: 2
+    perPage: 5
   }
 
   const POST_QUERY = gql`

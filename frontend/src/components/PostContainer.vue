@@ -74,8 +74,10 @@ import store from '@/vuex'
 import gql from 'graphql-tag'
 import { reactive, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
 
 const user = useUserStore()
+const toast = useToastStore()
 
 const ionRouter = useIonRouter()
 const props = defineProps(['post', 'showEdit'])
@@ -97,6 +99,7 @@ const state = reactive({
 function likePost () {
   if (!user.success) {
     user.auth = true
+    toast.$patch({message: 'Your like awaits! Sign in to show appreciation for posts.', color: 'primary', open: true})
     return
   }
 
@@ -105,7 +108,7 @@ function likePost () {
   state.isliked = !state.isliked
  
 
-  const { mutate, onDone } = useMutation(gql`    
+  const { mutate, onDone } = useMutation(gql`
       
       mutation ($id: ID!) { 
         ${operation} (id: $id) {

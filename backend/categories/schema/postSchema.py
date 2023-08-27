@@ -168,7 +168,7 @@ class Query(graphene.ObjectType):
 
         # If trending flag is set return top number of posts
         if trending:
-            top_posts = Post.objects.filter(competition=competition).order_by('-likes')[:per_page]
+            top_posts = Post.objects.filter(competition=competition).order_by('-likes')[:5]
             return PostListType(posts=top_posts, total=len(top_posts))
 
         if competition:

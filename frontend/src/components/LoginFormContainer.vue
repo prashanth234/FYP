@@ -111,6 +111,7 @@ function forgotPassword () {
   }
 
   state.forgotPassLoading = true
+  state.errors = []
 
   const { mutate, onDone, onError } = useMutation(gql`    
       mutation ($email: String!) {

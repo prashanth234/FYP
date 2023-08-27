@@ -1,13 +1,13 @@
 <template>
   <ion-page>
-    <ion-content style="height: 100%;">
+    <ion-content class="full-height">
 
       <ion-grid>
 
         <ion-row>
 
           <!-- Start of the create post and all posts and breadcrumbs -->
-          <ion-col class="posts" size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8">
+          <ion-col class="posts" :class="{'post-col': posts?.allPosts?.total > 5}" size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8">
 
             <ion-row class="ion-justify-content-center">
 
@@ -69,8 +69,8 @@
 
             </ion-row>
 
-            <ion-infinite-scroll @ionInfinite="getMore">
-              <ion-infinite-scroll-content></ion-infinite-scroll-content>
+            <ion-infinite-scroll @ionInfinite="getMore" threshold="0">
+              <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 
           </ion-col>
@@ -236,5 +236,8 @@ ion-content::part(scroll) {
 ion-grid {
   --ion-grid-padding: 0px;
   --ion-grid-column-padding: 8px;
+}
+.post-col {
+  min-height: 100vh;
 }
 </style>
