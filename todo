@@ -1,18 +1,21 @@
 #### P0 #####
 
+.) Work on UX customization for details page and competition tabs
+.) Work on UX customization for rewards page and faq and info about points
 
-.) css for fields missing
-.) be the first one to participate in posts
-.) delete the migrations and start fresh
+.) Show user not verified
+.) Disable upload to competition after the expired date and winners in competition
 
-.) check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
-.) Work on ui coloring
-.) work ux customization for rewards page and faq and info about points
+.) Work on UI/UX coloring
 
-.) Reduce coins image size
+.) Be the first one to participate in posts or show some bot post
+.) Css for fields missing on mobile
 .) Add no competition coming soon card
+
+.) Reduce coins and categories image size for faster fetch
 .) Prevent access to 8000 port - Control using security rules and ip address
 .) Increase upload image size for https request as well
+.) Delete the migrations and start fresh
 
 
 ##### DONE #####
@@ -72,48 +75,13 @@ Forgot password functionality.
 .) Alternative way to maintain likes count consistently without concurrency issues
 .) Getting category on the post see if it can be optimized
 .) Able to create post through super user without login
+.) Check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option. (This warning occured and but root user is created with password in docker run)
 
 #### P2 #####
 
 .) convert login to page (Not Needed as of now)
 .) customize the post (like cropping)
 
-Content-Type: multipart/alternative;
- boundary="===============9192062584887903382=="
-MIME-Version: 1.0
-Subject: Activate your account on localhost:8000
-From: webmaster@localhost
-To: prashanthbobby96@gmail.com
-Date: Mon, 17 Jul 2023 18:23:20 -0000
-Message-ID: 
- <168961820044.3691.692125944409370169@Prashanths-MacBook-Air.local>
 
---===============9192062584887903382==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-localhost:8000
-
-Hello prashanth!
-
-Please activate your account on the link:
-
-http://localhost:8000/activate/eyJ1c2VybmFtZSI6InByYXNoYW50aCIsImFjdGlvbiI6ImFjdGl2YXRpb24ifQ:1qLSsS:21NsgWgOLh0N9DJ-tehBNj9x2bQEqZi0gh8J7FXbFzI
-
---===============9192062584887903382==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-<h3>localhost:8000</h3>
-
-<p>Hello prashanth!</p>
-
-<p>Please activate your account on the link:</p>
-
-<p>http://localhost:8000/activate/eyJ1c2VybmFtZSI6InByYXNoYW50aCIsImFjdGlvbiI6ImFjdGl2YXRpb24ifQ:1qLSsS:21NsgWgOLh0N9DJ-tehBNj9x2bQEqZi0gh8J7FXbFzI</p>
-
---===============9192062584887903382==--
 
 

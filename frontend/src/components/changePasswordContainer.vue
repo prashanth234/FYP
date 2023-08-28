@@ -14,8 +14,8 @@
       <ion-input v-model="state.newPassword2" type="password" label="Confirm Password" labelPlacement="floating"></ion-input>
     </ion-item>
     
-    <ion-item>
-      <ion-text color="danger" v-if="state.errors.length">
+    <ion-item v-if="state.errors.length">
+      <ion-text color="danger">
         <ul style="padding-left: 15px">
           <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
         </ul>
