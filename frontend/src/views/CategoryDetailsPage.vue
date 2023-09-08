@@ -11,20 +11,6 @@
 
             <ion-row class="ion-justify-content-center">
 
-              <!-- Breadcrumb for navigation from category to competition -->
-              <!-- <ion-col size="12" class="ion-no-padding">
-
-                <ion-breadcrumbs color="primary">
-                  <ion-breadcrumb class="cpointer" @click="goBackCategory()">
-                    {{ categoryInfo.name }}
-                    <ion-icon slot="separator" style="margin-top: 5px" :icon="arrowForward"></ion-icon>
-                  </ion-breadcrumb>
-                  <ion-breadcrumb v-if="categoryInfo.selectedComptn">{{ categoryInfo.selectedComptn.name }}</ion-breadcrumb>
-                  <ion-icon style="margin-top: 7px;" v-if="categoryInfo.selectedComptn" @click="goBackCategory()" class="close-icon ml-auto cpointer" size="large" :icon="closeOutline"></ion-icon>
-                </ion-breadcrumbs>
-
-              </ion-col> -->
-
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11" >
 
                 <ion-card class="ion-padding border-radius-std ion-no-margin" color="light">
@@ -36,17 +22,6 @@
                   <div class="description category">
                     {{ categoryInfo.description }}
                   </div>
-
-                  <!-- <div v-if="categoryInfo.selectedComptn" class="competition">
-                    <div class="title">
-                      {{ categoryInfo.selectedComptn.name }}
-                      <ion-button class="close-button" @click="goBackCategory()" size="small" shape="round" color="light">Close</ion-button>
-                    </div>
-
-                    <div class="description">
-                      {{ categoryInfo.selectedComptn.description }}
-                    </div>
-                  </div> -->
                   
                 </ion-card>
 
@@ -61,11 +36,6 @@
                 />
               </ion-col>
 
-              <!-- Competition details -->
-              <!-- <ion-col size="12" v-if="categoryInfo.selectedComptn">
-                <competition-details />
-              </ion-col> -->
-
               <!-- Create Post -->
               <!-- <ion-col size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-if="!categoryInfo.loading">
                 <create-post
@@ -76,18 +46,6 @@
                   type="create"
                 >
                 </create-post>
-              </ion-col> -->
-
-              <!-- Toggle between all posts and top 5 -->
-              <!-- <ion-col size="12" v-if="categoryInfo.selectedComptn">
-                <ion-segment :value="state.tabSelected" @ionChange="tabChanged">
-                  <ion-segment-button value="allposts">
-                    <ion-label>All Posts</ion-label>
-                  </ion-segment-button>
-                  <ion-segment-button value="trending">
-                    <ion-label>Top 5</ion-label>
-                  </ion-segment-button>
-                </ion-segment>
               </ion-col> -->
 
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
@@ -154,7 +112,7 @@
 import { reactive, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, } from 'vue-router'
 import gql from 'graphql-tag'
-import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, IonBreadcrumb, IonBreadcrumbs, IonSegment, IonSegmentButton, SegmentCustomEvent, SegmentValue } from '@ionic/vue'
+import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
@@ -280,11 +238,6 @@ function tabChanged(value: string) {
 </script>
 
 <style scoped>
-ion-breadcrumb {
-  font-size: 21px !important;
-  font-weight: 500 !important;
-  line-height: 1.2;
-}
 .posts ion-card {
   margin-left: 0px;
   margin-right: 0px;
@@ -304,7 +257,6 @@ ion-grid {
   margin: 0px;
 }
 .category {
-  
   &.title {
     color: var(--ion-color-dark);
     font-size: 19px;
@@ -312,7 +264,6 @@ ion-grid {
     text-transform: uppercase;
     line-height: 1.8;
   }
-
   &.description {
     color: var(--ion-color-dark-tint);
   }
@@ -328,7 +279,6 @@ ion-grid {
     font-weight: 600;
     line-height: 1.6;
   }
-
   .description {
     color: var(--ion-color-dark-tint);
   }
