@@ -131,6 +131,7 @@ function openCategory (category: categoryObject) {
 }
 ion-grid {
   --ion-grid-padding: 5px;
+  --ion-grid-padding-xs: 0px;
   --ion-grid-column-padding: 10px;
   --ion-grid-column-padding-xs: 8px;
 }

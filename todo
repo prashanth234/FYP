@@ -1,21 +1,56 @@
 #### P0 #####
 
-.) Work on UX customization for details page and competition tabs
-.) Work on UX customization for rewards page and faq and info about points
+== 1st week
 
-.) Show user not verified
-.) Disable upload to competition after the expired date and winners in competition
+.) Implement UX customization for details page and competition tabs along with bottom navigation for mobile  - 1 week
 
-.) Work on UI/UX coloring
+== 2nd week
 
-.) Be the first one to participate in posts or show some bot post
-.) Css for fields missing on mobile
-.) Add no competition coming soon card
+.) Work on UX customization for rewards page - 1 week
+.) Faq and info about points 
+.) Plan on how points should be allocated to competitons
+.) Redemption details - how many points needed for redemption, real value of each point
+.) Show points count on main page
+.) Add participation points
 
-.) Reduce coins and categories image size for faster fetch
-.) Prevent access to 8000 port - Control using security rules and ip address
+== 3rd week
+
+.) Plan and implement top 5 posts - handle scenarios like same like count,  posts from same user in a competition - 2 to 3 days
+
+.) Show user not verified and popup to send email - 1 day
+
+.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
+
+== 4th week
+
+.) Be the first one to participate in posts or show some bot post - (Think and finalize it) - 1 to 2 days
+
+.) Add no competition coming soon card - 1 to 2 days
+
+.) Support page - 1 day
+
+== 5th week
+
+.) Work on UI/UX coloring - 2 - 3 days
+
+.) Enable https and brand name - 3 days
+
+== 6th week
+
+.) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
+
+.) Miscellaneous - <3days
 .) Increase upload image size for https request as well
 .) Delete the migrations and start fresh
+.) Prevent access to 8000 port - Control using security rules and ip address
+.) Reduce image sizes for faster fetch
+
+== 7th week
+
+.) Finalize the categories and there description, images. - 3 to 6 days
+
+Total - 7 Weeks
+(October End and Buffer of 2 weeks in november)
 
 
 ##### DONE #####
@@ -67,6 +102,7 @@ Add points icon and points page and backend
 Logging for production
 Email backend and user verification
 Forgot password functionality.
+Work on UX customization for details page and competition tabs
 
 #### P1 #####
 
@@ -76,6 +112,7 @@ Forgot password functionality.
 .) Getting category on the post see if it can be optimized
 .) Able to create post through super user without login
 .) Check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option. (This warning occured and but root user is created with password in docker run)
+.) Mobile number login
 
 #### P2 #####
 

@@ -84,6 +84,13 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+
+  /*
+    Wherever background color is used (like cards, contents, list-sheets etc)
+    --ion-background-color: linear-gradient(to right, #8ac4e3, #f2fcfe);
+    --ion-background-color-rgb: 18,18,18;
+  */
 }
 
 @media (prefers-color-scheme: dark) {

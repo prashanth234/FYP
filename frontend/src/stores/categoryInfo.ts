@@ -28,7 +28,8 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
                                                 name,
                                                 description,
                                                 lastDate,
-                                                points
+                                                points,
+                                                image
                                             }
                                         }
                                     }

@@ -93,7 +93,7 @@
       <div class="ion-page" id="main">
 
         <ion-header>
-          <ion-toolbar>
+          <ion-toolbar class="toolbar-nav">
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
@@ -332,5 +332,9 @@ checkAuthStatus()
     -webkit-box-shadow: none;
     box-shadow: none;
     position: initial;
+  }
+  .toolbar-nav {
+    // --background: #086AC4;
+    // color: white;
   }
 </style>

@@ -22,5 +22,6 @@ export interface CompetitionInfo {
   name: string,
   description: string,
   lastDate: string,
-  points: number
+  points: number,
+  image: string
 }

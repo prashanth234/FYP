@@ -1,7 +1,7 @@
 <template>
   <ion-card class="border-radius-std post-card cpointer">
 
-    <ion-card-content @click="likePost()" class="ion-no-padding">
+    <ion-card-content @dblclick="likePost()" class="ion-no-padding">
       <ion-list class="ion-no-padding">
 
         <ion-item lines="none" class="line" style="padding: 5px 0px;">
