@@ -101,15 +101,19 @@
               TBD
             </ion-title>
             <ion-buttons slot="end" v-if="isUserLogged">
+              <ion-button color="primary" fill="outline" @click="postDialog.open">
+                Create New Post
+              </ion-button>
               <ion-button
                 @click="onClickPoints"
                 class="ion-padding-end"
+                fill="outline"
               >
                 <ion-img
                   style="width: 25px; height: 25px; margin-right: 7px;"
                   src="/static/core/coins.png"
                 ></ion-img>
-                Points
+                Rewards
               </ion-button>
             </ion-buttons>
           </ion-toolbar>
@@ -129,6 +133,21 @@
       <login-container style="margin-top: 20px;" />
     </ion-modal>
 
+    <ion-modal
+      class="create-post-modal"
+      :is-open="postDialog.state.isOpen"
+      :show-backdrop="true"
+      @willDismiss="postDialog.close"
+    >
+      <create-post
+        :fixed-preview-height="true"
+        :showHeader="true"
+        @close="postDialog.close"
+        @postCreated="postDialog.postCreated"
+        type="create"
+      />
+    </ion-modal>
+
   </ion-page>
 
 </template>
@@ -140,13 +159,16 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
+import CreatePost from '@/components/CreatePostContainer.vue'
 import { reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { usePostDialog } from '@/composables/postDialog'
 
 const ionRouter = useIonRouter();
 const router = useRoute();
 const user = useUserStore();
+const postDialog = usePostDialog();
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
@@ -318,6 +340,13 @@ checkAuthStatus()
     font-weight: 600;
     padding-left: 12px;
   }
+  ion-header {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    position: initial;
+  }
+  .toolbar-nav {
+  }
   .login-modal {
     --max-width: 100%;
   }
@@ -327,14 +356,17 @@ checkAuthStatus()
       --height: auto;
       --max-width: 350px;
     }
+    .create-post-modal {
+      --max-width: 600px;
+    }
   }
-  ion-header {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    position: initial;
-  }
-  .toolbar-nav {
-    // --background: #086AC4;
-    // color: white;
+  .create-post-modal {
+    --max-width: 90%;
+    --height: auto;
+
+    &::part(content) {
+      background: none;
+      box-shadow: none;
+    }
   }
 </style>

@@ -18,7 +18,7 @@ export interface Post {
 }
 
 export interface CompetitionInfo {
-  id: number,
+  id: string,
   name: string,
   description: string,
   lastDate: string,

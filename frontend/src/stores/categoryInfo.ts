@@ -5,6 +5,7 @@ import { CompetitionInfo } from '@/mixims/interfaces'
 
 export const useCategoryInfoStore = defineStore('categoryInfo', {
   state: () => ({ 
+    id: '',
     name: '',
     description: '',
     oftype: '',
@@ -20,6 +21,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
       const { result, onResult } = useQuery(gql`
                                     query ($id: Int!) {
                                         categoryDetails (id: $id) {
+                                            id,
                                             name,
                                             description,
                                             oftype,

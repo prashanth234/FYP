@@ -111,19 +111,19 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, } from 'vue-router'
-import gql from 'graphql-tag'
 import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
-import CreatePost from '@/components/CreatePostContainer.vue'
 import { getPosts } from '@/composables/posts'
 import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
-import { useMutation } from '@vue/apollo-composable'
-import { arrowForward, closeOutline, radio } from 'ionicons/icons'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
-import { useToastStore } from '@/stores/toast'
-import { useUserStore } from '@/stores/user'
+// import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
+// import { useToastStore } from '@/stores/toast'
+// import { useUserStore } from '@/stores/user'
+// import { useMutation } from '@vue/apollo-composable'
+// import { arrowForward, closeOutline, radio } from 'ionicons/icons'
+// import gql from 'graphql-tag'
+// import CreatePost from '@/components/CreatePostContainer.vue'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -139,8 +139,8 @@ const state: State = reactive({
   tabSelected: 'allposts'
 })
 
-const toast = useToastStore();
-const user = useUserStore();
+// const toast = useToastStore();
+// const user = useUserStore();
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 
@@ -177,58 +177,58 @@ function goBackCategory() {
   categoryInfo.selectedComptn = null
 }
 
-function createNewPost(createVariables: UpdatePostVariables) {
+// function createNewPost(createVariables: UpdatePostVariables) {
 
-  if (!user.success) {
-    user.auth = true
-    return
-  }
+//   if (!user.success) {
+//     user.auth = true
+//     return
+//   }
 
-  state.creatingPost = true
+//   state.creatingPost = true
 
-  let postVariables = {
-    ...createVariables,
-    competition: categoryInfo.selectedComptn?.id || undefined,
-    category: props.id
-  }
+//   let postVariables = {
+//     ...createVariables,
+//     competition: categoryInfo.selectedComptn?.id || undefined,
+//     category: props.id
+//   }
 
-  const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
+//   const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
     
-    mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
-      createPost (
-        file: $file,
-        competition: $competition,
-        category: $category,
-        description: $description
-      ) {
-          post {
-            id
-          }  
-        }
-    }
+//     mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
+//       createPost (
+//         file: $file,
+//         competition: $competition,
+//         category: $category,
+//         description: $description
+//       ) {
+//           post {
+//             id
+//           }  
+//         }
+//     }
 
-  `, () => ({
-      variables: postVariables
-    })
-  )
+//   `, () => ({
+//       variables: postVariables
+//     })
+//   )
 
-  mutate()
+//   mutate()
 
-  onDone(() => {
-    state.refreshCreatePost++
-    state.creatingPost = false
-    refetch()
-  })
+//   onDone(() => {
+//     state.refreshCreatePost++
+//     state.creatingPost = false
+//     refetch()
+//   })
 
-  onError((error: any) => {
-    state.creatingPost = false
-    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
-      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
-    } else {
-      toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
-    }
-  })
-}
+//   onError((error: any) => {
+//     state.creatingPost = false
+//     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+//       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+//     } else {
+//       toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
+//     }
+//   })
+// }
 
 function tabChanged(value: string) {
   state.tabSelected = value

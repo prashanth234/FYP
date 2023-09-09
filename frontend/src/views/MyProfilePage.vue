@@ -3,13 +3,13 @@
   <ion-page>
     <ion-content>
         
-      <ion-modal class="edit-post-modal" :is-open="state.isOpen" :show-backdrop="true" @willDismiss="closeEditPost">
+      <ion-modal class="edit-post-modal" :is-open="postDialog.state.isOpen" :show-backdrop="true" @willDismiss="postDialog.close">
         <create-post
           :fixed-preview-height="true"
           :showHeader="true"
           :post="state.editPost"
-          @close="closeEditPost"
-          @updatePost="updatePost"
+          @close="postDialog.close"
+          @postUpdated="postDialog.postUpdated"
           type="edit"
         />
       </ion-modal>
@@ -116,9 +116,9 @@ import { getPosts } from '@/composables/posts'
 import { warningOutline } from 'ionicons/icons'
 import { CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
+import { usePostDialog } from '@/composables/postDialog'
 
 interface State {
-  isOpen: boolean,
   editPost: PostType | null | undefined,
   openDialog: boolean,
   selectedTab: SegmentValue | undefined
@@ -132,13 +132,14 @@ interface QueryResult {
 }
 
 const state: State = reactive({
-  isOpen: false,
   editPost: null,
   openDialog: false,
   selectedTab: 'about'
 })
 
 const toast = useToastStore()
+const postDialog = usePostDialog()
+
 const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts', undefined, undefined)
 
 // Delete Post
@@ -188,51 +189,47 @@ function closeDialog() {
 
 function editPost(post: PostType, index: number) {
   state.editPost = post
-  state.isOpen = true
+  postDialog.open()
 }
 
-function updatePost(updateVariables: UpdatePostVariables) {
-  const { mutate, onDone, onError } = useMutation(gql`    
+// function updatePost(updateVariables: UpdatePostVariables) {
+//   const { mutate, onDone, onError } = useMutation(gql`    
     
-    mutation ($id: ID!, $file: Upload, $description: String) { 
-      updatePost (
-        id: $id,
-        file: $file,
-        description: $description
-      ) {
-          post {
-            id,
-            description,
-            postfileSet {
-              file
-            },
-          }
-        }
-    }
-  `,
-    {
-      variables: updateVariables
-    }
-  )
+//     mutation ($id: ID!, $file: Upload, $description: String) { 
+//       updatePost (
+//         id: $id,
+//         file: $file,
+//         description: $description
+//       ) {
+//           post {
+//             id,
+//             description,
+//             postfileSet {
+//               file
+//             },
+//           }
+//         }
+//     }
+//   `,
+//     {
+//       variables: updateVariables
+//     }
+//   )
   
-  mutate()
+//   mutate()
 
-  onDone((value) => {
-    closeEditPost()
-  })
+//   onDone((value) => {
+//     closeEditPost()
+//   })
 
-  onError((error: any) => {
-    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
-      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
-    } else {
-      toast.$patch({message: 'Error Occured While Updating Post', color: 'danger', open: true})
-    }
-  })
-}
-
-function closeEditPost() {
-  state.isOpen = false
-}
+//   onError((error: any) => {
+//     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+//       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+//     } else {
+//       toast.$patch({message: 'Error Occured While Updating Post', color: 'danger', open: true})
+//     }
+//   })
+// }
 
 // Profile Information
 

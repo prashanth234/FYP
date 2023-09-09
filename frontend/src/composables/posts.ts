@@ -5,8 +5,8 @@ import { ref } from 'vue'
 
 export function getPosts(
   type: string,
-  competition: number | undefined, 
-  category: number | undefined
+  competition: string | undefined, 
+  category: string | undefined
 ) {
 
   const variables = {

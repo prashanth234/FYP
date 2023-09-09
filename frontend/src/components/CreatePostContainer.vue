@@ -54,12 +54,12 @@
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="(state.oftype == 'IMAGETEXT' && !state.preview) || !!props.creatingPost"
+                      :disabled="(state.oftype == 'IMAGETEXT' && !state.preview) || !!state.creatingPost"
                       style="float: right"
                     >
                       <ion-spinner 
                         class="button-loading-small"
-                        v-if="props.creatingPost"
+                        v-if="state.creatingPost"
                         name="crescent"
                       />
                       <span v-else>
@@ -92,10 +92,12 @@ import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonC
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive } from 'vue'
-import store from '@/vuex'
 import { UpdatePostVariables } from '@/mixims/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import { useUserStore } from '@/stores/user'
+import { useMutation } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
 
 interface PostFileType {
   file: string
@@ -113,33 +115,41 @@ interface PostType {
 const props = defineProps<{
   post?: PostType | null,
   type: string,
-  creatingPost?: Boolean,
   showHeader?: Boolean,
   fixedPreviewHeight: Boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'updatePost', variables: UpdatePostVariables): void;
-  (e: 'uploadPost', variables: UpdatePostVariables): void;
+  (e: 'postUpdated'): void;
+  (e: 'postCreated'): void;
 }>()
 
 const state = reactive({
+  // Post Information
   image: null,
-  preview: '',
   description: '',
+  category: '',
+  competition: '',
+  oftype: '',
+
+  preview: '',
   title: '',
   uploadTitle: '',
   refreshFileUpload: 0,
-  oftype: '',
+  creatingPost: false,
   uploadAction: () => {}
 })
 
 const toast = useToastStore()
+const user = useUserStore()
 
 if (props.type == 'create') {
-  const { oftype } = useCategoryInfoStore()
+  // Intialize create post data
+  const { oftype, id, selectedComptn } = useCategoryInfoStore()
   state.oftype = oftype
+  state.category = id
+  state.competition = selectedComptn?.id || ''
 } else if (props.post){
   // Post edit case
   state.oftype = props.post.category.oftype
@@ -152,13 +162,58 @@ function clearPostForm () {
   state.refreshFileUpload++
 }
 
-function uploadPost() {
-  const variables: UpdatePostVariables = {
-    file: state.image || undefined,
-    description: state.description
+function createNewPost() {
+
+  if (!user.success) {
+    user.auth = true
+    return
   }
 
-  emit('uploadPost', variables)
+  state.creatingPost = true
+
+  let postVariables = {
+    file: state.image || undefined,
+    description: state.description,
+    competition: state.competition || undefined,
+    category: state.category
+  }
+
+  const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
+    
+    mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
+      createPost (
+        file: $file,
+        competition: $competition,
+        category: $category,
+        description: $description
+      ) {
+          post {
+            id
+          }  
+        }
+    }
+
+  `, () => ({
+      variables: postVariables
+    })
+  )
+
+  mutate()
+
+  onDone(() => {
+    state.creatingPost = false
+    clearPostForm()
+    emit('postCreated')
+  })
+
+  onError((error: any) => {
+    state.creatingPost = false
+    if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+      toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+    } else {
+      toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
+    }
+  })
 }
 
 function updatePost() {
@@ -177,7 +232,42 @@ function updatePost() {
   if (Object.keys(variables).length == 1) {
     toast.$patch({message: 'No changes made', color: 'warning', open: true})
   } else {
-    emit('updatePost', variables)
+    const { mutate, onDone, onError } = useMutation(gql`    
+    
+      mutation ($id: ID!, $file: Upload, $description: String) { 
+        updatePost (
+          id: $id,
+          file: $file,
+          description: $description
+        ) {
+            post {
+              id,
+              description,
+              postfileSet {
+                file
+              },
+            }
+          }
+      }
+    `,
+      {
+        variables
+      }
+    )
+    
+    mutate()
+
+    onDone((value) => {
+      emit('postUpdated')
+    })
+
+    onError((error: any) => {
+      if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
+        toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+      } else {
+        toast.$patch({message: 'Error Occured While Updating Post', color: 'danger', open: true})
+      }
+    })
   }
 }
 
@@ -191,7 +281,7 @@ function initialize() {
   } else if (props.type == 'create') {
     state.title = 'Create Post'
     state.uploadTitle = 'Upload'
-    state.uploadAction = uploadPost
+    state.uploadAction = createNewPost
   }
 }
 

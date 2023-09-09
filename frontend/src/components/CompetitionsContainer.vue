@@ -49,25 +49,27 @@
 						</div>
 					</ion-col>
 				</ion-row>
-				<div v-if="categoryInfo.selectedComptn?.id == competition.id">
-					<ion-button
-						class="ion-no-margin"
-						size="small"
-						style="float: right;"
-						@click.stop="moreCompDetails(competition)"
-					>
-						More
-					</ion-button>
-					<ion-button
-						@click.stop="closeCompetition(competition)"
-						class="ion-no-margin cancel-button"
-						size="small"
-						style="float: right;"
-						color="light"
-					>
-						Cancel
-					</ion-button>
-				</div>
+				<transition name="slide-fade">
+					<div v-if="categoryInfo.selectedComptn?.id == competition.id">
+						<ion-button
+							class="ion-no-margin"
+							size="small"
+							style="float: right;"
+							@click.stop="moreCompDetails(competition)"
+						>
+							More
+						</ion-button>
+						<ion-button
+							@click.stop="closeCompetition(competition)"
+							class="ion-no-margin cancel-button"
+							size="small"
+							style="float: right;"
+							color="light"
+						>
+							Cancel
+						</ion-button>
+					</div>
+				</transition>
 			</ion-card>
 		</ion-col>
 	</ion-row>
@@ -181,5 +183,19 @@ function closeCompDetails() {
 		--height: auto;
 		--max-width: 600px;
 	}
+}
+
+.slide-fade-enter-active {
+  animation: slide-fade-in 0.5s ease forwards;
+}
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
