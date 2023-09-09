@@ -192,45 +192,6 @@ function editPost(post: PostType, index: number) {
   postDialog.open()
 }
 
-// function updatePost(updateVariables: UpdatePostVariables) {
-//   const { mutate, onDone, onError } = useMutation(gql`    
-    
-//     mutation ($id: ID!, $file: Upload, $description: String) { 
-//       updatePost (
-//         id: $id,
-//         file: $file,
-//         description: $description
-//       ) {
-//           post {
-//             id,
-//             description,
-//             postfileSet {
-//               file
-//             },
-//           }
-//         }
-//     }
-//   `,
-//     {
-//       variables: updateVariables
-//     }
-//   )
-  
-//   mutate()
-
-//   onDone((value) => {
-//     closeEditPost()
-//   })
-
-//   onError((error: any) => {
-//     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
-//       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
-//     } else {
-//       toast.$patch({message: 'Error Occured While Updating Post', color: 'danger', open: true})
-//     }
-//   })
-// }
-
 // Profile Information
 
 function tabChanged(event: SegmentCustomEvent) {

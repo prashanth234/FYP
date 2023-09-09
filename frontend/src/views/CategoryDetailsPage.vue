@@ -36,18 +36,6 @@
                 />
               </ion-col>
 
-              <!-- Create Post -->
-              <!-- <ion-col size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-if="!categoryInfo.loading">
-                <create-post
-                  :fixed-preview-height="false"
-                  :key="state.refreshCreatePost"
-                  :creatingPost="state.creatingPost"
-                  @uploadPost="createNewPost"
-                  type="create"
-                >
-                </create-post>
-              </ion-col> -->
-
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
                 <div class="feed">
                   <div class="title">Feed</div>
@@ -117,13 +105,6 @@ import { getPosts } from '@/composables/posts'
 import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
-// import CompetitionDetails from '@/components/CompetitionInfoContainer.vue'
-// import { useToastStore } from '@/stores/toast'
-// import { useUserStore } from '@/stores/user'
-// import { useMutation } from '@vue/apollo-composable'
-// import { arrowForward, closeOutline, radio } from 'ionicons/icons'
-// import gql from 'graphql-tag'
-// import CreatePost from '@/components/CreatePostContainer.vue'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -139,8 +120,6 @@ const state: State = reactive({
   tabSelected: 'allposts'
 })
 
-// const toast = useToastStore();
-// const user = useUserStore();
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 
@@ -176,59 +155,6 @@ function goBackCategory() {
   variables.trending.value = false
   categoryInfo.selectedComptn = null
 }
-
-// function createNewPost(createVariables: UpdatePostVariables) {
-
-//   if (!user.success) {
-//     user.auth = true
-//     return
-//   }
-
-//   state.creatingPost = true
-
-//   let postVariables = {
-//     ...createVariables,
-//     competition: categoryInfo.selectedComptn?.id || undefined,
-//     category: props.id
-//   }
-
-//   const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
-    
-//     mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
-//       createPost (
-//         file: $file,
-//         competition: $competition,
-//         category: $category,
-//         description: $description
-//       ) {
-//           post {
-//             id
-//           }  
-//         }
-//     }
-
-//   `, () => ({
-//       variables: postVariables
-//     })
-//   )
-
-//   mutate()
-
-//   onDone(() => {
-//     state.refreshCreatePost++
-//     state.creatingPost = false
-//     refetch()
-//   })
-
-//   onError((error: any) => {
-//     state.creatingPost = false
-//     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
-//       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
-//     } else {
-//       toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
-//     }
-//   })
-// }
 
 function tabChanged(value: string) {
   state.tabSelected = value
