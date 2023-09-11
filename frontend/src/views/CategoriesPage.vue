@@ -10,23 +10,23 @@
 
           <ion-col
             size="auto" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2.4"
-            v-for="(category, index) in result?.categories"
+            v-for="(cat, index) in category.categories"
             :key="index"
           >
 
-            <ion-card class="cpointer cat-card" @click="openCategory(category)" >
+            <ion-card class="cpointer cat-card" @click="openCategory(cat)" >
 
               <ion-card-content class="cat-card-content">
 
-                <ion-img class="cat-image" :src="`/media/${category.image}`">
+                <ion-img class="cat-image" :src="`/media/${cat.image}`">
                 </ion-img>
 
                 <div class="cat-title">
-                  {{category.name}}
+                  {{cat.name}}
                 </div>
 
-                <div class="cat-description" :title="category.description">
-                  {{category.description}}
+                <div class="cat-description" :title="cat.description">
+                  {{cat.description}}
                 </div>
 
               </ion-card-content>
@@ -44,34 +44,14 @@
 </template>
 
 <script setup lang="ts">
+import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, IonCol, IonGrid, IonRow, IonCard, IonCardContent, useIonRouter  } from '@ionic/vue';
-import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
+import { categoryObject } from '@/mixims/interfaces'
 
 const ionRouter = useIonRouter();
+const category = useCategoryStore();
 
-interface categoryObject {
-  name: string,
-  description: string,
-  type: string,
-  id: number,
-  image: string
-}
-
-const { result, onResult } = useQuery(gql`
-                              query {
-                                categories {
-                                  name,
-                                  description,
-                                  id,
-                                  image
-                                }
-                              }
-                            `)
-
-onResult(({data, loading}) => {
-  // console.log(data, loading)
-})
+category.getCategories()
 
 function openCategory (category: categoryObject) {
   ionRouter.push(`interests/${category.id}`)

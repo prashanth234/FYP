@@ -42,7 +42,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-select v-model="state.gender" label="Gender" label-placement="floating">
+      <ion-select v-model="state.gender" label="Gender" label-placement="floating" interface="popover">
         <ion-select-option value="M">Male</ion-select-option>
         <ion-select-option value="F">Female</ion-select-option>
         <ion-select-option value="O">Others</ion-select-option>

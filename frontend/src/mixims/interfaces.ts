@@ -25,3 +25,11 @@ export interface CompetitionInfo {
   points: number,
   image: string
 }
+
+export interface categoryObject {
+  name: string,
+  description: string,
+  type: string,
+  id: number,
+  image: string
+}

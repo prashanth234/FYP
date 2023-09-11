@@ -5,6 +5,12 @@ ion-input.custom-input {
   min-height: 38px !important;
 }
 
+ion-select.custom-input {
+  border-radius: 4px;
+  max-height: 38px;
+  min-height: 38px !important;
+}
+
 ion-select.custom-select {
   border: 1px solid #dddfe2;
   border-radius: 6px;

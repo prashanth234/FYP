@@ -3,28 +3,69 @@
     
     <ion-card class="padding-zero margin-zero border-radius-std">
 
-      <ion-header v-if="props.showHeader">
-        <ion-toolbar>
-          <ion-title>{{ state.title }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <ion-toolbar color="light">
+        <ion-title>{{ state.title }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="emit('close')"></ion-icon>
+        </ion-buttons>
+      </ion-toolbar>
 
-      <ion-grid>
+      <ion-grid style="padding: 10px">
         <ion-row>
+
+          <ion-col size="6" v-if="type=='create'">
+            <ion-select
+              fill="outline"
+              class="custom-input"
+              v-model="state.category"
+              placeholder="Select"
+              label="Interest"
+              interface="popover"
+              @ionChange="onCategoryChange"
+            >
+              <ion-select-option
+                v-for="cat in category.categories"
+                :key="cat.id"
+                :value="cat.id"
+              >
+                {{ cat.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-col>
+
+          <ion-col size="6" v-if="type=='create'">
+            <ion-select
+              class="custom-input"
+              v-model="state.competition"
+              placeholder="Select"
+              fill="outline"
+              label="Contest"
+              interface="popover"
+            >
+              <ion-select-option value="">
+                None
+              </ion-select-option>
+              <ion-select-option
+                v-for="competition in state.catCompetitions"
+                :key="competition.id"
+                :value="competition.id"
+              >
+                {{ competition.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-col>
 
           <ion-col size="12">
             <ion-textarea
-              label=""
+              label="Description"
               v-model="state.description"
-              placeholder="Description"
+              placeholder="Describe your post"
               :auto-grow="true"
+              fill="outline"
             />
           </ion-col>
 
-          <ion-col size="12" v-if="state.oftype == 'IMAGETEXT' && state.preview">
+          <ion-col size="12" v-if="showImageUpload && state.preview">
             <div :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 10px">
               <ion-img :src="state.preview"></ion-img>
             </div>
@@ -40,7 +81,7 @@
             >
               <template #handler="{selectImage}">
                 <ion-row class="padding-col-zero">
-                  <ion-col size="auto" v-if="state.oftype == 'IMAGETEXT'">
+                  <ion-col size="auto" v-if="showImageUpload">
                     <ion-button
                       @click="selectImage()"
                       for="file-upload"
@@ -54,7 +95,7 @@
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="(state.oftype == 'IMAGETEXT' && !state.preview) || !!state.creatingPost"
+                      :disabled="(showImageUpload && !state.preview) || !!state.creatingPost"
                       style="float: right"
                     >
                       <ion-spinner 
@@ -88,16 +129,18 @@
 </template>
 
 <script lang="ts" setup>
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
-import { closeOutline } from 'ionicons/icons'
+import { IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
+import { caretDown, closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
-import { reactive } from 'vue'
-import { UpdatePostVariables } from '@/mixims/interfaces'
+import { reactive, computed } from 'vue'
+import { CompetitionInfo, UpdatePostVariables, categoryObject } from '@/mixims/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
+import { useCategoryStore } from '@/stores/category';
+import { useQuery } from '@vue/apollo-composable'
 
 interface PostFileType {
   file: string
@@ -133,6 +176,7 @@ const state = reactive({
   competition: '',
   oftype: '',
 
+  catCompetitions: [] as CompetitionInfo[],
   preview: '',
   title: '',
   uploadTitle: '',
@@ -141,8 +185,14 @@ const state = reactive({
   uploadAction: () => {}
 })
 
+const showImageUpload = computed(() => {
+  return state.oftype == 'IMAGETEXT'
+})
+
 const toast = useToastStore()
 const user = useUserStore()
+const category = useCategoryStore()
+category.getCategories()
 
 if (props.type == 'create') {
   // Intialize create post data
@@ -150,6 +200,9 @@ if (props.type == 'create') {
   state.oftype = oftype
   state.category = id
   state.competition = selectedComptn?.id || ''
+  if (id) {
+    onCategoryChange()
+  }
 } else if (props.post){
   // Post edit case
   state.oftype = props.post.category.oftype
@@ -160,6 +213,31 @@ function clearPostForm () {
   state.image = null
   state.description = ''
   state.refreshFileUpload++
+}
+
+function clearCompetition () {
+  state.competition = ''
+}
+
+function onCategoryChange() {
+  state.catCompetitions = []
+
+  const { onResult, onError } = useQuery(gql`
+                                  query ($id: Int!) {
+                                    catCompetitions (id: $id) {
+                                      name,
+                                      id,
+                                    }
+                                  }
+                                `,
+                                  {
+                                    id: state.category
+                                  }
+                                )
+
+  onResult(({data, loading}) => {
+    !loading && (state.catCompetitions = data.catCompetitions)
+  })
 }
 
 function createNewPost() {
@@ -291,8 +369,8 @@ initialize()
 <style scoped>
 .textarea {
   border: 1px solid #dddfe2;
-  padding: 20px;
-  border-radius: 4px;
+  /* padding: 20px;
+  border-radius: 4px; */
 }
 .preview-image {
   height: 250px;

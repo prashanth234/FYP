@@ -100,6 +100,11 @@ class Query(graphene.ObjectType):
     def resolve_all_competitions(root, info):
         return Competition.objects.all()
     
+    cat_competitions = graphene.List(CompetitionType, id=graphene.Int())
+
+    def resolve_cat_competitions(root, info, id):
+        return Competition.objects.filter(category_id=id)
+    
     competition_details = graphene.Field(CompetitionType, id=graphene.Int())
 
     def resolve_competition_details(root, info, id):
