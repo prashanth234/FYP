@@ -18,7 +18,7 @@ export function getPosts(
   }
 
   const POST_QUERY = gql`
-    query ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean) {
+    query posts ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean) {
       ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending) {
         posts {
           id,

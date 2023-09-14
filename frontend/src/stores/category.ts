@@ -15,7 +15,7 @@ export const useCategoryStore = defineStore('category', {
       if (this.categories.length) { return }
       this.loading = true
       const { result, onResult, onError } = useQuery(gql`
-                              query {
+                              query categories {
                                 categories {
                                   name,
                                   description,

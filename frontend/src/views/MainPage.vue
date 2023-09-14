@@ -210,7 +210,7 @@ function login() {
 
 function getUserDetails() {
   const { result, onResult } = useQuery(gql`   
-                              query {
+                              query me {
                                 me {
                                   username,
                                   avatar,
@@ -241,7 +241,7 @@ function checkAuthStatus() {
 
     // Verify if the token is vaild or not
     const { mutate, onDone } = useMutation(gql`
-      mutation ($token: String!) {
+      mutation verifyToken ($token: String!) {
           verifyToken (
             token: $token
           ) {

@@ -2,9 +2,13 @@
 
 == 1st week
 
+.) Refresh newly added posts
+.) Refresh competitins and top 5 when a post is added
+
 .) Implement UX customization for details page and competition tabs along with bottom navigation for mobile  - 1 week
-.) Show winners and disable competition after expiry
-.) refresh top 5 when a post is added
+.) Show winners and disable competition after expiry and no edit delete option after expiry
+.) Only one competition post user
+.) Verify category and competition in backend
 
 == 2nd week
 
@@ -17,7 +21,7 @@
 
 == 3rd week
 
-.) Plan and implement top 5 posts - handle scenarios like same like count,  posts from same user in a competition - 2 to 3 days
+.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
 
 .) Show user not verified and popup to send email - 1 day
 

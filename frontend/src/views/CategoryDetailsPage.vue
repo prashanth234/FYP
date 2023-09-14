@@ -64,8 +64,6 @@
                 </div>
               </ion-col>
 
-              
-
               <!-- Display the posts -->
               <ion-col size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
                 <post :post="post"></post>
@@ -105,6 +103,7 @@ import { getPosts } from '@/composables/posts'
 import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
+import { usePostStore } from '@/stores/post'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -122,6 +121,7 @@ const state: State = reactive({
 
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
+const post = usePostStore();
 
 const props = defineProps({
   id: String
@@ -140,8 +140,12 @@ onBeforeRouteLeave(() => {
 
 props.id && categoryInfo.getCategoryInfo(props.id)
 
-const category =  props.id ? parseInt(props.id) : undefined
+const category =  props.id || undefined
 const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
+
+watch(() => post.refresh, () => {
+  refetch()
+})
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'

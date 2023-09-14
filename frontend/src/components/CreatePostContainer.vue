@@ -13,7 +13,7 @@
       <ion-grid style="padding: 10px">
         <ion-row>
 
-          <ion-col size="6" v-if="type=='create'">
+          <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
             <ion-select
               fill="outline"
               class="custom-input"
@@ -33,7 +33,7 @@
             </ion-select>
           </ion-col>
 
-          <ion-col size="6" v-if="type=='create'">
+          <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
             <ion-select
               class="custom-input"
               v-model="state.competition"
@@ -141,6 +141,7 @@ import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useCategoryStore } from '@/stores/category';
 import { useQuery } from '@vue/apollo-composable'
+import { usePostStore } from '@/stores/post';
 
 interface PostFileType {
   file: string
@@ -189,6 +190,7 @@ const showImageUpload = computed(() => {
   return state.oftype == 'IMAGETEXT'
 })
 
+const post = usePostStore()
 const toast = useToastStore()
 const user = useUserStore()
 const category = useCategoryStore()
@@ -213,10 +215,6 @@ function clearPostForm () {
   state.image = null
   state.description = ''
   state.refreshFileUpload++
-}
-
-function clearCompetition () {
-  state.competition = ''
 }
 
 function onCategoryChange() {
@@ -282,6 +280,7 @@ function createNewPost() {
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')
+    post.refresh += 1
   })
 
   onError((error: any) => {
