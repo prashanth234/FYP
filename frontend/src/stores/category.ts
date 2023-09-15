@@ -20,7 +20,8 @@ export const useCategoryStore = defineStore('category', {
                                   name,
                                   description,
                                   id,
-                                  image
+                                  image,
+                                  oftype
                                 }
                               }
                             `)

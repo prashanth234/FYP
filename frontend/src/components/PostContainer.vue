@@ -28,7 +28,7 @@
           />
         </ion-item>
 
-        <ion-item class="image" lines="none" style="padding: 12px 0px;" v-if="post.postfileSet.length">
+        <ion-item class="image" lines="none" style="padding-top: 12px;" v-if="post.postfileSet.length">
           <ion-img 
             class="ml-auto mr-auto"
             :src="`/media/${post.postfileSet[0].file}`"
@@ -36,7 +36,7 @@
           />
         </ion-item>
 
-        <ion-item v-if="post.description" lines="none" style="padding-left: 5px">
+        <ion-item v-if="post.description" lines="none" style="padding-top: 12px; padding-left: 5px">
           <p>{{ post.description }}</p>
         </ion-item>
 

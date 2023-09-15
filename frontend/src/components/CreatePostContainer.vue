@@ -248,6 +248,14 @@ function clearPostForm () {
 function onCategoryChange() {
   state.catCompetitions = []
 
+  const [{oftype}] = category.categories.filter(cat => cat.id === state.category)
+  state.oftype = oftype
+  state.competition = ''
+  if (oftype == 'TEXT') {
+    state.image = null
+    state.preview = ''
+  }
+
   const { onResult, onError } = useQuery(gql`
                                   query ($id: Int!) {
                                     catCompetitions (id: $id) {

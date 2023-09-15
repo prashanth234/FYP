@@ -30,6 +30,7 @@ export interface categoryObject {
   name: string,
   description: string,
   type: string,
-  id: number,
-  image: string
+  id: string,
+  image: string,
+  oftype: string
 }

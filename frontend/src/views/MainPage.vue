@@ -101,7 +101,7 @@
               TBD
             </ion-title>
             <ion-buttons slot="end" v-if="isUserLogged">
-              <ion-button color="primary" fill="outline" @click="postDialog.open">
+              <ion-button class="ion-hide-lg-down ion-padding-end" color="primary" fill="outline" @click="postDialog.open">
                 Create New Post
               </ion-button>
               <ion-button
@@ -110,10 +110,10 @@
                 fill="outline"
               >
                 <ion-img
-                  style="width: 25px; height: 25px; margin-right: 7px;"
+                  style="width: 25px; height: 25px;"
                   src="/static/core/coins.png"
                 ></ion-img>
-                Rewards
+                <span class="ion-hide-lg-down" style="margin-left: 7px;">Rewards</span>
               </ion-button>
             </ion-buttons>
           </ion-toolbar>
@@ -123,6 +123,30 @@
           <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
           <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
         </ion-content>
+
+        <ion-footer class="ion-hide-lg-up" >
+          <ion-tab-bar slot="bottom">
+            <ion-tab-button tab="" href="/home">
+              <ion-icon :icon="homefull" class="tab-bar-icon"/>
+              <ion-label>Home</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button tab="create" v-if="isUserLogged">
+              <ion-icon :icon="addCircle" @click="postDialog.open" class="tab-bar-icon"/>
+              <ion-label>Create Post</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button tab="profile" href="/profile" v-if="isUserLogged">
+              <ion-icon :icon="person" class="tab-bar-icon" />
+              <ion-label>Profile</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button tab="login" v-if="!isUserLogged">
+              <ion-icon :icon="logIn" class="tab-bar-icon" @click="login()" />
+              <ion-label>Login</ion-label>
+            </ion-tab-button>
+          </ion-tab-bar>
+        </ion-footer>
 
       </div>
 
@@ -153,8 +177,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline, trendingDown } from 'ionicons/icons'
+import { IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn } from 'ionicons/icons'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
@@ -164,6 +188,7 @@ import { reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { usePostDialog } from '@/composables/postDialog'
+
 
 const ionRouter = useIonRouter();
 const router = useRoute();
@@ -372,5 +397,8 @@ checkAuthStatus()
       background: none;
       box-shadow: none;
     }
+  }
+  .tab-bar-icon {
+    font-size: 25px;
   }
 </style>
