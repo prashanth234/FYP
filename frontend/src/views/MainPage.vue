@@ -213,6 +213,10 @@ function getUserDetails() {
                               query me {
                                 me {
                                   username,
+                                  firstName,
+                                  lastName,
+                                  email,
+                                  gender,
                                   avatar,
                                   points
                                 }

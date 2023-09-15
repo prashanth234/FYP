@@ -141,7 +141,7 @@ import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useCategoryStore } from '@/stores/category';
 import { useQuery } from '@vue/apollo-composable'
-import { usePostStore } from '@/stores/post';
+import { getPosts } from '@/composables/posts'
 
 interface PostFileType {
   file: string
@@ -154,6 +154,32 @@ interface PostType {
   category: {
     oftype: string
   }
+}
+
+interface AllPostsType {
+  allPosts?: {
+    posts: PostType[],
+    total: number
+  },
+  myPosts?: {
+    posts: PostType[],
+    total: number
+  }
+}
+
+interface VariablesType {
+  [key: string]: {
+    category?: string,
+    competition?: string,
+    trending: boolean,
+  }
+}
+
+interface CachesType {
+  category: AllPostsType | null,
+  competition: AllPostsType | null,
+  trending: AllPostsType | null,
+  profile: AllPostsType | null
 }
 
 const props = defineProps<{
@@ -190,11 +216,13 @@ const showImageUpload = computed(() => {
   return state.oftype == 'IMAGETEXT'
 })
 
-const post = usePostStore()
 const toast = useToastStore()
 const user = useUserStore()
 const category = useCategoryStore()
 category.getCategories()
+
+const { POST_QUERY } = getPosts('allPosts', undefined, undefined)
+const { POST_QUERY: MYPOSTS_QUERY } = getPosts('myPosts', undefined, undefined)
 
 if (props.type == 'create') {
   // Intialize create post data
@@ -264,13 +292,95 @@ function createNewPost() {
         description: $description
       ) {
           post {
-            id
+            id,
+            likes,
+            userLiked,
+            description,
+            postfileSet {
+              file
+            },
+            user {
+              username,
+              avatar
+            },
+            category {
+              oftype
+            }
           }  
         }
     }
 
   `, () => ({
-      variables: postVariables
+      variables: postVariables,
+      update: (cache, { data: { createPost } }) => {
+
+        let variables: VariablesType = {
+          category: {category: state.category, trending: false},
+          competition: {category: state.category, competition: state.competition, trending: false},
+          trending: {category: state.category, competition: state.competition, trending: true},
+          profile: {trending: false}
+        }
+
+        let caches: CachesType = {
+          category: cache.readQuery({ query: POST_QUERY, variables: variables.category }),
+          competition: null,
+          trending: null,
+          profile: cache.readQuery({query: MYPOSTS_QUERY, variables: variables.profile })
+        }
+
+        if(state.competition) {
+          caches.competition = cache.readQuery({ query: POST_QUERY, variables: variables.competition })
+          caches.trending = cache.readQuery({ query: POST_QUERY, variables: variables.trending })
+        }
+
+        for (let [key, data] of Object.entries(caches)) {
+          if (data) {
+
+            if (key == 'profile') {
+              data = {
+                ...data,
+                myPosts: {
+                  ...data.myPosts,
+                  posts: [
+                    createPost.post,
+                    ...data.myPosts.posts
+                  ]
+                }
+              }
+
+              cache.writeQuery({ query: MYPOSTS_QUERY, data, variables: variables[key] })
+              continue
+            } else if (key == 'trending') {
+              if (data.allPosts.posts.length >= 5) { continue }
+              data = {
+                ...data,
+                allPosts: {
+                  ...data.allPosts,
+                  posts: [
+                    ...data.allPosts.posts,
+                    createPost.post
+                  ]
+                }
+              }
+              
+            } else {
+              data = {
+                ...data,
+                allPosts: {
+                  ...data.allPosts,
+                  posts: [
+                    createPost.post,
+                    ...data.allPosts.posts
+                  ]
+                }
+              }
+            }
+
+            cache.writeQuery({ query: POST_QUERY, data, variables: variables[key] })
+          }
+        }
+
+      },
     })
   )
 
@@ -280,7 +390,6 @@ function createNewPost() {
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')
-    post.refresh += 1
   })
 
   onError((error: any) => {

@@ -18,8 +18,8 @@ export function getPosts(
   }
 
   const POST_QUERY = gql`
-    query posts ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean) {
-      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending) {
+    query posts ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: Int) {
+      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
         posts {
           id,
           likes,
@@ -46,7 +46,8 @@ export function getPosts(
     perPage: variables.perPage,
     competition: variables.competition.value,
     category: variables.category.value,
-    trending: variables.trending.value
+    trending: variables.trending.value,
+    cursor: undefined
   }))
 
   function getMore(ev: InfiniteScrollCustomEvent) {
@@ -64,11 +65,13 @@ export function getPosts(
       return 
     }
 
+    const cursor = posts.value[type].posts[postsFetched-1].id
     const page = Math.floor(postsFetched/variables.perPage) + 1
   
     fetchMore({
       variables: {
-        page
+        page,
+        cursor
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         // No new feed posts
@@ -85,7 +88,8 @@ export function getPosts(
             posts: [
               ...previousResult[type].posts,
               ...fetchMoreResult[type].posts
-            ]
+            ],
+            total: fetchMoreResult[type].total
           }
         }
       },

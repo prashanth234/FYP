@@ -42,12 +42,14 @@
 
         <ion-item lines="none" class="line-top" style="padding: 3px 0px;">
           <ion-icon
-            v-if="state.isliked"
+            @click="likePost()"
+            v-if="post.userLiked"
             style="color:rgb(246, 73, 73)"
             :icon="heart"
             size="large"
           />
           <ion-icon
+            @click="likePost()"
             class="like-icon"
             v-else
             :icon="heartOutline"
@@ -56,7 +58,7 @@
           <ion-label 
             class="ion-padding-start"
           >
-            {{ state.likeCount }} Like{{state.likeCount == 1 ? '' : 's'}}
+            {{ post.likes }} Like{{post.likes == 1 ? '' : 's'}}
           </ion-label>
         </ion-item>
 
@@ -91,11 +93,6 @@ const userAvatar = computed(() => {
   return props.post.user.avatar ? `/media/${props.post.user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
 })
 
-const state = reactive({
-  isliked: props.post.userLiked,
-  likeCount: props.post.likes
-})
-
 function likePost () {
   if (!user.success) {
     user.auth = true
@@ -103,16 +100,18 @@ function likePost () {
     return
   }
 
-  const operation = state.isliked ? 'unlikeItem' : 'likeItem'
-  state.isliked ? state.likeCount-- : state.likeCount++
-  state.isliked = !state.isliked
- 
+  const operation = props.post.userLiked ? 'unlikeItem' : 'likeItem'
 
   const { mutate, onDone } = useMutation(gql`
       
       mutation ($id: ID!) { 
         ${operation} (id: $id) {
-          success
+          success,
+          post {
+            id,
+            likes,
+            userLiked
+          }
         }
       }
 

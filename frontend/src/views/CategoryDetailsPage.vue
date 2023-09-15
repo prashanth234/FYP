@@ -103,7 +103,6 @@ import { getPosts } from '@/composables/posts'
 import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import { usePostStore } from '@/stores/post'
 
 interface State {
   competition: CompetitionInfo | null,
@@ -121,7 +120,6 @@ const state: State = reactive({
 
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
-const post = usePostStore();
 
 const props = defineProps({
   id: String
@@ -142,10 +140,6 @@ props.id && categoryInfo.getCategoryInfo(props.id)
 
 const category =  props.id || undefined
 const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
-
-watch(() => post.refresh, () => {
-  refetch()
-})
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'

@@ -194,8 +194,8 @@ const { result, onResult } = useQuery(gql`
                                   lastName,
                                   email,
                                   gender,
-                                  dateOfBirth,
-                                  avatar
+                                  avatar,
+                                  points
                                 }
                               }
                             `)

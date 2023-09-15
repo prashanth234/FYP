@@ -7,6 +7,9 @@ from categories.models.Post import Post
 # **Make this model losely coupled
 from core.models.User import User
 
+# Type
+from categories.schema.type.PostType import PostType
+
 class AddLikeMutation(graphene.Mutation):
 
     class Arguments:
@@ -15,6 +18,7 @@ class AddLikeMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     success = graphene.Boolean()
+    post = graphene.Field(PostType)
 
     @classmethod
     def mutate(cls, root, info, id):
@@ -27,7 +31,7 @@ class AddLikeMutation(graphene.Mutation):
             like = Like(item=post, user=info.context.user)
             like.save()
             post.save()
-            return AddLikeMutation(success=True)
+            return AddLikeMutation(success=True, post=post)
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             raise GraphQLError("Mutation Failed")
@@ -41,6 +45,7 @@ class UnLikeMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     success = graphene.Boolean()
+    post = graphene.Field(PostType)
     
     @classmethod
     def mutate(cls, root, info, id):
@@ -57,7 +62,7 @@ class UnLikeMutation(graphene.Mutation):
             
             like.delete()
             post.save()
-            return UnLikeMutation(success=True)
+            return UnLikeMutation(success=True, post=post)
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             raise GraphQLError("Mutation Failed")

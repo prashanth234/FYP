@@ -146,6 +146,8 @@ const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch }
 
 function deletePost() {
 
+  const id = deletePostObj?.id
+
   const { mutate, onDone, onError } = useMutation(gql`    
     
     mutation ($id: ID!) { 
@@ -157,7 +159,12 @@ function deletePost() {
     }
   `,
     () => ({
-      variables: {id: deletePostObj?.id}
+      variables: {id},
+      update: (cache) => {
+        const normalizedId = cache.identify({ id, __typename: 'PostType' });
+        cache.evict({ id: normalizedId })
+        cache.gc()
+      }
     })
   )
 
