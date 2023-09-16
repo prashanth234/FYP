@@ -49,6 +49,7 @@
                 v-for="competition in state.catCompetitions"
                 :key="competition.id"
                 :value="competition.id"
+                :disabled="competition.expired"
               >
                 {{ competition.name }}
               </ion-select-option>
