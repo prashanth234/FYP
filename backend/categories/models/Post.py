@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 from categories.models.Category import *
 from categories.models.Competition import *
@@ -12,6 +13,10 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
 
+    def comp_expired(self):
+      current_datetime = timezone.now()
+      return self.competition.last_date <= current_datetime.date()
+    
     def __str__(self) -> str:
       return self.description
     

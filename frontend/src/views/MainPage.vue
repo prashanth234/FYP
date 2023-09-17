@@ -4,7 +4,7 @@
 
     <ion-split-pane content-id="main">
 
-      <ion-menu content-id="main">
+      <ion-menu content-id="main" menu-id="menu">
         <ion-content class="ion-padding">
 
           <ion-card style="border-radius: 30px;" color="light">
@@ -27,17 +27,21 @@
                     <p style="font-size: 15px"> Welcome Back </p>
                     <p style="font-size: 20px; font-weight: 600;"> {{ user?.username }} </p>
                   </div>
-                  <ion-button
-                    v-else
-                    @click="login()"
-                  >
-                    Login
-                  </ion-button>
+                  <div v-else>
+                    <p style="font-size: 15px; font-weight: 600;"> Welcome User </p>
+                    <ion-button
+                      class="ion-hide-lg-down"
+                      @click="login()"
+                    >
+                      Login
+                    </ion-button>
+                  </div>
                 </ion-col>
               </ion-row>
             </ion-card-content>
           </ion-card>
 
+          <!-- <ion-menu-toggle> -->
           <ion-list style="margin-top: 30px">
             <ion-item
               :class="{'ion-item-highlight': router.name == 'home'}"
@@ -86,6 +90,7 @@
               </ion-label>
             </ion-item>
           </ion-list>
+          <!-- </ion-menu-toggle> -->
 
         </ion-content>
       </ion-menu>
@@ -131,8 +136,8 @@
               <ion-label>Home</ion-label>
             </ion-tab-button>
 
-            <ion-tab-button tab="create" v-if="isUserLogged">
-              <ion-icon :icon="addCircle" @click="postDialog.open" class="tab-bar-icon"/>
+            <ion-tab-button tab="create" v-if="isUserLogged" @click="postDialog.open">
+              <ion-icon :icon="addCircle" class="tab-bar-icon"/>
               <ion-label>Create Post</ion-label>
             </ion-tab-button>
 
@@ -161,6 +166,7 @@
       class="create-post-modal"
       :is-open="postDialog.state.isOpen"
       :show-backdrop="true"
+      :backdropDismiss="false"
       @willDismiss="postDialog.close"
     >
       <create-post
@@ -177,16 +183,17 @@
 </template>
 
 <script setup lang="ts">
-import { IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { menuController, IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
 import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn } from 'ionicons/icons'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
 
 
@@ -194,6 +201,7 @@ const ionRouter = useIonRouter();
 const router = useRoute();
 const user = useUserStore();
 const postDialog = usePostDialog();
+const toast = useToastStore();
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
@@ -202,6 +210,12 @@ const userAvatar = computed(() => {
 const state = reactive({
   loading: true
 })
+
+const closeMenu = async () => {
+  // close the menu by menu-id
+  await menuController.enable(true, 'menu');
+  await menuController.close('menu');
+};
 
 const isUserLogged = computed(() => {
   return !state.loading && user.success
@@ -212,16 +226,20 @@ function onClickPoints() {
 }
 
 function logout() {
+  closeMenu()
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')
   user.$reset()
+  toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
 }
 
 function home() {
+  closeMenu()
   ionRouter.push('/')
 }
 
 function profile() {
+  closeMenu()
   ionRouter.push('/profile')
 }
 

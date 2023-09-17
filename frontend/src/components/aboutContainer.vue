@@ -58,6 +58,7 @@
         style="float: right"
         @click="updateProfile"
         :disabled="state.loading"
+        size="small"
       >
         <ion-spinner 
             class="button-loading-small"
@@ -81,7 +82,6 @@ import { reactive, computed } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { cameraOutline } from 'ionicons/icons'
-import store from '@/vuex';
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 

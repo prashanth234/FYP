@@ -34,6 +34,9 @@ export function getPosts(
           },
           category {
             oftype
+          },
+          competition {
+            expired
           }
         },
         total

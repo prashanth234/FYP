@@ -27,14 +27,16 @@
 
 	<ion-row :class="{'ion-nowrap horizantal-row': !props.vertical}" class="ion-justify-content-start">
 		<ion-col
-			:size="props.vertical ? '10' : 'auto'"
+			:size-md="props.vertical ? '12' : 'auto'"
+			:size-lg="props.vertical ? '11' : 'auto'"
+			:size-xl="props.vertical ? '10' : 'auto'"
 			v-for="(competition, index) in categoryInfo.competitionSet"
 			:key="index"
 		>
 			<ion-card
 				@click="selectCompetition(competition)"
 				class="competition cpointer ion-no-margin"
-				:class="{'competition-selected': categoryInfo.selectedComptn?.id == competition.id}"
+				:class="{'competition-selected': categoryInfo.selectedComptn?.id == competition.id, 'expired': competition.expired}"
 			>	
 				<ion-row class="details">
 					<ion-col size="auto" class="ion-padding-end">
@@ -56,6 +58,7 @@
 							size="small"
 							style="float: right;"
 							@click.stop="moreCompDetails(competition)"
+							v-if="!competition.expired"
 						>
 							More
 						</ion-button>
@@ -130,6 +133,9 @@ function closeCompDetails() {
 	.details {
 		padding-bottom: 10px;
 	}
+	&.expired {
+		border-left: 3px solid var(--ion-color-medium-tint);
+	}
 }
 .competition {
 	.title {
@@ -198,4 +204,20 @@ function closeCompDetails() {
     transform: translateY(0);
   }
 }
+/* Exit animation class */
+// .slide-fade-leave-active {
+//   animation: slide-fade-out 0.3s ease forwards;
+// }
+
+// /* Keyframes for the exit animation */
+// @keyframes slide-fade-out {
+//   from {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+//   to {
+//     opacity: 0;
+//     transform: translateY(-20px);
+//   }
+// }
 </style>

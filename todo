@@ -1,12 +1,18 @@
 #### P0 #####
 
+Issues from QA
+
+Sometimes page is continuously loading - need to find the senario
+
+Profile Pic
+Update not working until refreshed
+1st time upload not working util refreshed
+Even after udpate previous image is viewed
+
+Check when aws is turn on
+1)Issue-1:: User is able to view "-1" LIKES on only one post.
+
 == 1st week
-
-
-
-.) Show winners and disable competition after expiry and no edit delete option after expiry
-.) Only one competition post user
-.) Verify category and competition in backend
 
 DONE
 
@@ -14,14 +20,16 @@ DONE
 .) Refresh competitins and top 5 when a post is added
 .) Implement UX customization for details page and competition tabs
 .) Along with bottom navigation for mobile
-
-
+.) disable competition after expiry and no edit delete option after expiry
+.) Verify category and competition in backend
+.) Only one competition post user
 
 == 2nd week
 
 .) Work on UX customization for rewards page - 1 week
 .) Faq and info about points 
 .) Plan on how points should be allocated to competitons
+.) Show winners
 .) Redemption details - how many points needed for redemption, real value of each point
 .) Show points count on main page
 .) Add participation points
@@ -31,6 +39,8 @@ DONE
 .) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
 
 .) Show user not verified and popup to send email - 1 day
+
+.) Show only few posts if not loged in
 
 .) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
 

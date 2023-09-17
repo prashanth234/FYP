@@ -52,6 +52,7 @@
                     Top 5
                   </ion-button>
                   <ion-button
+                    v-if="categoryInfo.selectedComptn"
                     :disabled="!categoryInfo.selectedComptn || state.tabSelected == 'allposts'"
                     @click="tabChanged('allposts')"
                     class="close-button"
@@ -62,6 +63,17 @@
                     All
                   </ion-button>
                 </div>
+              </ion-col>
+
+              <ion-col v-if="categoryInfo.selectedComptn?.expired" size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
+
+                <ion-card class="ion-no-margin competition-ended" color="light">
+                  <ion-card-content>
+                    The contest has concluded! Please take a look at our other ongoing contests.
+                  </ion-card-content>
+                  
+                </ion-card>
+
               </ion-col>
 
               <!-- Display the posts -->
@@ -97,7 +109,7 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, } from 'vue-router'
-import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue } from '@ionic/vue'
+import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import { getPosts } from '@/composables/posts'
 import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
@@ -214,5 +226,10 @@ ion-grid {
     font-weight: 600;
     display: inline;
   }
+}
+.competition-ended {
+  /* background-color: #e8f4f8; */
+  box-shadow: none;
+  color: var(--ion-color-dark);
 }
 </style>

@@ -36,10 +36,12 @@ class CreatePostMutation(graphene.Mutation):
             raise GraphQLError("User not authenticated")
         
         if not category and not competition:
-            raise GraphQLError("CREATION FAILED: Post should be assoiated with either category or competition", extensions={'status': 404})
+            raise GraphQLError("Almost there! To continue, kindly pick your interest.", extensions={'status': 404})
 
         if competition:
             competition = Competition.objects.get(pk=competition)
+            if Post.objects.filter().exists():
+                raise GraphQLError("To maintain fairness, kindly note that each user is permitted only one post per contest.", extensions={'status': 405})
             category = competition.category
         elif category:
             category = Category.objects.get(pk=category)
@@ -135,6 +137,8 @@ class DeletePostMutation(graphene.Mutation):
         
         try:
             post = Post.objects.get(pk=id, user=info.context.user)
+            if post.comp_expired():
+                raise GraphQLError("You can't delete or edit posts in closed contests to ensure fairness and transparency. Thanks for understanding! ")
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         

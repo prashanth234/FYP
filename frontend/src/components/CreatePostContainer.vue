@@ -48,8 +48,8 @@
               <ion-select-option
                 v-for="competition in state.catCompetitions"
                 :key="competition.id"
+                :class="{'competition-expired': competition.expired}"
                 :value="competition.id"
-                :disabled="competition.expired"
               >
                 {{ competition.name }}
               </ion-select-option>
@@ -96,7 +96,7 @@
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="(showImageUpload && !state.preview) || !!state.creatingPost"
+                      :disabled="disableUpload"
                       style="float: right"
                     >
                       <ion-spinner 
@@ -108,7 +108,7 @@
                         {{ state.uploadTitle }}
                       </span>
                     </ion-button>
-                    <ion-button
+                    <!-- <ion-button
                       size="small"
                       @click="clearPostForm"
                       color="light"
@@ -116,7 +116,7 @@
                       style="float: right"
                     >
                       Clear
-                    </ion-button>
+                    </ion-button> -->
                   </ion-col>
                 </ion-row>
               </template>  
@@ -133,7 +133,7 @@
 import { IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
 import { caretDown, closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ComputedRef } from 'vue'
 import { CompetitionInfo, UpdatePostVariables, categoryObject } from '@/mixims/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
@@ -202,7 +202,6 @@ const state = reactive({
   description: '',
   category: '',
   competition: '',
-  oftype: '',
 
   catCompetitions: [] as CompetitionInfo[],
   preview: '',
@@ -213,8 +212,29 @@ const state = reactive({
   uploadAction: () => {}
 })
 
+const disableUpload = computed(() => {
+  return (showImageUpload && !state.preview) || !state.category || !!state.creatingPost 
+})
+
 const showImageUpload = computed(() => {
-  return state.oftype == 'IMAGETEXT'
+  return postType.value == 'IMAGETEXT'
+})
+
+const postType = computed(() => {
+  // Post edit we have oftype information on post itself
+  if (props.post) { return props.post.category.oftype }
+
+  // Post create we have oftype information using the category id
+  const selectedCategory = category.categories.find(cat => cat.id === state.category)
+  if (selectedCategory) {
+    if (selectedCategory.oftype == 'TEXT') {
+      state.image = null
+      state.preview = ''
+    }
+    return selectedCategory.oftype
+  }
+
+  return ''
 })
 
 const toast = useToastStore()
@@ -227,16 +247,12 @@ const { POST_QUERY: MYPOSTS_QUERY } = getPosts('myPosts', undefined, undefined)
 
 if (props.type == 'create') {
   // Intialize create post data
-  const { oftype, id, selectedComptn } = useCategoryInfoStore()
-  state.oftype = oftype
+  const { id, selectedComptn } = useCategoryInfoStore()
   state.category = id
-  state.competition = selectedComptn?.id || ''
   if (id) {
     onCategoryChange()
   }
-} else if (props.post){
-  // Post edit case
-  state.oftype = props.post.category.oftype
+  state.competition = selectedComptn?.id || ''
 }
 
 function clearPostForm () {
@@ -249,19 +265,12 @@ function clearPostForm () {
 function onCategoryChange() {
   state.catCompetitions = []
 
-  const [{oftype}] = category.categories.filter(cat => cat.id === state.category)
-  state.oftype = oftype
-  state.competition = ''
-  if (oftype == 'TEXT') {
-    state.image = null
-    state.preview = ''
-  }
-
   const { onResult, onError } = useQuery(gql`
                                   query ($id: Int!) {
                                     catCompetitions (id: $id) {
                                       name,
                                       id,
+                                      expired
                                     }
                                   }
                                 `,
@@ -405,6 +414,8 @@ function createNewPost() {
     state.creatingPost = false
     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
+    } else if (error?.graphQLErrors) {
+      toast.$patch({message: error?.graphQLErrors[0].message, color: 'primary', open: true})
     } else {
       toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
     }
@@ -492,5 +503,10 @@ initialize()
 .preview-image {
   height: 250px;
   overflow: auto;
+}
+</style>
+<style>
+.competition-expired {
+  display: none;
 }
 </style>

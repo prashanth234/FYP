@@ -15,13 +15,13 @@
             {{ post.user.username }}
           </ion-label>
           <ion-icon
-            v-if="props.showEdit"
+            v-if="props.showEdit && (!post.competition || !post.competition.expired)"
             @click.stop="emit('editPost')"
             class="cpointer edit operations"
             :icon="pencilOutline"
           />
           <ion-icon 
-            v-if="props.showEdit"
+            v-if="props.showEdit && (!post.competition || !post.competition.expired)"
             @click.stop="emit('deletePost')"
             class="cpointer delete operations"
             :icon="trashOutline"
