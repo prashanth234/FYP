@@ -41,8 +41,7 @@
             </ion-card-content>
           </ion-card>
 
-          <!-- <ion-menu-toggle> -->
-          <ion-list style="margin-top: 30px">
+                    <ion-list style="margin-top: 30px">
             <ion-item
               :class="{'ion-item-highlight': router.name == 'home'}"
               lines="none"
@@ -90,8 +89,7 @@
               </ion-label>
             </ion-item>
           </ion-list>
-          <!-- </ion-menu-toggle> -->
-
+          
         </ion-content>
       </ion-menu>
 
