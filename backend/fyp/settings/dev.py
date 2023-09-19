@@ -21,7 +21,7 @@ DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'fyp',
-    'HOST': 'localhost',
+    'HOST': '172.26.0.1',
     'USER': 'root',
     'PASSWORD': 'root'
   }

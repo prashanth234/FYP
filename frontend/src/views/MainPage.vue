@@ -224,7 +224,7 @@ function onClickPoints() {
 }
 
 function logout() {
-  closeMenu()
+  home()
   localStorage.removeItem('fyptoken')
   localStorage.removeItem('fyprefreshtoken')
   user.$reset()

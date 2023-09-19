@@ -9,8 +9,8 @@ Update not working until refreshed
 1st time upload not working util refreshed
 Even after udpate previous image is viewed
 
-Check when aws is turn on
-1)Issue-1:: User is able to view "-1" LIKES on only one post.
+Check when aws when turned on
+User is able to view "-1" LIKES on only one post.
 
 == 1st week
 
@@ -26,11 +26,11 @@ DONE
 
 == 2nd week
 
-.) Work on UX customization for rewards page - 1 week
-.) Faq and info about points 
-.) Plan on how points should be allocated to competitons
+.) Plan on how points should be allocated to competittons 
 .) Show winners
 .) Redemption details - how many points needed for redemption, real value of each point
+.) Work on UX customization for rewards page - 1 week
+.) Faq and info about points
 .) Show points count on main page
 .) Add participation points
 
@@ -50,7 +50,7 @@ DONE
 
 .) Add no competition coming soon card - 1 to 2 days
 
-.) Support page - 1 day
+.) Support page and Activation send email button account not verified - 1 day
 
 == 5th week
 

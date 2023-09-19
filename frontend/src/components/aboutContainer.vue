@@ -133,8 +133,9 @@ function imageSelected(blob: CropperResult, type: string) {
 
   mutate()
 
-  onDone((value) => {
-    user.userUpdated += 1
+  onDone(({data}) => {
+    user.avatar = data.updateAvatar.user.avatar
+    // user.userUpdated += 1
   })
 
   onError((error: any) => {
