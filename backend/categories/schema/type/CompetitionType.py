@@ -4,23 +4,23 @@ from django.utils import timezone
 
 # Models
 from categories.models.Competition import Competition
-from categories.models.Post import Post
 
-# Types
-from categories.schema.type.PostType import PostType
+# Type
+from categories.schema.type.RewardsType import RewardsType
 
 
 class CompetitionType(DjangoObjectType):
-    # posts = graphene.List(PostType)
-
-    # def resolve_posts(self, info):
-    #     return Post.objects.filter(competition=self)
 
     expired = graphene.Boolean()
 
     def resolve_expired(self, info):
         current_datetime = timezone.now()
         return self.last_date <= current_datetime.date()
+    
+    rewards = graphene.List(RewardsType)
+
+    def resolve_rewards(self, info):
+        return self.rewards.all()
 
     class Meta:
         model = Competition

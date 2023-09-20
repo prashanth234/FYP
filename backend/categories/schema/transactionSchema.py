@@ -3,23 +3,23 @@ from graphql import GraphQLError
 from django.db import transaction
 
 # Models
-from categories.models.Redeem import Redeem
+from categories.models.Transaction import Transaction
 
 # Type
-from categories.schema.type.RedeemType import RedeemType
+from categories.schema.type.TransactionsType import TransactionsType
 
-# Authentication
+# Authentications
 from graphql_jwt.decorators import login_required
 
 
-class CreateRedeemMutation(graphene.Mutation):
+class CreateTransactionMutation(graphene.Mutation):
 
     class Arguments:
         # The input arguments for this mutation
         points = graphene.Int(required=True)
 
     # The class attributes define the response of the mutation
-    redeem = graphene.Field(RedeemType)
+    ctransaction = graphene.Field(TransactionsType)
     userpoints = graphene.Int()
 
     @classmethod
@@ -35,30 +35,30 @@ class CreateRedeemMutation(graphene.Mutation):
             raise GraphQLError('Points should be less or equal to points you have earned')
         
         user.points -= points
-        redeem = Redeem(user=info.context.user, points=points)
-        redeem.save()
+        ctransaction = Transaction(user=info.context.user, points=points, type='REDEEM')
+        ctransaction.save()
         user.save()
 
-        return CreateRedeemMutation(redeem=redeem, userpoints=user.points)
+        return CreateTransactionMutation(ctransaction=ctransaction, userpoints=user.points)
 
-class UpdateRedeemMutation(graphene.Mutation):
+class UpdateTransactionMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
         id = graphene.ID()
         points = graphene.Int(required=True)
 
     # The class attributes define the response of the mutation
-    redeem = graphene.Field(RedeemType)
+    ctransaction = graphene.Field(TransactionsType)
 
     @classmethod
     @login_required
     @transaction.atomic
     def mutate(cls, root, info, id, points):
         user = info.context.user
-        redeem = Redeem.objects.get(pk=id)
+        ctransaction = Transaction.objects.get(pk=id)
 
-        if not redeem:
-            raise GraphQLError("Redeem with this ID does not exist.")
+        if not ctransaction:
+            raise GraphQLError("Transaction with this ID does not exist.")
         
         if points < 0:
             raise GraphQLError("Points can't be negative")
@@ -66,21 +66,21 @@ class UpdateRedeemMutation(graphene.Mutation):
         if user.status == 'R':
             raise GraphQLError("Redeemed points can't be updated")
         
-        userPoints = user.points + redeem.points
+        userPoints = user.points + ctransaction.points
         
         if points > userPoints:
             raise GraphQLError('Points should be less or equal to points you have earned')
         
         userPoints -= points
         user.points = userPoints
-        redeem.points = points
-        redeem.save()
+        ctransaction.points = points
+        ctransaction.save()
         user.save()
         
         # Notice we return an instance of this mutation
-        return UpdateRedeemMutation(redeem=redeem)
+        return UpdateTransactionMutation(ctransaction=ctransaction)
 
-class DeleteRedeemMutation(graphene.Mutation):
+class DeleteTransactionMutation(graphene.Mutation):
     
     class Arguments:
         # The input arguments for this mutation
@@ -95,29 +95,29 @@ class DeleteRedeemMutation(graphene.Mutation):
     @transaction.atomic
     def mutate(cls, root, info, id):
         user = info.context.user
-        redeem = Redeem.objects.get(pk=id)
+        ctransaction = Transaction.objects.get(pk=id)
 
-        if not redeem:
-            raise GraphQLError("Redeem with this ID does not exist.")
+        if not ctransaction:
+            raise GraphQLError("Transaction with this ID does not exist.")
 
-        if redeem.status != 'Q':
-            raise GraphQLError("Redeem can't be canceled now")
+        if ctransaction.status != 'Q':
+            raise GraphQLError("Transaction can't be canceled now")
         
-        user.points += redeem.points
+        user.points += ctransaction.points
         
-        redeem.delete()
+        ctransaction.delete()
         user.save()
-        return DeleteRedeemMutation(success=True, userpoints=user.points)
+        return DeleteTransactionMutation(success=True, userpoints=user.points)
 
 class Mutation(graphene.ObjectType):
-    create_redeem = CreateRedeemMutation.Field()
-    # update_redeem = UpdateRedeemMutation.Field()
-    delete_redeem = DeleteRedeemMutation.Field()
+    create_transaction = CreateTransactionMutation.Field()
+    # update_transaction = UpdateTransactionMutation.Field()
+    delete_transaction = DeleteTransactionMutation.Field()
 
 class Query(graphene.ObjectType):
 
-    redemptions = graphene.List(RedeemType)
+    transactions = graphene.List(TransactionsType)
 
     @login_required
-    def resolve_redemptions(root, info):
-        return Redeem.objects.filter(user=info.context.user)
+    def resolve_transactions(root, info):
+        return Transaction.objects.filter(user=info.context.user)

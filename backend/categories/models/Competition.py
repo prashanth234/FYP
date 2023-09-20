@@ -1,6 +1,7 @@
 import os
 from django.db import models
 from categories.models.Category import *
+from categories.models.Reward import *
   
 class Competition(models.Model):
     def custom_path(instance, filename):
@@ -14,8 +15,8 @@ class Competition(models.Model):
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     last_date = models.DateField()
-    points = models.IntegerField()
     image = models.ImageField(upload_to=custom_path, default='')
+    rewards = models.ManyToManyField(Reward)
 
     def __str__(self) -> str:
       return self.name

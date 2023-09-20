@@ -1,5 +1,4 @@
 import graphene
-from graphql import GraphQLError
 
 # Models
 from categories.models.Winner import Winner

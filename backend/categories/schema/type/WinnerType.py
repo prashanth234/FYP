@@ -9,4 +9,4 @@ class WinnerType(DjangoObjectType):
 
     class Meta:
         model = Winner
-        fields = ("id", "user", "likes", "post", "competition")
+        fields = ("id", "user", "won_by_likes", "post", "competition", "reward")
