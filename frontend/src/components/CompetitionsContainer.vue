@@ -12,9 +12,9 @@
 			<ion-col size="12" style="line-height: 2;">
 				🌟 The Quest: {{ state.selectedComp.description }} 🌿 <br>
 				🎉 Discover Your Calling: Share Your Passion in Our Rewarding Contest! 🎉 <br>
-				🥇 1st Place: <strong>{{ state.selectedComp.points }}</strong> Points <br>
-				🥈 2nd Place: <strong>500</strong> Points <br>
-				🥉 3rd Place: <strong>200</strong> Points <br>
+				🥇 1st Place: <strong>1500</strong> Points <br>
+				🥈 2nd Place: <strong>1000</strong> Points <br>
+				🥉 3rd Place: <strong>500</strong> Points <br>
 				🌟 Unveil what drives you! Contest ends on <strong>{{ state.selectedComp.lastDate }}</strong> so showcase your interest. Connect with fellow enthusiasts, accumulate points, and enjoy the journey of this fulfilling contest. Your passion could propel you to the top spot! 🚀
 			</ion-col>
 			<ion-col class="ion-text-center" size="12">

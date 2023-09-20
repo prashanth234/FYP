@@ -40,7 +40,7 @@
                 <div class="feed">
                   <div class="title">Feed</div>
                   <ion-button
-                    v-if="categoryInfo.selectedComptn"
+                    v-if="categoryInfo.selectedComptn && !categoryInfo.selectedComptn.expired"
                     :disabled="state.tabSelected == 'trending'"
                     @click="tabChanged('trending')"
                     style="margin-left: 15px;"
@@ -50,6 +50,18 @@
                     color="light"
                   >
                     Top 5
+                  </ion-button>
+                  <ion-button
+                    v-if="categoryInfo.selectedComptn && categoryInfo.selectedComptn.expired"
+                    :disabled="state.tabSelected == 'winners'"
+                    @click="tabChanged('winners')"
+                    style="margin-left: 15px;"
+                    class="close-button"
+                    size="small"
+                    shape="round"
+                    color="light"
+                  >
+                    Winners
                   </ion-button>
                   <ion-button
                     v-if="categoryInfo.selectedComptn"
@@ -77,8 +89,29 @@
               </ion-col>
 
               <!-- Display the posts -->
-              <ion-col size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8" v-for="(post, index) in posts?.allPosts?.posts" :key="post.id">
+              <ion-col
+                v-show="state.tabSelected != 'winners'"
+                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
+                v-for="(post, index) in posts?.allPosts?.posts"
+                :key="post.id"
+              >
                 <post :post="post"></post>
+              </ion-col>
+
+              <!-- Display winners -->
+              <ion-col
+                v-show="state.tabSelected == 'winners'"
+                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
+                v-for="(winner, index) in state.winners" 
+                :key="index"
+              >
+                <post :post="winner.post" :reward="winner.reward">
+                  <!-- <template #bottom>
+                    <div style="padding: 0px 20px 10px 20px;">
+                      <strong>Won By {{winner.wonByLikes}} Likes</strong>
+                    </div>
+                  </template> -->
+                </post>
               </ion-col>
 
             </ion-row>
@@ -111,23 +144,34 @@ import { reactive, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, } from 'vue-router'
 import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
-import { getPosts } from '@/composables/posts'
-import { UpdatePostVariables, CompetitionInfo } from '@/mixims/interfaces'
+import { getPosts, getWinners } from '@/composables/posts'
+import { CompetitionInfo } from '@/mixims/interfaces'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
+import { Post as PostType } from '@/mixims/interfaces'
+
+interface Winner {
+  post: PostType,
+  wonByLikes: number,
+  reward: {
+    position: number
+  }
+}
 
 interface State {
   competition: CompetitionInfo | null,
   refreshCreatePost: number,
   creatingPost: Boolean,
-  tabSelected: SegmentValue | undefined
+  tabSelected: SegmentValue | undefined,
+  winners: Array<Winner>
 }
 
 const state: State = reactive({
   competition: null,
   creatingPost: false,
   refreshCreatePost: 1,
-  tabSelected: 'allposts'
+  tabSelected: 'allposts',
+  winners: []
 })
 
 const route = useRoute();
@@ -151,7 +195,7 @@ onBeforeRouteLeave(() => {
 props.id && categoryInfo.getCategoryInfo(props.id)
 
 const category =  props.id || undefined
-const { POST_QUERY, posts, loading, getMore, refetch, variables } = getPosts('allPosts', undefined, category)
+const { posts, getMore, variables } = getPosts('allPosts', undefined, category)
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'
@@ -164,11 +208,20 @@ function goBackCategory() {
   variables.competition.value = undefined
   variables.trending.value = false
   categoryInfo.selectedComptn = null
+  state.tabSelected = 'allposts'
 }
 
 function tabChanged(value: string) {
   state.tabSelected = value
   variables.trending.value = value == 'trending'
+
+  if (value == 'winners') {
+    state.winners = []
+    const { onResult } = getWinners(categoryInfo.selectedComptn?.id)
+    onResult(({data, loading}) => {
+      !loading && (state.winners = data.winners)
+    })
+  }
 }
 
 </script>

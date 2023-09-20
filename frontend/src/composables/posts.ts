@@ -112,3 +112,39 @@ export function getPosts(
     refetch
   }
 }
+
+export function getWinners(competition: string | undefined) {
+  const WINNERS_QUERY = gql`
+    query winners ($competition: Int) {
+      winners (competition: $competition) {
+        post {
+          id,
+          likes,
+          userLiked,
+          description,
+          postfileSet {
+            file
+          },
+          user {
+            username,
+            avatar
+          }
+        },
+        reward {
+          position
+        },
+        wonByLikes
+      }
+    }
+  `
+
+  const { result: winners, loading, refetch, onResult } = useQuery(WINNERS_QUERY, () => ({
+    competition
+  }))
+
+  return {
+    winners,
+    refetch,
+    onResult
+  }
+}

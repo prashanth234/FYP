@@ -26,6 +26,9 @@
             class="cpointer delete operations"
             :icon="trashOutline"
           />
+          <div v-if="props.reward">
+            <strong>#{{props.reward.position}}</strong>
+          </div>
         </ion-item>
 
         <ion-item class="image" lines="none" style="padding-top: 12px;" v-if="post.postfileSet.length">
@@ -62,6 +65,8 @@
           </ion-label>
         </ion-item>
 
+        <slot name="bottom"></slot>
+
       </ion-list>
     </ion-card-content>
 
@@ -82,7 +87,7 @@ const user = useUserStore()
 const toast = useToastStore()
 
 const ionRouter = useIonRouter()
-const props = defineProps(['post', 'showEdit'])
+const props = defineProps(['post', 'showEdit', 'reward'])
 
 const emit = defineEmits<{
   (e: 'editPost'): void

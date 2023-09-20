@@ -11,4 +11,4 @@ class Query(graphene.ObjectType):
     winners = graphene.List(WinnerType, competition=graphene.Int())
 
     def resolve_winners(root, info, competition):
-        return Winner.objects.filter(competition=competition)
+        return Winner.objects.filter(competition=competition).order_by('reward__position')
