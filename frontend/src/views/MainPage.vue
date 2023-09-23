@@ -41,7 +41,7 @@
             </ion-card-content>
           </ion-card>
 
-                    <ion-list style="margin-top: 30px">
+          <ion-list style="margin-top: 30px">
             <ion-item
               :class="{'ion-item-highlight': router.name == 'home'}"
               lines="none"
@@ -55,6 +55,22 @@
               ></ion-icon>
               <ion-label class="list-label">
                 Home
+              </ion-label>
+            </ion-item>
+            <ion-item
+              :class="{'ion-item-highlight': router.name == 'rewards'}"
+              lines="none"
+              button
+              :detail="false"
+              @click="rewards()"
+              v-if="isUserLogged"
+            >
+              <ion-icon
+                class="ion-icon-custom cpointer"
+                :icon="sparklesOutline"
+              ></ion-icon>
+              <ion-label class="list-label">
+                Rewards
               </ion-label>
             </ion-item>
             <ion-item
@@ -104,10 +120,12 @@
               TBD
             </ion-title>
             <ion-buttons slot="end" v-if="isUserLogged">
-              <ion-button class="ion-hide-lg-down ion-padding-end" color="primary" fill="outline" @click="postDialog.open">
-                Create New Post
+              <!-- ion-hide-lg-down  -->
+              <ion-button class="ion-padding-end" color="primary" shape="round" fill="outline" @click="postDialog.open">
+                <!-- <ion-icon slot="start" :icon="addOutline"></ion-icon> -->
+                Add New Post
               </ion-button>
-              <ion-button
+              <!-- <ion-button
                 @click="onClickPoints"
                 class="ion-padding-end"
                 fill="outline"
@@ -117,7 +135,7 @@
                   src="/static/core/coins.png"
                 ></ion-img>
                 <span class="ion-hide-lg-down" style="margin-left: 7px;">Rewards</span>
-              </ion-button>
+              </ion-button> -->
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
@@ -134,9 +152,14 @@
               <ion-label>Home</ion-label>
             </ion-tab-button>
 
-            <ion-tab-button tab="create" v-if="isUserLogged" @click="postDialog.open">
+            <!-- <ion-tab-button tab="create" v-if="isUserLogged" @click="postDialog.open">
               <ion-icon :icon="addCircle" class="tab-bar-icon"/>
               <ion-label>Create Post</ion-label>
+            </ion-tab-button> -->
+
+            <ion-tab-button tab="rewards" href="/rewards" v-if="isUserLogged">
+              <ion-icon :icon="sparkles" class="tab-bar-icon" />
+              <ion-label>Rewards</ion-label>
             </ion-tab-button>
 
             <ion-tab-button tab="profile" href="/profile" v-if="isUserLogged">
@@ -182,7 +205,7 @@
 
 <script setup lang="ts">
 import { menuController, IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn } from 'ionicons/icons'
+import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn, sparklesOutline, sparkles, addOutline } from 'ionicons/icons'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
@@ -239,6 +262,11 @@ function home() {
 function profile() {
   closeMenu()
   ionRouter.push('/profile')
+}
+
+function rewards() {
+  closeMenu()
+  ionRouter.push('/rewards')
 }
 
 function closeLogin() {

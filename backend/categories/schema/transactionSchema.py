@@ -120,4 +120,4 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_transactions(root, info):
-        return Transaction.objects.filter(user=info.context.user)
+        return Transaction.objects.filter(user=info.context.user).order_by('-pk')

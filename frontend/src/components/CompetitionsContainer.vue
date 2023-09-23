@@ -167,6 +167,7 @@ function closeCompDetails() {
 	overflow-y: auto;
 	.competition {
 		min-width: 250px;
+		min-height: 90px;
 	}
 }
 .header {

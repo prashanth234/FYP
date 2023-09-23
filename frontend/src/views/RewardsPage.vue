@@ -1,54 +1,106 @@
 <template>
 	<ion-page>
-		<ion-content class="ion-padding">
-			<h1>{{`Hello ${user.username}, you have ${user.points} points`}}</h1>
+		<ion-content class="ion-padding" color="light">
+			
 
-			<ion-row>
+			<ion-row class="ion-justify-content-center">
 
-				<ion-col size="6">
-					<ion-input v-model="state.points" label="Points" type="number" placeholder="0"></ion-input>
+				<ion-col size="8" size-md="8" size-sm="10" size-xs="12">
+
+					<ion-grid>
+
+						<ion-row class="ion-padding ion-justify-content-center row-main">
+
+							<ion-col size="12">
+								<ion-row class="ion-no-padding ion-justify-content-center">
+									<ion-col size="auto">
+										<ion-img
+											style="width: 30px; height: 30px;"
+											src="/static/core/coins.png"
+										></ion-img>
+									</ion-col>
+									<ion-col size="auto" class="ion-align-self-center" style="font-size: 20px; font-weight: 600;">
+										{{ user.points}} Coins
+									</ion-col>
+								</ion-row>
+							</ion-col>
+
+							<ion-col size="12" class="ion-text-center" style="font-weight: 500;">
+								Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path! 
+							</ion-col>
+
+							<ion-col size="6">
+								<ion-input
+									class="custom-input"
+									fill="outline"
+									v-model="state.points"
+									type="number"
+									placeholder="Enter Coins"
+								>
+								</ion-input>
+							</ion-col>
+						
+							<ion-col size="9" class="ion-text-center">
+								<ion-button @click="createReedem" size="small">Redeem</ion-button>
+							</ion-col>
+
+							<ion-col size="12">
+								<ion-accordion-group>
+									<ion-accordion value="first">
+										<ion-item slot="header" color="light">
+											<ion-label>View Coin Activity</ion-label>
+										</ion-item>
+										<div style="padding: 5px;" slot="content">
+											<table style="width:100%">
+												<tr>
+													<th>Activity</th>
+													<th>Status</th>
+													<th>Points</th>
+													<th></th>
+												</tr>
+												<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
+													<td>
+														<div>
+															<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
+															<span v-if="transaction.type == 'REDEEM'">Redeem</span>
+														</div>
+														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
+													</td>
+													<td>
+														<span v-if="transaction.status == 'Q'">Pending</span>
+														<span v-else-if="transaction.status == 'P'">Processing</span>
+														<span v-else-if="transaction.status == 'S'">Success</span>
+														<span v-else-if="transaction.status == 'F'">Failed</span>
+													</td>
+													<td>
+														{{ transaction.points }}
+													</td>
+													<td class="ion-text-center">
+														<ion-icon 
+															v-if="transaction.status == 'Q'"
+															style="font-size: 20px;"
+															@click="DeleteReedem(transaction.id)"
+															class="cpointer"
+															:icon="closeCircleOutline"
+														/>
+													</td>
+												</tr>
+												<tr v-if="!loading && !transactions?.transactions.length" >
+													<td class="ion-text-center" colspan="4">No Activites</td>
+												</tr>
+											</table>
+										</div>
+									</ion-accordion>
+								</ion-accordion-group>
+							</ion-col>
+
+						</ion-row>
+
+					</ion-grid>
+
 				</ion-col>
+
 				
-				<ion-col size="6">
-					<ion-button @click="createReedem">Submit</ion-button>
-				</ion-col>
-
-				<ion-col size="6">
-					<table style="width:100%">
-						<tr>
-							<th>Requested At</th>
-							<th>Points</th>
-							<th>Status</th>
-							<th>Cancel</th>
-						</tr>
-						<tr v-for="(redemption, index) in redemptions?.redemptions" :key="redemption.id">
-							<td>
-								{{ redemption.createdAt.slice(0, 19) }}
-							</td>
-							<td>
-								{{ redemption.points }}
-							</td>
-							<td>
-								<span v-if="redemption.status == 'Q'">Pending</span>
-								<span v-else-if="redemption.status == 'P'">Processing</span>
-								<span v-else-if="redemption.status == 'R'">Redeemed</span>
-								<span v-else-if="redemption.status == 'F'">Failed</span>
-							</td>
-							<td class="ion-text-center">
-								<ion-icon 
-									v-if="redemption.status == 'Q'"
-									style="font-size: 20px;"
-									@click="DeleteReedem(redemption.id)"
-									class="cpointer"
-									:icon="closeCircleOutline"
-								/>
-							</td>
-						</tr>
-						<tr v-if="!loading && !redemptions?.redemptions.length" >
-							<td class="ion-text-center" colspan="4">No Redeemptions</td>
-						</tr>
-					</table>
-				</ion-col>
 
 			</ion-row>
 
@@ -57,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonContent, IonRow, IonCol, IonInput, IonButton, IonIcon } from '@ionic/vue';
+import { IonGrid, IonCard, IonPage, IonContent, IonRow, IonCol, IonInput, IonButton, IonIcon, IonImg, IonAccordion, IonAccordionGroup, IonItem } from '@ionic/vue';
 import { useUserStore } from '@/stores/user';
 import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'
@@ -72,18 +124,31 @@ const state = reactive({
 	points: ''
 })
 
+function formatDateToCustomFormat(isoDate: string): string {
+  const date = new Date(isoDate);
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+
+  return date.toLocaleDateString(undefined, options);
+}
+
 const QUERY = gql`
 									query {
-										redemptions {
+										transactions {
 											id,
-											status,
 											points,
+											type,
+											status,
 											createdAt
 										}
 									}
 								`
 
-const { result: redemptions, onResult, loading } = useQuery(QUERY)
+const { result: transactions, onResult, loading } = useQuery(QUERY)
 
 onResult(({data, loading}) => {
 
@@ -93,13 +158,14 @@ function createReedem () {
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($points: Int!) { 
-      createRedeem (
+      createTransaction (
         points: $points,
       ) {
-        	redeem {
+        	ctransaction {
 						points,
 						status,
 						createdAt,
+						type,
 						id
 					},
 					userpoints
@@ -110,13 +176,13 @@ function createReedem () {
 			variables: {
 				points: parseInt(state.points)
 			},
-			update: (cache, { data: { createRedeem } }) => {
+			update: (cache, { data: { createTransaction } }) => {
 				let data:any = cache.readQuery({ query: QUERY })
 				data = {
 					...data,
-					redemptions: [
-						...data.redemptions,
-						createRedeem.redeem,
+					transactions: [
+						createTransaction.ctransaction,
+						...data.transactions,
 					],
 				}
 				cache.writeQuery({ query: QUERY, data })
@@ -127,12 +193,13 @@ function createReedem () {
   mutate()
 
   onDone(({data}) => {
-		user.$patch({points: data.createRedeem.userpoints})
-		state.points = '0'
+		toast.$patch({message: 'Request successfully created! Please allow up to two days for processing. Thank you for your patience.', color: 'success', open: true})
+		user.$patch({points: data.createTransaction.userpoints})
+		state.points = ''
   })
 
   onError((error: any) => {
-	toast.$patch({message: error.message, color: 'danger', open: true})
+		toast.$patch({message: error.message, color: 'danger', open: true})
   })
 }
 
@@ -144,7 +211,7 @@ function UpdateReedem () {
         points: $points,
 				id: $id
       ) {
-          redeem {
+					ctransaction {
 						points,
 						status
 					} 
@@ -168,7 +235,7 @@ function DeleteReedem (id: string) {
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($id: ID!) { 
-      deleteRedeem (
+      deleteTransaction (
 				id: $id
       ) {
           success,
@@ -180,11 +247,11 @@ function DeleteReedem (id: string) {
 			variables: {
 				id
 			},
-			update: (cache, { data: { deleteRedeem } }) => {
+			update: (cache, { data: { deleteTransaction } }) => {
 				let data:any = cache.readQuery({ query: QUERY })
 				data = {
 					...data,
-					redemptions: data.redemptions.filter((reedem: any) => reedem.id != id)
+					transactions: data.transactions.filter((reedem: any) => reedem.id != id)
 				}
 				cache.writeQuery({ query: QUERY, data })
 			},	
@@ -194,8 +261,8 @@ function DeleteReedem (id: string) {
   mutate()
 
   onDone(({data}) => {
-		user.$patch({points: data.deleteRedeem.userpoints})
-		toast.$patch({message: 'Points were added back to user', color: 'success', open: true})
+		user.$patch({points: data.deleteTransaction.userpoints})
+		toast.$patch({message: 'Coins were added back', color: 'success', open: true})
   })
 
   onError((error: any) => {
@@ -213,11 +280,18 @@ table {
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
 th {
-	font-weight: 600;
+	font-weight: 450;
+}
+ion-grid {
+	--ion-grid-column-padding: 10px;
+}
+.row-main {
+	/* border: 1px solid #dddddd; */
+	background-color: var(--ion-color-primary-contrast);
 }
 </style>
