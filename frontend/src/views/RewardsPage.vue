@@ -109,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonGrid, IonCard, IonPage, IonContent, IonRow, IonCol, IonInput, IonButton, IonIcon, IonImg, IonAccordion, IonAccordionGroup, IonItem } from '@ionic/vue';
+import { IonLabel, IonGrid, IonCard, IonPage, IonContent, IonRow, IonCol, IonInput, IonButton, IonIcon, IonImg, IonAccordion, IonAccordionGroup, IonItem } from '@ionic/vue';
 import { useUserStore } from '@/stores/user';
 import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'

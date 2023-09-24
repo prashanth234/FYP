@@ -182,7 +182,8 @@ function submitForm () {
         })
       })
     } else if (response.success) {
-      user.$patch({username: state.username, auth: false, success: true, userUpdated: user.userUpdated + 1})
+      user.$patch({username: state.username, auth: false, success: true})
+      user.getDetails()
       storeTokens(response, 'register')
       toast.$patch({message: 'Registered Successfully', color: 'success', open: true})
       // ionRouter.push('/')

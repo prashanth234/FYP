@@ -248,9 +248,7 @@ function onClickPoints() {
 
 function logout() {
   home()
-  localStorage.removeItem('fyptoken')
-  localStorage.removeItem('fyprefreshtoken')
-  user.$reset()
+  user.reset()
   toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
 }
 
@@ -275,31 +273,6 @@ function closeLogin() {
 
 function login() {
   user.auth = true
-}
-
-function getUserDetails() {
-  const { result, onResult } = useQuery(gql`   
-                              query me {
-                                me {
-                                  username,
-                                  firstName,
-                                  lastName,
-                                  email,
-                                  gender,
-                                  avatar,
-                                  points
-                                }
-                              }
-                            `)
-  
-  onResult(({data, loading}) => {
-    if (loading) return
-    if (data.me) {
-      user.$patch({...data.me, userUpdated: user.userUpdated + 1})
-    } else {
-      logout()
-    }
-  })
 }
 
 function checkAuthStatus() {
@@ -339,7 +312,7 @@ function checkAuthStatus() {
       if (verifyToken.success) {
         user.$patch({success: true})
         state.loading = false
-        getUserDetails()
+        user.getDetails()
       } else {
         // If not vaild, refresh the token
         logout()
@@ -368,7 +341,7 @@ function checkAuthStatus() {
         onDone(({data: {refreshToken}}) => {
           if (refreshToken.success) {
             storeTokens(refreshToken, 'refresh')
-            getUserDetails()
+            user.getDetails()
           }
           state.loading = false
         })
