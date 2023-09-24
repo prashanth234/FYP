@@ -36,7 +36,11 @@
 			<ion-card
 				@click="selectCompetition(competition)"
 				class="competition cpointer ion-no-margin"
-				:class="{'competition-selected': categoryInfo.selectedComptn?.id == competition.id, 'expired': competition.expired, 'hovered': state.ihovered == index}"
+				:class="{
+					'competition-selected': categoryInfo.selectedComptn?.id == competition.id,
+					'expired': competition.expired,
+					'hovered': state.ihovered == index
+				}"
 				@mouseover="state.ihovered = index"
       	@mouseout="state.ihovered = null"
 			>	
