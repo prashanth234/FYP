@@ -159,9 +159,13 @@ function submitForm () {
           refreshToken,
           unarchiving,
           user {
-            id,
             username,
+            firstName,
+            lastName,
+            email,
+            gender,
             avatar,
+            points
           }
         }
       }

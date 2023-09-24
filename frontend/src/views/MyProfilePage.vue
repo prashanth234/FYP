@@ -173,11 +173,11 @@ function deletePost() {
   onDone((value) => {
     closeDialog()
     variables.page = 1
-    refetch()
+    toast.$patch({message: 'Post deleted.', color: 'success', open: true})
   })
 
   onError((error: any) => {
-    toast.$patch({message: 'Error Occured While Deleting Post', color: 'danger', open: true})
+    toast.$patch({message: 'Error occured while deleting post.', color: 'danger', open: true})
   })
 }
 
