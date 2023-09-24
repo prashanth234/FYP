@@ -141,7 +141,7 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-          <ion-loading :isOpen="state.loading" message="Loading"></ion-loading>
+          <ion-loading v-if="state.loading" :isOpen="state.loading" message="Loading"></ion-loading>
           <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
         </ion-content>
 

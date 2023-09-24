@@ -119,3 +119,19 @@ ion-modal {
 .line-top {
   border-top: 0.1px solid var(--ion-color-light-shade);
 }
+
+.cat-description {
+  font-size: 13px;
+  color: grey;
+  height: 4.6ch;
+  line-height: 2.3ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+ion-card {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}

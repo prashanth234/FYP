@@ -68,7 +68,8 @@ function openCategory (category: categoryObject) {
   border-radius: 10px;
 }
 .cat-card:hover {
-  box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12)!important;
+  /* box-shadow: 0 3px 3px -3px rgba(0,0,0,.2),0 5px 7px 1px rgba(0,0,0,0),0 2px 9px 1px rgba(0,0,0,.2)!important; */
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 .cat-image {
   margin-bottom: 10px;
@@ -97,17 +98,6 @@ function openCategory (category: categoryObject) {
   .cat-card-content {
     padding: 17px;
   }
-}
-.cat-description {
-  font-size: 13px;
-  color: grey;
-  height: 4.6ch;
-  line-height: 2.3ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 ion-grid {
   --ion-grid-padding: 5px;

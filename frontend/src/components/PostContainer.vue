@@ -1,5 +1,5 @@
 <template>
-  <ion-card class="border-radius-std post-card cpointer">
+  <ion-card class="border-radius-std post-card">
 
     <ion-card-content @dblclick="likePost()" class="ion-no-padding">
       <ion-list class="ion-no-padding">
@@ -46,6 +46,7 @@
         <ion-item lines="none" class="line-top" style="padding: 3px 0px;">
           <ion-icon
             @click="likePost()"
+            class="cpointer"
             v-if="post.userLiked"
             style="color:rgb(246, 73, 73)"
             :icon="heart"
@@ -53,7 +54,7 @@
           />
           <ion-icon
             @click="likePost()"
-            class="like-icon"
+            class="like-icon cpointer"
             v-else
             :icon="heartOutline"
             size="large"
@@ -168,7 +169,8 @@ function likePost () {
     margin: 0px;
 
     &:hover {
-      box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
+      // box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
+      // box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
     }
     
     &:hover:not(:has(.operations:hover)) .like-icon {

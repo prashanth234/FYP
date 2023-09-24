@@ -36,7 +36,9 @@
 			<ion-card
 				@click="selectCompetition(competition)"
 				class="competition cpointer ion-no-margin"
-				:class="{'competition-selected': categoryInfo.selectedComptn?.id == competition.id, 'expired': competition.expired}"
+				:class="{'competition-selected': categoryInfo.selectedComptn?.id == competition.id, 'expired': competition.expired, 'hovered': state.ihovered == index}"
+				@mouseover="state.ihovered = index"
+      	@mouseout="state.ihovered = null"
 			>	
 				<ion-row class="details">
 					<ion-col size="auto" class="ion-padding-end">
@@ -46,7 +48,7 @@
 						<div class="title">
 							{{ competition.name }}
 						</div>
-						<div class="two-line-ellipsis" :title="competition.description">
+						<div class="cat-description" :title="competition.description">
 							{{ competition.description }}
 						</div>
 					</ion-col>
@@ -98,11 +100,13 @@ const emit = defineEmits<{
 interface State {
 	showCompDetails: boolean,
 	selectedComp: CompetitionInfo | null
+	ihovered: number | null
 }
 
 const state: State = reactive({
 	showCompDetails: false,
-	selectedComp: null
+	selectedComp: null,
+	ihovered: null
 })
 
 const categoryInfo = useCategoryInfoStore()
@@ -113,6 +117,7 @@ function selectCompetition(competition: CompetitionInfo) {
 
 function closeCompetition(competition: CompetitionInfo) {
 	emit('closeCompetition', competition)
+	state.ihovered = null
 }
 
 function moreCompDetails(competition: CompetitionInfo) {
@@ -138,18 +143,19 @@ function closeCompDetails() {
 	}
 }
 .competition {
+	min-height: 78px;
+	max-width: 300px;
+	overflow: hidden;
+
 	.title {
 		font-size: 16px;
 		font-weight: 600;
 		color: var(--ion-color-dark);
-		line-height: 1.6;
+		padding-bottom: 2px;
 	}
 	.details {
 		--ion-grid-column-padding: 0px;
-		padding: 13px;	
-	}
-	&:hover {
-  	box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12)!important;
+		padding: 10px;	
 	}
 	ion-button {
 		--border-radius: 0px;
@@ -158,16 +164,19 @@ function closeCompDetails() {
 		}
 	}
 	ion-img::part(image) {
-		width: 50px;
-		height: 50px;
+		width: 55px;
+		height: 55px;
 		object-fit: cover;
+		border-radius: 4px;
 	}
+}
+.hovered {
+	box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 .horizantal-row {
 	overflow-y: auto;
 	.competition {
 		min-width: 250px;
-		min-height: 90px;
 	}
 }
 .header {
@@ -205,7 +214,8 @@ function closeCompDetails() {
     transform: translateY(0);
   }
 }
-/* Exit animation class */
+
+// /* Exit animation class */
 // .slide-fade-leave-active {
 //   animation: slide-fade-out 0.3s ease forwards;
 // }
@@ -221,4 +231,16 @@ function closeCompDetails() {
 //     transform: translateY(-20px);
 //   }
 // }
+
+// Hide scorll bar for competitions 
+::-webkit-scrollbar {
+  width: 0.1rem;
+  height: 0.1rem;
+}
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
 </style>
