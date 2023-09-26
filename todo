@@ -37,17 +37,17 @@ DONE
 .) Work on UX customization for rewards page
 .) Show points count on main page - Not doing
 .) During login to able to see user points
+.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
 
 
 == 3rd week
 
-.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
-
 .) Show user not verified and popup to send email - 1 day
-
 .) Show only few posts if not loged in
 
-.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
+Done
+.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
+
 
 == 4th week
 

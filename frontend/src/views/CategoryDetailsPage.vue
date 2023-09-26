@@ -49,7 +49,7 @@
                     shape="round"
                     color="light"
                   >
-                    Top 5
+                    Trending
                   </ion-button>
                   <ion-button
                     v-if="categoryInfo.selectedComptn && categoryInfo.selectedComptn.expired"
@@ -77,13 +77,34 @@
                 </div>
               </ion-col>
 
-              <ion-col v-if="categoryInfo.selectedComptn?.expired" size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
+              <ion-col
+                class="ion-no-padding"
+                size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11"
+              >
 
-                <ion-card class="ion-no-margin competition-ended" color="light">
-                  <ion-card-content>
+                <ion-card
+                  class="competition-note"
+                  color="light"
+                  v-if="categoryInfo.selectedComptn?.expired"
+                >
+                  <ion-card-content class="ion-text-center" style="font-weight: 500;">
                     The contest has concluded! Please take a look at our other ongoing contests.
                   </ion-card-content>
-                  
+                </ion-card>
+
+                <ion-card
+                  class="competition-note"
+                  color="light"
+                  v-else-if="state.tabSelected == 'trending'"
+                >
+                  <ion-card-content>
+                    <div class="ion-text-center" style="font-weight: 600;" v-if="!posts?.allPosts?.posts.length">
+                      Can't spot any trending posts? Be the one who sparks a new wave!<br>Unlock the path to trendiness with just 5 likes for your post!
+                    </div>
+                    <div v-else>
+                      Contest's top 5 posts with at least 5 likes are currently trending here!
+                    </div>
+                  </ion-card-content>
                 </ion-card>
 
               </ion-col>
@@ -106,11 +127,6 @@
                 :key="index"
               >
                 <post :post="winner.post" :reward="winner.reward">
-                  <!-- <template #bottom>
-                    <div style="padding: 0px 20px 10px 20px;">
-                      <strong>Won By {{winner.wonByLikes}} Likes</strong>
-                    </div>
-                  </template> -->
                 </post>
               </ion-col>
 
@@ -186,6 +202,10 @@ watch(() => route.params.id, () => {
     categoryInfo.getCategoryInfo(props.id)
   }
 })
+
+// const hasTrendingPosts = computed(() => {
+//   return state.tabSelected == 'trending' && posts.value?.allPosts?.posts.length
+// })
 
 onBeforeRouteLeave(() => {
   goBackCategory()
@@ -280,9 +300,11 @@ ion-grid {
     display: inline;
   }
 }
-.competition-ended {
+.competition-note {
   /* background-color: #e8f4f8; */
   box-shadow: none;
   color: var(--ion-color-dark);
+  margin-left: 10px !important;
+  margin-right: 10px !important;
 }
 </style>

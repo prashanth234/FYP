@@ -6,6 +6,7 @@ from categories.models.Competition import Competition
 from categories.models.Transaction import Transaction
 from categories.models.Winner import Winner
 from categories.models.Reward import Reward
+from categories.models.Post import Post
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -26,5 +27,9 @@ class WinnerAdmin(admin.ModelAdmin):
 @admin.register(Reward)
 class RewardAdmin(admin.ModelAdmin):
     list_display = ('position', 'points', 'type')
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('description', 'category', 'competition', 'likes')
 
 # admin.site.register(Competition)
