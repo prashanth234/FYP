@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-content class="full-height">
+    <ion-content class="full-height" ref="content">
 
       <ion-grid>
 
@@ -132,7 +132,7 @@
 
             </ion-row>
 
-            <ion-infinite-scroll @ionInfinite="getMore" threshold="0">
+            <ion-infinite-scroll @ionInfinite="fetchMore" threshold="0">
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 
@@ -156,15 +156,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch, ref } from 'vue'
 import { onBeforeRouteLeave, useRoute, } from 'vue-router'
-import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent } from '@ionic/vue'
+import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent } from '@ionic/vue'
 import Post from '@/components/PostContainer.vue'
 import { getPosts, getWinners } from '@/composables/posts'
 import { CompetitionInfo } from '@/mixims/interfaces'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import { Post as PostType } from '@/mixims/interfaces'
+import { useUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
 
 interface Winner {
   post: PostType,
@@ -190,8 +192,12 @@ const state: State = reactive({
   winners: []
 })
 
+const content = ref<any>(null)
+
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
+const user = useUserStore();
+const toast = useToastStore();
 
 const props = defineProps({
   id: String
@@ -244,6 +250,23 @@ function tabChanged(value: string) {
   }
 }
 
+function fetchMore(ev: InfiniteScrollCustomEvent) {
+  if (user.success) {
+    getMore(ev)
+  } else {
+    // To see more post, ask user to login
+    toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
+    user.auth = true
+    ev.target.complete()
+    content.value && content.value.$el.scrollByPoint(0, -50, 500);
+    const stopWatch = watch(user, () => {
+      if (user.success) {
+        getMore(ev)
+      }
+      stopWatch()
+    })
+  }
+}
 </script>
 
 <style scoped>

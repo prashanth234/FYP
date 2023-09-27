@@ -49,6 +49,8 @@ windows - check the box add to path while installation
 
 check version - python --version
 
+https://www.python.org/downloads/macos/ (Download the macOS 64-bit universal2 installer)
+
 # Install pipenv to control the virtual environments 
 
 pip3 install pipenv
@@ -85,6 +87,9 @@ nvm install 18.16.0
 nvm use 18.16.0
 
 check version - node --version
+
+Download installer for mac
+https://nodejs.org/en/download
 
 # Setup frontend
 
