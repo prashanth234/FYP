@@ -125,17 +125,6 @@
                 <!-- <ion-icon slot="start" :icon="addOutline"></ion-icon> -->
                 Add New Post
               </ion-button>
-              <!-- <ion-button
-                @click="onClickPoints"
-                class="ion-padding-end"
-                fill="outline"
-              >
-                <ion-img
-                  style="width: 25px; height: 25px;"
-                  src="/static/core/coins.png"
-                ></ion-img>
-                <span class="ion-hide-lg-down" style="margin-left: 7px;">Rewards</span>
-              </ion-button> -->
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
@@ -145,7 +134,7 @@
           <ion-router-outlet v-if="!state.loading"></ion-router-outlet>
         </ion-content>
 
-        <ion-footer class="ion-hide-lg-up" >
+        <ion-footer class="ion-hide-lg-up">
           <ion-tab-bar slot="bottom">
             <ion-tab-button tab="" href="/home">
               <ion-icon :icon="homefull" class="tab-bar-icon"/>
@@ -178,8 +167,16 @@
 
     </ion-split-pane>
 
-    <ion-modal class="login-modal" :show-backdrop="true" :is-open="user.auth" @didDismiss="closeLogin">
-      <ion-icon @click="closeLogin" class="close-login" size="large" :icon="closeOutline"></ion-icon>
+    <ion-modal
+      class="login-modal"
+      :show-backdrop="true"
+      :backdropDismiss="false"
+      :is-open="user.auth"
+      @didDismiss="closeLogin"
+    >
+      <ion-button @click="closeLogin" :disabled="state.disableAuthClose" class="close-login" fill="clear">
+        <ion-icon size="large" :icon="closeOutline"></ion-icon>
+      </ion-button>
       <login-container style="margin-top: 20px;" />
     </ion-modal>
 
@@ -211,7 +208,7 @@ import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
-import { reactive, computed, ref } from 'vue'
+import { reactive, computed, ref, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
@@ -229,8 +226,17 @@ const userAvatar = computed(() => {
 })
 
 const state = reactive({
-  loading: true
+  loading: true,
+  disableAuthClose: false
 })
+
+provide('auth', {
+  controlAuthDialog
+})
+
+function controlAuthDialog(disable: boolean) {
+  state.disableAuthClose = disable
+}
 
 const closeMenu = async () => {
   // close the menu by menu-id
@@ -242,14 +248,10 @@ const isUserLogged = computed(() => {
   return !state.loading && user.success
 })
 
-function onClickPoints() {
-  ionRouter.push('/rewards')
-}
-
-function logout() {
+function logout(showToast: boolean = true) {
   home()
   user.reset()
-  toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
+  showToast && toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
 }
 
 function home() {
@@ -315,7 +317,8 @@ function checkAuthStatus() {
         user.getDetails()
       } else {
         // If not vaild, refresh the token
-        logout()
+        logout(false)
+
         const { mutate, onDone } = useMutation(gql`
           mutation ($refreshToken: String!) {
               refreshToken (
@@ -363,6 +366,8 @@ checkAuthStatus()
     top: 0px;
     color: var(--ion-color-medium);
     cursor: pointer;
+    --padding-start: 0px;
+    --padding-end: 0px;
   }
   ion-toolbar {
     --min-height: 45px;

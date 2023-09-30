@@ -24,4 +24,4 @@ class CompetitionType(DjangoObjectType):
 
     class Meta:
         model = Competition
-        fields = ("id", "name", "description", "category", "points", "last_date", "image", "expired")
+        fields = ("id", "name", "description", "category", "last_date", "image", "expired")

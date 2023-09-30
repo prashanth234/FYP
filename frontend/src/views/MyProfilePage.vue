@@ -13,39 +13,8 @@
           type="edit"
         />
       </ion-modal>
-
-      <ion-modal class="delete-post-modal" :is-open="state.openDialog" :show-backdrop="true" @willDismiss="closeDialog">
-        <ion-row class="ion-padding">
-          <ion-col size="12" class="delete-message">
-            <ion-row>
-              <ion-col size="auto">
-                <ion-icon :icon="warningOutline" color="warning" size="large"></ion-icon>
-              </ion-col>
-              <ion-col style="padding-top: 10px;">
-                <strong> Confirm Delete? </strong>
-              </ion-col>
-            </ion-row>
-          </ion-col>
-          <ion-col size="12">
-            <ion-button
-              size="small"
-              color="danger"
-              @click="deletePost"
-              style="float: right"
-            >
-              Delete
-            </ion-button>
-            <ion-button
-              size="small"
-              @click="closeDialog"
-              color="light"
-              style="float: right; margin-right: 15px;"
-            >
-              Cancel
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-modal>
+      
+      <common-dialog @action="$event => $event.control()"></common-dialog>
 
       <ion-grid>
         <ion-row>
@@ -117,10 +86,11 @@ import { warningOutline } from 'ionicons/icons'
 import { CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
+import { useDialogStore } from '@/stores/dialog';
+import CommonDialog from '@/components/commonDialogContainer.vue';
 
 interface State {
   editPost: PostType | null | undefined,
-  openDialog: boolean,
   selectedTab: SegmentValue | undefined
 }
 
@@ -133,12 +103,12 @@ interface QueryResult {
 
 const state: State = reactive({
   editPost: null,
-  openDialog: false,
   selectedTab: 'about'
 })
 
 const toast = useToastStore()
 const postDialog = usePostDialog()
+const dialog = useDialogStore()
 
 const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts', undefined, undefined)
 
@@ -171,25 +141,24 @@ function deletePost() {
   mutate()
 
   onDone((value) => {
-    closeDialog()
-    variables.page = 1
-    toast.$patch({message: 'Post deleted.', color: 'success', open: true})
+    dialog.close()
+    toast.$patch({message: 'Success! The post has been deleted.', color: 'success', open: true})
   })
 
   onError((error: any) => {
-    toast.$patch({message: 'Error occured while deleting post.', color: 'danger', open: true})
+    toast.$patch({message: "Apologies, but we couldn't delete the post due to an error.", color: 'danger', open: true})
   })
 }
 
 let deletePostObj:PostType | null = null
 
 function confirmDelete(post: PostType, index: number) {
-  state.openDialog = true
+  const buttons = [
+    {title: 'Delete', color: 'danger', action: 'delete', control: deletePost},
+    {title: 'Cancel', color: 'light'}
+  ]
+  dialog.show('Confirm Delete?', '', buttons, warningOutline, 'warning')
   deletePostObj = post
-}
-
-function closeDialog() {
-  state.openDialog = false
 }
 
 // Edit Post
@@ -208,14 +177,7 @@ function tabChanged(event: SegmentCustomEvent) {
 </script>
 
 <style lang="scss" scoped>
-  .delete-post-modal {
-    --max-width: 90%;
-    --height: auto;
-  }
   @media only screen and (min-width: 576px) {
-    .delete-post-modal {
-      --max-width: 400px;
-    }
     .edit-post-modal {
       --max-width: 600px;
     }
@@ -228,9 +190,5 @@ function tabChanged(event: SegmentCustomEvent) {
       background: none;
       box-shadow: none;
     }
-  }
-  .delete-message {
-    font-size: 17px;
-    color: var(--ion-color-dark);
   }
 </style>

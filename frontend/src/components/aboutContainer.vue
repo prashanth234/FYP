@@ -23,17 +23,23 @@
     </ion-col>
   </ion-row>
 
+  <common-dialog @action="$event => $event.control()"></common-dialog>
+
   <ion-list>
 
     <ion-item>
-      <ion-input label="Username" :value="result?.me.username" :disabled="true" labelPlacement="floating"></ion-input>
+      <ion-input label="Username" :value="user.username" :disabled="true" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input label="Email" :value="result?.me.email" :disabled="true" labelPlacement="floating"></ion-input>
+      <ion-input :disabled="user.verified" label="Email" inputmode="email" v-model="state.email" labelPlacement="floating"></ion-input>
     </ion-item>
 
-    <ion-item>
+    <div class="ion-text-end cpointer" v-if="!user.verified">
+      <a @click="verifyEmail">Verify Email</a>
+    </div>
+
+    <ion-item >
       <ion-input v-model="state.firstName" label="First Name" labelPlacement="floating" placeholder="Enter here"></ion-input>
     </ion-item>
 
@@ -47,6 +53,21 @@
         <ion-select-option value="F">Female</ion-select-option>
         <ion-select-option value="O">Others</ion-select-option>
       </ion-select>
+    </ion-item>
+
+    <!-- <ion-item>
+      <ion-input class="custom-input" v-model="state.dob" @click="controlDOB(true)" type="text" placeholder="Birth Date"></ion-input>
+      <ion-popover :is-open="state.isOpen">
+        <ion-datetime @ionCancel="controlDOB(false)" @ionChange="changeDOB" :show-default-buttons="true" presentation="date"></ion-datetime>
+      </ion-popover>
+    </ion-item> -->
+
+    <ion-item lines="none" v-if="state.errors.length">
+      <ion-text color="danger">
+        <ul style="padding-left: 15px">
+          <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
+        </ul>
+      </ion-text>
     </ion-item>
 
   </ion-list>
@@ -75,15 +96,18 @@
 </template>
 
 <script setup lang="ts">
-import { IonAvatar, IonIcon, IonList, IonItem, IonInput, IonRow, IonCol, IonButton, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
+import { IonAvatar, IonIcon, IonList, IonItem, IonInput, IonRow, IonCol, IonButton, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
 import { CropperResult } from 'vue-advanced-cropper'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { cameraOutline } from 'ionicons/icons'
+import { cameraOutline, alertCircleOutline } from 'ionicons/icons'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
+import { isValidEmail } from '@/mixims/validations'
+import { useDialogStore } from '@/stores/dialog'
+import CommonDialog from '@/components/commonDialogContainer.vue';
 
 interface State {
   image: null,
@@ -92,7 +116,9 @@ interface State {
   firstName: string,
   lastName: string,
   gender: string,
-  loading: boolean
+  email: string,
+  loading: boolean,
+  errors: string[]
 }
 
 const state: State = reactive({
@@ -102,11 +128,24 @@ const state: State = reactive({
   firstName: '',
   lastName: '',
   gender: '',
-  loading: false
+  email: '',
+  loading: false,
+  errors: []
 })
 
 const user = useUserStore();
 const toast = useToastStore();
+const dialog = useDialogStore();
+
+const { firstName, lastName, gender, email } = user
+state.firstName = firstName
+state.lastName = lastName
+state.gender = gender
+state.email = email
+
+const userAvatar = computed(() => {
+  return user.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+})
 
 // Profile image
 
@@ -134,8 +173,7 @@ function imageSelected(blob: CropperResult, type: string) {
   mutate()
 
   onDone(({data}) => {
-    user.avatar = data.updateAvatar.user.avatar
-    // user.userUpdated += 1
+    user.$patch({avatar: data.updateAvatar.user.avatar, userUpdated: user.userUpdated + 1})
   })
 
   onError((error: any) => {
@@ -148,71 +186,108 @@ function imageSelected(blob: CropperResult, type: string) {
 }
 
 function updateProfile () {
-  const {firstName, lastName, gender} = state
+  state.errors = []
+
+  if (!isValidEmail(state.email)) {
+    state.errors.push('Please enter a valid email')
+    return
+  }
+
+  const {firstName, lastName, gender, email} = state
 
   state.loading = true
 
   const { mutate, onDone, onError } = useMutation(gql`    
-    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String) { 
+    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String, $email: String) { 
       updateAccount (
         gender: $gender,
         firstName: $firstName,
         lastName: $lastName,
-        dateOfBirth: $dateOfBirth
+        dateOfBirth: $dateOfBirth,
+        email: $email
       ) {
-          success,
-          errors
+          success
         } 
     }
   `,
     {
       variables: {
-        firstName,
-        lastName,
-        gender
+        firstName: firstName != user.firstName ? firstName : undefined,
+        lastName: lastName != user.lastName ? lastName : undefined,
+        gender: gender != user.gender ? gender : undefined,
+        email: email != user.email ? email : undefined
       },
     }
   )
 
   mutate()
 
-  onDone((value) => {
-    toast.$patch({message: 'Update Successful', color: 'success', open: true})
+  onDone(({data}) => {
+    toast.$patch({message: "Success! Your user account has been updated.", color: 'success', open: true})
+    data.updateAccount.success && user.$patch({firstName, lastName, gender, email})
     state.loading = false
   })
 
   onError((error: any) => {
     state.loading = false
-    toast.$patch({message: 'Error Occured While Updating Profile', color: 'danger', open: true})
+    toast.$patch({message: 'Profile update failed due to an error. Please attempt again.', color: 'danger', open: true})
   })
 }
 
-const { result, onResult } = useQuery(gql`   
-                              query {
-                                me {
-                                  username,
-                                  firstName,
-                                  lastName,
-                                  email,
-                                  gender,
-                                  avatar,
-                                  points
-                                }
-                              }
-                            `)
+function sendVerificationEmail () {
+  const { mutate, onDone, onError } = useMutation(gql`    
+    mutation ($email: String!) { 
+      resendActivationEmail (
+        email: $email
+      ) {
+          success,
+          errors
+        }
+    }
+  `,
+    {
+      variables: {
+        email: user.email
+      },
+    }
+  )
 
-onResult(({data, loading}) => {
-  if (loading) return
-  const { firstName, lastName, gender } = data.me
-  state.firstName = firstName
-  state.lastName = lastName
-  state.gender = gender
-})
+  mutate()
+  toast.$patch({message: 'Success! A verification email is heading to your inbox.', color: 'success', open: true})
+  dialog.close()
+}
 
-const userAvatar = computed(() => {
-  return result.value?.me?.avatar ? `/media/${result.value.me.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
-})
+function verifyEmail () {
+  const buttons = [
+    {title: 'Resend', color: 'primary', action: 'send', control: sendVerificationEmail},
+    {title: 'Cancel', color: 'light'}
+  ]
 
+  const description = `Verification email has been sent to your email account (${user.email}). If not received, please click the 'Resend' button.`
+
+  dialog.show(
+    '',
+    description,
+    buttons,
+    alertCircleOutline,
+    'primary'
+  )
+}
+
+// interface DatetimeChangeEventDetail {
+//   detail: {
+//     value: string
+//   }
+// }
+
+// function controlDOB(value: boolean) {
+//   state.isOpen = value
+// }
+
+// function changeDOB(event: DatetimeChangeEventDetail) {
+//   state.dob = event.detail.value.substring(0, 10)
+//   controlDOB(false)
+// }
 </script>
 
 <style lang="scss" scoped>

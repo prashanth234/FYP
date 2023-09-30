@@ -137,7 +137,7 @@ function formatDateToCustomFormat(isoDate: string): string {
 }
 
 const QUERY = gql`
-									query {
+									query Transactions {
 										transactions {
 											id,
 											points,

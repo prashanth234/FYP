@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', {
     firstName: '',
     lastName: '',
     gender: '',
+    verified: false,
     auth: false
   }),
   getters: {
@@ -20,6 +21,7 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     getDetails() {
+      // Also change in loginformcontainer.vue user query
       const { result, onResult } = useQuery(gql`   
                                   query me {
                                     me {
@@ -29,7 +31,8 @@ export const useUserStore = defineStore('user', {
                                       email,
                                       gender,
                                       avatar,
-                                      points
+                                      points,
+                                      verified
                                     }
                                   }
                                 `)

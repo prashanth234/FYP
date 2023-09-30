@@ -1,98 +1,126 @@
 <template>
 
   <!-- Start of register form -->
-  <ion-grid>
+  <form @submit.prevent="submitForm">
+    <ion-grid>
 
-    <ion-row class="ion-text-center">
-      
-      <ion-col size="12">
-        <ion-title>Create Account</ion-title>
-      </ion-col>
+      <ion-row class="ion-text-center">
+        
+        <ion-col size="12" class="ion-padding-bottom">
+          <ion-title>Create Account</ion-title>
+        </ion-col>
 
-      <!-- <ion-col size="6">
-        <ion-input class="custom-input" v-model="state.firstname" type="text" placeholder="First Name"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-input 
+            class="custom-input"
+            fill="outline"
+            v-model="state.email"
+            type="email"
+            placeholder="Email"
+            required
+          >
+          </ion-input>
+        </ion-col>
 
-      <ion-col size="6">
-        <ion-input class="custom-input" v-model="state.lastname" type="text" placeholder="Last Name"></ion-input>
-      </ion-col> -->
+        <ion-col size="12">
+          <ion-input
+            class="custom-input"
+            fill="outline"
+            v-model="state.username"
+            type="text"
+            placeholder="Username"
+            required
+          >
+          </ion-input>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input  class="custom-input" fill="outline" v-model="state.email" type="text" placeholder="Email"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-input
+            class="custom-input"
+            fill="outline"
+            v-model="state.password1"
+            type="password"
+            placeholder="Password"
+            required
+          >
+          </ion-input>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.username" type="text" placeholder="Username"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-input
+            class="custom-input"
+            fill="outline"
+            v-model="state.password2"
+            type="password"
+            placeholder="Confirm Password"
+            required
+          >
+          </ion-input>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.password1" type="password" placeholder="Password"></ion-input>
-      </ion-col>
+        <ion-col size="12" v-if="state.errors.length">
+          <ion-text color="danger">
+            <ul style="padding-left: 15px">
+              <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
+            </ul>
+          </ion-text>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.password2" type="password" placeholder="Confirm Password"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-button color="primary" class="auth-button" :disabled="state.loading" expand="block" type="submit">
+            <ion-spinner 
+              class="button-loading-small"
+              v-if="state.loading"
+              name="crescent"
+            />
+            <span v-else>
+              Register
+            </span>
+          </ion-button>
+        </ion-col>
 
-      <!-- <ion-col size="6">
-        <ion-input class="custom-input" v-model="state.dob" @click="controlDOB(true)" type="text" placeholder="Birth Date"></ion-input>
-        <ion-popover :is-open="state.isOpen">
-          <ion-datetime @ionCancel="controlDOB(false)" @ionChange="changeDOB" :show-default-buttons="true" presentation="date"></ion-datetime>
-        </ion-popover>
-      </ion-col>
+        <ion-col size="12" class="line" style="margin-top: 10px; margin-bottom: 15px;"></ion-col>
 
-      <ion-col size="6">
-        <ion-select v-model="state.gender" class="custom-select" interface="popover" placeholder="Gender">
-          <ion-select-option value="male">Male</ion-select-option>
-          <ion-select-option value="female">Female</ion-select-option>
-          <ion-select-option value="others">Others</ion-select-option>
-        </ion-select>
-      </ion-col> -->
+        <ion-col size="12">
+          Have an account? <a class="cpointer" :class="{'cursor-disable': state.loading}" @click="goToLogin()"><b>Log in</b></a>
+        </ion-col>
 
-      <ion-col size="12" v-if="state.errors.length">
-        <ion-text color="danger">
-          <ul style="padding-left: 15px">
-            <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-          </ul>
-        </ion-text>
-      </ion-col>
+      </ion-row>
 
-      <ion-col size="12">
-        <ion-button color="primary" class="auth-button" :disabled="state.disabled" expand="block" @click="submitForm()">Register</ion-button>
-      </ion-col>
-
-      <ion-col size="12" class="line" style="margin-top: 10px; margin-bottom: 15px;"></ion-col>
-
-      <ion-col size="12">
-        Have an account? <a class="cpointer" @click="goToLogin()"><b>Log in</b></a>
-      </ion-col>
-
-    </ion-row>
-
-  </ion-grid>
+    </ion-grid>
+  </form>
   <!-- End of register form -->
 
 </template>
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonPopover, IonDatetime, IonSelect, IonSelectOption, useIonRouter } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive } from 'vue'
+import { reactive, inject } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import store from '@/vuex'
 import { storeTokens } from '@/mixims/auth'
 import { useToastStore } from '@/stores/toast'
 import { useUserStore } from '@/stores/user';
 
-interface DatetimeChangeEventDetail {
-  detail: {
-    value: string
-  }
-}
+// import { validate, markTouched } from '@/mixims/validations'
+
+// const validation = reactive({
+//   username: false,
+//   password1: false,
+//   password2: false,
+//   email: false,
+// })
+
+// error-text="Invalid email"
+// @ionInput="validation.email = validate($event, ['email'])"
+// @ionBlur="markTouched"
 
 const emit = defineEmits<{
   (e: 'login'): void
 }>()
+
+const { controlAuthDialog } = inject<any>('auth')
 
 interface State {
   errors: Array<string>,
@@ -104,7 +132,7 @@ interface State {
   lastname: string,
   dob: string,
   gender: string,
-  disabled: boolean,
+  loading: boolean,
   isOpen: boolean,
 }
 
@@ -117,7 +145,7 @@ const state: State = reactive({
   lastname: '',
   dob: '',
   gender: '',
-  disabled: false,
+  loading: false,
   isOpen: false,
   errors: []
 })
@@ -126,24 +154,17 @@ const ionRouter = useIonRouter();
 const toast = useToastStore();
 const user = useUserStore();
 
-function controlDOB(value: boolean) {
-  state.isOpen = value
-}
-
-function changeDOB(event: DatetimeChangeEventDetail) {
-  state.dob = event.detail.value.substring(0, 10)
-  controlDOB(false)
-}
-
 function goToLogin() {
   emit('login')
 }
 
 function submitForm () {
 
-  state.disabled = true
+  state.errors = []
+  state.loading = true
+  controlAuthDialog(true)
 
-  const { mutate, onDone } = useMutation(gql`
+  const { mutate, onDone, onError } = useMutation(gql`
        mutation ($email: String!, $username: String!, $password1: String!, $password2: String!) {
         register (
           email: $email,
@@ -171,7 +192,8 @@ function submitForm () {
   mutate()
 
   onDone((result) => {
-    state.disabled = false
+    state.loading = false
+    controlAuthDialog(false)
     const response = result.data.register
     if (response.errors) {
       const keys = Object.keys(response.errors)
@@ -188,6 +210,12 @@ function submitForm () {
       toast.$patch({message: 'Registered Successfully', color: 'success', open: true})
       // ionRouter.push('/')
     }
+  })
+
+  onError(() => {
+    state.loading = false
+    controlAuthDialog(false)
+    toast.$patch({message: 'User creation failed. Retry, or for assistance, please contact our support team.', color: 'danger', open: true})
   })
 }
 </script>

@@ -1,5 +1,3 @@
-import store from '@/vuex'
-
 interface tokenObject {
     token: string,
     refreshToken: string,

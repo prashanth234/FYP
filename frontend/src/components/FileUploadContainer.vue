@@ -27,7 +27,7 @@
       type="file"
       name="fileUpload"
       accept="image/*"
-      @change="$event => props.cropable ? loadImage($event) : handleFileUpload($event)" 
+      @input="$event => props.cropable ? loadImage($event) : handleFileUpload($event)" 
     />
 
     <slot name="handler" :selectImage="selectImage">
@@ -106,7 +106,7 @@ const state: State = reactive({
 })
 
 const cropperRef: Ref<any>  = ref(null)
-const fileupload: Ref<HTMLElement | null>  = ref(null)
+const fileupload: Ref<HTMLInputElement | null>  = ref(null)
 
 function handleFileUpload(event: Event) {
   const {validity, files} = event.target as HTMLInputElement 
@@ -198,6 +198,7 @@ function cropImage() {
 }
 
 function closeCropper(){
+  fileupload.value && (fileupload.value.value = '')
   state.openCropper = false
 }
 

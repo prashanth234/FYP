@@ -29,6 +29,7 @@
       <ion-button
         color="primary"
         style="float: right"
+        size="small"
         @click="changePassword"
         :disabled="state.loading"
       >
@@ -46,6 +47,7 @@
         @click="clear"
         style="float: right; margin-right: 15px;"
         :disabled="state.loading"
+        size="small"
       >
         Clear
       </ion-button>

@@ -9,7 +9,7 @@
         <ion-row>
 
           <ion-col
-            size="auto" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2.4"
+            size="auto" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2"
             v-for="(cat, index) in category.categories"
             :key="index"
           >

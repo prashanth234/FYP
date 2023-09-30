@@ -96,7 +96,6 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'core.User'
 
 GRAPHQL_AUTH = {
-    'UPDATE_MUTATION_FIELDS': ["first_name", "last_name",  "gender", "date_of_birth"],
     "EMAIL_TEMPLATE_VARIABLES": {
         "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
         "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),

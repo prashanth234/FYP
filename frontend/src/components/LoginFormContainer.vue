@@ -1,65 +1,67 @@
 <template>
 
   <!-- Start of login form -->
-  <ion-grid>
+  <form @submit.prevent="submitForm">
+    <ion-grid>
 
-    <ion-row class="ion-text-center">
+      <ion-row class="ion-text-center">
 
-      <ion-col size="12">
-        <ion-title>TBD</ion-title>
-      </ion-col>
+        <ion-col size="12">
+          <ion-title>TBD</ion-title>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.email" type="email" placeholder="Email"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-input class="custom-input" fill="outline" v-model="state.email" type="email" placeholder="Email" required></ion-input>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-input class="custom-input" fill="outline" v-model="state.password" type="password" placeholder="Password"></ion-input>
-      </ion-col>
+        <ion-col size="12">
+          <ion-input class="custom-input" fill="outline" v-model="state.password" type="password" placeholder="Password" required></ion-input>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-text color="danger" v-if="state.errors.length">
-          <ul style="padding-left: 15px">
-            <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-          </ul>
-        </ion-text>
-      </ion-col>
+        <ion-col size="12">
+          <ion-text color="danger" v-if="state.errors.length">
+            <ul style="padding-left: 15px">
+              <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
+            </ul>
+          </ion-text>
+        </ion-col>
 
-      <ion-col size="12">
-        <ion-button class="auth-button" color="primary" :disabled="processing" expand="block" @click="submitForm()">
-          <ion-spinner 
-            class="button-loading-small"
-            v-if="state.loginLoading"
-            name="crescent"
-          />
-          <span v-else>
-            Login
-          </span>
-        </ion-button>
-      </ion-col>
+        <ion-col size="12">
+          <ion-button class="auth-button" color="primary" :disabled="processing" expand="block" type="submit">
+            <ion-spinner 
+              class="button-loading-small"
+              v-if="state.loginLoading"
+              name="crescent"
+            />
+            <span v-else>
+              Login
+            </span>
+          </ion-button>
+        </ion-col>
 
-      <ion-col size="12" class="line" style="margin-top: 12px; margin-bottom: 10px;"></ion-col>
+        <ion-col size="12" class="line" style="margin-top: 12px; margin-bottom: 10px;"></ion-col>
 
-      <ion-col size="12" >
-        <ion-button fill="clear" @click="forgotPassword" :disabled="processing">
-          <ion-spinner 
-            class="button-loading-small"
-            v-if="state.forgotPassLoading"
-            name="crescent"
-          />
-          <span v-else>
-            Forgotten password?
-          </span>
-        </ion-button>
-      </ion-col>
-      
-      <ion-col size="12">
-        <ion-button :disabled="processing" size="small" color="success" @click="register()">Create Account</ion-button>
-      </ion-col>
-      
-    </ion-row>
+        <ion-col size="12" >
+          <ion-button fill="clear" @click="forgotPassword" :disabled="processing">
+            <ion-spinner 
+              class="button-loading-small"
+              v-if="state.forgotPassLoading"
+              name="crescent"
+            />
+            <span v-else>
+              Forgotten password?
+            </span>
+          </ion-button>
+        </ion-col>
+        
+        <ion-col size="12">
+          <ion-button :disabled="processing" size="small" color="success" @click="register()">Create Account</ion-button>
+        </ion-col>
+        
+      </ion-row>
 
-  </ion-grid>
+    </ion-grid>
+  </form>
   <!-- End of login form -->
 
 </template>
@@ -68,7 +70,7 @@
 
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive, computed } from 'vue'
+import { reactive, computed, inject } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens } from '@/mixims/auth'
 import { useUserStore } from '@/stores/user'
@@ -90,8 +92,12 @@ const state: State = reactive({
   forgotPassLoading: false,
 })
 
+const { controlAuthDialog } = inject<any>('auth')
+
 const processing = computed(() => {
-  return state.loginLoading || state.forgotPassLoading
+  const process = state.loginLoading || state.forgotPassLoading
+  controlAuthDialog(process)
+  return process
 })
 
 
@@ -150,14 +156,13 @@ function submitForm () {
   state.loginLoading = true
 
   const { mutate, onDone, onError } = useMutation(gql`    
-      mutation ($email: String!, $password: String!) {
+      mutation Login ($email: String!, $password: String!) {
         tokenAuth(email: $email, password: $password) {
           success,
           errors,
           unarchiving,
           token,
           refreshToken,
-          unarchiving,
           user {
             username,
             firstName,
@@ -165,7 +170,8 @@ function submitForm () {
             email,
             gender,
             avatar,
-            points
+            points,
+            verified
           }
         }
       }
@@ -187,7 +193,7 @@ function submitForm () {
 
     if (response.success) {
       storeTokens(response, 'login')
-      user.$patch({...response.user, success: true, userUpdated: user.userUpdated + 1, auth: false})
+      user.$patch({...response.user, userUpdated: user.userUpdated + 1, success: true, auth: false})
       toast.$patch({message: 'Login Successful', color: 'success', open: true})
       // ionRouter.push('/')
     } else {

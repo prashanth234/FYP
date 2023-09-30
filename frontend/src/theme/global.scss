@@ -37,6 +37,11 @@ ion-input.custom-input:focus {
   cursor: pointer;
 }
 
+.cursor-disable {
+  pointer-events: none;
+  color: grey;
+}
+
 ion-button {
   text-transform: capitalize;
 }
