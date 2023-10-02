@@ -88,6 +88,9 @@ import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
 import { useDialogStore } from '@/stores/dialog';
 import CommonDialog from '@/components/commonDialogContainer.vue';
+import { scrollTop } from '@/composables/scroll'
+
+scrollTop()
 
 interface State {
   editPost: PostType | null | undefined,

@@ -116,6 +116,9 @@ import gql from 'graphql-tag'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive } from 'vue';
 import { closeCircleOutline } from 'ionicons/icons'
+import { scrollTop } from '@/composables/scroll'
+
+scrollTop()
 
 const user = useUserStore()
 const toast = useToastStore()

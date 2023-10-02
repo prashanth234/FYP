@@ -17,8 +17,9 @@ export function getPosts(
     perPage: 5
   }
 
+  // Also update create post query
   const POST_QUERY = gql`
-    query posts ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: Int) {
+    query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: Int) {
       ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
         posts {
           id,

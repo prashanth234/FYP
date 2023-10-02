@@ -120,7 +120,7 @@ const emit = defineEmits<{
   (e: 'login'): void
 }>()
 
-const { controlAuthDialog } = inject<any>('auth')
+const { isAuthProcessing, authSuccess, authFailure } = inject<any>('auth')
 
 interface State {
   errors: Array<string>,
@@ -162,7 +162,7 @@ function submitForm () {
 
   state.errors = []
   state.loading = true
-  controlAuthDialog(true)
+  isAuthProcessing(true)
 
   const { mutate, onDone, onError } = useMutation(gql`
        mutation ($email: String!, $username: String!, $password1: String!, $password2: String!) {
@@ -185,7 +185,8 @@ function submitForm () {
           password1: state.password1,
           password2: state.password2,
           email: state.email
-        }
+        },
+        fetchPolicy: "no-cache"
       }
   )
 
@@ -193,7 +194,7 @@ function submitForm () {
 
   onDone((result) => {
     state.loading = false
-    controlAuthDialog(false)
+    authFailure('register')
     const response = result.data.register
     if (response.errors) {
       const keys = Object.keys(response.errors)
@@ -205,16 +206,16 @@ function submitForm () {
       })
     } else if (response.success) {
       user.$patch({username: state.username, auth: false, success: true})
+      toast.$patch({message: "Success! You're now a valued member of our community.", color: 'success', open: true})
       user.getDetails()
       storeTokens(response, 'register')
-      toast.$patch({message: 'Registered Successfully', color: 'success', open: true})
-      // ionRouter.push('/')
+      authSuccess('register')
     }
   })
 
   onError(() => {
     state.loading = false
-    controlAuthDialog(false)
+    authFailure('register')
     toast.$patch({message: 'User creation failed. Retry, or for assistance, please contact our support team.', color: 'danger', open: true})
   })
 }

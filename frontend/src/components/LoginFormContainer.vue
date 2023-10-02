@@ -92,11 +92,11 @@ const state: State = reactive({
   forgotPassLoading: false,
 })
 
-const { controlAuthDialog } = inject<any>('auth')
+const { isAuthProcessing, authSuccess, authFailure } = inject<any>('auth')
 
 const processing = computed(() => {
   const process = state.loginLoading || state.forgotPassLoading
-  controlAuthDialog(process)
+  isAuthProcessing(process)
   return process
 })
 
@@ -155,6 +155,7 @@ function submitForm () {
 
   state.loginLoading = true
 
+  // Also update user details when this query is updated
   const { mutate, onDone, onError } = useMutation(gql`    
       mutation Login ($email: String!, $password: String!) {
         tokenAuth(email: $email, password: $password) {
@@ -181,7 +182,8 @@ function submitForm () {
         variables: {
           email: state.email,
           password: state.password
-        }
+        },
+        fetchPolicy: "no-cache"
       }
   )
 
@@ -193,9 +195,9 @@ function submitForm () {
 
     if (response.success) {
       storeTokens(response, 'login')
+      authSuccess('login')
       user.$patch({...response.user, userUpdated: user.userUpdated + 1, success: true, auth: false})
       toast.$patch({message: 'Login Successful', color: 'success', open: true})
-      // ionRouter.push('/')
     } else {
       const keys = Object.keys(response.errors)
       state.errors = []
@@ -204,12 +206,14 @@ function submitForm () {
           state.errors.push(message)
         })
       })
+      authFailure('login')
     }
   })
 
   onError(() => {
     toast.$patch({message: "Login failed due to technical difficulties. Please try again later.", color: 'danger', open: true})
     state.loginLoading = false
+    authFailure('login')
   })
 }
 

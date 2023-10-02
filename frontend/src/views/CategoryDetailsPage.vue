@@ -30,7 +30,7 @@
               <!-- Competitions for small screens -->
               <ion-col size="12" class="ion-hide-md-up" style="padding-bottom: 0px;">
                 <competitions
-                  @close-competition="goBackCategory()"
+                  @close-competition="setCategoryDefault()"
                   @select-competition="loadCompetitionPosts"
                   :vertical="false"
                 />
@@ -142,7 +142,7 @@
           <ion-col class="ion-hide-md-down" size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4">
             <competitions
               @select-competition="loadCompetitionPosts"
-              @close-competition="goBackCategory()"
+              @close-competition="setCategoryDefault()"
               :vertical="true"
             />
           </ion-col>
@@ -157,16 +157,20 @@
 
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
-import { onBeforeRouteLeave, useRoute, } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent } from '@ionic/vue'
+
 import Post from '@/components/PostContainer.vue'
-import { getPosts, getWinners } from '@/composables/posts'
-import { CompetitionInfo } from '@/mixims/interfaces'
-import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import Competitions from '@/components/CompetitionsContainer.vue'
+import { getPosts, getWinners } from '@/composables/posts'
+import { scrollTop } from '@/composables/scroll'
+
+import { CompetitionInfo } from '@/mixims/interfaces'
 import { Post as PostType } from '@/mixims/interfaces'
+
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
+import { useCategoryInfoStore } from '@/stores/categoryInfo'
 
 interface Winner {
   post: PostType,
@@ -192,8 +196,6 @@ const state: State = reactive({
   winners: []
 })
 
-const content = ref<any>(null)
-
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 const user = useUserStore();
@@ -203,22 +205,23 @@ const props = defineProps({
   id: String
 })
 
+// As opened category details page are opened again need to update the categorydetails since
+// once the category details is opened it will not get rerendered again
 watch(() => route.params.id, () => {
   if (route.name == 'CategoryDetails' && route.params.id == props.id) {
     categoryInfo.getCategoryInfo(props.id)
   }
 })
 
-// const hasTrendingPosts = computed(() => {
-//   return state.tabSelected == 'trending' && posts.value?.allPosts?.posts.length
-// })
-
+// When the router leaves the details page set default get category details and clear the category information store
 onBeforeRouteLeave(() => {
-  goBackCategory()
+  setCategoryDefault()
   categoryInfo.name && categoryInfo.$reset()
 })
 
 props.id && categoryInfo.getCategoryInfo(props.id)
+
+const { content } = scrollTop()
 
 const category =  props.id || undefined
 const { posts, getMore, variables } = getPosts('allPosts', undefined, category)
@@ -229,7 +232,7 @@ function loadCompetitionPosts(competition: CompetitionInfo) {
   variables.competition.value = competition.id
 }
 
-function goBackCategory() {
+function setCategoryDefault() {
   if (!variables.competition.value) { return }
   variables.competition.value = undefined
   variables.trending.value = false
@@ -259,13 +262,15 @@ function fetchMore(ev: InfiniteScrollCustomEvent) {
     user.auth = true
     ev.target.complete()
     content.value && content.value.$el.scrollByPoint(0, -50, 500);
-    const stopWatch = watch(user, () => {
-      if (user.success) {
-        getMore(ev)
-      }
-      stopWatch()
-    })
+    // Commented this code because because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.
+    // const stopWatch = watch(user, () => {
+    //   if (user.success) {
+    //     getMore(ev)
+    //   }
+    //   stopWatch()
+    // })
   }
+
 }
 </script>
 

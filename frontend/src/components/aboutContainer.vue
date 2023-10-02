@@ -99,7 +99,7 @@
 import { IonAvatar, IonIcon, IonList, IonItem, IonInput, IonRow, IonCol, IonButton, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
 import { CropperResult } from 'vue-advanced-cropper'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { cameraOutline, alertCircleOutline } from 'ionicons/icons'
@@ -137,11 +137,17 @@ const user = useUserStore();
 const toast = useToastStore();
 const dialog = useDialogStore();
 
-const { firstName, lastName, gender, email } = user
-state.firstName = firstName
-state.lastName = lastName
-state.gender = gender
-state.email = email
+watch(() => user.username, setUserState)
+
+function setUserState() {
+  const { firstName, lastName, gender, email } = user
+  state.firstName = firstName
+  state.lastName = lastName
+  state.gender = gender
+  state.email = email
+}
+
+setUserState()
 
 const userAvatar = computed(() => {
   return user.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'

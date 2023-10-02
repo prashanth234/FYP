@@ -42,11 +42,10 @@ DONE
 
 == 3rd week
 
-.) Show user not verified and popup to send email - 1 day
-
 Done
 .) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
 .) Show only few posts if not loged in
+.) Show user not verified and popup to send email - 1 day
 
 
 == 4th week
@@ -55,7 +54,7 @@ Done
 
 .) Add no competition coming soon card - 1 to 2 days
 
-.) Support page and Activation send email button account not verified - 1 day
+.) Support page - 1 day
 
 == 5th week
 
@@ -141,6 +140,8 @@ Work on UX customization for details page and competition tabs
 .) Able to create post through super user without login
 .) Check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option. (This warning occured and but root user is created with password in docker run)
 .) Mobile number login
+.) If a user logout/login all the active queries are fetched again to update posts(userLiked), profile etc - See if it can be optimized
+.) If a user scroll down the category and if he again open's category scroll is last opened position - See if scroll can be placed on top when a category is opened.
 
 #### P2 #####
 

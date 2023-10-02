@@ -213,7 +213,7 @@ const state = reactive({
 })
 
 const disableUpload = computed(() => {
-  return (showImageUpload && !state.preview) || !state.category || !!state.creatingPost 
+  return (showImageUpload.value && !state.preview) || !state.category || state.creatingPost
 })
 
 const showImageUpload = computed(() => {
@@ -323,6 +323,9 @@ function createNewPost() {
             },
             category {
               oftype
+            },
+            competition {
+              expired
             }
           }  
         }

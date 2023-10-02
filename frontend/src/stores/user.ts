@@ -35,7 +35,9 @@ export const useUserStore = defineStore('user', {
                                       verified
                                     }
                                   }
-                                `)
+                                `, null, {
+                                  fetchPolicy: "no-cache"
+                                })
       
       onResult(({data, loading}) => {
         if (loading) return

@@ -31,7 +31,7 @@
                     <p style="font-size: 15px; font-weight: 600;"> Welcome User </p>
                     <ion-button
                       class="ion-hide-lg-down"
-                      @click="login()"
+                      @click="openAuth()"
                     >
                       Login
                     </ion-button>
@@ -47,7 +47,7 @@
               lines="none"
               button
               :detail="false"
-              @click="home()"
+              @click="navigate('/')"
             >
               <ion-icon
                 class="ion-icon-custom cpointer"
@@ -62,7 +62,7 @@
               lines="none"
               button
               :detail="false"
-              @click="rewards()"
+              @click="navigate('/rewards')"
               v-if="isUserLogged"
             >
               <ion-icon
@@ -78,7 +78,7 @@
               lines="none"
               button
               :detail="false"
-              @click="profile()"
+              @click="navigate('/profile')"
               v-if="isUserLogged"
             >
               <ion-icon
@@ -157,7 +157,7 @@
             </ion-tab-button>
 
             <ion-tab-button tab="login" v-if="!isUserLogged">
-              <ion-icon :icon="logIn" class="tab-bar-icon" @click="login()" />
+              <ion-icon :icon="logIn" class="tab-bar-icon" @click="openAuth()" />
               <ion-label>Login</ion-label>
             </ion-tab-button>
           </ion-tab-bar>
@@ -172,9 +172,9 @@
       :show-backdrop="true"
       :backdropDismiss="false"
       :is-open="user.auth"
-      @didDismiss="closeLogin"
+      @didDismiss="closeAuth"
     >
-      <ion-button @click="closeLogin" :disabled="state.disableAuthClose" class="close-login" fill="clear">
+      <ion-button @click="closeAuth" :disabled="state.disableAuthClose" class="close-login" fill="clear">
         <ion-icon size="large" :icon="closeOutline"></ion-icon>
       </ion-button>
       <login-container style="margin-top: 20px;" />
@@ -213,6 +213,10 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
+import { useApolloClient } from '@vue/apollo-composable'
+
+const { resolveClient } = useApolloClient()
+const client = resolveClient()
 
 
 const ionRouter = useIonRouter();
@@ -230,50 +234,45 @@ const state = reactive({
   disableAuthClose: false
 })
 
-provide('auth', {
-  controlAuthDialog
+const isUserLogged = computed(() => {
+  return !state.loading && user.success
 })
 
-function controlAuthDialog(disable: boolean) {
-  state.disableAuthClose = disable
+provide('auth', {
+  isAuthProcessing,
+  authSuccess,
+  authFailure
+})
+
+function isAuthProcessing(value: boolean) {
+  state.disableAuthClose = value
+}
+
+function authSuccess(type: string) {
+  isAuthProcessing(false)
+  type == 'login' && client.resetStore()
+}
+
+function authFailure(type: string) {
+  isAuthProcessing(false)
 }
 
 const closeMenu = async () => {
   // close the menu by menu-id
   await menuController.enable(true, 'menu');
   await menuController.close('menu');
-};
-
-const isUserLogged = computed(() => {
-  return !state.loading && user.success
-})
-
-function logout(showToast: boolean = true) {
-  home()
-  user.reset()
-  showToast && toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
 }
 
-function home() {
+function navigate(path: string) {
   closeMenu()
-  ionRouter.push('/')
+  ionRouter.push(path)
 }
 
-function profile() {
-  closeMenu()
-  ionRouter.push('/profile')
-}
-
-function rewards() {
-  closeMenu()
-  ionRouter.push('/rewards')
-}
-
-function closeLogin() {
+function closeAuth() {
   user.auth = false
 }
 
-function login() {
+function openAuth() {
   user.auth = true
 }
 
@@ -302,7 +301,8 @@ function checkAuthStatus() {
       {
         variables: {
           token
-        }
+        },
+        fetchPolicy: "no-cache"
       }
     )
 
@@ -335,7 +335,8 @@ function checkAuthStatus() {
           {
             variables: {
               refreshToken
-            }
+            },
+            fetchPolicy: "no-cache"
           }
         )
 
@@ -353,6 +354,13 @@ function checkAuthStatus() {
   } else {
     state.loading = false
   }
+}
+
+function logout(showToast: boolean = true) {
+  navigate('/')
+  user.reset()
+  client.resetStore()
+  showToast && toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
 }
 
 checkAuthStatus()
@@ -408,12 +416,12 @@ checkAuthStatus()
       --max-width: 350px;
     }
     .create-post-modal {
-      --max-width: 600px;
+      --max-width: 600px !important;
+      --height: auto;
     }
   }
   .create-post-modal {
     --max-width: 90%;
-    --height: auto;
 
     &::part(content) {
       background: none;

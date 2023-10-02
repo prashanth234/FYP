@@ -24,13 +24,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 // Cache implementation
-const cache = new InMemoryCache({
-  typePolicies: {
-    UserNode: {
-      keyFields: ['username']
-    }
-  }
-})
+const cache = new InMemoryCache()
 
 // Create the apollo client
 const apolloClient = new ApolloClient({

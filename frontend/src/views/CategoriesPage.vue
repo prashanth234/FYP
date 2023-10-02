@@ -47,6 +47,9 @@
 import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, IonCol, IonGrid, IonRow, IonCard, IonCardContent, useIonRouter  } from '@ionic/vue';
 import { categoryObject } from '@/mixims/interfaces'
+import { scrollTop } from '@/composables/scroll'
+
+scrollTop()
 
 const ionRouter = useIonRouter();
 const category = useCategoryStore();
