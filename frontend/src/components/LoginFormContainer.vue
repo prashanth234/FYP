@@ -10,6 +10,18 @@
           <ion-title>TBD</ion-title>
         </ion-col>
 
+        <ion-col v-if="user.authMessage">
+          <ion-card
+            class="note-card"
+            style="margin: 0px !important;"
+            color="light"
+          >
+            <ion-card-content class="ion-text-center" style="font-weight: 500;">
+              {{ user.authMessage }}
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
         <ion-col size="12">
           <ion-input class="custom-input" fill="outline" v-model="state.email" type="email" placeholder="Email" required></ion-input>
         </ion-col>
@@ -68,7 +80,7 @@
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, IonCard, IonCardContent, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { reactive, computed, inject } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
@@ -196,8 +208,8 @@ function submitForm () {
     if (response.success) {
       storeTokens(response, 'login')
       authSuccess('login')
-      user.$patch({...response.user, userUpdated: user.userUpdated + 1, success: true, auth: false})
-      toast.$patch({message: 'Login Successful', color: 'success', open: true})
+      user.$patch({...response.user, userUpdated: user.userUpdated + 1, success: true, auth: false, authMessage: ''})
+      toast.$patch({message: `Success! Welcome, ${response.user.username}!`, color: 'success', open: true})
     } else {
       const keys = Object.keys(response.errors)
       state.errors = []
@@ -219,6 +231,7 @@ function submitForm () {
 
 function register() {
   emit('register')
+  user.authMessage = ''
 }
 
 </script>

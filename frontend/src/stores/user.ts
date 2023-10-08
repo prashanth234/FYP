@@ -14,7 +14,8 @@ export const useUserStore = defineStore('user', {
     lastName: '',
     gender: '',
     verified: false,
-    auth: false
+    auth: false,
+    authMessage: ''
   }),
   getters: {
     

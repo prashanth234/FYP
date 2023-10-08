@@ -4,7 +4,12 @@
 		Contests
 	</div>
 
-	<ion-modal class="comp-details-modal" :show-backdrop="true" :is-open="state.showCompDetails" @didDismiss="closeCompDetails">
+	<ion-modal
+		class="comp-details-modal"
+		:show-backdrop="true"
+		:is-open="state.showCompDetails"
+		@didDismiss="closeCompDetails"
+	>
 		<ion-row v-if="state.selectedComp" class="ion-padding">
 			<ion-col size="12" class="title ion-text-center">
 				{{ state.selectedComp.name }}
@@ -24,6 +29,16 @@
 			</ion-col>
 		</ion-row>
 	</ion-modal>
+
+	<ion-card
+		class="note-card"
+		color="light"
+		v-if="!categoryInfo.competitionSet.length"
+	>
+		<ion-card-content class="ion-text-center" style="font-weight: 500;">
+			Comming Soon!
+		</ion-card-content>
+	</ion-card>
 
 	<ion-row :class="{'ion-nowrap horizantal-row': !props.vertical}" class="ion-justify-content-start">
 		<ion-col
@@ -87,7 +102,7 @@
 
 <script lang="ts" setup>
 
-import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal } from '@ionic/vue';
+import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent } from '@ionic/vue';
 import { useCategoryInfoStore } from '@/stores/categoryInfo';
 import { CompetitionInfo } from '@/mixims/interfaces';
 import { reactive } from 'vue';

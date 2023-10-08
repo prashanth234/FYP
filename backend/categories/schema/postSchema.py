@@ -190,7 +190,8 @@ class Query(graphene.ObjectType):
         elif category:
             queryset = Post.objects.filter(category=category).order_by('-pk')
         else:
-            queryset = Post.objects.all().order_by('-pk')
+            raise GraphQLError("Interest or Contest on found.")
+            # queryset = Post.objects.all().order_by('-pk')
 
         # paginator = Paginator(queryset, per_page)
         # page_obj = paginator.page(page)

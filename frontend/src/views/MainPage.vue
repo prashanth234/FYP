@@ -136,7 +136,7 @@
 
         <ion-footer class="ion-hide-lg-up">
           <ion-tab-bar slot="bottom">
-            <ion-tab-button tab="" href="/home">
+            <ion-tab-button tab="home" :selected="router.name == 'home'" href="/home">
               <ion-icon :icon="homefull" class="tab-bar-icon"/>
               <ion-label>Home</ion-label>
             </ion-tab-button>
@@ -269,7 +269,7 @@ function navigate(path: string) {
 }
 
 function closeAuth() {
-  user.auth = false
+  user.$patch({auth: false, authMessage: ''})
 }
 
 function openAuth() {

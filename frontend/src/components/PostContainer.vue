@@ -101,8 +101,8 @@ const userAvatar = computed(() => {
 
 function likePost () {
   if (!user.success) {
+    user.authMessage = 'Your like awaits! Sign in to show appreciation for posts.'
     user.auth = true
-    toast.$patch({message: 'Your like awaits! Sign in to show appreciation for posts.', color: 'primary', open: true})
     return
   }
 

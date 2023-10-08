@@ -83,7 +83,7 @@
               >
 
                 <ion-card
-                  class="competition-note"
+                  class="note-card"
                   color="light"
                   v-if="categoryInfo.selectedComptn?.expired"
                 >
@@ -93,7 +93,7 @@
                 </ion-card>
 
                 <ion-card
-                  class="competition-note"
+                  class="note-card"
                   color="light"
                   v-else-if="state.tabSelected == 'trending'"
                 >
@@ -254,12 +254,13 @@ function tabChanged(value: string) {
 }
 
 function fetchMore(ev: InfiniteScrollCustomEvent) {
-  if (user.success) {
+  if (user.success || posts.value?.allPosts.total <= 5) {
     getMore(ev)
   } else {
     // To see more post, ask user to login
-    toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
+    // toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
     user.auth = true
+    user.authMessage = 'Take your journey further! Log in to reveal more posts.'
     ev.target.complete()
     content.value && content.value.$el.scrollByPoint(0, -50, 500);
     // Commented this code because because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.
@@ -327,12 +328,5 @@ ion-grid {
     font-weight: 600;
     display: inline;
   }
-}
-.competition-note {
-  /* background-color: #e8f4f8; */
-  box-shadow: none;
-  color: var(--ion-color-dark);
-  margin-left: 10px !important;
-  margin-right: 10px !important;
 }
 </style>

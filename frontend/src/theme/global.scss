@@ -82,7 +82,8 @@ ion-button {
   margin: 0px;
   font-size: 23px;
   font-weight: 500;
-  margin-left: 10px;
+  margin-bottom: 10px;
+  margin-left: 5px;
 }
 
 .border-radius-std {
@@ -139,4 +140,11 @@ ion-modal {
 
 ion-card {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.note-card {
+  box-shadow: none;
+  color: var(--ion-color-dark);
+  margin-left: 10px !important;
+  margin-right: 10px !important;
 }
