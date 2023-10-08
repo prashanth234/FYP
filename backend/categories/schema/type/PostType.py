@@ -40,6 +40,6 @@ class PostType(DjangoObjectType):
     
     class Meta:
         model = Post
-        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked", "likes")
+        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked", "likes", "created_at")
         # filter_fields = ["category", "competition"]
         # interfaces = (graphene.relay.Node, )

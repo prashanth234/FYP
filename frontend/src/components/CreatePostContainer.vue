@@ -314,6 +314,7 @@ function createNewPost() {
             likes,
             userLiked,
             description,
+            createdAt,
             postfileSet {
               file
             },

@@ -19,13 +19,14 @@ export function getPosts(
 
   // Also update create post query
   const POST_QUERY = gql`
-    query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: Int) {
+    query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
       ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
         posts {
           id,
           likes,
           userLiked,
           description,
+          createdAt,
           postfileSet {
             file
           },
@@ -69,7 +70,7 @@ export function getPosts(
       return 
     }
 
-    const cursor = posts.value[type].posts[postsFetched-1].id
+    const cursor = posts.value[type].posts[postsFetched-1].createdAt
     const page = Math.floor(postsFetched/variables.perPage) + 1
   
     fetchMore({
