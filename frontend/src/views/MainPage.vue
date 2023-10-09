@@ -4,9 +4,11 @@
 
     <ion-split-pane content-id="main">
 
+      <!-- Side Menu-->
       <ion-menu content-id="main" menu-id="menu">
         <ion-content class="ion-padding">
 
+          <!-- Avatar card-->
           <ion-card style="border-radius: 30px;" color="light">
             <ion-card-content style="height: 250px;">
               <ion-row
@@ -41,82 +43,24 @@
             </ion-card-content>
           </ion-card>
 
+          <!-- Navigation list in menu -->
           <ion-list style="margin-top: 30px">
             <ion-item
-              :class="{'ion-item-highlight': router.name == 'home'}"
+              v-for="(item, index) in state.navigations"
+              :key="index"
+              :class="{'ion-item-highlight': router.name == item.rname}"
               lines="none"
               button
               :detail="false"
-              @click="navigate('/')"
+              @click="item.action"
+              v-show="!item.auth || isUserLogged"
             >
               <ion-icon
                 class="ion-icon-custom cpointer"
-                :icon="homeOutline"
+                :icon="item.dicon"
               ></ion-icon>
               <ion-label class="list-label">
-                Home
-              </ion-label>
-            </ion-item>
-            <ion-item
-              :class="{'ion-item-highlight': router.name == 'rewards'}"
-              lines="none"
-              button
-              :detail="false"
-              @click="navigate('/rewards')"
-              v-if="isUserLogged"
-            >
-              <ion-icon
-                class="ion-icon-custom cpointer"
-                :icon="sparklesOutline"
-              ></ion-icon>
-              <ion-label class="list-label">
-                Rewards
-              </ion-label>
-            </ion-item>
-            <ion-item
-              :class="{'ion-item-highlight': router.name == 'profile'}"
-              lines="none"
-              button
-              :detail="false"
-              @click="navigate('/profile')"
-              v-if="isUserLogged"
-            >
-              <ion-icon
-                class="ion-icon-custom cpointer"
-                :icon="personOutline"
-              ></ion-icon>
-              <ion-label class="list-label">
-                Profile
-              </ion-label>
-            </ion-item>
-            <ion-item
-              :class="{'ion-item-highlight': router.name == 'support'}"
-              lines="none"
-              button
-              :detail="false"
-              @click="navigate('/support')"
-            >
-              <ion-icon
-                class="ion-icon-custom cpointer"
-                :icon="helpCircleOutline"
-              ></ion-icon>
-              <ion-label class="list-label">
-                Support
-              </ion-label>
-            </ion-item>
-            <ion-item
-              lines="none"
-              :detail="false"
-              button
-              @click="logout()"
-              v-if="isUserLogged"
-            >
-              <ion-icon
-                class="ion-icon-custom cpointer"
-                :icon="logOutOutline"
-              ></ion-icon>
-              <ion-label class="list-label">
-                logout
+                {{ item.name }}
               </ion-label>
             </ion-item>
           </ion-list>
@@ -124,6 +68,7 @@
         </ion-content>
       </ion-menu>
 
+      <!-- Content Page -->
       <div class="ion-page" id="main">
 
         <ion-header>
@@ -151,30 +96,24 @@
 
         <ion-footer class="ion-hide-lg-up">
           <ion-tab-bar slot="bottom">
-            <ion-tab-button tab="home" :selected="router.name == 'home'" href="/home">
-              <ion-icon :icon="homefull" class="tab-bar-icon"/>
-              <ion-label>Home</ion-label>
-            </ion-tab-button>
 
-            <!-- <ion-tab-button tab="create" v-if="isUserLogged" @click="postDialog.open">
-              <ion-icon :icon="addCircle" class="tab-bar-icon"/>
-              <ion-label>Create Post</ion-label>
-            </ion-tab-button> -->
-
-            <ion-tab-button tab="rewards" href="/rewards" v-if="isUserLogged">
-              <ion-icon :icon="sparkles" class="tab-bar-icon" />
-              <ion-label>Rewards</ion-label>
-            </ion-tab-button>
-
-            <ion-tab-button tab="profile" href="/profile" v-if="isUserLogged">
-              <ion-icon :icon="person" class="tab-bar-icon" />
-              <ion-label>Profile</ion-label>
+            <ion-tab-button
+              v-for="(item, index) in state.navigations"
+              :key="index"
+              :tab="item.rname"
+              :selected="router.name == item.rname"
+              :href="item.rpath"
+              v-show="item.micon && (!item.auth || isUserLogged)"
+            >
+              <ion-icon :icon="item.micon" class="tab-bar-icon"/>
+              <ion-label>{{ item.name }}</ion-label>
             </ion-tab-button>
 
             <ion-tab-button tab="login" v-if="!isUserLogged">
               <ion-icon :icon="logIn" class="tab-bar-icon" @click="openAuth()" />
               <ion-label>Login</ion-label>
             </ion-tab-button>
+
           </ion-tab-bar>
         </ion-footer>
 
@@ -182,6 +121,7 @@
 
     </ion-split-pane>
 
+    <!-- Login Model -->
     <ion-modal
       class="login-modal"
       :show-backdrop="true"
@@ -195,6 +135,7 @@
       <login-container style="margin-top: 20px;" />
     </ion-modal>
 
+    <!-- Create Post Model-->
     <ion-modal
       class="create-post-modal"
       :is-open="postDialog.state.isOpen"
@@ -216,9 +157,9 @@
 </template>
 
 <script setup lang="ts">
-import { menuController, IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn, sparklesOutline, sparkles, addOutline, helpCircleOutline } from 'ionicons/icons'
-import { useMutation, useQuery } from '@vue/apollo-composable'
+import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, helpCircleOutline, helpCircle } from 'ionicons/icons'
+import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
@@ -246,7 +187,52 @@ const userAvatar = computed(() => {
 
 const state = reactive({
   loading: true,
-  disableAuthClose: false
+  disableAuthClose: false,
+  navigations: [
+    {
+      name: 'Home',
+      rname: 'home',
+      rpath: '/',
+      auth: false,
+      dicon: homeOutline,
+      micon: homefull,
+      action: navigate.bind(null, '/')
+    },
+    {
+      name: 'Rewards',
+      rname: 'rewards',
+      rpath: '/rewards',
+      auth: true,
+      dicon: sparklesOutline,
+      micon: sparkles,
+      action: navigate.bind(null, '/rewards')
+    },
+    {
+      name: 'Profile',
+      rname: 'profile',
+      rpath: '/profile',
+      auth: true,
+      dicon: personOutline,
+      micon: person,
+      action: navigate.bind(null, '/profile')
+    },
+    {
+      name: 'Support',
+      rname: 'support',
+      rpath: '/support',
+      auth: false,
+      dicon: helpCircleOutline,
+      micon: helpCircle,
+      action: navigate.bind(null, '/support')
+    },
+    {
+      name: 'Logout',
+      auth: true,
+      rpath: '',
+      dicon: logOutOutline,
+      action: logout.bind(false)
+    }
+  ]
 })
 
 const isUserLogged = computed(() => {
