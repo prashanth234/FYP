@@ -7,6 +7,7 @@ import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 import MyProfilePage from '@/views/MyProfilePage.vue'
 import ActivatePage from '@/views/ActivatePage.vue'
 import RewardsPage from '@/views/RewardsPage.vue'
+import SupportPage from '@/views/SupportPage.vue'
 import PasswordResetPage from '@/views/PasswordResetPage.vue'
 
 import { useUserStore } from '@/stores/user'
@@ -77,6 +78,11 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           auth: true
         }
+      },
+      {
+        path: 'support',
+        component: SupportPage,
+        name: 'support'
       }
     ]
   },

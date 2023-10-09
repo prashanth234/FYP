@@ -1,5 +1,6 @@
 import graphene
 from core.schema import userSchema
+from core.schema import supportSchema
 
 class CoreQuery(
     userSchema.AuthQuery,
@@ -9,6 +10,7 @@ class CoreQuery(
 
 class CoreMutation(
     userSchema.AuthMutation,
+    supportSchema.Mutation,
     graphene.ObjectType
 ):
     pass

@@ -1,108 +1,97 @@
 <template>
 	<ion-page>
-		<ion-content class="ion-padding" color="light">
-			
+		<ion-content color="light">
 
-			<ion-row class="ion-justify-content-center">
+			<ion-grid style="max-width: 700px;">
 
-				<ion-col size="8" size-md="8" size-sm="10" size-xs="12">
+				<ion-row class="ion-padding ion-justify-content-center primary-contrast">
 
-					<ion-grid>
-
-						<ion-row class="ion-padding ion-justify-content-center row-main">
-
-							<ion-col size="12">
-								<ion-row class="ion-no-padding ion-justify-content-center">
-									<ion-col size="auto">
-										<ion-img
-											style="width: 30px; height: 30px;"
-											src="/static/core/coins.png"
-										></ion-img>
-									</ion-col>
-									<ion-col size="auto" class="ion-align-self-center" style="font-size: 20px; font-weight: 600;">
-										{{ user.points}} Coins
-									</ion-col>
-								</ion-row>
+					<ion-col size="12">
+						<ion-row class="ion-no-padding ion-justify-content-center">
+							<ion-col size="auto">
+								<ion-img
+									style="width: 30px; height: 30px;"
+									src="/static/core/coins.png"
+								></ion-img>
 							</ion-col>
-
-							<ion-col size="12" class="ion-text-center" style="font-weight: 500;">
-								Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path! 
+							<ion-col size="auto" class="ion-align-self-center" style="font-size: 20px; font-weight: 600;">
+								{{ user.points}} Coins
 							</ion-col>
-
-							<ion-col size="6">
-								<ion-input
-									class="custom-input"
-									fill="outline"
-									v-model="state.points"
-									type="number"
-									placeholder="Enter Coins"
-								>
-								</ion-input>
-							</ion-col>
-						
-							<ion-col size="9" class="ion-text-center">
-								<ion-button @click="createReedem" size="small">Redeem</ion-button>
-							</ion-col>
-
-							<ion-col size="12">
-								<ion-accordion-group>
-									<ion-accordion value="first">
-										<ion-item slot="header" color="light">
-											<ion-label>View Coin Activity</ion-label>
-										</ion-item>
-										<div style="padding: 5px;" slot="content">
-											<table style="width:100%">
-												<tr>
-													<th>Activity</th>
-													<th>Status</th>
-													<th>Points</th>
-													<th></th>
-												</tr>
-												<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
-													<td>
-														<div>
-															<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
-															<span v-if="transaction.type == 'REDEEM'">Redeem</span>
-														</div>
-														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
-													</td>
-													<td>
-														<span v-if="transaction.status == 'Q'">Pending</span>
-														<span v-else-if="transaction.status == 'P'">Processing</span>
-														<span v-else-if="transaction.status == 'S'">Success</span>
-														<span v-else-if="transaction.status == 'F'">Failed</span>
-													</td>
-													<td>
-														{{ transaction.points }}
-													</td>
-													<td class="ion-text-center">
-														<ion-icon 
-															v-if="transaction.status == 'Q'"
-															style="font-size: 20px;"
-															@click="DeleteReedem(transaction.id)"
-															class="cpointer"
-															:icon="closeCircleOutline"
-														/>
-													</td>
-												</tr>
-												<tr v-if="!loading && !transactions?.transactions.length" >
-													<td class="ion-text-center" colspan="4">No Activites</td>
-												</tr>
-											</table>
-										</div>
-									</ion-accordion>
-								</ion-accordion-group>
-							</ion-col>
-
 						</ion-row>
+					</ion-col>
 
-					</ion-grid>
+					<ion-col size="12" class="ion-text-center" style="font-weight: 500;">
+						Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path! 
+					</ion-col>
 
-				</ion-col>
-
+					<ion-col size="6">
+						<ion-input
+							class="custom-input"
+							fill="outline"
+							v-model="state.points"
+							type="number"
+							placeholder="Enter Coins"
+						>
+						</ion-input>
+					</ion-col>
 				
+					<ion-col size="9" class="ion-text-center">
+						<ion-button @click="createReedem" size="small">Redeem</ion-button>
+					</ion-col>
 
-			</ion-row>
+					<ion-col size="12">
+						<ion-accordion-group>
+							<ion-accordion value="first">
+								<ion-item slot="header" color="light">
+									<ion-label>View Coin Activity</ion-label>
+								</ion-item>
+								<div style="padding: 5px;" slot="content">
+									<table style="width:100%">
+										<tr>
+											<th>Activity</th>
+											<th>Status</th>
+											<th>Points</th>
+											<th></th>
+										</tr>
+										<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
+											<td>
+												<div>
+													<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
+													<span v-if="transaction.type == 'REDEEM'">Redeem</span>
+												</div>
+												<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
+											</td>
+											<td>
+												<span v-if="transaction.status == 'Q'">Pending</span>
+												<span v-else-if="transaction.status == 'P'">Processing</span>
+												<span v-else-if="transaction.status == 'S'">Success</span>
+												<span v-else-if="transaction.status == 'F'">Failed</span>
+											</td>
+											<td>
+												{{ transaction.points }}
+											</td>
+											<td class="ion-text-center">
+												<ion-icon 
+													v-if="transaction.status == 'Q'"
+													style="font-size: 20px;"
+													@click="DeleteReedem(transaction.id)"
+													class="cpointer"
+													:icon="closeCircleOutline"
+												/>
+											</td>
+										</tr>
+										<tr v-if="!loading && !transactions?.transactions.length" >
+											<td class="ion-text-center" colspan="4">No Activites</td>
+										</tr>
+									</table>
+								</div>
+							</ion-accordion>
+						</ion-accordion-group>
+					</ion-col>
+
+				</ion-row>
+
+			</ion-grid>
 
 		</ion-content>
 	</ion-page>
@@ -292,9 +281,5 @@ th {
 }
 ion-grid {
 	--ion-grid-column-padding: 10px;
-}
-.row-main {
-	/* border: 1px solid #dddddd; */
-	background-color: var(--ion-color-primary-contrast);
 }
 </style>

@@ -3,10 +3,6 @@ from graphql import GraphQLError
 
 # Models
 from categories.models.Category import Category
-from categories.models.Competition import Competition
-
-# Schema
-from categories.schema.competitionSchema import CompetitionType
 
 # Type
 from categories.schema.type.CategoryType import CategoryType

@@ -90,6 +90,21 @@
               </ion-label>
             </ion-item>
             <ion-item
+              :class="{'ion-item-highlight': router.name == 'support'}"
+              lines="none"
+              button
+              :detail="false"
+              @click="navigate('/support')"
+            >
+              <ion-icon
+                class="ion-icon-custom cpointer"
+                :icon="helpCircleOutline"
+              ></ion-icon>
+              <ion-label class="list-label">
+                Support
+              </ion-label>
+            </ion-item>
+            <ion-item
               lines="none"
               :detail="false"
               button
@@ -202,7 +217,7 @@
 
 <script setup lang="ts">
 import { menuController, IonTabButton, IonTabBar, IonFooter, IonImg, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn, sparklesOutline, sparkles, addOutline } from 'ionicons/icons'
+import { logOutOutline, closeOutline, homeOutline, personOutline, addCircle, home as homefull, person, logIn, sparklesOutline, sparkles, addOutline, helpCircleOutline } from 'ionicons/icons'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/mixims/auth'
