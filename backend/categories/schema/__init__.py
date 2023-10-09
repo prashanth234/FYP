@@ -1,6 +1,6 @@
 import graphene
 
-from categories.schema import categorySchema, competitionSchema, postSchema, likeSchema, winnerSchema, transactionSchema
+from categories.schema import categorySchema, competitionSchema, postSchema, likeSchema, winnerSchema
 
 class CategoryQuery(
     categorySchema.Query,
@@ -8,7 +8,6 @@ class CategoryQuery(
     postSchema.Query,
     likeSchema.Query,
     winnerSchema.Query,
-    transactionSchema.Query,
     graphene.ObjectType,
 ):
     pass
@@ -18,7 +17,6 @@ class CategoryMutation(
     # competitionSchema.Mutation,
     postSchema.Mutation,
     likeSchema.Mutation,
-    transactionSchema.Mutation,
     graphene.ObjectType
 ):
     pass

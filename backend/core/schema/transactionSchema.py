@@ -3,10 +3,10 @@ from graphql import GraphQLError
 from django.db import transaction
 
 # Models
-from categories.models.Transaction import Transaction
+from core.models.Transaction import Transaction
 
 # Type
-from categories.schema.type.TransactionsType import TransactionsType
+from core.schema.type.TransactionsType import TransactionsType
 
 # Authentications
 from graphql_jwt.decorators import login_required

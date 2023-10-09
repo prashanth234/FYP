@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 # Models
-from categories.models.Transaction import Transaction
+from core.models.Transaction import Transaction
 
 
 class TransactionsType(DjangoObjectType):

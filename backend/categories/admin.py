@@ -3,7 +3,6 @@ from django.contrib import admin
 # Register your models here.
 from categories.models.Category import Category
 from categories.models.Competition import Competition
-from categories.models.Transaction import Transaction
 from categories.models.Winner import Winner
 from categories.models.Reward import Reward
 from categories.models.Post import Post
@@ -15,10 +14,6 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Competition)
 class CompetitionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'category', 'last_date')
-
-@admin.register(Transaction)
-class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('status', 'user', 'created_at', 'points', 'type')
 
 @admin.register(Winner)
 class WinnerAdmin(admin.ModelAdmin):
