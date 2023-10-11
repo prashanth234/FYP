@@ -51,7 +51,6 @@ function openCategory (category: categoryObject) {
 </script>
 
 <style scoped>
-
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

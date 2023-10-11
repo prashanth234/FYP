@@ -21,72 +21,149 @@
 					</ion-col>
 
 					<ion-col size="12" class="ion-text-center" style="font-weight: 500;">
-						Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path! 
-					</ion-col>
-
-					<ion-col size="6">
-						<ion-input
-							class="custom-input"
-							fill="outline"
-							v-model="state.points"
-							type="number"
-							placeholder="Enter Coins"
-						>
-						</ion-input>
-					</ion-col>
-				
-					<ion-col size="9" class="ion-text-center">
-						<ion-button @click="createReedem" size="small">Redeem</ion-button>
+						<!-- Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path!  -->
+						Your coins, your rewards! Select a gift card to treat yourself.
 					</ion-col>
 
 					<ion-col size="12">
-						<ion-accordion-group>
-							<ion-accordion value="first">
-								<ion-item slot="header" color="light">
-									<ion-label>View Coin Activity</ion-label>
-								</ion-item>
-								<div style="padding: 5px;" slot="content">
-									<table style="width:100%">
-										<tr>
-											<th>Activity</th>
-											<th>Status</th>
-											<th>Points</th>
-											<th></th>
-										</tr>
-										<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
-											<td>
-												<div>
-													<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
-													<span v-if="transaction.type == 'REDEEM'">Redeem</span>
-												</div>
-												<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
-											</td>
-											<td>
-												<span v-if="transaction.status == 'Q'">Pending</span>
-												<span v-else-if="transaction.status == 'P'">Processing</span>
-												<span v-else-if="transaction.status == 'S'">Success</span>
-												<span v-else-if="transaction.status == 'F'">Failed</span>
-											</td>
-											<td>
-												{{ transaction.points }}
-											</td>
-											<td class="ion-text-center">
-												<ion-icon 
-													v-if="transaction.status == 'Q'"
-													style="font-size: 20px;"
-													@click="DeleteReedem(transaction.id)"
-													class="cpointer"
-													:icon="closeCircleOutline"
+
+						<Transition name="slide-fade" mode="out-in">
+
+							<div v-if="state.selReward > -1">
+								<ion-row>
+									<ion-col size="auto" style="margin-right: 10px;" class="">
+										<ion-img class="reward-image" :src="`/media/${rewards.rewards[state.selReward].image}`">
+										</ion-img>
+										<div class="reward-title">
+											{{rewards.rewards[state.selReward].name}}
+										</div>
+									</ion-col>
+									<ion-col>
+										<ion-select
+											fill="outline"
+											class="custom-input"
+											v-model="state.points"
+											placeholder="Select"
+											label="Gift Card Amount"
+											interface="popover"
+										>
+											<ion-select-option
+												v-for="denom in state.denominations"
+												:key="denom.points"
+												:value="denom.points"
+											>
+												{{ denom.text }}
+											</ion-select-option>
+										</ion-select>
+
+										<div style="margin-top: 20px">
+											<ion-button
+												size="small"
+												class="float-right"
+												@click="createReedem"
+												:disabled="!state.points || state.loading"
+											>
+												<ion-spinner 
+													class="button-loading-small"
+													v-if="state.loading"
+													name="crescent"
 												/>
-											</td>
-										</tr>
-										<tr v-if="!loading && !transactions?.transactions.length" >
-											<td class="ion-text-center" colspan="4">No Activites</td>
-										</tr>
-									</table>
+												<span v-else>
+													Redeem
+												</span>
+											</ion-button>
+											<ion-button
+												size="small"
+												color="light"
+												class="float-right"
+												style="margin-right: 10px;"
+												@click="cancelReward"
+												:disabled="state.loading"
+											>
+												Cancel
+											</ion-button>
+										</div>
+										
+									</ion-col>
+								</ion-row>
+							</div>
+
+							<div v-else>
+
+								<!-- Gift cards grid -->
+								<div class="grid-container">
+
+									<div
+										class="grid-item cpointer"
+										v-for="(reward, index) in rewards?.rewards"
+										@click="selectReward(index)"
+										:key="index"
+									>
+
+										<ion-img :src="`/media/${reward.image}`">
+										</ion-img>
+
+										<div class="reward-title">
+											{{reward.name}}
+										</div>
+
+									</div>
+
 								</div>
-							</ion-accordion>
-						</ion-accordion-group>
+
+								<!-- Coin activity -->
+								<ion-accordion-group>
+									<ion-accordion value="first">
+										<ion-item slot="header" color="light">
+											<ion-label>View Coin Activity</ion-label>
+										</ion-item>
+										<div style="padding: 5px;" slot="content">
+											<table style="width:100%">
+												<tr>
+													<th>Activity</th>
+													<th>Status</th>
+													<th>Points</th>
+													<th></th>
+												</tr>
+												<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
+													<td>
+														<div>
+															<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
+															<span v-if="transaction.type == 'REDEEM'">Redeem</span>
+														</div>
+														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
+													</td>
+													<td>
+														<span v-if="transaction.status == 'Q'">Pending</span>
+														<span v-else-if="transaction.status == 'P'">Processing</span>
+														<span v-else-if="transaction.status == 'S'">Success</span>
+														<span v-else-if="transaction.status == 'F'">Failed</span>
+													</td>
+													<td>
+														{{ transaction.points }}
+													</td>
+													<td class="ion-text-center">
+														<ion-icon 
+															v-if="transaction.status == 'Q'"
+															style="font-size: 20px;"
+															@click="deleteReedem(transaction.id)"
+															class="cpointer"
+															:icon="closeCircleOutline"
+														/>
+													</td>
+												</tr>
+												<tr v-if="!loading && !transactions?.transactions.length" >
+													<td class="ion-text-center" colspan="4">No Activites</td>
+												</tr>
+											</table>
+										</div>
+									</ion-accordion>
+								</ion-accordion-group>
+
+							</div>
+
+						</Transition>
+
 					</ion-col>
 
 				</ion-row>
@@ -98,7 +175,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonLabel, IonGrid, IonCard, IonPage, IonContent, IonRow, IonCol, IonInput, IonButton, IonIcon, IonImg, IonAccordion, IonAccordionGroup, IonItem } from '@ionic/vue';
+import { IonLabel, IonGrid, IonPage, IonContent, IonRow, IonCol, IonSelect, IonButton, IonIcon, IonImg, IonAccordion, IonAccordionGroup, IonItem, IonSelectOption, IonSpinner } from '@ionic/vue';
 import { useUserStore } from '@/stores/user';
 import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'
@@ -107,13 +184,29 @@ import { reactive } from 'vue';
 import { closeCircleOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
 
+interface Denomination {
+	points: number,
+	rupees: number,
+	text: string
+}
+
+interface State {
+	points: number,
+	selReward: number,
+	loading: boolean,
+	denominations: Denomination[]
+}
+
 scrollTop()
 
 const user = useUserStore()
 const toast = useToastStore()
 
-const state = reactive({
-	points: ''
+const state: State = reactive({
+	points: 0,
+	selReward: -1,
+	loading: false,
+	denominations: []
 })
 
 function formatDateToCustomFormat(isoDate: string): string {
@@ -147,6 +240,8 @@ onResult(({data, loading}) => {
 })
 
 function createReedem () {
+	state.loading = true
+
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($points: Int!) { 
@@ -166,7 +261,7 @@ function createReedem () {
 
   `, () => ({
 			variables: {
-				points: parseInt(state.points)
+				points: state.points
 			},
 			update: (cache, { data: { createTransaction } }) => {
 				let data:any = cache.readQuery({ query: QUERY })
@@ -187,11 +282,13 @@ function createReedem () {
   onDone(({data}) => {
 		toast.$patch({message: 'Request successfully created! Please allow up to two days for processing. Thank you for your patience.', color: 'success', open: true})
 		user.$patch({points: data.createTransaction.userpoints})
-		state.points = ''
+		state.points = 0
+		cancelReward()
   })
 
   onError((error: any) => {
 		toast.$patch({message: error.message, color: 'danger', open: true})
+		state.loading = false
   })
 }
 
@@ -223,7 +320,7 @@ function UpdateReedem () {
   })
 }
 
-function DeleteReedem (id: string) {
+function deleteReedem (id: string) {
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($id: ID!) { 
@@ -262,10 +359,70 @@ function DeleteReedem (id: string) {
   })
 }
 
+function cancelReward() {
+	state.points = 0
+	state.selReward = -1
+	state.loading = false
+}
+
+function selectReward(index: number) {
+	const {points, realvalue} = rewards.value.rewards[index]
+	state.denominations = points.split(',').map((point: string) => {
+		const points = parseInt(point)
+		const rupees = points / (realvalue || 10)
+		return {text: `₹${rupees} (${points} points)`, points, rupees}
+	})
+	state.selReward = index
+}
+
+const { result: rewards, onResult: rewardsResult, onError } = useQuery(gql`
+                              query rewards {
+                                rewards {
+																	name,
+																	type,
+																	points,
+																	image,
+																	realvalue
+																}
+                              }
+                            `)
+
+onError(() => {
+})
+
 
 </script>
 
 <style scoped>
+.grid-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	grid-gap: 20px;
+	/* Ensure all rows have the same height */
+	grid-auto-rows: auto;
+	padding: 5px;
+	margin-bottom: 15px;
+}
+.grid-item {
+  border: 1px solid var(--ion-color-light-shade);
+	color: var(--ion-text-color);
+	border-radius: 10px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+.grid-item:hover {
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+}
+.reward-title {
+	padding-top: 5px;
+	text-align: center;
+}
+.reward-image {
+	width: 100px;
+	height: 100px;
+}
 table {
   border-collapse: collapse;
   width: 100%;
@@ -281,5 +438,18 @@ th {
 }
 ion-grid {
 	--ion-grid-column-padding: 10px;
+}
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(50px);
+  opacity: 0;
 }
 </style>

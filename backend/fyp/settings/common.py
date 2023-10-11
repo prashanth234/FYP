@@ -215,3 +215,7 @@ LOGGING = {
         }
     }
 }
+
+# APP CONFIG
+
+USER_SIGNUP_POINTS = 250

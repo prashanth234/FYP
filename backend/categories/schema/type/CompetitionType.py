@@ -6,7 +6,7 @@ from django.utils import timezone
 from categories.models.Competition import Competition
 
 # Type
-from categories.schema.type.RewardsType import RewardsType
+from core.schema.type.RewardsType import RewardsType
 
 
 class CompetitionType(DjangoObjectType):

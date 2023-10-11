@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from categories.models.Competition import *
 from categories.models.Post import *
-from categories.models.Reward import *
+from core.models.Reward import *
   
 class Winner(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)

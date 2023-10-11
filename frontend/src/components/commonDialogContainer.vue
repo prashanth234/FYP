@@ -21,7 +21,8 @@
 					size="small"
 					:color="button.color"
 					@click="onClickButton(button)"
-					style="float: right; margin-right: 15px;"
+					class="float-right"
+					style="margin-right: 15px;"
 				>
 					{{button.title}}
 				</ion-button>

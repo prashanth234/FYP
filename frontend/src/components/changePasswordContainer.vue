@@ -28,7 +28,7 @@
     <ion-col size="12">
       <ion-button
         color="primary"
-        style="float: right"
+        class="float-right"
         size="small"
         @click="changePassword"
         :disabled="state.loading"
@@ -45,7 +45,8 @@
       <ion-button
         color="light"
         @click="clear"
-        style="float: right; margin-right: 15px;"
+        class="float-right"
+        style="margin-right: 15px;"
         :disabled="state.loading"
         size="small"
       >

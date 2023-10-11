@@ -4,7 +4,6 @@ from django.contrib import admin
 from categories.models.Category import Category
 from categories.models.Competition import Competition
 from categories.models.Winner import Winner
-from categories.models.Reward import Reward
 from categories.models.Post import Post
 
 @admin.register(Category)
@@ -18,10 +17,6 @@ class CompetitionAdmin(admin.ModelAdmin):
 @admin.register(Winner)
 class WinnerAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'competition', 'post', 'won_by_likes', 'reward')
-
-@admin.register(Reward)
-class RewardAdmin(admin.ModelAdmin):
-    list_display = ('position', 'points', 'type')
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):

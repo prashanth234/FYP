@@ -97,7 +97,7 @@
                       size="small"
                       @click="state.uploadAction"
                       :disabled="disableUpload"
-                      style="float: right"
+                      class="float-right"
                     >
                       <ion-spinner 
                         class="button-loading-small"
@@ -113,7 +113,7 @@
                       @click="clearPostForm"
                       color="light"
                       class="ion-padding-end"
-                      style="float: right"
+                      class="float-right"
                     >
                       Clear
                     </ion-button> -->
@@ -213,7 +213,7 @@ const state = reactive({
 })
 
 const disableUpload = computed(() => {
-  return (showImageUpload.value && !state.preview) || !state.category || state.creatingPost
+  return (showImageUpload.value && !state.preview) || (props.type == 'create' && !state.category) || state.creatingPost
 })
 
 const showImageUpload = computed(() => {

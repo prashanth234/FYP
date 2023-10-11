@@ -51,7 +51,7 @@
           size="small"
           color="primary"
           @click="cropImage"
-          style="float: right"
+          class="float-right"
         >
           Done
         </ion-button>
@@ -59,7 +59,8 @@
           size="small"
           @click="closeCropper"
           color="light"
-          style="float: right; margin-right: 15px;"
+          class="float-right"
+          style="margin-right: 15px;"
         >
           Cancel
         </ion-button>

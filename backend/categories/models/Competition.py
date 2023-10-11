@@ -1,7 +1,7 @@
 import os
 from django.db import models
 from categories.models.Category import *
-from categories.models.Reward import *
+from core.models.Reward import *
   
 class Competition(models.Model):
     def custom_path(instance, filename):

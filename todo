@@ -29,6 +29,8 @@ DONE
 .) Add participation points
 .) Redemption details - how many points needed for redemption, real value of each point -  (discussion about prizemoney)
 .) Faq and info about points
+.) Add points on signup
+.) Add post participation points
 
 DONE
 
@@ -62,6 +64,8 @@ Done
 
 
 == 5th week
+
+.) On edit post api is calling again
 
 .) Work on UI/UX coloring - 2 - 3 days
 .) Enable https and brand name - 3 days
@@ -134,6 +138,15 @@ Logging for production
 Email backend and user verification
 Forgot password functionality.
 Work on UX customization for details page and competition tabs
+***
+File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 7, in <module>
+    class Migration(migrations.Migration):
+  File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 19, in Migration
+    ('image', models.ImageField(default='', upload_to=core.models.Reward.Reward.custom_upload_to)),
+AttributeError: type object 'Reward' has no attribute 'Reward'
+Solution:
+Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_upload_to
+***
 
 #### P1 #####
 

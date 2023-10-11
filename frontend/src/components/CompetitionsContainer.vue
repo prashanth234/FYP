@@ -75,9 +75,8 @@
 				<transition name="slide-fade">
 					<div v-if="categoryInfo.selectedComptn?.id == competition.id">
 						<ion-button
-							class="ion-no-margin"
+							class="ion-no-margin float-right"
 							size="small"
-							style="float: right;"
 							@click.stop="moreCompDetails(competition)"
 							v-if="!competition.expired"
 						>
@@ -85,9 +84,8 @@
 						</ion-button>
 						<ion-button
 							@click.stop="closeCompetition(competition)"
-							class="ion-no-margin cancel-button"
+							class="ion-no-margin cancel-button float-right"
 							size="small"
-							style="float: right;"
 							color="light"
 						>
 							Cancel

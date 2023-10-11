@@ -76,7 +76,7 @@
     <ion-col size="12">
       <ion-button
         color="primary"
-        style="float: right"
+        class="float-right"
         @click="updateProfile"
         :disabled="state.loading"
         size="small"
