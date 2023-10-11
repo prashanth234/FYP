@@ -1,12 +1,12 @@
 import graphene
 from core.schema import userSchema
 from core.schema import supportSchema
-from core.schema import transactionSchema
+from core.schema import coinActivitySchema
 from core.schema import rewardSchema
 
 class CoreQuery(
     userSchema.AuthQuery,
-    transactionSchema.Query,
+    coinActivitySchema.Query,
     rewardSchema.Query,
     graphene.ObjectType
 ):
@@ -15,7 +15,7 @@ class CoreQuery(
 class CoreMutation(
     userSchema.AuthMutation,
     supportSchema.Mutation,
-    transactionSchema.Mutation,
+    coinActivitySchema.Mutation,
     graphene.ObjectType
 ):
     pass

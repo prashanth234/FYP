@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
   
-class Transaction(models.Model):
+class CoinActivity(models.Model):
     STATUS_CHOICES = (
         ('Q', 'Pending'),
         ('P', 'Processing'),
@@ -27,9 +27,9 @@ class Transaction(models.Model):
     points = models.PositiveIntegerField()
 
     # Examples
-    # one transaction belongs to one winner
-    # many transactions belongs to one competition
-    # many transactions belongs to one category
+    # one coinactivity belongs to one winner
+    # many coinactivities belongs to one competition
+    # many coinactivities belongs to one category
     content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')

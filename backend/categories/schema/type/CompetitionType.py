@@ -20,7 +20,7 @@ class CompetitionType(DjangoObjectType):
     rewards = graphene.List(RewardsType)
 
     def resolve_rewards(self, info):
-        return self.rewards.all()
+        return self.rewards.all().order_by('position')
 
     class Meta:
         model = Competition

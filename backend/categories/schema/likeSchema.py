@@ -1,14 +1,16 @@
 import graphene
 from graphql import GraphQLError
+from django.db import transaction
 
 # Models
 from categories.models.Like import Like
 from categories.models.Post import Post
-# **Make this model losely coupled
-from core.models.User import User
 
 # Type
 from categories.schema.type.PostType import PostType
+
+# Authentications
+from graphql_jwt.decorators import login_required
 
 class AddLikeMutation(graphene.Mutation):
 
@@ -21,10 +23,9 @@ class AddLikeMutation(graphene.Mutation):
     post = graphene.Field(PostType)
 
     @classmethod
+    @login_required
+    @transaction.atomic
     def mutate(cls, root, info, id):
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User not authenticated")
-        
         try:
             post = Post.objects.get(pk=id)
             post.likes += 1
@@ -48,6 +49,8 @@ class UnLikeMutation(graphene.Mutation):
     post = graphene.Field(PostType)
     
     @classmethod
+    @login_required
+    @transaction.atomic
     def mutate(cls, root, info, id):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")

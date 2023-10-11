@@ -9,7 +9,6 @@ from categories.models.Category import Category
 # from categories.schema.categorySchema import CategoryType
 
 # Type
-from categories.schema.type.CategoryType import CategoryType
 from categories.schema.type.CompetitionType import CompetitionType
 
 

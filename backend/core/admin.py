@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.apps import apps
 from core.models.User import User
 from core.models.Support import Support
-from core.models.Transaction import Transaction
+from core.models.CoinActivity import CoinActivity
 from core.models.Reward import Reward
 
 # Register your models here.
@@ -12,7 +12,7 @@ admin.site.register(User)
 class SupportAdmin(admin.ModelAdmin):
     list_display = ('description', 'comments', 'status', 'contact', 'user')
 
-@admin.register(Transaction)
+@admin.register(CoinActivity)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('status', 'user', 'created_at', 'points', 'type')
 

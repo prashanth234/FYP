@@ -31,7 +31,7 @@
 
 							<div v-if="state.selReward > -1">
 								<ion-row>
-									<ion-col size="auto" style="margin-right: 10px;" class="">
+									<ion-col size-sm="auto" size-xs="12" style="margin-right: 10px;">
 										<ion-img class="reward-image" :src="`/media/${rewards.rewards[state.selReward].image}`">
 										</ion-img>
 										<div class="reward-title">
@@ -44,7 +44,7 @@
 											class="custom-input"
 											v-model="state.points"
 											placeholder="Select"
-											label="Gift Card Amount"
+											label="Amount"
 											interface="popover"
 										>
 											<ion-select-option
@@ -56,11 +56,18 @@
 											</ion-select-option>
 										</ion-select>
 
-										<div style="margin-top: 20px">
+										<div style="text-align: end; margin-top: 20px" class="action-buttons">
 											<ion-button
-												size="small"
-												class="float-right"
-												@click="createReedem"
+											 	class="auth-button ion-margin-end"
+												color="light"
+												@click="cancelReward"
+												:disabled="state.loading"
+											>
+												Cancel
+											</ion-button>
+											<ion-button
+											 	class="auth-button"
+												@click="createReedem(rewards.rewards[state.selReward].id)"
 												:disabled="!state.points || state.loading"
 											>
 												<ion-spinner 
@@ -71,16 +78,6 @@
 												<span v-else>
 													Redeem
 												</span>
-											</ion-button>
-											<ion-button
-												size="small"
-												color="light"
-												class="float-right"
-												style="margin-right: 10px;"
-												@click="cancelReward"
-												:disabled="state.loading"
-											>
-												Cancel
 											</ion-button>
 										</div>
 										
@@ -117,42 +114,42 @@
 										<ion-item slot="header" color="light">
 											<ion-label>View Coin Activity</ion-label>
 										</ion-item>
-										<div style="padding: 5px;" slot="content">
+										<div style="padding: 5px;overflow: auto;" slot="content">
 											<table style="width:100%">
 												<tr>
-													<th>Activity</th>
-													<th>Status</th>
-													<th>Points</th>
-													<th></th>
+													<th style="min-width: 150px;">Activity</th>
+													<th style="min-width: 150px;">Status</th>
+													<th style="min-width: 100px;">Points</th>
+													<th class="ion-text-center">Action</th>
 												</tr>
-												<tr v-for="(transaction, index) in transactions?.transactions" :key="transaction.id">
+												<tr v-for="(coinactivity, index) in coinactivities?.coinactivities" :key="coinactivity.id">
 													<td>
 														<div>
-															<span v-if="transaction.type == 'COMPWINNER'">Won Contest</span>
-															<span v-if="transaction.type == 'REDEEM'">Redeem</span>
+															<span v-if="coinactivity.type == 'COMPWINNER'">Won Contest</span>
+															<span v-if="coinactivity.type == 'REDEEM'">Redeem</span>
 														</div>
-														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(transaction.createdAt) }}</div>
+														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(coinactivity.createdAt) }}</div>
 													</td>
 													<td>
-														<span v-if="transaction.status == 'Q'">Pending</span>
-														<span v-else-if="transaction.status == 'P'">Processing</span>
-														<span v-else-if="transaction.status == 'S'">Success</span>
-														<span v-else-if="transaction.status == 'F'">Failed</span>
+														<span v-if="coinactivity.status == 'Q'">Pending</span>
+														<span v-else-if="coinactivity.status == 'P'">Processing</span>
+														<span v-else-if="coinactivity.status == 'S'">Success</span>
+														<span v-else-if="coinactivity.status == 'F'">Failed</span>
 													</td>
 													<td>
-														{{ transaction.points }}
+														{{ coinactivity.points }}
 													</td>
 													<td class="ion-text-center">
 														<ion-icon 
-															v-if="transaction.status == 'Q'"
+															v-if="coinactivity.status == 'Q'"
 															style="font-size: 20px;"
-															@click="deleteReedem(transaction.id)"
+															@click="deleteReedem(coinactivity.id)"
 															class="cpointer"
 															:icon="closeCircleOutline"
 														/>
 													</td>
 												</tr>
-												<tr v-if="!loading && !transactions?.transactions.length" >
+												<tr v-if="!loading && !coinactivities?.coinactivities.length" >
 													<td class="ion-text-center" colspan="4">No Activites</td>
 												</tr>
 											</table>
@@ -222,8 +219,8 @@ function formatDateToCustomFormat(isoDate: string): string {
 }
 
 const QUERY = gql`
-									query Transactions {
-										transactions {
+									query CoinActivities {
+										coinactivities {
 											id,
 											points,
 											type,
@@ -233,22 +230,24 @@ const QUERY = gql`
 									}
 								`
 
-const { result: transactions, onResult, loading } = useQuery(QUERY)
+const { result: coinactivities, onResult, loading } = useQuery(QUERY)
 
 onResult(({data, loading}) => {
 
 })
 
-function createReedem () {
+function createReedem (reward: string) {
 	state.loading = true
+	console.log
 
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
-    mutation ($points: Int!) { 
-      createTransaction (
+    mutation createCoinactivity ($points: Int!, $reward: ID!) { 
+      createCoinactivity (
         points: $points,
+				reward: $reward
       ) {
-        	ctransaction {
+					coinactivity {
 						points,
 						status,
 						createdAt,
@@ -261,15 +260,16 @@ function createReedem () {
 
   `, () => ({
 			variables: {
-				points: state.points
+				points: state.points,
+				reward
 			},
-			update: (cache, { data: { createTransaction } }) => {
+			update: (cache, { data: { createCoinactivity } }) => {
 				let data:any = cache.readQuery({ query: QUERY })
 				data = {
 					...data,
-					transactions: [
-						createTransaction.ctransaction,
-						...data.transactions,
+					coinactivities: [
+						createCoinactivity.coinactivity,
+						...data.coinactivities,
 					],
 				}
 				cache.writeQuery({ query: QUERY, data })
@@ -281,7 +281,7 @@ function createReedem () {
 
   onDone(({data}) => {
 		toast.$patch({message: 'Request successfully created! Please allow up to two days for processing. Thank you for your patience.', color: 'success', open: true})
-		user.$patch({points: data.createTransaction.userpoints})
+		user.$patch({points: data.createCoinactivity.userpoints})
 		state.points = 0
 		cancelReward()
   })
@@ -300,7 +300,7 @@ function UpdateReedem () {
         points: $points,
 				id: $id
       ) {
-					ctransaction {
+					updateCoinactivity {
 						points,
 						status
 					} 
@@ -308,7 +308,7 @@ function UpdateReedem () {
     }
 
   `, {
-		variables: {points: parseInt(state.points), id: 5}	
+		variables: {points: state.points, id: 5}	
 	})
 
   mutate()
@@ -324,7 +324,7 @@ function deleteReedem (id: string) {
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($id: ID!) { 
-      deleteTransaction (
+      deleteCoinactivity (
 				id: $id
       ) {
           success,
@@ -336,11 +336,11 @@ function deleteReedem (id: string) {
 			variables: {
 				id
 			},
-			update: (cache, { data: { deleteTransaction } }) => {
+			update: (cache, { data: { deleteCoinactivity } }) => {
 				let data:any = cache.readQuery({ query: QUERY })
 				data = {
 					...data,
-					transactions: data.transactions.filter((reedem: any) => reedem.id != id)
+					coinactivities: data.coinactivities.filter((reedem: any) => reedem.id != id)
 				}
 				cache.writeQuery({ query: QUERY, data })
 			},	
@@ -350,8 +350,8 @@ function deleteReedem (id: string) {
   mutate()
 
   onDone(({data}) => {
-		user.$patch({points: data.deleteTransaction.userpoints})
-		toast.$patch({message: 'Coins were added back', color: 'success', open: true})
+		user.$patch({points: data.deleteCoinactivity.userpoints})
+		toast.$patch({message: 'Reedem canceled! Coins were added back', color: 'success', open: true})
   })
 
   onError((error: any) => {
@@ -378,6 +378,7 @@ function selectReward(index: number) {
 const { result: rewards, onResult: rewardsResult, onError } = useQuery(gql`
                               query rewards {
                                 rewards {
+																	id,
 																	name,
 																	type,
 																	points,
@@ -451,5 +452,16 @@ ion-grid {
 .slide-fade-leave-to {
   transform: translateX(50px);
   opacity: 0;
+}
+@media only screen and (max-width: 576px) {
+	.reward-image {
+		margin: auto;
+	}
+	.action-buttons {
+		text-align: center !important;
+	}
+	.grid-item {
+		padding: 15px;
+	}
 }
 </style>

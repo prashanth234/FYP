@@ -230,6 +230,7 @@ function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'
   categoryInfo.selectedComptn = competition
   variables.competition.value = competition.id
+  !competition.expired && categoryInfo.getComptnRewards(competition.id)
 }
 
 function setCategoryDefault() {

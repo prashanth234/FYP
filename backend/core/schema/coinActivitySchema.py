@@ -3,29 +3,31 @@ from graphql import GraphQLError
 from django.db import transaction
 
 # Models
-from core.models.Transaction import Transaction
+from core.models.CoinActivity import CoinActivity
+from core.models.Reward import Reward
 
 # Type
-from core.schema.type.TransactionsType import TransactionsType
+from core.schema.type.CoinActivityType import CoinActivitiesType
 
 # Authentications
 from graphql_jwt.decorators import login_required
 
 
-class CreateTransactionMutation(graphene.Mutation):
+class CreateCoinActivityMutation(graphene.Mutation):
 
     class Arguments:
         # The input arguments for this mutation
         points = graphene.Int(required=True)
+        reward = graphene.ID(required=True)
 
     # The class attributes define the response of the mutation
-    ctransaction = graphene.Field(TransactionsType)
+    coinactivity = graphene.Field(CoinActivitiesType)
     userpoints = graphene.Int()
 
     @classmethod
     @login_required
     @transaction.atomic
-    def mutate(cls, root, info, points):
+    def mutate(cls, root, info, points, reward):
         user = info.context.user
 
         if points < 0:
@@ -34,31 +36,32 @@ class CreateTransactionMutation(graphene.Mutation):
         if points > user.points:
             raise GraphQLError('Points should be less or equal to points you have earned')
         
+        coinactivity = Reward.objects.get(pk=reward)
         user.points -= points
-        ctransaction = Transaction(user=info.context.user, points=points, type='REDEEM')
-        ctransaction.save()
+        coinactivity = CoinActivity(user=info.context.user, points=points, type='REDEEM', content_object=coinactivity)
+        coinactivity.save()
         user.save()
 
-        return CreateTransactionMutation(ctransaction=ctransaction, userpoints=user.points)
+        return CreateCoinActivityMutation(coinactivity=coinactivity, userpoints=user.points)
 
-class UpdateTransactionMutation(graphene.Mutation):
+class UpdateCoinActivityMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
         id = graphene.ID()
         points = graphene.Int(required=True)
 
     # The class attributes define the response of the mutation
-    ctransaction = graphene.Field(TransactionsType)
+    coinactivity = graphene.Field(CoinActivitiesType)
 
     @classmethod
     @login_required
     @transaction.atomic
     def mutate(cls, root, info, id, points):
         user = info.context.user
-        ctransaction = Transaction.objects.get(pk=id)
+        coinactivity = CoinActivity.objects.get(pk=id)
 
-        if not ctransaction:
-            raise GraphQLError("Transaction with this ID does not exist.")
+        if not coinactivity:
+            raise GraphQLError("CoinActivity with this ID does not exist.")
         
         if points < 0:
             raise GraphQLError("Points can't be negative")
@@ -66,21 +69,21 @@ class UpdateTransactionMutation(graphene.Mutation):
         if user.status == 'R':
             raise GraphQLError("Redeemed points can't be updated")
         
-        userPoints = user.points + ctransaction.points
+        userPoints = user.points + coinactivity.points
         
         if points > userPoints:
             raise GraphQLError('Points should be less or equal to points you have earned')
         
         userPoints -= points
         user.points = userPoints
-        ctransaction.points = points
-        ctransaction.save()
+        coinactivity.points = points
+        coinactivity.save()
         user.save()
         
         # Notice we return an instance of this mutation
-        return UpdateTransactionMutation(ctransaction=ctransaction)
+        return UpdateCoinActivityMutation(coinactivity=coinactivity)
 
-class DeleteTransactionMutation(graphene.Mutation):
+class DeleteCoinActivityMutation(graphene.Mutation):
     
     class Arguments:
         # The input arguments for this mutation
@@ -95,29 +98,29 @@ class DeleteTransactionMutation(graphene.Mutation):
     @transaction.atomic
     def mutate(cls, root, info, id):
         user = info.context.user
-        ctransaction = Transaction.objects.get(pk=id)
+        coinactivity = CoinActivity.objects.get(pk=id)
 
-        if not ctransaction:
-            raise GraphQLError("Transaction with this ID does not exist.")
+        if not coinactivity:
+            raise GraphQLError("CoinActivity with this ID does not exist.")
 
-        if ctransaction.status != 'Q':
-            raise GraphQLError("Transaction can't be canceled now")
+        if coinactivity.status != 'Q':
+            raise GraphQLError("Reedem can't be canceled now")
         
-        user.points += ctransaction.points
+        user.points += coinactivity.points
         
-        ctransaction.delete()
+        coinactivity.delete()
         user.save()
-        return DeleteTransactionMutation(success=True, userpoints=user.points)
+        return DeleteCoinActivityMutation(success=True, userpoints=user.points)
 
 class Mutation(graphene.ObjectType):
-    create_transaction = CreateTransactionMutation.Field()
-    # update_transaction = UpdateTransactionMutation.Field()
-    delete_transaction = DeleteTransactionMutation.Field()
+    create_coinactivity = CreateCoinActivityMutation.Field()
+    # update_coinactivity = UpdateCoinActivityMutation.Field()
+    delete_coinactivity = DeleteCoinActivityMutation.Field()
 
 class Query(graphene.ObjectType):
 
-    transactions = graphene.List(TransactionsType)
+    coinactivities = graphene.List(CoinActivitiesType)
 
     @login_required
-    def resolve_transactions(root, info):
-        return Transaction.objects.filter(user=info.context.user).order_by('-pk')
+    def resolve_coinactivities(root, info):
+        return CoinActivity.objects.filter(user=info.context.user).order_by('-pk')

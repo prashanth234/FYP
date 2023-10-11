@@ -10,17 +10,17 @@
 		:is-open="state.showCompDetails"
 		@didDismiss="closeCompDetails"
 	>
-		<ion-row v-if="state.selectedComp" class="ion-padding">
+		<ion-row v-if="categoryInfo.selectedComptn" class="ion-padding">
 			<ion-col size="12" class="title ion-text-center">
-				{{ state.selectedComp.name }}
+				{{ categoryInfo.selectedComptn.name }}
 			</ion-col>
 			<ion-col size="12" style="line-height: 2;">
-				🌟 The Quest: {{ state.selectedComp.description }} 🌿 <br>
-				🎉 Discover Your Calling: Share Your Passion in Our Rewarding Contest! 🎉 <br>
-				🥇 1st Place: <strong>1500</strong> Points <br>
-				🥈 2nd Place: <strong>1000</strong> Points <br>
-				🥉 3rd Place: <strong>500</strong> Points <br>
-				🌟 Unveil what drives you! Contest ends on <strong>{{ state.selectedComp.lastDate }}</strong> so showcase your interest. Connect with fellow enthusiasts, accumulate points, and enjoy the journey of this fulfilling contest. Your passion could propel you to the top spot! 🚀
+				The Quest: {{ categoryInfo.selectedComptn.description }} <br>
+				Discover Your Calling: Share Your Passion in Our Rewarding Contest!<br>
+				<span v-for="(reward, index) in categoryInfo.selectedComptnRewards" :key="index">
+					{{reward.position}}st Place: <strong>{{reward.points}}</strong> Points <br>
+				</span>
+				Unveil what drives you! Contest ends on <strong>{{ categoryInfo.selectedComptn.lastDate }}</strong> so showcase your interest. Connect with fellow enthusiasts, accumulate points, and enjoy the journey of this fulfilling contest. Your passion could propel you to the top spot!
 			</ion-col>
 			<ion-col class="ion-text-center" size="12">
 				<ion-button @click="closeCompDetails" color="light">
@@ -116,13 +116,11 @@ const emit = defineEmits<{
 
 interface State {
 	showCompDetails: boolean,
-	selectedComp: CompetitionInfo | null
 	ihovered: number | null
 }
 
 const state: State = reactive({
 	showCompDetails: false,
-	selectedComp: null,
 	ihovered: null
 })
 
@@ -139,12 +137,10 @@ function closeCompetition(competition: CompetitionInfo) {
 
 function moreCompDetails(competition: CompetitionInfo) {
 	state.showCompDetails = true
-	state.selectedComp = competition
 }
 
 function closeCompDetails() {
 	state.showCompDetails = false
-	state.selectedComp = null
 }
 
 </script>

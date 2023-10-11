@@ -2,11 +2,11 @@ import graphene
 from graphene_django import DjangoObjectType
 
 # Models
-from core.models.Transaction import Transaction
+from core.models.CoinActivity import CoinActivity
 
 
-class TransactionsType(DjangoObjectType):
+class CoinActivitiesType(DjangoObjectType):
 
     class Meta:
-        model = Transaction
+        model = CoinActivity
         fields = ("id", "status", "points", "created_at", "type")
