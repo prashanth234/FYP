@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { CompetitionInfo, Reward } from '@/mixims/interfaces'
+import { CompetitionInfo } from '@/mixims/interfaces'
 
 export const useCategoryInfoStore = defineStore('categoryInfo', {
   state: () => ({ 
@@ -11,8 +11,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
     oftype: '',
     competitionSet: [] as CompetitionInfo[],
     loading: true,
-    selectedComptn: null as CompetitionInfo | null,
-    selectedComptnRewards: [] as Reward[]
+    selectedComptn: null as CompetitionInfo | null
   }),
   getters: {
   },
@@ -32,7 +31,8 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
                                                 description,
                                                 lastDate,
                                                 image,
-                                                expired
+                                                expired,
+                                                points
                                             }
                                         }
                                     }
@@ -44,27 +44,6 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
         if (!value.loading) {
             this.$patch(value.data.categoryDetails)
             this.loading = false
-        }
-      })
-    },
-    getComptnRewards (id: string) {
-      const { result, onResult } = useQuery(gql`
-                                    query competitionDetails ($id: Int!) {
-                                      competitionDetails (id: $id) {
-                                            id,
-                                            rewards {
-                                              position,
-                                              points
-                                            }
-                                        }
-                                    }
-                                    `, {
-                                    id: id,
-                                  })
-                                  
-      onResult(({data, loading}) => {
-        if (!loading && this.selectedComptn) {
-          this.selectedComptnRewards = data.competitionDetails.rewards
         }
       })
     }

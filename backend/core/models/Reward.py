@@ -23,7 +23,6 @@ class Reward(models.Model):
 		return os.path.join('rewards/', unique_name + file_extension)
 
 	TYPE_CHOICES = (
-		('COMPTN', 'Competition'),
 		('ZOMATO', 'Zomato'),
 		('SWIGGY', 'Swiggy'),
 		('BMS', 'Book My Show'),
@@ -32,14 +31,12 @@ class Reward(models.Model):
 		('MYNTRA', 'Myntra')
 	)
 
-	name = models.CharField(max_length=255, null=True, blank=True)
-	image = models.ImageField(upload_to=custom_upload_to, null=True, blank=True)
+	name = models.CharField(max_length=255)
+	image = models.ImageField(upload_to=custom_upload_to)
 	points = models.CharField(max_length=255)
-	realvalue = models.PositiveIntegerField(null=True, blank=True)
-	position = models.PositiveIntegerField(null=True, blank=True)
+	pointsvalue = models.PositiveIntegerField(null=True, blank=True)
 	type = models.CharField(max_length=100, choices=TYPE_CHOICES)
-	external = models.BooleanField(default=True)
 
 	def __str__(self) -> str:
-			return f'{self.type}-{self.position}-{self.points}'
+			return self.name
 

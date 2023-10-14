@@ -366,10 +366,10 @@ function cancelReward() {
 }
 
 function selectReward(index: number) {
-	const {points, realvalue} = rewards.value.rewards[index]
+	const {points, pointsvalue} = rewards.value.rewards[index]
 	state.denominations = points.split(',').map((point: string) => {
 		const points = parseInt(point)
-		const rupees = points / (realvalue || 10)
+		const rupees = points / (pointsvalue || 10)
 		return {text: `₹${rupees} (${points} points)`, points, rupees}
 	})
 	state.selReward = index
@@ -383,7 +383,7 @@ const { result: rewards, onResult: rewardsResult, onError } = useQuery(gql`
 																	type,
 																	points,
 																	image,
-																	realvalue
+																	pointsvalue
 																}
                               }
                             `)

@@ -17,4 +17,4 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_rewards(root, info):
-        return Reward.objects.filter(external=True)
+        return Reward.objects.all()

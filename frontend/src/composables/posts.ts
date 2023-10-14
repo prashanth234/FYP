@@ -132,9 +132,7 @@ export function getWinners(competition: string | undefined) {
             avatar
           }
         },
-        reward {
-          position
-        },
+        position,
         wonByLikes
       }
     }

@@ -26,8 +26,8 @@
             class="cpointer delete operations"
             :icon="trashOutline"
           />
-          <div v-if="props.reward">
-            <strong>#{{props.reward.position}}</strong>
+          <div v-if="props.position">
+            <strong>#{{props.position}}</strong>
           </div>
         </ion-item>
 
@@ -88,7 +88,7 @@ const user = useUserStore()
 const toast = useToastStore()
 
 const ionRouter = useIonRouter()
-const props = defineProps(['post', 'showEdit', 'reward'])
+const props = defineProps(['post', 'showEdit', 'position'])
 
 const emit = defineEmits<{
   (e: 'editPost'): void

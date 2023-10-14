@@ -24,7 +24,7 @@ class CoinActivity(models.Model):
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True)
-    points = models.PositiveIntegerField()
+    points = models.IntegerField()
 
     # Examples
     # one coinactivity belongs to one winner

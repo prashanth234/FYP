@@ -17,20 +17,14 @@ export interface Post {
   }
 }
 
-export interface Reward {
-  position: number,
-  points: string
-}
-
 export interface CompetitionInfo {
   id: string,
   name: string,
   description: string,
   lastDate: string,
-  points: number,
+  points: string,
   image: string,
-  expired: boolean,
-  rewards: Reward[]
+  expired: boolean
 }
 
 export interface categoryObject {

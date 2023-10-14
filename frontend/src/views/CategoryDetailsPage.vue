@@ -126,7 +126,7 @@
                 v-for="(winner, index) in state.winners" 
                 :key="index"
               >
-                <post :post="winner.post" :reward="winner.reward">
+                <post :post="winner.post" :position="winner.position">
                 </post>
               </ion-col>
 
@@ -175,9 +175,7 @@ import { useCategoryInfoStore } from '@/stores/categoryInfo'
 interface Winner {
   post: PostType,
   wonByLikes: number,
-  reward: {
-    position: number
-  }
+  position: number
 }
 
 interface State {
@@ -230,7 +228,6 @@ function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'
   categoryInfo.selectedComptn = competition
   variables.competition.value = competition.id
-  !competition.expired && categoryInfo.getComptnRewards(competition.id)
 }
 
 function setCategoryDefault() {

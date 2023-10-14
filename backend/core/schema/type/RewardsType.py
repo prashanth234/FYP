@@ -6,4 +6,4 @@ class RewardsType(DjangoObjectType):
 
     class Meta:
         model = Reward
-        fields = ("id", "image", "name", "points", "position", "type", "realvalue")
+        fields = ("id", "image", "name", "points", "type", "pointsvalue")

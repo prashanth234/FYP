@@ -16,12 +16,7 @@ class CompetitionType(DjangoObjectType):
     def resolve_expired(self, info):
         current_datetime = timezone.now()
         return self.last_date <= current_datetime.date()
-    
-    rewards = graphene.List(RewardsType)
-
-    def resolve_rewards(self, info):
-        return self.rewards.all().order_by('position')
 
     class Meta:
         model = Competition
-        fields = ("id", "name", "description", "category", "last_date", "image", "expired")
+        fields = ("id", "name", "description", "category", "last_date", "image", "expired", "points")

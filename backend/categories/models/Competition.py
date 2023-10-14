@@ -16,7 +16,7 @@ class Competition(models.Model):
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     last_date = models.DateField()
     image = models.ImageField(upload_to=custom_path, default='')
-    rewards = models.ManyToManyField(Reward)
+    points = models.CharField(max_length=255)
 
     def __str__(self) -> str:
       return self.name

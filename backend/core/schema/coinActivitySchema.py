@@ -38,7 +38,7 @@ class CreateCoinActivityMutation(graphene.Mutation):
         
         coinactivity = Reward.objects.get(pk=reward)
         user.points -= points
-        coinactivity = CoinActivity(user=info.context.user, points=points, type='REDEEM', content_object=coinactivity)
+        coinactivity = CoinActivity(user=info.context.user, points=-points, type='REDEEM', content_object=coinactivity)
         coinactivity.save()
         user.save()
 
@@ -106,7 +106,7 @@ class DeleteCoinActivityMutation(graphene.Mutation):
         if coinactivity.status != 'Q':
             raise GraphQLError("Reedem can't be canceled now")
         
-        user.points += coinactivity.points
+        user.points -= coinactivity.points
         
         coinactivity.delete()
         user.save()

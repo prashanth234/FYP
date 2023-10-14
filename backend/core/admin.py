@@ -13,12 +13,12 @@ class SupportAdmin(admin.ModelAdmin):
     list_display = ('description', 'comments', 'status', 'contact', 'user')
 
 @admin.register(CoinActivity)
-class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('status', 'user', 'created_at', 'points', 'type')
+class CoinActivityAdmin(admin.ModelAdmin):
+    list_display = ('created_at', 'status', 'user', 'points', 'type')
 
 @admin.register(Reward)
 class RewardAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image', 'position', 'points', 'type', 'external')
+    list_display = ('name', 'image', 'points', 'type', 'pointsvalue')
 
 app = apps.get_app_config('graphql_auth')
 
