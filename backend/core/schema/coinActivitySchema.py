@@ -34,7 +34,7 @@ class CreateCoinActivityMutation(graphene.Mutation):
             raise GraphQLError("Points can't be negative")
         
         if points > user.points:
-            raise GraphQLError('Points should be less or equal to points you have earned')
+            raise GraphQLError("Sorry, you don't have enough points. Keep participating and you'll earn more over time!")
         
         coinactivity = Reward.objects.get(pk=reward)
         user.points -= points
@@ -115,7 +115,7 @@ class DeleteCoinActivityMutation(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_coinactivity = CreateCoinActivityMutation.Field()
     # update_coinactivity = UpdateCoinActivityMutation.Field()
-    delete_coinactivity = DeleteCoinActivityMutation.Field()
+    # delete_coinactivity = DeleteCoinActivityMutation.Field()
 
 class Query(graphene.ObjectType):
 

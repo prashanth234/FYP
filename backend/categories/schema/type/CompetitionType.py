@@ -14,8 +14,7 @@ class CompetitionType(DjangoObjectType):
     expired = graphene.Boolean()
 
     def resolve_expired(self, info):
-        current_datetime = timezone.now()
-        return self.last_date <= current_datetime.date()
+        return self.is_expired
 
     class Meta:
         model = Competition

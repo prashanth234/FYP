@@ -18,9 +18,13 @@
 				The Quest: {{ categoryInfo.selectedComptn.description }} <br>
 				Discover Your Calling: Share Your Passion in Our Rewarding Contest!<br>
 				<span v-for="(point, position) in points" :key="position">
-					{{position+1}}st Place: <strong>{{point}}</strong> Points <br>
+					<span v-if="position == 0">1st</span>
+					<span v-else-if="position == 1">2nd</span>
+					<span v-else-if="position == 2">3rd</span>
+					<span v-else>{{position + 1}}th</span>
+					 Place: <strong>{{point}}</strong> Points <br>
 				</span>
-				Unveil what drives you! Contest ends on <strong>{{ categoryInfo.selectedComptn.lastDate }}</strong> so showcase your interest. Connect with fellow enthusiasts, accumulate points, and enjoy the journey of this fulfilling contest. Your passion could propel you to the top spot!
+				Unveil what drives you! Contest ends on <strong>{{ lastDate }}</strong> so showcase your interest. Connect with fellow enthusiasts, accumulate points, and enjoy the journey of this fulfilling contest. Your passion could propel you to the top spot!
 			</ion-col>
 			<ion-col class="ion-text-center" size="12">
 				<ion-button @click="closeCompDetails" color="light">
@@ -59,7 +63,7 @@
 				@mouseover="state.ihovered = index"
       	@mouseout="state.ihovered = null"
 			>	
-				<ion-row class="details">
+				<ion-row class="details ion-nowrap">
 					<ion-col size="auto" class="ion-padding-end">
 						<ion-img :src="`media/${competition.image}`"></ion-img>
 					</ion-col>
@@ -104,6 +108,7 @@ import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent } 
 import { useCategoryInfoStore } from '@/stores/categoryInfo';
 import { CompetitionInfo } from '@/mixims/interfaces';
 import { reactive, computed } from 'vue';
+import { formatDateToCustomFormat  } from '@/mixims/common';
 
 const props = defineProps<{
 	vertical: Boolean
@@ -131,6 +136,10 @@ const points = computed(() => {
 		})
 	}
 	return []
+})
+
+const lastDate = computed(() => {
+	return categoryInfo.selectedComptn ? formatDateToCustomFormat(categoryInfo.selectedComptn.lastDate) : ''
 })
 
 const categoryInfo = useCategoryInfoStore()

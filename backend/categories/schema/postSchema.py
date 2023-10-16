@@ -41,6 +41,9 @@ class CreatePostMutation(graphene.Mutation):
 
         if competition:
             competition = Competition.objects.get(pk=competition)
+
+            if competition.is_expired:
+                raise GraphQLError("The contest has concluded! Please take a look at our other ongoing contests.", extensions={'status': 405})
             
             if Post.objects.filter(competition=competition, user=info.context.user).exists():
                 raise GraphQLError("To maintain fairness, kindly note that each user is permitted only one post per contest.", extensions={'status': 405})
@@ -95,6 +98,8 @@ class UpdatePostMutation(graphene.Mutation):
         
         try:
             post = Post.objects.get(pk=id, user=info.context.user)
+            if post.competition and post.competition.is_expired:
+                raise GraphQLError("You can't delete or edit posts in closed contests to ensure fairness and transparency. Thanks for understanding!", extensions={'status': 405})
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
         
@@ -140,7 +145,7 @@ class DeletePostMutation(graphene.Mutation):
         
         try:
             post = Post.objects.get(pk=id, user=info.context.user)
-            if post.competition and post.comp_expired():
+            if post.competition and post.competition.is_expired:
                 raise GraphQLError("You can't delete or edit posts in closed contests to ensure fairness and transparency. Thanks for understanding! ")
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
@@ -191,7 +196,7 @@ class Query(graphene.ObjectType):
         elif category:
             queryset = Post.objects.filter(category=category).order_by('-created_at')
         else:
-            raise GraphQLError("Interest or Contest on found.")
+            raise GraphQLError("Interest or Contest not found.")
             # queryset = Post.objects.all().order_by('-pk')
 
         # paginator = Paginator(queryset, per_page)

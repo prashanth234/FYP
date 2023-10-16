@@ -12,10 +12,6 @@ class Post(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.PositiveIntegerField(default=0)
-
-    def comp_expired(self):
-      current_datetime = timezone.now()
-      return self.competition.last_date <= current_datetime.date()
     
     def __str__(self) -> str:
       return self.description

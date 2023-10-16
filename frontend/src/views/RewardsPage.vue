@@ -56,6 +56,10 @@
 											</ion-select-option>
 										</ion-select>
 
+										<div class="redeem-note">
+											Important: Once coins are redeemed, they can't be canceled.
+										</div>
+
 										<div style="text-align: end; margin-top: 20px" class="action-buttons">
 											<ion-button
 											 	class="auth-button ion-margin-end"
@@ -117,29 +121,49 @@
 										<div style="padding: 5px;overflow: auto;" slot="content">
 											<table style="width:100%">
 												<tr>
-													<th style="min-width: 150px;">Activity</th>
-													<th style="min-width: 150px;">Status</th>
-													<th style="min-width: 100px;">Points</th>
-													<th class="ion-text-center">Action</th>
+													<th style="min-width: 200px;">Activity</th>
+													<!-- <th style="min-width: 150px;">Status</th> -->
+													<th style="min-width: 100px;" class="ion-text-end">Coins</th>
+													<!-- <th class="ion-text-center">Action</th> -->
 												</tr>
 												<tr v-for="(coinactivity, index) in coinactivities?.coinactivities" :key="coinactivity.id">
 													<td>
 														<div>
 															<span v-if="coinactivity.type == 'COMPWINNER'">Won Contest</span>
-															<span v-if="coinactivity.type == 'REDEEM'">Redeem</span>
+															<span v-else-if="coinactivity.type == 'REDEEM'">Redeem</span>
+															<span v-else-if="coinactivity.type == 'SIGNUP'">Sign Up</span>
 														</div>
-														<div style="color: var(--ion-color-medium);font-size: 13px;">{{ formatDateToCustomFormat(coinactivity.createdAt) }}</div>
+														<div
+															style="color: var(--ion-color-medium);font-size: 13px;">
+															{{ formatDateToCustomFormat(coinactivity.createdAt) }}
+														</div>
 													</td>
-													<td>
+													<!-- <td>
 														<span v-if="coinactivity.status == 'Q'">Pending</span>
 														<span v-else-if="coinactivity.status == 'P'">Processing</span>
 														<span v-else-if="coinactivity.status == 'S'">Success</span>
 														<span v-else-if="coinactivity.status == 'F'">Failed</span>
+													</td> -->
+													<td
+														class="ion-text-end"
+														:class="{'points-pending': coinactivity.status == 'Q', 'points-add': coinactivity.points > 0, 'points-minus': coinactivity.points < 0}"
+														style="font-weight: 600;"
+													>
+														<ion-row class="points ion-nowrap ion-align-items-center" style="float: right;">
+															<ion-col class="ion-align" size="auto">
+																<ion-icon 
+																	v-if="coinactivity.status == 'Q'"
+																	class="icon"
+																	style="font-size: 17px;"
+																	:icon="hourglassOutline"
+																/>
+															</ion-col>
+															<ion-col size="auto" style="padding-bottom: 5px;">
+																{{ `${coinactivity.points > 0 ? '+': ''}${coinactivity.points}` }}
+															</ion-col>
+														</ion-row>
 													</td>
-													<td>
-														{{ coinactivity.points }}
-													</td>
-													<td class="ion-text-center">
+													<!-- <td class="ion-text-center">
 														<ion-icon 
 															v-if="coinactivity.status == 'Q'"
 															style="font-size: 20px;"
@@ -147,7 +171,7 @@
 															class="cpointer"
 															:icon="closeCircleOutline"
 														/>
-													</td>
+													</td> -->
 												</tr>
 												<tr v-if="!loading && !coinactivities?.coinactivities.length" >
 													<td class="ion-text-center" colspan="4">No Activites</td>
@@ -178,8 +202,9 @@ import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive } from 'vue';
-import { closeCircleOutline } from 'ionicons/icons'
+import { closeCircleOutline, hourglassOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
+import { formatDateToCustomFormat  } from '@/mixims/common';
 
 interface Denomination {
 	points: number,
@@ -205,18 +230,6 @@ const state: State = reactive({
 	loading: false,
 	denominations: []
 })
-
-function formatDateToCustomFormat(isoDate: string): string {
-  const date = new Date(isoDate);
-
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
-
-  return date.toLocaleDateString(undefined, options);
-}
 
 const QUERY = gql`
 									query CoinActivities {
@@ -463,5 +476,24 @@ ion-grid {
 	.grid-item {
 		padding: 15px;
 	}
+}
+.redeem-note {
+	padding: 5px;
+	padding-top: 8px;
+	font-size: 14px;
+	color: var(--ion-color-medium-shade);
+}
+.points-add {
+	color: var(--ion-color-success-shade);
+}
+.points-minus {
+	color: var(--ion-color-danger);
+}
+.points-pending {
+	color: var(--ion-color-medium-shade);
+}
+.points {
+	--ion-grid-padding: 0px;
+	--ion-grid-column-padding: 0px;
 }
 </style>

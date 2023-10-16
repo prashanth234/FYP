@@ -26,11 +26,13 @@ DONE
 
 == 2nd week
 
-.) Add participation points
+.) Add participation 
+.) Add points on signup (create coin activity)
+.) The user needs to manually update the points in the user's table.
+
 .) Redemption details - how many points needed for redemption, real value of each point -  (discussion about prizemoney)
 .) Faq and info about points
-.) Add points on signup
-.) Add post participation points
+
 
 DONE
 
@@ -65,13 +67,19 @@ Done
 
 == 5th week
 
-.) On edit post api is calling again
-.) Try to add rewards to selectedcomptn itself in the store
-
 .) Work on UI/UX coloring - 2 - 3 days
 .) Enable https and brand name - 3 days
 
 == 6th week
+
+All Open Issues
+1)Issue-1 :: User must able to view competition cards in same size.
+
+Discuss
+1) Remove change password
+2) Canceling reedem
+3) 5)Issue-5 :: Am on competition page and when i refresh it is navigating to Home
+
 
 .) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
 
@@ -151,6 +159,7 @@ Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_u
 
 #### P1 #####
 
+.) On edit post api is calling again
 .) Learn about csrf token
 .) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues

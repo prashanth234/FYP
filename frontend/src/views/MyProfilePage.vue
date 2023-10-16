@@ -24,18 +24,18 @@
                 <ion-segment-button value="about">
                   <ion-label>About</ion-label>
                 </ion-segment-button>
-                <ion-segment-button value="password">
+                <!-- <ion-segment-button value="password">
                   <ion-label>Change Password</ion-label>
-                </ion-segment-button>
+                </ion-segment-button> -->
               </ion-segment>
 
               <ion-card-content>
                 <div v-show="state.selectedTab == 'about' ">
                   <about />
                 </div>
-                <div  v-show="state.selectedTab == 'password' " >
+                <!-- <div  v-show="state.selectedTab == 'password' " >
                   <change-password />
-                </div>
+                </div> -->
               </ion-card-content>
               
             </ion-card>
@@ -78,7 +78,7 @@ import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIco
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/aboutContainer.vue'
-import ChangePassword from '@/components/changePasswordContainer.vue'
+// import ChangePassword from '@/components/changePasswordContainer.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { UpdatePostVariables, Post as PostType } from '@/mixims/interfaces'
 import { getPosts } from '@/composables/posts'

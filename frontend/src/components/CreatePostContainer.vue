@@ -252,7 +252,7 @@ if (props.type == 'create') {
   if (id) {
     onCategoryChange()
   }
-  state.competition = selectedComptn?.id || ''
+  state.competition = !selectedComptn?.expired && selectedComptn?.id ? selectedComptn.id : ''
 }
 
 function clearPostForm () {
