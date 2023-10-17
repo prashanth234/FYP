@@ -72,15 +72,6 @@ Done
 
 == 6th week
 
-All Open Issues
-1)Issue-1 :: User must able to view competition cards in same size.
-
-Discuss
-1) Remove change password
-2) Canceling reedem
-3) 5)Issue-5 :: Am on competition page and when i refresh it is navigating to Home
-
-
 .) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
 
 .) Miscellaneous - <3days
@@ -169,6 +160,7 @@ Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_u
 .) Mobile number login
 .) If a user logout/login all the active queries are fetched again to update posts(userLiked), profile etc - See if it can be optimized
 .) If a user scroll down the category and if he again open's category scroll is last opened position - See if scroll can be placed on top when a category is opened.
+.) Winner model file is depenedent coin activity model - try if it can be made generic or not.
 
 #### P2 #####
 

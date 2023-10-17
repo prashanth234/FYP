@@ -13,7 +13,7 @@ class CoinActivity(models.Model):
     )
 
     TYPE_CHOICES = (
-       ('UPLOADPOST', 'Upload Post'),
+       ('PARTN', 'Participation'),
        ('COMPPARTN', 'Competition Participation'),
        ('COMPWINNER', 'Competition Winner'),
        ('SIGNUP', 'SignUp'),
@@ -21,6 +21,7 @@ class CoinActivity(models.Model):
     )
 
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Q')
+    description = models.TextField()
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True)

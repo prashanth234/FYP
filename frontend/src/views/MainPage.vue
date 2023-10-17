@@ -251,7 +251,7 @@ function isAuthProcessing(value: boolean) {
 
 function authSuccess(type: string) {
   isAuthProcessing(false)
-  type == 'login' && client.resetStore()
+  client.resetStore()
 }
 
 function authFailure(type: string) {

@@ -1,8 +1,13 @@
 from django.db import models
 from django.conf import settings
+from django.db import transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from categories.models.Competition import *
 from categories.models.Post import *
-from core.models.Reward import *
+
+from core.models.CoinActivity import *
   
 class Winner(models.Model):
     
@@ -17,3 +22,14 @@ class Winner(models.Model):
 
     def __str__(self) -> str:
       return self.user.username
+
+
+@receiver(post_save, sender=Winner)
+@transaction.atomic
+def perform_activity(sender, instance, created, **kwargs):
+  if created:
+    description = f'{instance.competition.name} Contest - Winner {instance.position} Reward'
+    coinactivity = CoinActivity(type='COMPWINNER', user=instance.user, points=instance.points, description=description, content_object=instance, status='S')
+    instance.user.points += instance.points
+    instance.user.save()
+    coinactivity.save()

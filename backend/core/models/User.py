@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from core.models.CoinActivity import CoinActivity
 
 class User (AbstractUser):
   GENDER_CHOICES = (
@@ -17,3 +21,9 @@ class User (AbstractUser):
 
   USERNAME_FIELD = "username"
   EMAIL_FIELD = "email"
+
+@receiver(post_save, sender=User)
+def perform_activity(sender, instance, created, **kwargs):
+  if created:
+    coinactivity = CoinActivity(type='SIGNUP', user=instance, points=settings.USER_SIGNUP_POINTS, description='Welcome Reward', status='S')
+    coinactivity.save()

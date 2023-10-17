@@ -128,13 +128,9 @@
 												</tr>
 												<tr v-for="(coinactivity, index) in coinactivities?.coinactivities" :key="coinactivity.id">
 													<td>
-														<div>
-															<span v-if="coinactivity.type == 'COMPWINNER'">Won Contest</span>
-															<span v-else-if="coinactivity.type == 'REDEEM'">Redeem</span>
-															<span v-else-if="coinactivity.type == 'SIGNUP'">Sign Up</span>
-														</div>
+														<div style="font-size: 15px;">{{ coinactivity.description }}</div>
 														<div
-															style="color: var(--ion-color-medium);font-size: 13px;">
+															style="color: var(--ion-color-medium);font-size: 12px;">
 															{{ formatDateToCustomFormat(coinactivity.createdAt) }}
 														</div>
 													</td>
@@ -147,7 +143,7 @@
 													<td
 														class="ion-text-end"
 														:class="{'points-pending': coinactivity.status == 'Q', 'points-add': coinactivity.points > 0, 'points-minus': coinactivity.points < 0}"
-														style="font-weight: 600;"
+														style="font-weight: 600; font-size: 15px;"
 													>
 														<ion-row class="points ion-nowrap ion-align-items-center" style="float: right;">
 															<ion-col class="ion-align" size="auto">
@@ -236,7 +232,7 @@ const QUERY = gql`
 										coinactivities {
 											id,
 											points,
-											type,
+											description,
 											status,
 											createdAt
 										}
@@ -264,7 +260,7 @@ function createReedem (reward: string) {
 						points,
 						status,
 						createdAt,
-						type,
+						description,
 						id
 					},
 					userpoints

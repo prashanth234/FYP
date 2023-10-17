@@ -36,9 +36,10 @@ class CreateCoinActivityMutation(graphene.Mutation):
         if points > user.points:
             raise GraphQLError("Sorry, you don't have enough points. Keep participating and you'll earn more over time!")
         
-        coinactivity = Reward.objects.get(pk=reward)
+        reward = Reward.objects.get(pk=reward)
+        description = f'{reward.name} Redeem'
         user.points -= points
-        coinactivity = CoinActivity(user=info.context.user, points=-points, type='REDEEM', content_object=coinactivity)
+        coinactivity = CoinActivity(user=info.context.user, points=-points, type='REDEEM', description=description, content_object=reward)
         coinactivity.save()
         user.save()
 
