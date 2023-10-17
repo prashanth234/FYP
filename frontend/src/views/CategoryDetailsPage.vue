@@ -222,7 +222,7 @@ props.id && categoryInfo.getCategoryInfo(props.id)
 const { content } = scrollTop()
 
 const category =  props.id || undefined
-const { posts, getMore, variables } = getPosts('allPosts', undefined, category)
+const { posts, getMore, variables } = getPosts('allPosts', category)
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
   state.tabSelected = 'allposts'

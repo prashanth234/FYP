@@ -113,7 +113,7 @@ const toast = useToastStore()
 const postDialog = usePostDialog()
 const dialog = useDialogStore()
 
-const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts', undefined, undefined)
+const { POST_QUERY: MYPOSTS_QUERY, variables, posts, loading, getMore, refetch } = getPosts('myPosts')
 
 // Delete Post
 

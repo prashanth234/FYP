@@ -142,7 +142,7 @@ import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useCategoryStore } from '@/stores/category';
 import { useQuery } from '@vue/apollo-composable'
-import { getPosts } from '@/composables/posts'
+import { getQuery } from '@/composables/posts'
 
 interface PostFileType {
   file: string
@@ -242,8 +242,8 @@ const user = useUserStore()
 const category = useCategoryStore()
 category.getCategories()
 
-const { POST_QUERY } = getPosts('allPosts', undefined, undefined)
-const { POST_QUERY: MYPOSTS_QUERY } = getPosts('myPosts', undefined, undefined)
+const { QUERY: POST_QUERY } = getQuery('allPosts')
+const { QUERY: MYPOSTS_QUERY } = getQuery('myPosts')
 
 if (props.type == 'create') {
   // Intialize create post data

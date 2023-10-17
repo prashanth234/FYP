@@ -3,10 +3,42 @@ import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
 import { ref } from 'vue'
 
+export function getQuery(type: string) {
+  return {
+    QUERY: gql`
+      query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
+        ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
+          posts {
+            id,
+            likes,
+            userLiked,
+            description,
+            createdAt,
+            postfileSet {
+              file
+            },
+            user {
+              username,
+              avatar
+            },
+            category {
+              oftype
+            },
+            competition {
+              expired
+            }
+          },
+          total
+        }
+      }
+    `
+  }
+}
+
 export function getPosts(
   type: string,
-  competition: string | undefined, 
-  category: string | undefined
+  category?: string,
+  competition?: string
 ) {
 
   const variables = {
@@ -18,33 +50,7 @@ export function getPosts(
   }
 
   // Also update create post query
-  const POST_QUERY = gql`
-    query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
-      ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
-        posts {
-          id,
-          likes,
-          userLiked,
-          description,
-          createdAt,
-          postfileSet {
-            file
-          },
-          user {
-            username,
-            avatar
-          },
-          category {
-            oftype
-          },
-          competition {
-            expired
-          }
-        },
-        total
-      }
-    }
-  `
+  const {QUERY: POST_QUERY} = getQuery(type)
 
   const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
     page: variables.page,
