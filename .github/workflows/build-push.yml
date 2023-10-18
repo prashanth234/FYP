@@ -1,5 +1,7 @@
 name: build-push-actions
 run-name: ${{ github.actor }} building the fyp project and pushs to docker registry
+on:
+  workflow_dispatch:
 jobs:
   build-push-job:
     runs-on: ubuntu-latest
