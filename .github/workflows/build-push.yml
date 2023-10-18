@@ -1,5 +1,5 @@
 name: build-push-actions
-run-name: ${{ github.actor }} building the fyp project and pushs to docker registry
+run-name: FYP Build and Push
 on:
   workflow_dispatch:
 jobs:
@@ -19,18 +19,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push backend
+        name: Backend - Build and Push
         uses: docker/build-push-action@v5
         with:
           push: true
           context: "{{defaultContext}}:backend"
           tags: prashanth45/fyp:backendv1
-      # -
-      #   name: Build and push Frontend
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     push: true
-      #     context: "{{defaultContext}}:frontend"
-      #     tags: prashanth45/fyp:frontendv1
+      -
+        name: Frontend - Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: "{{defaultContext}}:frontend"
+          tags: prashanth45/fyp:frontendv1
 
       
