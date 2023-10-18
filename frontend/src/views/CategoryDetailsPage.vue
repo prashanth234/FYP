@@ -273,7 +273,7 @@ function fetchMore(ev: InfiniteScrollCustomEvent) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .posts ion-card {
   margin-left: 0px;
   margin-right: 0px;

@@ -22,8 +22,10 @@ Content-Disposition: attachment; filename="userdata.txt"
 PUBLICIP=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
 && curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/public-ipv4)
 
-echo $PUBLICIP  > /home/ubuntu/publicip
-
 sed -i "s/FYP_SITE_DOMAIN='[^']*'/FYP_SITE_DOMAIN='${PUBLICIP}'/g" /home/ubuntu/fyp/.env
 
-(cd /home/ubuntu/fyp && docker compose up -d)
+#apt install gosu
+
+(cd /home/ubuntu/fyp && gosu ubuntu docker compose pull frontend backend && docker compose up -d)
+
+docker system prune -f
