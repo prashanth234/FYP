@@ -361,7 +361,7 @@ function logout(showToast: boolean = true) {
   navigate('/')
   user.reset()
   client.resetStore()
-  showToast && toast.$patch({message: "You've been gracefully logged out. We're looking forward to seeing you login again!", color: 'success', open: true})
+  showToast && toast.$patch({message: "See you again soon! You've been logged out gracefully.", color: 'success', open: true})
 }
 
 checkAuthStatus()
