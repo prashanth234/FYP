@@ -2,7 +2,7 @@
 
   <!-- Start of login form -->
   <form @submit.prevent="submitForm">
-    <ion-grid>
+    <ion-grid class="login-form">
 
       <ion-row class="ion-text-center">
 
@@ -23,15 +23,31 @@
         </ion-col>
 
         <ion-col size="12">
-          <ion-input class="custom-input" fill="outline" v-model="state.email" type="email" placeholder="Email" required></ion-input>
+          <ion-input
+            class="custom-input"
+            v-model="state.email"
+            type="email"
+            placeholder="Email"
+            autocomplete="email"
+            required
+          >
+          </ion-input>
         </ion-col>
 
         <ion-col size="12">
-          <ion-input class="custom-input" fill="outline" v-model="state.password" type="password" placeholder="Password" required></ion-input>
+          <ion-input
+            class="custom-input"
+            v-model="state.password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            required
+          >
+          </ion-input>
         </ion-col>
 
-        <ion-col size="12">
-          <ion-text color="danger" v-if="state.errors.length">
+        <ion-col size="12" v-if="state.errors.length">
+          <ion-text color="danger">
             <ul style="padding-left: 15px">
               <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
             </ul>
@@ -51,7 +67,7 @@
           </ion-button>
         </ion-col>
 
-        <ion-col size="12" class="line" style="margin-top: 12px; margin-bottom: 10px;"></ion-col>
+        <ion-col size="12" class="line" style="margin-top: 10px; margin-bottom: 8px;"></ion-col>
 
         <ion-col size="12" >
           <ion-button fill="clear" @click="forgotPassword" :disabled="processing">
@@ -67,7 +83,7 @@
         </ion-col>
         
         <ion-col size="12">
-          <ion-button :disabled="processing" size="small" color="success" @click="register()">Create Account</ion-button>
+          <ion-button :disabled="processing" class="register-button" size="small" color="success" @click="register()">Create Account</ion-button>
         </ion-col>
         
       </ion-row>
@@ -235,3 +251,15 @@ function register() {
 }
 
 </script>
+
+<style lang="scss" scoped>
+@media only screen and (max-width: 576px) {
+	.register-button {
+    height: 30px;
+  }
+}
+
+.login-form {
+  --ion-grid-column-padding: 6px;
+}
+</style>

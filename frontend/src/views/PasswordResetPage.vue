@@ -12,11 +12,11 @@
             </ion-col>
 
             <ion-col size="12">
-              <ion-input class="custom-input" fill="outline" v-model="state.newPassword1" type="password" placeholder="New Password"></ion-input>
+              <ion-input class="custom-input" v-model="state.newPassword1" type="password" placeholder="New Password"></ion-input>
             </ion-col>
 
             <ion-col size="12">
-              <ion-input class="custom-input" fill="outline" v-model="state.newPassword2" type="password" placeholder="Confirm Password"></ion-input>
+              <ion-input class="custom-input" v-model="state.newPassword2" type="password" placeholder="Confirm Password"></ion-input>
             </ion-col>
 
             <ion-col size="12" v-if="state.errors.length">

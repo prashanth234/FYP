@@ -2,21 +2,21 @@
 
   <!-- Start of register form -->
   <form @submit.prevent="submitForm">
-    <ion-grid>
+    <ion-grid class="register-form">
 
       <ion-row class="ion-text-center">
         
-        <ion-col size="12" class="ion-padding-bottom">
-          <ion-title>Create Account</ion-title>
+        <ion-col size="12" class="ion-padding-bottom" style="font-size: 20px; font-weight: 600;">
+          Create Account
         </ion-col>
 
         <ion-col size="12">
           <ion-input 
             class="custom-input"
-            fill="outline"
             v-model="state.email"
             type="email"
             placeholder="Email"
+            autocomplete="email"
             required
           >
           </ion-input>
@@ -25,10 +25,10 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            fill="outline"
             v-model="state.username"
             type="text"
             placeholder="Username"
+            autocomplete="username"
             required
           >
           </ion-input>
@@ -37,10 +37,10 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            fill="outline"
             v-model="state.password1"
             type="password"
             placeholder="Password"
+            autocomplete="new-password"
             required
           >
           </ion-input>
@@ -49,10 +49,10 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            fill="outline"
             v-model="state.password2"
             type="password"
             placeholder="Confirm Password"
+            autocomplete="new-password"
             required
           >
           </ion-input>
@@ -79,7 +79,7 @@
           </ion-button>
         </ion-col>
 
-        <ion-col size="12" class="line" style="margin-top: 10px; margin-bottom: 15px;"></ion-col>
+        <ion-col size="12" class="line" style="margin-top: 8px; margin-bottom: 15px;"></ion-col>
 
         <ion-col size="12">
           Have an account? <a class="cpointer" :class="{'cursor-disable': state.loading}" @click="goToLogin()"><b>Log in</b></a>
@@ -220,3 +220,11 @@ function submitForm () {
   })
 }
 </script>
+
+<style lang="scss" scoped>
+
+.register-form {
+  --ion-grid-column-padding: 6px;
+}
+
+</style>

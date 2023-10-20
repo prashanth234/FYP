@@ -40,8 +40,7 @@
 									</ion-col>
 									<ion-col>
 										<ion-select
-											fill="outline"
-											class="custom-input"
+											class="custom-select"
 											v-model="state.points"
 											placeholder="Select"
 											label="Amount"

@@ -17,7 +17,6 @@
 					<ion-col size="10" size-md="10" size-sm="10" size-xs="12">
 						<ion-input
 							class="custom-input"
-							fill="outline"
 							v-model="state.contact"
 							v-if="!user.success"
 							label="Email/Phone"
@@ -27,8 +26,8 @@
 
 					<ion-col size="10" size-md="10" size-sm="10" size-xs="12">
 						<ion-textarea
-							class="custom-input"
-							fill="outline"
+							class="custom-textarea"
+							style="--padding-top: 10px;"
 							auto-grow
 							v-model="state.description"
 							type="number"

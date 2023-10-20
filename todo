@@ -26,13 +26,9 @@ DONE
 
 == 2nd week
 
-.) Add participation 
-.) Add points on signup (create coin activity)
-.) The user needs to manually update the points in the user's table.
-
+.) Add participation points
 .) Redemption details - how many points needed for redemption, real value of each point -  (discussion about prizemoney)
 .) Faq and info about points
-
 
 DONE
 
@@ -42,6 +38,8 @@ DONE
 .) Show points count on main page - Not doing
 .) During login to able to see user points
 .) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
+.) Add points on signup (create coin activity)
+.) The user needs to manually update the points in the user's table if winners are added.
 
 
 == 3rd week
@@ -68,21 +66,23 @@ Done
 == 5th week
 
 .) Work on UI/UX coloring - 2 - 3 days
-.) Enable https and brand name - 3 days
 
 == 6th week
 
 .) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
 
-.) Miscellaneous - <3days
-.) Increase upload image size for https request as well
-.) Delete the migrations and start fresh
-.) Prevent access to 8000 port - Control using security rules and ip address
-.) Reduce image sizes for faster fetch
-
 == 7th week
 
+.) Reduce image sizes for faster fetch
 .) Finalize the categories and there description, images. - 3 to 6 days
+
+== FINAL CHECKLIST
+
+.) Delete the migrations and start fresh
+.) Prevent access to 8000 port - Control using security rules and ip address
+.) Increase upload image size for https request as well
+.) Enable https and brand name - 1-2 days
+
 
 Total - 7 Weeks
 (October End and Buffer of 2 weeks in november)
@@ -150,7 +150,6 @@ Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_u
 
 #### P1 #####
 
-.) On edit post api is calling again
 .) Learn about csrf token
 .) Remove vuex package, main file and syntax in main.ts
 .) Alternative way to maintain likes count consistently without concurrency issues
@@ -161,6 +160,11 @@ Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_u
 .) If a user logout/login all the active queries are fetched again to update posts(userLiked), profile etc - See if it can be optimized
 .) If a user scroll down the category and if he again open's category scroll is last opened position - See if scroll can be placed on top when a category is opened.
 .) Winner model file is depenedent coin activity model - try if it can be made generic or not.
+
+Done
+
+.) On edit post api is calling again
+
 
 #### P2 #####
 

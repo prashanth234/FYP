@@ -15,8 +15,7 @@
 
           <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
             <ion-select
-              fill="outline"
-              class="custom-input"
+              class="custom-select"
               v-model="state.category"
               placeholder="Select"
               label="Interest"
@@ -35,10 +34,9 @@
 
           <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
             <ion-select
-              class="custom-input"
+              class="custom-select"
               v-model="state.competition"
               placeholder="Select"
-              fill="outline"
               label="Contest"
               interface="popover"
             >
@@ -62,7 +60,7 @@
               v-model="state.description"
               placeholder="Describe your post"
               :auto-grow="true"
-              fill="outline"
+              class="custom-textarea"     
             />
           </ion-col>
 

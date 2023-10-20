@@ -3,25 +3,66 @@ ion-input.custom-input {
   text-align: start !important;
   max-height: 38px;
   min-height: 38px !important;
+  --highlight-color-focused: none;
+  
+  label {
+    border: 1px solid var(--ion-color-step-300, #b3b3b3);
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    border-radius: 4px !important;
+  }
+
+  label:hover {
+    border-color: var(--ion-color-step-750, #404040);
+  }
+
+  &.has-focus label {
+    border-color: var(--ion-color-primary);
+    border-width: 2px;
+  }
 }
 
-ion-select.custom-input {
+ion-textarea.custom-textarea {
   border-radius: 4px;
-  max-height: 38px;
-  min-height: 38px !important;
+  text-align: start !important;
+  --highlight-color-focused: none;
+  
+  label {
+    border: 1px solid var(--ion-color-step-300, #b3b3b3);
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    border-radius: 4px !important;
+  }
+
+  label:hover {
+    border-color: var(--ion-color-step-750, #404040);
+  }
+
+  &.has-focus label {
+    border-color: var(--ion-color-primary);
+    border-width: 2px;
+  }
 }
 
 ion-select.custom-select {
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
-  text-align: start !important;
-  padding-right: 10px;
-}
+  border-radius: 4px;
+  max-height: 38px;
+  min-height: 38px !important;
+  --highlight-color-focused: none;
 
-ion-input.custom-input:focus {
-  border-color: #1b74e4;
-  box-shadow: 0 0 0 2px #e7f3ff;
-  caret-color: #1b74e4;
+  border: 1px solid var(--ion-color-step-300, #b3b3b3);
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+  border-radius: 4px !important;
+
+  &:hover {
+    border-color: var(--ion-color-step-750, #404040);
+  }
+
+  &.select-expanded {
+    border-color: var(--ion-color-primary);
+    border-width: 2px;
+  }
 }
 
 .auth-button {
