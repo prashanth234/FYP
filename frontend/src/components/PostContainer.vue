@@ -1,5 +1,5 @@
 <template>
-  <ion-card class="border-radius-std post-card">
+  <ion-card class="border-radius-std post-card" color="light">
 
     <ion-card-content @dblclick="likePost()" class="ion-no-padding">
       <ion-list class="ion-no-padding">

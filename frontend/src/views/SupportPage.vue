@@ -1,8 +1,8 @@
 <template>
 	<ion-page>
-		<ion-content color="light">
+		<ion-content>
 
-			<ion-grid style="max-width: 700px;">
+			<ion-grid style="max-width: 700px; margin-top:20px">
 
 				<ion-row class="ion-padding ion-justify-content-center primary-contrast">
 

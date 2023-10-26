@@ -9,7 +9,7 @@
         <ion-content class="ion-padding">
 
           <!-- Avatar card-->
-          <ion-card style="border-radius: 30px;" color="light">
+          <ion-card style="border-radius: 30px;">
             <ion-card-content style="height: 250px;">
               <ion-row
                 v-if="!state.loading"
@@ -24,13 +24,13 @@
                     />
                   </ion-avatar>
                 </ion-col>
-                <ion-col size="12" class="ion-text-center" style="padding-top: 20px">
+                <ion-col size="12" class="ion-text-center" style="padding-top: 20px; color: var(--ion-color-dark)">
                   <div v-if="user.success">
-                    <p style="font-size: 15px"> Welcome Back </p>
-                    <p style="font-size: 20px; font-weight: 600;"> {{ user?.username }} </p>
+                    <div style="font-size: 15px; font-weight: 600;"> Welcome </div>
+                    <div style="font-size: 20px; font-weight: 600;"> {{ user?.username }} </div>
                   </div>
                   <div v-else>
-                    <p style="font-size: 15px; font-weight: 600;"> Welcome User </p>
+                    <div style="font-size: 15px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
                     <ion-button
                       class="ion-hide-lg-down"
                       @click="openAuth()"
@@ -44,7 +44,7 @@
           </ion-card>
 
           <!-- Navigation list in menu -->
-          <ion-list style="margin-top: 30px">
+          <ion-list style="margin-top: 40px">
             <ion-item
               v-for="(item, index) in state.navigations"
               :key="index"
@@ -79,9 +79,9 @@
             <ion-title>
               TBD
             </ion-title>
-            <ion-buttons slot="end" v-if="isUserLogged">
+            <ion-buttons slot="end">
               <!-- ion-hide-lg-down  -->
-              <ion-button class="ion-padding-end" color="primary" shape="round" fill="outline" @click="postDialog.open">
+              <ion-button class="ion-padding-end" color="primary" shape="round" fill="outline" @click="addNewPost">
                 <!-- <ion-icon slot="start" :icon="addOutline"></ion-icon> -->
                 Add New Post
               </ion-button>
@@ -245,6 +245,15 @@ provide('auth', {
   authFailure
 })
 
+function addNewPost () {
+  if (!user.success) {
+    user.authMessage = 'Ready to share your content? Log in and start posting!'
+    user.auth = true
+    return
+  }
+  postDialog.open()
+}
+
 function isAuthProcessing(value: boolean) {
   state.disableAuthClose = value
 }
@@ -386,11 +395,15 @@ checkAuthStatus()
     --side-max-width: 150px;
   }
   ion-item {
-    height: 55px;
+    --min-height: 50px;
+    --background: transparent;
+  }
+  ion-list {
+    border-radius: 10px;
+    padding: 0px
   }
   .ion-item-highlight {
     --background: var(--ion-color-light);
-    // --color: var(--ion-color-light);
 
     &::part(native) {
       border-left: 5px solid var(--ion-color-primary);

@@ -1,77 +1,35 @@
 #### P0 #####
 
-Issues from QA
+== 7th week
 
-Sometimes page is continuously loading - need to find the senario
+=== Left over ===
 
-Profile Pic
+== 1 day ==
+.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
+.) Make fixed width for posts
+.) Restrict description size
+.) Validation for email in support page
+.) Profile Pic
 Update not working until refreshed
 1st time upload not working util refreshed
 Even after udpate previous image is viewed
 
-Check when aws when turned on
-User is able to view "-1" LIKES on only one post.
-
-== 1st week
-
-DONE
-
-.) Refresh newly added posts
-.) Refresh competitins and top 5 when a post is added
-.) Implement UX customization for details page and competition tabs
-.) Along with bottom navigation for mobile
-.) disable competition after expiry and no edit delete option after expiry
-.) Verify category and competition in backend
-.) Only one competition post user
-
-== 2nd week
-
-.) Add participation points
-.) Redemption details - how many points needed for redemption, real value of each point -  (discussion about prizemoney)
-.) Faq and info about points
-
-DONE
-
-.) Show winners
-.) Plan on how points should be allocated to competitions
-.) Work on UX customization for rewards page
-.) Show points count on main page - Not doing
-.) During login to able to see user points
-.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
-.) Add points on signup (create coin activity)
-.) The user needs to manually update the points in the user's table if winners are added.
-
-
-== 3rd week
-
-Done
-.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
-.) Show only few posts if not loged in
-.) Show user not verified and popup to send email - 1 day
-
-
-== 4th week
-
-.) Validation for email in support page
+== 1 day ===
+.) Confirm logout or circle profile icon on toolbar
+.) Add FAQ to reward and contest (Finalize coupons amount and realvalue)
 .) Disable like for bot post (or remove it)
 
-Done
+== 2 day ==
+.) Share option for post
 
-.) Fix login popup and move message to popup
-.) Add no competition coming soon card - 1 to 2 days
-.) Show some bot post - (Think and finalize it) - 1 to 2 days
-.) Support page - 1 day
+== Discusssion
 
+Issue-1:: User is able to provide any email and any number on support page without logging in.
+How would you trace his account with only mobile number?
 
-== 5th week
+.) Add participation points
 
-.) Work on UI/UX coloring - 2 - 3 days
-
-== 6th week
-
-.) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
-
-== 7th week
+== Product Things
 
 .) Reduce image sizes for faster fetch
 .) Finalize the categories and there description, images. - 3 to 6 days
@@ -147,6 +105,63 @@ AttributeError: type object 'Reward' has no attribute 'Reward'
 Solution:
 Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_upload_to
 ***
+Sometimes page is continuously loading - need to find the senario - Fixed this may not occur (problem due to loading widget)
+
+== 1st week
+
+DONE
+
+.) Refresh newly added posts
+.) Refresh competitins and top 5 when a post is added
+.) Implement UX customization for details page and competition tabs
+.) Along with bottom navigation for mobile
+.) disable competition after expiry and no edit delete option after expiry
+.) Verify category and competition in backend
+.) Only one competition post user
+
+== 2nd week
+
+DONE
+
+.) Show winners
+.) Plan on how points should be allocated to competitions
+.) Work on UX customization for rewards page
+.) Show points count on main page - Not doing
+.) During login to able to see user points
+.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
+.) Add points on signup (create coin activity)
+.) The user needs to manually update the points in the user's table if winners are added.
+
+
+== 3rd week
+
+Done
+.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
+.) Show only few posts if not loged in
+.) Show user not verified and popup to send email - 1 day
+
+
+== 4th week
+
+Done
+
+.) Fix login popup and move message to popup
+.) Add no competition coming soon card - 1 to 2 days
+.) Show some bot post - (Think and finalize it) - 1 to 2 days
+.) Support page - 1 day
+
+== 5th week
+
+Done
+.) Work on UI/UX coloring - Made color change at common place.
+
+== 6th week
+
+Done
+.) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
+
+##### DONE #####
+
 
 #### P1 #####
 

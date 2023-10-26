@@ -51,6 +51,14 @@ function openCategory (category: categoryObject) {
 </script>
 
 <style scoped>
+.page-heading {
+  margin: 0px;
+  font-size: 23px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  margin-left: 5px;
+	color: var(--ion-color-dark-tint);
+}
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -67,6 +75,7 @@ function openCategory (category: categoryObject) {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
+	background: var(--ion-card-background);
 }
 .grid-item:hover {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;

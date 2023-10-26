@@ -1,8 +1,8 @@
 <template>
 	<ion-page>
-		<ion-content color="light">
+		<ion-content>
 
-			<ion-grid style="max-width: 700px;">
+			<ion-grid style="max-width: 700px;margin-top: 20px">
 
 				<ion-row class="ion-padding ion-justify-content-center primary-contrast">
 
@@ -56,7 +56,7 @@
 										</ion-select>
 
 										<div class="redeem-note">
-											Important: Once coins are redeemed, they can't be canceled.
+											Note: Once coins are redeemed, they can't be cancelled.
 										</div>
 
 										<div style="text-align: end; margin-top: 20px" class="action-buttons">
@@ -117,8 +117,8 @@
 										<ion-item slot="header" color="light">
 											<ion-label>View Coin Activity</ion-label>
 										</ion-item>
-										<div style="padding: 5px;overflow: auto;" slot="content">
-											<table style="width:100%">
+										<div style="padding: 5px;overflow: auto; background-color: var(--ion-card-background)" slot="content">
+											<table style="width:100%;">
 												<tr>
 													<th style="min-width: 200px;">Activity</th>
 													<!-- <th style="min-width: 150px;">Status</th> -->

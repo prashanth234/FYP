@@ -13,7 +13,7 @@
 
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11" >
 
-                <ion-card class="ion-padding border-radius-std ion-no-margin" color="light">
+                <ion-card class="ion-padding border-radius-std ion-no-margin" >
 
                   <div class="title category">
                     {{ categoryInfo.name }}
