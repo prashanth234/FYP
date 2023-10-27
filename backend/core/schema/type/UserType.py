@@ -4,7 +4,7 @@ from core.models.User import User
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("username", "avatar", "points", "gender", "first_name", "last_name", "email")
+        fields = ("username", "avatar", "points", "gender", "first_name", "last_name", "email", "id")
     
     # def resolve_avatar(self, info):
     #     if self.avatar:

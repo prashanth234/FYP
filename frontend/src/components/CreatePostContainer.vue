@@ -78,7 +78,7 @@
               :simple="true"
               :cropable="false"
             >
-              <template #handler="{selectImage}">
+              <template #handler="{selectImage, loading}">
                 <ion-row class="padding-col-zero">
                   <ion-col size="auto" v-if="showImageUpload">
                     <ion-button
@@ -87,14 +87,21 @@
                       size="small"
                       color="primary"
                     >
-                      {{ state.preview ? 'Change Image' : 'Select Image' }}
+                      <ion-spinner 
+                        class="button-loading-small"
+                        v-if="loading"
+                        name="crescent"
+                      />
+                      <span v-else>
+                        {{ state.preview ? 'Change Image' : 'Select Image' }}
+                      </span>
                     </ion-button>
                   </ion-col>
                   <ion-col>
                     <ion-button
                       size="small"
                       @click="state.uploadAction"
-                      :disabled="disableUpload"
+                      :disabled="disableUpload || loading"
                       class="float-right"
                     >
                       <ion-spinner 

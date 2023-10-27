@@ -5,7 +5,6 @@
 === Left over ===
 
 == 1 day ==
-.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
 .) Make fixed width for posts
 .) Restrict description size
 .) Validation for email in support page
@@ -13,6 +12,11 @@
 Update not working until refreshed
 1st time upload not working util refreshed
 Even after udpate previous image is viewed
+
+== DONE ==
+
+.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
+
 
 == 1 day ===
 .) Confirm logout or circle profile icon on toolbar

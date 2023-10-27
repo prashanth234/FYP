@@ -18,6 +18,7 @@ export function getQuery(type: string) {
               file
             },
             user {
+              id,
               username,
               avatar
             },
@@ -134,6 +135,7 @@ export function getWinners(competition: string | undefined) {
             file
           },
           user {
+            id,
             username,
             avatar
           }

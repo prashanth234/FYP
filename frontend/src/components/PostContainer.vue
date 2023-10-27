@@ -62,7 +62,7 @@
           <ion-label 
             class="ion-padding-start"
           >
-            {{ post.likes }} Like{{post.likes == 1 ? '' : 's'}}
+            {{ post.likes < 0 ? 0 : post.likes }} Like{{post.likes == 1 ? '' : 's'}}
           </ion-label>
         </ion-item>
 
@@ -164,9 +164,10 @@ function likePost () {
   }
 
   .post-card {
+    max-width: 480px;
+    margin: auto !important;
     transition: all;
     transition-timing-function: ease-out;
-    margin: 0px;
 
     &:hover {
       // box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
@@ -184,9 +185,14 @@ function likePost () {
       --inner-padding-end: 0px;
       --padding-start: 0px;
       ion-img::part(image) {
-        max-height: 600px;
+        max-height: 500px;
+        min-height: 250px;
         object-fit: contain;
       }
+    }
+    &.image::part(native) {
+      // background-color: whitesmoke;
+      // filter: blur(1px);
     }
     p {
       margin-bottom: 10px;

@@ -1,6 +1,23 @@
 <template>
 
-  <div id="file-upload-form" class="uploader" v-if="!props.simple">
+  <div class="simple-uploader" v-if="props.simple">
+
+    <input
+      id="file-upload"
+      ref="fileupload"
+      type="file"
+      name="fileUpload"
+      accept="image/*"
+      @input="$event => props.cropable ? loadImage($event) : reduceImageSize($event)" 
+    />
+
+    <slot name="handler" :selectImage="selectImage" :loading="state.processingImage">
+      <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">Select Image</ion-button>
+    </slot>
+
+  </div>
+
+  <div id="file-upload-form" class="uploader" v-else>
 
     <input id="file-upload" @change="handleFileUpload" type="file" name="fileUpload" accept="image/*" />
 
@@ -19,30 +36,23 @@
 
   </div>
 
-  <div class="simple-uploader" v-else>
-
-    <input
-      id="file-upload"
-      ref="fileupload"
-      type="file"
-      name="fileUpload"
-      accept="image/*"
-      @input="$event => props.cropable ? loadImage($event) : handleFileUpload($event)" 
-    />
-
-    <slot name="handler" :selectImage="selectImage">
-      <ion-button @click="selectImage()" for="file-upload" size="small" color="primary">Select Image</ion-button>
-    </slot>
-
-  </div>
-
   <ion-modal class="crop-modal" :is-open="state.openCropper" :show-backdrop="true" @willDismiss="closeCropper">
+
+    <ion-row class="ion-padding ion-justify-content-center" v-if="state.cropperLoading">
+      <ion-spinner 
+        class="button-loading-small"
+        name="crescent"
+      />
+    </ion-row>
+
     <ion-row class="ion-padding">
       <ion-col size="12">
         <cropper
           :stencil-component="CircleStencil"
           :src="state.imageUrl"
+          :canvas="{width: 600, height: 600}"
           @change="onCropChange"
+          @ready="state.cropperLoading=false"
           ref="cropperRef"
         />
       </ion-col>
@@ -51,6 +61,7 @@
           size="small"
           color="primary"
           @click="cropImage"
+          :disabled="state.cropperLoading"
           class="float-right"
         >
           Done
@@ -71,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonIcon, IonImg, IonButton, IonModal, IonCard, IonRow, IonCol, IonCardContent } from '@ionic/vue'
+import { IonIcon, IonImg, IonButton, IonModal, IonRow, IonCol, IonSpinner } from '@ionic/vue'
 import { CircleStencil, Cropper, CropperResult } from 'vue-advanced-cropper'
 import { cloudUploadOutline } from 'ionicons/icons'
 import { reactive, ref, onUnmounted } from 'vue'
@@ -94,7 +105,9 @@ interface State {
   imageType: string,
   previewImage: string,
   cropperPreview: CropperResult | null,
-  openCropper: Boolean
+  openCropper: boolean,
+  processingImage: boolean,
+  cropperLoading: boolean
 }
 
 const state: State = reactive({
@@ -103,14 +116,76 @@ const state: State = reactive({
   imageType: '',
   previewImage: '',
   cropperPreview: null,
-  openCropper: false
+  openCropper: false,
+  processingImage: false,
+  cropperLoading: false
 })
 
 const cropperRef: Ref<any>  = ref(null)
 const fileupload: Ref<HTMLInputElement | null>  = ref(null)
 
+// Without cropper directly update the model and preview by reducing size
+function reduceImageSize(event: Event) {
+  const {validity, files} = event.target as HTMLInputElement;
+
+  if (validity.valid && files && files.length) {
+    const file = files[0]
+    const reader = new FileReader()
+    state.processingImage = true
+
+    reader.onload = function (e) {
+      const img = new Image()
+      img.src = e.target?.result as string
+
+      img.onload = function () {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        const maxWidth = 2048 // Adjust this to your desired maximum width
+        const maxHeight = 1620 // Adjust this to your desired maximum height
+        let width = img.width
+        let height = img.height
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / maxWidth > height / maxHeight) {
+            width = maxWidth
+            height = (img.height / img.width) * maxWidth
+          } else {
+            height = maxHeight;
+            width = (img.width / img.height) * maxHeight
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        ctx?.drawImage(img, 0, 0, width, height)
+
+        function handleBlob(blob: Blob | null) {
+          if (blob) {
+            const resizedFile = new File([blob], file.name, { type: file.type });
+            state.image = resizedFile
+            emit('update:modelValue', resizedFile)
+          }
+          state.processingImage = false
+        }
+
+        // You can convert the canvas content back to an image or upload the canvas data directly
+        // For example, convert to a blob and upload using FormData:
+        canvas.toBlob(handleBlob, file.type);
+
+        // Display the resized image in the preview element
+        state.previewImage = canvas.toDataURL(file.type)
+        emit('update:preview', state.previewImage)
+      }
+    }
+
+    reader.readAsDataURL(file)
+  }
+}
+
+// Without cropper directly update the model and preview
 function handleFileUpload(event: Event) {
-  const {validity, files} = event.target as HTMLInputElement 
+  const {validity, files} = event.target as HTMLInputElement
   
   if (validity.valid && files && files.length) {
     state.image = files[0]
@@ -158,6 +233,7 @@ function getMimeType(file: any, fallback = '') {
   }
 }
 
+// Setting up things for the cropper
 function loadImage(event: Event) {
   const { files } = event.target as HTMLInputElement;
   
@@ -178,6 +254,7 @@ function loadImage(event: Event) {
       state.imageUrl = blob
       state.imageType = getMimeType(e.target?.result, files[0].type)
       state.openCropper = true
+      state.cropperLoading = true
     }
 
     // Start the reader job - read file as a data url (base64 format)
@@ -185,6 +262,7 @@ function loadImage(event: Event) {
   }
 }
 
+// After the image is cropped
 function cropImage() {
   const { canvas } = cropperRef.value?.getResult()
 

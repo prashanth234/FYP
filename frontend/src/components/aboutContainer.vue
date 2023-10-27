@@ -157,12 +157,13 @@ const userAvatar = computed(() => {
 
 function imageSelected(blob: CropperResult, type: string) {
   const { mutate, onDone, onError } = useMutation(gql`    
-    mutation ($avatar: Upload!, $type: String!) { 
+    mutation updateAvatar ($avatar: Upload!, $type: String!) { 
       updateAvatar (
         avatar: $avatar,
         type: $type
       ) {
           user {
+            id,
             avatar
           }
         }
