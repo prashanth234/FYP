@@ -5,6 +5,7 @@ from graphql_auth.schema import UserQuery, MeQuery
 from graphene_file_upload.scalars import Upload
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
+from datetime import datetime
 
 # Type
 from core.schema.type.UserType import UserType
@@ -36,7 +37,8 @@ class UserAvatarMutation(graphene.Mutation):
         
         user = info.context.user
         
-        filename = f"{user.username}.{type}"
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = f"{user.username}_{timestamp}.{type}"
         file_content = ContentFile(avatar.read())
 
         # Remove the existing file if it exists

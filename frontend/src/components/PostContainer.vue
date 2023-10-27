@@ -96,7 +96,7 @@ const emit = defineEmits<{
 }>()
 
 const userAvatar = computed(() => {
-  return props.post.user.avatar ? `/media/${props.post.user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+  return props.post.user.avatar ? `/media/${props.post.user.avatar}` : '/static/core/avatar.svg'
 })
 
 function likePost () {

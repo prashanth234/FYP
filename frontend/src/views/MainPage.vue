@@ -182,7 +182,7 @@ const postDialog = usePostDialog();
 const toast = useToastStore();
 
 const userAvatar = computed(() => {
-  return user?.avatar ? `/media/${user.avatar}?temp=${user.userUpdated}` : '/static/core/avatar.svg'
+  return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
 })
 
 const state = reactive({
