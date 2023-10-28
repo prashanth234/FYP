@@ -395,7 +395,8 @@ checkAuthStatus()
     --side-max-width: 150px;
   }
   ion-item {
-    --min-height: 50px;
+    --min-height: 40px;
+    margin: 8px 0px 8px 0px; 
     --background: transparent;
   }
   ion-list {
@@ -410,7 +411,7 @@ checkAuthStatus()
     }
   }
   .list-label {
-    font-weight: 600;
+    font-weight: 550;
     padding-left: 12px;
   }
   ion-header {

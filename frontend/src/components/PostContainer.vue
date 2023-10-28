@@ -39,8 +39,14 @@
           />
         </ion-item>
 
-        <ion-item v-if="post.description" lines="none" style="padding-top: 12px; padding-left: 5px">
-          <p>{{ post.description }}</p>
+        <ion-item v-if="post.description" lines="none" class="post-description">
+          <text-clamp :text="post.description" :max-lines='3' auto-resize>
+            <template #after="{ toggle, expanded, clamped }">
+              <a v-if="expanded || clamped" @click="toggle" class="cpointer">
+                {{ expanded ? ' See less' : ' See more' }}
+              </a>
+            </template>
+          </text-clamp>
         </ion-item>
 
         <ion-item lines="none" class="line-top" style="padding: 3px 0px;">
@@ -76,18 +82,14 @@
 
 <script lang="ts" setup>
 import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, useIonRouter  } from '@ionic/vue';
-import { heartOutline, heart, pencilOutline, trashOutline } from 'ionicons/icons'
+import { heartOutline, heart, pencilOutline, trashOutline, expand } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
-import store from '@/vuex'
 import gql from 'graphql-tag'
-import { reactive, computed } from 'vue'
+import { computed } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { useToastStore } from '@/stores/toast'
+import TextClamp from 'vue3-text-clamp'
 
 const user = useUserStore()
-const toast = useToastStore()
-
-const ionRouter = useIonRouter()
 const props = defineProps(['post', 'showEdit', 'position'])
 
 const emit = defineEmits<{
@@ -196,6 +198,14 @@ function likePost () {
     }
     p {
       margin-bottom: 10px;
+    }
+  }
+  .post-description {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 14px;
+    a:hover {
+      text-decoration: underline;
     }
   }
 </style>
