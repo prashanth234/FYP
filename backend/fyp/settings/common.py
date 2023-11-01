@@ -96,6 +96,9 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'core.User'
 
 GRAPHQL_AUTH = {
+    "LOGIN_ALLOWED_FIELDS": ['email', 'phone'],
+    "REGISTER_MUTATION_FIELDS": ['username'],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
     "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', False),
     "EMAIL_TEMPLATE_VARIABLES": {
         "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
@@ -103,6 +106,15 @@ GRAPHQL_AUTH = {
         "site_port": os.environ.get('FYP_SITE_PORT', ':8100')
     }
 }
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 9,
+        },
+    }
+]
 
 
 # Internationalization

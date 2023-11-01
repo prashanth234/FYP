@@ -82,7 +82,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'support',
         component: SupportPage,
-        name: 'support'
+        name: 'support',
+        meta: {
+          auth: true
+        }
       }
     ]
   },

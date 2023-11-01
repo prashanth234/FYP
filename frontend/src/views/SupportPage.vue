@@ -14,7 +14,7 @@
 						Need assistance or have feedback? Share your thoughts with us in the text box below and submit.
 					</ion-col>
 
-					<ion-col size="10" size-md="10" size-sm="10" size-xs="12">
+					<!-- <ion-col size="10" size-md="10" size-sm="10" size-xs="12">
 						<ion-input
 							class="custom-input"
 							v-model="state.contact"
@@ -22,7 +22,7 @@
 							label="Email/Phone"
 						>
 						</ion-input>
-					</ion-col>
+					</ion-col> -->
 
 					<ion-col size="10" size-md="10" size-sm="10" size-xs="12">
 						<ion-textarea

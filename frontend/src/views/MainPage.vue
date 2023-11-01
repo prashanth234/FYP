@@ -161,7 +161,7 @@ import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList
 import { logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, helpCircleOutline, helpCircle } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { storeTokens } from '@/mixims/auth'
+import { storeTokens } from '@/composables/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { reactive, computed, ref, provide } from 'vue'

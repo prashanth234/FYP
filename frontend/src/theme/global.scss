@@ -20,6 +20,11 @@ ion-input.custom-input {
     border-color: var(--ion-color-primary);
     border-width: 2px;
   }
+
+  &.error label {
+    border-color: var(--ion-color-danger);
+    border-width: 2px;
+  }
 }
 
 ion-textarea.custom-textarea {
@@ -189,4 +194,18 @@ ion-card {
 
 .float-right {
   float: right;
+}
+
+.input-error-text {
+  font-size: 13px;
+  padding-left: 5px;
+  padding-top: 5px;
+  color: var(--ion-color-danger);
+}
+
+.ul-error-text {
+  padding-left: 15px;
+  font-size: 14px;
+  text-align: start;
+  color: var(--ion-color-danger);
 }

@@ -13,10 +13,9 @@
         <ion-col size="12">
           <ion-input 
             class="custom-input"
-            v-model="state.email"
-            type="email"
-            placeholder="Email"
-            autocomplete="email"
+            v-model="fields.emailphone"
+            type="text"
+            placeholder="Email or Phone"
             required
           >
           </ion-input>
@@ -25,7 +24,7 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            v-model="state.username"
+            v-model="fields.username"
             type="text"
             placeholder="Username"
             autocomplete="username"
@@ -37,7 +36,7 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            v-model="state.password1"
+            v-model="fields.password1"
             type="password"
             placeholder="Password"
             autocomplete="new-password"
@@ -49,7 +48,7 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            v-model="state.password2"
+            v-model="fields.password2"
             type="password"
             placeholder="Confirm Password"
             autocomplete="new-password"
@@ -59,15 +58,15 @@
         </ion-col>
 
         <ion-col size="12" v-if="state.errors.length">
-          <ion-text color="danger">
-            <ul style="padding-left: 15px">
+          <ion-text>
+            <ul class="ul-error-text">
               <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
             </ul>
           </ion-text>
         </ion-col>
 
         <ion-col size="12">
-          <ion-button color="primary" class="auth-button" :disabled="state.loading" expand="block" type="submit">
+          <ion-button color="primary" class="auth-button" :disabled="disableRegister" expand="block" type="submit">
             <ion-spinner 
               class="button-loading-small"
               v-if="state.loading"
@@ -97,24 +96,11 @@
 
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive, inject } from 'vue'
+import { reactive, inject, computed } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import { storeTokens } from '@/mixims/auth'
+import { storeTokens, useAuth } from '@/composables/auth'
 import { useToastStore } from '@/stores/toast'
 import { useUserStore } from '@/stores/user';
-
-// import { validate, markTouched } from '@/mixims/validations'
-
-// const validation = reactive({
-//   username: false,
-//   password1: false,
-//   password2: false,
-//   email: false,
-// })
-
-// error-text="Invalid email"
-// @ionInput="validation.email = validate($event, ['email'])"
-// @ionBlur="markTouched"
 
 const emit = defineEmits<{
   (e: 'login'): void
@@ -124,27 +110,11 @@ const { isAuthProcessing, authSuccess, authFailure } = inject<any>('auth')
 
 interface State {
   errors: Array<string>,
-  username: string,
-  password1: string,
-  password2: string,
-  email: string,
-  firstname: string,
-  lastname: string,
-  dob: string,
-  gender: string,
   loading: boolean,
   isOpen: boolean,
 }
 
 const state: State = reactive({
-  username: '',
-  password1: '',
-  password2: '',
-  email: '',
-  firstname: '',
-  lastname: '',
-  dob: '',
-  gender: '',
   loading: false,
   isOpen: false,
   errors: []
@@ -153,6 +123,16 @@ const state: State = reactive({
 const ionRouter = useIonRouter();
 const toast = useToastStore();
 const user = useUserStore();
+const {fields, valid, getEmailOrPhone} = useAuth();
+
+fields.username = 'prashanth7'
+fields.emailphone = '7097904099'
+fields.password1 = 'Bobby#123'
+fields.password2 = 'Bobby#123'
+
+const disableRegister = computed(() => {
+  return state.loading
+})
 
 function goToLogin() {
   emit('login')
@@ -160,14 +140,20 @@ function goToLogin() {
 
 function submitForm () {
 
+  if (!valid.value.emailphone) {
+    state.errors = ["Please enter valid email or phone"]
+    return
+  }
+
   state.errors = []
   state.loading = true
   isAuthProcessing(true)
 
   const { mutate, onDone, onError } = useMutation(gql`
-       mutation ($email: String!, $username: String!, $password1: String!, $password2: String!) {
+       mutation ($email: String, $phone: String, $username: String!, $password1: String!, $password2: String!) {
         register (
           email: $email,
+          phone: $phone,
           username: $username,
           password1: $password1,
           password2: $password2,
@@ -181,10 +167,10 @@ function submitForm () {
     `,{
         // Parameters
         variables: {
-          username: state.username,
-          password1: state.password1,
-          password2: state.password2,
-          email: state.email
+          username: fields.username,
+          password1: fields.password1,
+          password2: fields.password2,
+          ...getEmailOrPhone()
         },
         fetchPolicy: "no-cache"
       }
@@ -205,7 +191,7 @@ function submitForm () {
         })
       })
     } else if (response.success) {
-      user.$patch({username: state.username, auth: false, success: true})
+      user.$patch({username: fields.username, auth: false, success: true})
       toast.$patch({message: "Success! You're now a valued member of our community.", color: 'success', open: true})
       user.getDetails()
       storeTokens(response, 'register')

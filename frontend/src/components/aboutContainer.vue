@@ -237,7 +237,7 @@ function updateProfile () {
 
   onError((error: any) => {
     state.loading = false
-    toast.$patch({message: 'Profile update failed due to an error. Please attempt again.', color: 'danger', open: true})
+    toast.$patch({message: error?.graphQLErrors[0]?.message || 'Profile update failed due to an error. Please attempt again.' , color: 'danger', open: true})
   })
 }
 

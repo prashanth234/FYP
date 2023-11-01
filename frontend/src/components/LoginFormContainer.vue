@@ -25,19 +25,21 @@
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            v-model="state.email"
-            type="email"
-            placeholder="Email"
-            autocomplete="email"
+            v-model="fields.emailphone"
+            type="text"
+            placeholder="Email or Phone"
             required
           >
           </ion-input>
+          <!-- <div class="ion-text-start input-error-text" v-if="error.emailphone">
+            Invalid email or phone
+          </div> -->
         </ion-col>
 
         <ion-col size="12">
           <ion-input
             class="custom-input"
-            v-model="state.password"
+            v-model="fields.password1"
             type="password"
             placeholder="Password"
             autocomplete="current-password"
@@ -47,8 +49,8 @@
         </ion-col>
 
         <ion-col size="12" v-if="state.errors.length">
-          <ion-text color="danger">
-            <ul style="padding-left: 15px">
+          <ion-text>
+            <ul class="ul-error-text">
               <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
             </ul>
           </ion-text>
@@ -100,21 +102,17 @@ import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpi
 import gql from 'graphql-tag'
 import { reactive, computed, inject } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import { storeTokens } from '@/mixims/auth'
+import { storeTokens, useAuth } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 
 interface State {
-  email: string,
-  password: string,
   errors: string[],
   forgotPassLoading: boolean,
   loginLoading: boolean
 }
 
 const state: State = reactive({
-  email: '',
-  password: '',
   loginLoading: false,
   errors: [],
   forgotPassLoading: false,
@@ -136,14 +134,19 @@ const emit = defineEmits<{
 const ionRouter = useIonRouter();
 const user = useUserStore();
 const toast = useToastStore();
+const {fields, valid, getEmailOrPhone} = useAuth();
+
+function isValidEmail() {
+  if (!valid.value.emailphone) {
+    state.errors = [`Please enter valid email or phone`]
+    return false
+  }
+  return true
+}
 
 function forgotPassword () {
 
-  if (!state.email) {
-    state.errors = ["Please enter the email"]
-    return
-  }
-
+  if (!isValidEmail()) { return }
   state.forgotPassLoading = true
   state.errors = []
 
@@ -159,7 +162,7 @@ function forgotPassword () {
     `,{
         // Parameters
         variables: {
-          email: state.email
+          ...getEmailOrPhone()
         }
       }
   )
@@ -181,12 +184,14 @@ function forgotPassword () {
 
 function submitForm () {
 
+  if (!isValidEmail()) { return }
   state.loginLoading = true
+  state.errors = []
 
   // Also update user details when this query is updated
   const { mutate, onDone, onError } = useMutation(gql`    
-      mutation Login ($email: String!, $password: String!) {
-        tokenAuth(email: $email, password: $password) {
+      mutation Login ($email: String, $phone: String, $password: String!) {
+        tokenAuth(email: $email, phone: $phone, password: $password) {
           success,
           errors,
           unarchiving,
@@ -208,8 +213,8 @@ function submitForm () {
     `,{
         // Parameters
         variables: {
-          email: state.email,
-          password: state.password
+          ...getEmailOrPhone(),
+          password: fields.password1
         },
         fetchPolicy: "no-cache"
       }

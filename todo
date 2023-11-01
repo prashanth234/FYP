@@ -5,20 +5,26 @@
 === Left over ===
 
 == 1 day ==
-.) Make fixed width for posts
-.) Restrict description size
-.) Validation for email in support page
+
+== DONE ==
+
+.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
+.) Make fixed width for posts and added image size reduce for post and profile image
+.) add show more and less buttons
 .) Profile Pic
 Update not working until refreshed
 1st time upload not working util refreshed
 Even after udpate previous image is viewed
 
-== DONE ==
 
-.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
+REWORK ON SHEET AND FINALIZE WHAT NEEDS TO BE DONE
 
+what if user don't have email so have the phone number concept.
+(validation for v1 ignore)
+if ignored (how will password reset work)
 
 == 1 day ===
+.) Remove support withoout login
 .) Confirm logout or circle profile icon on toolbar
 .) Add FAQ to reward and contest (Finalize coupons amount and realvalue)
 .) Disable like for bot post (or remove it)
@@ -27,9 +33,6 @@ Even after udpate previous image is viewed
 .) Share option for post
 
 == Discusssion
-
-Issue-1:: User is able to provide any email and any number on support page without logging in.
-How would you trace his account with only mobile number?
 
 .) Add participation points
 
@@ -190,6 +193,37 @@ Done
 .) convert login to page (Not Needed as of now)
 .) customize the post (like cropping)
 
+Alternative 1
+
+Leave as it is 
+User need to create a email and use
+
+Alternative 2
+
+Email login - If user doesn't have email
+
+Take phone number while registering.
+
+##### Login
+Phone/email
+Password
+
+Forgot password
+1) Ask for verification code sent to mobile
+2) Show the password change page
+
+Issue-1:: User is able to provide any email and any number on support page without logging in.
+How would you trace his account with only mobile number?
+
+If mobile number is given on logout support page, then how do you get his name?
+
+What is need of support page without login? 
+ans) only to register login issues
+sol) send email to admin on login errors
+
+Alternative 3
+
+Google Oauth login
 
 
 

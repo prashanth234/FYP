@@ -6,6 +6,7 @@ from graphene_file_upload.scalars import Upload
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
 from datetime import datetime
+from graphql_auth.models import UserStatus
 
 # Type
 from core.schema.type.UserType import UserType
@@ -94,6 +95,7 @@ class UpdateAccountMutation(graphene.Mutation):
             user.date_of_birth = dateOfBirth
         
         if email:
+            UserStatus.clean_email(email)
             user.email = email
 
         user.save()
