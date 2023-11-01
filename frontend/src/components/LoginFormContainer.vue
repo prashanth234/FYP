@@ -188,7 +188,7 @@ function submitForm () {
   state.loginLoading = true
   state.errors = []
 
-  // Also update user details when this query is updated
+  // Also me Query when this query is updated
   const { mutate, onDone, onError } = useMutation(gql`    
       mutation Login ($email: String, $phone: String, $password: String!) {
         tokenAuth(email: $email, phone: $phone, password: $password) {
@@ -202,6 +202,7 @@ function submitForm () {
             firstName,
             lastName,
             email,
+            phone,
             gender,
             avatar,
             points,

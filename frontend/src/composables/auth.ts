@@ -1,5 +1,5 @@
 import { reactive, computed } from "vue"
-import { isValidPhoneEmail, isValidEmail } from "@/mixims/validations"
+import { isValidPhoneEmail, isValidEmail, isValidPhone } from "@/mixims/validations"
 import { fileTray } from "ionicons/icons"
 
 interface tokenObject {
@@ -22,7 +22,9 @@ function storeTokens (response: tokenObject, type: string) {
 
 function useAuth() {
     const touched = reactive({
-        emailphone: false
+        emailphone: false,
+        email: false,
+        phone: false
     })
 
     const fields = reactive({
@@ -31,22 +33,27 @@ function useAuth() {
         password1: '',
         password2: '',
         email: '',
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         dob: '',
-        gender: ''
+        gender: '',
+        phone: ''
     })
 
     const valid = computed(() => {
         return {
-            emailphone: isValidPhoneEmail(fields.emailphone)
+            emailphone: isValidPhoneEmail(fields.emailphone),
+            email: isValidEmail(fields.email),
+            phone: isValidPhone(fields.phone)
         }
     })
 
     // It is usefull for inputs to show error after field is touched
     const error = computed(() => {
         return {
-            emailphone: touched.emailphone && !valid.value.emailphone
+            emailphone: touched.emailphone && !valid.value.emailphone,
+            email: touched.email && !valid.value.email,
+            phone: touched.phone && !valid.value.phone
         }
     })
     

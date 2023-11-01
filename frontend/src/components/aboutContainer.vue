@@ -32,23 +32,27 @@
     </ion-item>
 
     <ion-item>
-      <ion-input :disabled="user.verified" label="Email" inputmode="email" v-model="state.email" labelPlacement="floating"></ion-input>
+      <ion-input :disabled="user.verified" label="Email" inputmode="email" v-model="fields.email" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <div class="ion-text-end cpointer" v-if="!user.verified">
       <a @click="verifyEmail">Verify Email</a>
     </div>
 
-    <ion-item >
-      <ion-input v-model="state.firstName" label="First Name" labelPlacement="floating" placeholder="Enter here"></ion-input>
+    <ion-item lines="none">
+      <ion-input label="Phone" inputmode="tel" type="number" v-model="fields.phone" :counter="true" :maxlength="10" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input v-model="state.lastName" label="Last Name" labelPlacement="floating" placeholder="Enter here"></ion-input>
+      <ion-input v-model="fields.firstName" label="First Name" labelPlacement="floating" placeholder="Enter here"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-select v-model="state.gender" label="Gender" label-placement="floating" interface="popover">
+      <ion-input v-model="fields.lastName" label="Last Name" labelPlacement="floating" placeholder="Enter here"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-select v-model="fields.gender" label="Gender" label-placement="floating" interface="popover">
         <ion-select-option value="M">Male</ion-select-option>
         <ion-select-option value="F">Female</ion-select-option>
         <ion-select-option value="O">Others</ion-select-option>
@@ -64,7 +68,7 @@
 
     <ion-item lines="none" v-if="state.errors.length">
       <ion-text color="danger">
-        <ul style="padding-left: 15px">
+        <ul class="ul-error-text">
           <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
         </ul>
       </ion-text>
@@ -105,18 +109,14 @@ import gql from 'graphql-tag'
 import { cameraOutline, alertCircleOutline } from 'ionicons/icons'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
-import { isValidEmail } from '@/mixims/validations'
 import { useDialogStore } from '@/stores/dialog'
-import CommonDialog from '@/components/commonDialogContainer.vue';
+import { useAuth } from '@/composables/auth'
+import CommonDialog from '@/components/commonDialogContainer.vue'
 
 interface State {
   image: null,
   preview: string,
   refreshFileUpload: number,
-  firstName: string,
-  lastName: string,
-  gender: string,
-  email: string,
   loading: boolean,
   errors: string[]
 }
@@ -125,26 +125,24 @@ const state: State = reactive({
   image: null,
   preview: '',
   refreshFileUpload: 0,
-  firstName: '',
-  lastName: '',
-  gender: '',
-  email: '',
   loading: false,
   errors: []
 })
 
 const user = useUserStore();
 const toast = useToastStore();
+const {fields, valid, error} = useAuth();
 const dialog = useDialogStore();
 
 watch(() => user.username, setUserState)
 
 function setUserState() {
-  const { firstName, lastName, gender, email } = user
-  state.firstName = firstName
-  state.lastName = lastName
-  state.gender = gender
-  state.email = email
+  const { firstName, lastName, gender, email, phone } = user
+  fields.firstName = firstName
+  fields.lastName = lastName
+  fields.gender = gender
+  fields.email = email
+  fields.phone = phone
 }
 
 setUserState()
@@ -195,12 +193,11 @@ function imageSelected(blob: CropperResult, type: string) {
 function updateProfile () {
   state.errors = []
 
-  if (!isValidEmail(state.email)) {
-    state.errors.push('Please enter a valid email')
-    return
-  }
+  !valid.value.email && state.errors.push('Please enter a valid email')
+  !valid.value.phone && state.errors.push('Please enter a valid phone')
+  if (state.errors.length) { return }
 
-  const {firstName, lastName, gender, email} = state
+  const {firstName, lastName, gender, email} = fields
 
   state.loading = true
 
