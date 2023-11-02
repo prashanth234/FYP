@@ -19,15 +19,16 @@ Even after udpate previous image is viewed
 
 REWORK ON SHEET AND FINALIZE WHAT NEEDS TO BE DONE
 
-what if user don't have email so have the phone number concept.
-(validation for v1 ignore)
-if ignored (how will password reset work)
+- How will password reset work
+- send email to admin on password reset
 
 == 1 day ===
-.) Remove support withoout login
-.) Confirm logout or circle profile icon on toolbar
 .) Add FAQ to reward and contest (Finalize coupons amount and realvalue)
 .) Disable like for bot post (or remove it)
+
+Done
+.) Remove support withoout login
+.) Confirm logout or circle profile icon on toolbar
 
 == 2 day ==
 .) Share option for post

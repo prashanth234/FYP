@@ -1,16 +1,14 @@
 <template>
 	<ion-modal class="common-modal" :is-open="dialog.open" :show-backdrop="true" @willDismiss="dialog.close">
-		<ion-row style="padding: 7px">
+		<ion-row style="padding: 10px">
 			<ion-col size="12">
 				<ion-row>
 					<ion-col size="auto" v-if="dialog.icon">
 						<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
 					</ion-col>
-					<ion-col class="title" v-if="dialog.title">
-						<strong>{{dialog.title}}</strong>
-					</ion-col>
-					<ion-col class="description" v-if="dialog.description">
-						{{dialog.description}}
+					<ion-col v-if="dialog.title" style="padding-left: 5px;">
+						<div class="title" v-if="dialog.title"><strong>{{dialog.title}}</strong></div>
+						<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
 					</ion-col>
 				</ion-row>
 			</ion-col>
@@ -62,7 +60,6 @@ function onClickButton (button: Button) {
   .title {
     font-size: 16px;
     color: var(--ion-color-dark);
-		padding-top: 10px;
   }
 	.description {
 		font-size: 14px;

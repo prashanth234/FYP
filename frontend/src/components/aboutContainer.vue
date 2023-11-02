@@ -109,8 +109,8 @@ import gql from 'graphql-tag'
 import { cameraOutline, alertCircleOutline } from 'ionicons/icons'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
-import { useDialogStore } from '@/stores/dialog'
 import { useAuth } from '@/composables/auth'
+import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/commonDialogContainer.vue'
 
 interface State {

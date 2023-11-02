@@ -146,6 +146,11 @@ function isValidEmail() {
 
 function forgotPassword () {
 
+  if (valid.value.emailphone) {
+    toast.$patch({message: "A password reset link will be sent to your mobile shortly.", color: 'success', open: true})
+    return
+  }
+
   if (!isValidEmail()) { return }
   state.forgotPassLoading = true
   state.errors = []
@@ -171,7 +176,7 @@ function forgotPassword () {
 
   onDone(({data: {sendPasswordResetEmail}}) => {
     if (sendPasswordResetEmail.success) {
-      toast.$patch({message: "Password reset email sent successfully!", color: 'success', open: true})
+      toast.$patch({message: "An email with a password reset link will be sent to you shortly.", color: 'success', open: true})
     }
     state.forgotPassLoading = false
   })

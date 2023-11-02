@@ -152,6 +152,9 @@
       />
     </ion-modal>
 
+    <!-- Common Dialog -->
+    <common-dialog @action="$event => $event.control()"></common-dialog>
+
   </ion-page>
 
 </template>
@@ -171,6 +174,10 @@ import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
 import { useApolloClient } from '@vue/apollo-composable'
 
+import { useDialogStore } from '@/stores/dialog'
+import CommonDialog from '@/components/commonDialogContainer.vue'
+import { warningOutline } from 'ionicons/icons'
+
 const { resolveClient } = useApolloClient()
 const client = resolveClient()
 
@@ -180,6 +187,7 @@ const router = useRoute();
 const user = useUserStore();
 const postDialog = usePostDialog();
 const toast = useToastStore();
+const dialog = useDialogStore();
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
@@ -230,7 +238,7 @@ const state = reactive({
       auth: true,
       rpath: '',
       dicon: logOutOutline,
-      action: logout.bind(false)
+      action: confirmLogout
     }
   ]
 })
@@ -366,11 +374,27 @@ function checkAuthStatus() {
   }
 }
 
+function confirmLogout() {
+  const buttons = [
+    {title: 'Yes', color: 'primary', action: 'logout', control: logout},
+    {title: 'Cancel', color: 'light'}
+  ]
+
+  dialog.show(
+    'Are you sure you want to log out?',
+    '',
+    buttons,
+    warningOutline,
+    'warning'
+  )
+}
+
 function logout(showToast: boolean = true) {
   navigate('/')
   user.reset()
   client.resetStore()
   showToast && toast.$patch({message: "See you again soon! You've been logged out gracefully.", color: 'success', open: true})
+  dialog.open = false
 }
 
 checkAuthStatus()
