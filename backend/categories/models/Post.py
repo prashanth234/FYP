@@ -8,9 +8,10 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE, null=True)
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.PositiveIntegerField(default=0)
+    is_bot = models.BooleanField(default=False)
     
     def __str__(self) -> str:
       return self.description

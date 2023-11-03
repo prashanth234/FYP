@@ -29,6 +29,7 @@
           <div v-if="props.position">
             <strong>#{{props.position}}</strong>
           </div>
+          <ion-badge v-else-if="post.isBot" color="primary" slot="end" style="margin-right: -5px; font-size: 12px; font-weight: 550;">Sample</ion-badge>
         </ion-item>
 
         <ion-item class="image" lines="none" style="padding-top: 12px;" v-if="post.postfileSet.length">
@@ -65,10 +66,11 @@
             :icon="heartOutline"
             size="large"
           />
-          <ion-label 
+          <ion-label
             class="ion-padding-start"
           >
-            {{ post.likes < 0 ? 0 : post.likes }} Like{{post.likes == 1 ? '' : 's'}}
+            <span v-if="post.isBot">Like</span>
+            <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Like{{post.likes == 1 ? '' : 's'}}</span>
           </ion-label>
         </ion-item>
 
@@ -81,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, useIonRouter  } from '@ionic/vue';
+import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge, useIonRouter  } from '@ionic/vue';
 import { heartOutline, heart, pencilOutline, trashOutline, expand } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'

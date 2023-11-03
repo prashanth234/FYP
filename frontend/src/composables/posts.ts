@@ -14,6 +14,7 @@ export function getQuery(type: string) {
             userLiked,
             description,
             createdAt,
+            isBot,
             postfileSet {
               file
             },

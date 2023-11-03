@@ -21,6 +21,6 @@ class WinnerAdmin(admin.ModelAdmin):
                     
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('description', 'category', 'competition', 'likes')
+    list_display = ('description', 'category', 'competition', 'likes', 'is_bot')
 
 # admin.site.register(Competition)
