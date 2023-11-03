@@ -115,9 +115,9 @@
 								<ion-accordion-group>
 									<ion-accordion value="first">
 										<ion-item slot="header" color="light">
-											<ion-label>View Coin Activity</ion-label>
+											<ion-label style="font-weight: 550;">View Coin Activity</ion-label>
 										</ion-item>
-										<div style="padding: 5px;overflow: auto; background-color: var(--ion-card-background)" slot="content">
+										<div style="padding: 5px; overflow: auto; background-color: var(--ion-card-background)" slot="content">
 											<table style="width:100%;">
 												<tr>
 													<th style="min-width: 200px;">Activity</th>
@@ -175,6 +175,27 @@
 										</div>
 									</ion-accordion>
 								</ion-accordion-group>
+
+								<!-- Faqs -->
+								
+								<ion-row class="ion-padding-top">
+									
+									<ion-col size="12" style="font-weight: 600;">
+										Frequently Asked Questions
+									</ion-col>
+
+									<ion-col size="12" v-for="(faq, index) in faqs?.faqs" :key="index" style="font-size: 15px;">
+
+										<div style="font-weight: 600;">
+											Q: {{ faq.question }}
+										</div>
+
+										<div>
+											A: {{ faq.answer }}
+										</div>
+
+									</ion-col>
+								</ion-row>
 
 							</div>
 
@@ -399,6 +420,15 @@ const { result: rewards, onResult: rewardsResult, onError } = useQuery(gql`
 onError(() => {
 })
 
+const { result: faqs, onResult: faqsResult ,onError: faqsError } = useQuery(gql`
+                              query rewards {
+																faqs (qtype: "REWARD") {
+																	question,
+																	answer
+																}
+                              }
+                            `)
+
 
 </script>
 
@@ -410,7 +440,7 @@ onError(() => {
 	/* Ensure all rows have the same height */
 	grid-auto-rows: auto;
 	padding: 5px;
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
 .grid-item {
   border: 1px solid var(--ion-color-light-shade);

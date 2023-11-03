@@ -3,3 +3,4 @@ from .User import *
 from .Support import *
 from .CoinActivity import *
 from .Reward import *
+from .Faq import *

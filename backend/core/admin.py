@@ -4,6 +4,7 @@ from core.models.User import User
 from core.models.Support import Support
 from core.models.CoinActivity import CoinActivity
 from core.models.Reward import Reward
+from core.models.Faq import Faq
 
 # Register your models here.
 admin.site.register(User)
@@ -19,6 +20,10 @@ class CoinActivityAdmin(admin.ModelAdmin):
 @admin.register(Reward)
 class RewardAdmin(admin.ModelAdmin):
     list_display = ('name', 'image', 'points', 'type', 'pointsvalue')
+
+@admin.register(Faq)
+class FaqAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer', 'order', 'type']
 
 app = apps.get_app_config('graphql_auth')
 
