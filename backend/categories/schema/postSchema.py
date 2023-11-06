@@ -248,8 +248,8 @@ class Query(graphene.ObjectType):
         # Return paginated list of posts
         return PostListType(posts=posts, total=total)
     
-    post_details = graphene.Field(PostType, id=graphene.Int())
+    post_details = graphene.Field(PostType, id=graphene.String(), category=graphene.String()    )
 
-    def resolve_post_details(root, info, id):
-        return Post.objects.get(pk=id)
+    def resolve_post_details(root, info, id, category):
+        return Post.objects.get(pk=id, category__id=category)
         
