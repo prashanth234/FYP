@@ -2,15 +2,17 @@
 	<ion-modal class="common-modal" :is-open="dialog.open" :show-backdrop="true" @willDismiss="dialog.close">
 		<ion-row style="padding: 10px">
 			<ion-col size="12">
-				<ion-row>
-					<ion-col size="auto" v-if="dialog.icon">
-						<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
-					</ion-col>
-					<ion-col v-if="dialog.title" style="padding-left: 5px;">
-						<div class="title" v-if="dialog.title"><strong>{{dialog.title}}</strong></div>
-						<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
-					</ion-col>
-				</ion-row>
+				<slot>
+					<ion-row>
+						<ion-col size="auto" v-if="dialog.icon">
+							<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
+						</ion-col>
+						<ion-col v-if="dialog.title" style="padding-left: 5px;">
+							<div class="title" v-if="dialog.title"><strong>{{dialog.title}}</strong></div>
+							<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
+						</ion-col>
+					</ion-row>
+				</slot>
 			</ion-col>
 			<ion-col size="12">
 				<ion-button

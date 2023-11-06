@@ -72,6 +72,38 @@
             <span v-if="post.isBot">Like</span>
             <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Like{{post.likes == 1 ? '' : 's'}}</span>
           </ion-label>
+          <ion-modal class="share-modal" :is-open="dialog.open" :show-backdrop="true" @willDismiss="dialog.close">
+            <div class="ion-padding ion-margin ion-text-center">
+              <div lines="none" style="font-size: 18px; font-weight: 550; margin-bottom: 15px;">
+                Share your post to help it reach more people!
+              </div>
+              <ion-card class="ion-margin-bottom ion-padding" style="color: var(--ion-color-dark-tint)">
+                {{share.url}}
+              </ion-card>
+              <ShareNetwork
+                v-for="network in share.networks"
+                :network="network.network"
+                :key="network.network"
+                :url="share.url"
+                :title="share.title"
+                :description="share.description"
+                :quote="share.quote"
+                :hashtags="share.hashtags"
+                class="ion-padding"
+              >
+                <ion-icon :style="`color: ${network.color}; font-size: 40px`" :icon="network.icon"></ion-icon>
+              </ShareNetwork>
+              <div class="ion-margin-top">
+                <ion-button @click="dialog.close" size="small" color="light">Close</ion-button>
+              </div>
+            </div>
+          </ion-modal>
+          <ion-icon
+            @click="sharePost()"
+            class="cpointer share-icon"
+            style="float: right;"
+            :icon="shareSocialOutline"
+          />
         </ion-item>
 
         <slot name="bottom"></slot>
@@ -83,16 +115,33 @@
 </template>
 
 <script lang="ts" setup>
-import { IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge, useIonRouter  } from '@ionic/vue';
-import { heartOutline, heart, pencilOutline, trashOutline, expand } from 'ionicons/icons'
+import { IonModal, IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge  } from '@ionic/vue';
+import { heartOutline, heart, pencilOutline, trashOutline, shareSocialOutline, logoWhatsapp, logoFacebook, logoLinkedin } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
+import { useDialogStore } from '@/stores/dialog'
 
 const user = useUserStore()
+const dialog = useDialogStore()
 const props = defineProps(['post', 'showEdit', 'position'])
+
+const share = reactive({
+  url: '',
+  title: 'Share in the Joy!',
+  description: "Hey there, I’ve just posted about something I absolutely love, and I'm excited to have you all join in. Please take a moment to check it out and hit that like button.",
+  quote: '',
+  hashtags: '',
+  networks: [
+    { network: 'whatsapp', name: 'Whatsapp', icon: logoWhatsapp, color: '#25d366' },
+    { network: 'facebook', name: 'Facebook', icon: logoFacebook, color: '#1877f2' },
+    { network: 'linkedin', name: 'LinkedIn', icon: logoLinkedin, color: '#007bb5' }
+  ]
+})
+
+share.url = `${document.URL}/${props.post.id}`
 
 const emit = defineEmits<{
   (e: 'editPost'): void
@@ -103,7 +152,11 @@ const userAvatar = computed(() => {
   return props.post.user.avatar ? `/media/${props.post.user.avatar}` : '/static/core/avatar.svg'
 })
 
-function likePost () {
+function sharePost() {
+  dialog.show('', '', [])
+}
+
+function likePost() {
   if (!user.success) {
     user.authMessage = 'Your like awaits! Sign in to show appreciation for posts.'
     user.auth = true
@@ -179,7 +232,7 @@ function likePost () {
     }
     
     &:hover:not(:has(.operations:hover)) .like-icon {
-      color: grey;
+      opacity: 1;
     }
   }
 
@@ -208,6 +261,21 @@ function likePost () {
     font-size: 14px;
     a:hover {
       text-decoration: underline;
+    }
+  }
+  .share-icon, .like-icon {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .share-modal {
+    --max-width: 90%;
+    --height: auto;
+  }
+  @media only screen and (min-width: 576px) {
+    .share-modal {
+      --max-width: 470px;
     }
   }
 </style>

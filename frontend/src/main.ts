@@ -30,12 +30,15 @@ import 'vue-advanced-cropper/dist/style.css';
 // import store from './vuex';
 import { createPinia } from 'pinia';
 
+import VueSocialSharing from 'vue-social-sharing';
+
 const pinia = createPinia()
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(pinia);
+  .use(pinia)
+  .use(VueSocialSharing);
   // .use(store)
   
 router.isReady().then(() => {

@@ -28,7 +28,7 @@ export const useDialogStore = defineStore('dialog', {
   getters: {
   },
   actions: {
-    show(title: string, description: string, buttons: Array<Button>, icon: string, iconColor: string) {
+    show(title: string, description: string, buttons: Array<Button>, icon?: string, iconColor?: string) {
         this.$patch({title, description, buttons, icon, iconColor, open: true})
     },
     close() {
