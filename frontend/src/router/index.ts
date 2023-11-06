@@ -58,7 +58,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'home'
       },
       {
-        path: 'interests/:id',
+        path: 'interests/:id/posts/:postid?',
         name: 'CategoryDetails',
         component: CategoriesDetailsPage,
         props: true

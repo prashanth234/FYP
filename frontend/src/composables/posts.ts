@@ -1,7 +1,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
-import { ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
 export function getQuery(type: string) {
   return {
@@ -51,7 +51,6 @@ export function getPosts(
     perPage: 5
   }
 
-  // Also update create post query
   const {QUERY: POST_QUERY} = getQuery(type)
 
   const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
@@ -155,5 +154,47 @@ export function getWinners(competition: string | undefined) {
     winners,
     refetch,
     onResult
+  }
+}
+
+export function getPostDetails(
+  id: string,
+  category: string
+) {
+
+  const QUERY = gql`
+    query PostDetails ($id: String, $category: String) {
+      postDetails (id: $id, category: $category) {
+        id,
+        likes,
+        userLiked,
+        description,
+        createdAt,
+        isBot,
+        postfileSet {
+          file
+        },
+        category {
+          id
+        },
+        user {
+          id,
+          username,
+          avatar
+        }
+      }
+    }
+  `
+
+  const { result: post, loading, onResult, onError } = useQuery(QUERY, () => ({
+    id,
+    category
+  }))
+
+  return {
+    post,
+    loading,
+    onResult,
+    onError
   }
 }

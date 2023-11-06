@@ -16,9 +16,9 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
   getters: {
   },
   actions: {
-    getCategoryInfo (id: string) {
+    getCategoryInfo (id: string, ionRouter: any) {
       this.loading = true
-      const { result, onResult } = useQuery(gql`
+      const { result, onResult, onError } = useQuery(gql`
                                     query categoryDetails ($id: Int!) {
                                         categoryDetails (id: $id) {
                                             id,
@@ -45,6 +45,10 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
             this.$patch(value.data.categoryDetails)
             this.loading = false
         }
+      })
+
+      onError((error) => {
+        ionRouter.replace('/')
       })
     }
   },

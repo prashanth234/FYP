@@ -13,6 +13,7 @@ export interface Post {
   description: string,
   postfileSet: PostFileType[],
   category: {
+    id: string,
     oftype: string
   }
 }

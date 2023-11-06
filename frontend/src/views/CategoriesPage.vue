@@ -46,7 +46,7 @@ const category = useCategoryStore();
 category.getCategories()
 
 function openCategory (category: categoryObject) {
-  ionRouter.push(`interests/${category.id}`)
+  ionRouter.push(`interests/${category.id}/posts`)
 }
 </script>
 

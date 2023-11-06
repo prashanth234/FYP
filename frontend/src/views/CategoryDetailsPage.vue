@@ -11,6 +11,7 @@
 
             <ion-row class="ion-justify-content-center">
 
+              <!-- Information about category -->
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11" >
 
                 <ion-card class="ion-padding border-radius-std ion-no-margin" >
@@ -36,6 +37,7 @@
                 />
               </ion-col>
 
+              <!-- Heading -->
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
                 <div class="feed">
                   <div class="title">Feed</div>
@@ -77,6 +79,7 @@
                 </div>
               </ion-col>
 
+              <!-- Notes -->
               <ion-col
                 class="ion-no-padding"
                 size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11"
@@ -109,9 +112,20 @@
 
               </ion-col>
 
+              <!-- Single post -->
+              <ion-col
+                v-if="state.pdShow"
+                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
+              >
+                <post :post="state.pdetails"/>
+                <div class="ion-margin-vertical ion-text-center ion-padding-vertical">
+                  <ion-button fill="clear" @click="hidePostDetails">Click to discover more posts</ion-button>
+                </div>
+              </ion-col>
+
               <!-- Display the posts -->
               <ion-col
-                v-show="state.tabSelected != 'winners'"
+                v-show="state.tabSelected != 'winners' && !state.pdShow"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
                 v-for="(post, index) in posts?.allPosts?.posts"
                 :key="post.id"
@@ -132,7 +146,7 @@
 
             </ion-row>
 
-            <ion-infinite-scroll @ionInfinite="fetchMore" threshold="0">
+            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" threshold="0">
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 
@@ -158,11 +172,11 @@
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent } from '@ionic/vue'
+import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
 
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import { getPosts, getWinners } from '@/composables/posts'
+import { getPosts, getWinners, getPostDetails } from '@/composables/posts'
 import { scrollTop } from '@/composables/scroll'
 
 import { CompetitionInfo } from '@/mixims/interfaces'
@@ -171,6 +185,7 @@ import { Post as PostType } from '@/mixims/interfaces'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+
 
 interface Winner {
   post: PostType,
@@ -183,7 +198,9 @@ interface State {
   refreshCreatePost: number,
   creatingPost: Boolean,
   tabSelected: SegmentValue | undefined,
-  winners: Array<Winner>
+  winners: Array<Winner>,
+  pdShow: boolean,
+  pdetails: PostType | null
 }
 
 const state: State = reactive({
@@ -191,23 +208,27 @@ const state: State = reactive({
   creatingPost: false,
   refreshCreatePost: 1,
   tabSelected: 'allposts',
-  winners: []
+  winners: [],
+  pdShow: false,
+  pdetails: null
 })
 
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 const user = useUserStore();
 const toast = useToastStore();
+const ionRouter = useIonRouter();
 
 const props = defineProps({
-  id: String
+  id: String,
+  postid: String
 })
 
 // As opened category details page are opened again need to update the categorydetails since
 // once the category details is opened it will not get rerendered again
 watch(() => route.params.id, () => {
   if (route.name == 'CategoryDetails' && route.params.id == props.id) {
-    categoryInfo.getCategoryInfo(props.id)
+    categoryInfo.getCategoryInfo(props.id, ionRouter)
   }
 })
 
@@ -215,9 +236,12 @@ watch(() => route.params.id, () => {
 onBeforeRouteLeave(() => {
   setCategoryDefault()
   categoryInfo.name && categoryInfo.$reset()
+  props.postid && (state.pdShow = true)
 })
 
-props.id && categoryInfo.getCategoryInfo(props.id)
+props.postid && fetchPostDetails(props.postid, props.id || '')
+
+props.id && categoryInfo.getCategoryInfo(props.id, ionRouter)
 
 const { content } = scrollTop()
 
@@ -225,6 +249,7 @@ const category =  props.id || undefined
 const { posts, getMore, variables } = getPosts('allPosts', category)
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
+  hidePostDetails()
   state.tabSelected = 'allposts'
   categoryInfo.selectedComptn = competition
   variables.competition.value = competition.id
@@ -270,6 +295,32 @@ function fetchMore(ev: InfiniteScrollCustomEvent) {
     // })
   }
 
+}
+
+// Get indivual post details if searched using url
+function fetchPostDetails (id: string, category: string) {
+  if (id && category) {
+    state.pdetails = null
+    const { onResult, onError } = getPostDetails(id, category)
+    onResult(({data, loading}) => {
+      if (!loading) {
+        state.pdetails = data.postDetails
+        hidePostDetails()
+      }
+    })
+    onError((error) => {
+      if (error?.graphQLErrors) {
+        toast.$patch({message: error?.graphQLErrors[0].message, color: 'danger', open: true})
+      } else {
+        toast.$patch({message: 'Post retrieval error. Please Retry.', color: 'danger', open: true})
+      }
+      ionRouter.replace(`/interests/${props.id}/posts`)
+    })
+  }
+}
+
+function hidePostDetails () {
+  state.pdShow = !state.pdShow
 }
 </script>
 

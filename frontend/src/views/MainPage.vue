@@ -200,7 +200,7 @@ const state = reactive({
     {
       name: 'Home',
       rname: 'home',
-      rpath: '/',
+      rpath: '/home',
       auth: false,
       dicon: homeOutline,
       micon: homefull,

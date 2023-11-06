@@ -23,12 +23,12 @@ REWORK ON SHEET AND FINALIZE WHAT NEEDS TO BE DONE
 - send email to admin on password reset
 
 == 1 day ===
-.) Add FAQ to reward and contest (Finalize coupons amount and realvalue)
-.) Disable like for bot post (or remove it)
 
 Done
 .) Remove support withoout login
-.) Confirm logout or circle profile icon on toolbar
+.) Confirm logout
+.) Add FAQ to reward and contest
+.) Disable like for bot post (or remove it)
 
 == 2 day ==
 .) Share option for post
@@ -48,6 +48,7 @@ Done
 .) Prevent access to 8000 port - Control using security rules and ip address
 .) Increase upload image size for https request as well
 .) Enable https and brand name - 1-2 days
+.) Finalize coupons amount and realvalue
 
 
 Total - 7 Weeks
