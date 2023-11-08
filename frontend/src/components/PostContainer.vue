@@ -50,27 +50,43 @@
           </text-clamp>
         </ion-item>
 
-        <ion-item lines="none" class="line-top" style="padding: 3px 0px;">
-          <ion-icon
+        <ion-item lines="none" class="line-top" style="padding: 4px 0px 4px 5px;">
+          <!-- <ion-icon
             @click="likePost()"
             class="cpointer"
             v-if="post.userLiked"
             style="color:rgb(246, 73, 73)"
             :icon="heart"
             size="large"
-          />
-          <ion-icon
+          /> -->
+          <transition name="slide-fade" mode="out-in">
+            <img
+              @click="likePost()"
+              class="cpointer"
+              v-if="post.userLiked"
+              src="@/assets/icons/clap-fill-blue.svg"
+              style="width: 28px; height: 28px;"
+            />
+            <img
+              @click="likePost()"
+              class="cpointer like-icon"
+              v-else
+              src="@/assets/icons/clap-outline.svg"
+              style="width: 28px; height: 28px;"
+            />
+          </transition>
+          <!-- <ion-icon
             @click="likePost()"
             class="like-icon cpointer"
             v-else
             :icon="heartOutline"
             size="large"
-          />
+          /> -->
           <ion-label
-            class="ion-padding-start"
+            style="font-weight: 450; font-size: 14px; padding-left: 10px;"
           >
-            <span v-if="post.isBot">Like</span>
-            <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Like{{post.likes == 1 ? '' : 's'}}</span>
+            <span v-if="post.isBot">Clap</span>
+            <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Clap{{post.likes == 1 ? '' : 's'}}</span>
           </ion-label>
           <ion-modal class="share-modal" :is-open="dialog.open" :show-backdrop="true" @willDismiss="dialog.close">
             <div class="ion-padding ion-margin ion-text-center">
@@ -115,7 +131,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonModal, IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge  } from '@ionic/vue';
+import { IonButton, IonModal, IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge  } from '@ionic/vue';
 import { heartOutline, heart, pencilOutline, trashOutline, shareSocialOutline, logoWhatsapp, logoFacebook, logoLinkedin } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -277,5 +293,13 @@ function likePost() {
     .share-modal {
       --max-width: 470px;
     }
+  }
+  .slide-fade-enter-active, .slide-fade-leave-active {
+    transition: all 0.3s;
+  }
+
+  .slide-fade-enter, .slide-fade-leave-to {
+    transform: translateY(-100%);
+    opacity: 0;
   }
 </style>

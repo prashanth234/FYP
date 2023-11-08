@@ -119,7 +119,7 @@
               >
                 <post :post="state.pdetails"/>
                 <div class="ion-margin-vertical ion-text-center ion-padding-vertical">
-                  <ion-button fill="clear" @click="hidePostDetails">Click to discover more posts</ion-button>
+                  <ion-button fill="clear" @click="hidePostDetails(false)">Click to discover more posts</ion-button>
                 </div>
               </ion-col>
 
@@ -249,7 +249,7 @@ const category =  props.id || undefined
 const { posts, getMore, variables } = getPosts('allPosts', category)
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
-  hidePostDetails()
+  hidePostDetails(true)
   state.tabSelected = 'allposts'
   categoryInfo.selectedComptn = competition
   variables.competition.value = competition.id
@@ -305,7 +305,7 @@ function fetchPostDetails (id: string, category: string) {
     onResult(({data, loading}) => {
       if (!loading) {
         state.pdetails = data.postDetails
-        hidePostDetails()
+        hidePostDetails(false)
       }
     })
     onError((error) => {
@@ -319,8 +319,8 @@ function fetchPostDetails (id: string, category: string) {
   }
 }
 
-function hidePostDetails () {
-  state.pdShow = !state.pdShow
+function hidePostDetails (value: boolean) {
+  state.pdShow = !value
 }
 </script>
 
