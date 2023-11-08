@@ -48,12 +48,8 @@
           </ion-input>
         </ion-col>
 
-        <ion-col size="12" v-if="state.errors.length">
-          <ion-text>
-            <ul class="ul-error-text">
-              <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-            </ul>
-          </ion-text>
+        <ion-col size="12" class="ion-no-padding">
+          <errors :errors="state.errors"/>
         </ion-col>
 
         <ion-col size="12">
@@ -105,6 +101,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
+import errors from './errorContainer.vue'
 
 interface State {
   errors: string[],

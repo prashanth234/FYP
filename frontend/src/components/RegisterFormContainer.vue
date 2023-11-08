@@ -57,12 +57,8 @@
           </ion-input>
         </ion-col>
 
-        <ion-col size="12" v-if="state.errors.length">
-          <ion-text>
-            <ul class="ul-error-text">
-              <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-            </ul>
-          </ion-text>
+        <ion-col size="12" class="ion-no-padding">
+          <errors :errors="state.errors"/>
         </ion-col>
 
         <ion-col size="12">
@@ -100,7 +96,8 @@ import { reactive, inject, computed } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
 import { useToastStore } from '@/stores/toast'
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/stores/user'
+import errors from './errorContainer.vue'
 
 const emit = defineEmits<{
   (e: 'login'): void

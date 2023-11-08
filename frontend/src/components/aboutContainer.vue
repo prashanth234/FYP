@@ -66,13 +66,9 @@
       </ion-popover>
     </ion-item> -->
 
-    <ion-item lines="none" v-if="state.errors.length">
-      <ion-text color="danger">
-        <ul class="ul-error-text">
-          <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-        </ul>
-      </ion-text>
-    </ion-item>
+    <div class="ion-padding-horizontal">
+      <errors :errors="state.errors"/>
+    </div>
 
   </ion-list>
 
@@ -112,6 +108,7 @@ import { useToastStore } from '@/stores/toast'
 import { useAuth } from '@/composables/auth'
 import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/commonDialogContainer.vue'
+import errors from './errorContainer.vue'
 
 interface State {
   image: null,

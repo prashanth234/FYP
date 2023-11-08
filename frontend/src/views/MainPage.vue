@@ -27,7 +27,7 @@
                 <ion-col size="12" class="ion-text-center" style="padding-top: 20px; color: var(--ion-color-dark)">
                   <div v-if="user.success">
                     <div style="font-size: 15px; font-weight: 600;"> Welcome </div>
-                    <div style="font-size: 20px; font-weight: 600;"> {{ user?.username }} </div>
+                    <div style="font-size: 20px; font-weight: 600;"> {{ displayName }} </div>
                   </div>
                   <div v-else>
                     <div style="font-size: 15px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
@@ -191,6 +191,17 @@ const dialog = useDialogStore();
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
+})
+
+const displayName = computed(() => {
+  if (user) {
+    if (user.firstName || user.lastName) {
+      return `${user.firstName} ${user.lastName}`
+    } else {
+      return user.username
+    }
+  }
+  return ''
 })
 
 const state = reactive({

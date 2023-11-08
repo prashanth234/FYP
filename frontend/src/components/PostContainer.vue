@@ -88,7 +88,7 @@
             <span v-if="post.isBot">Clap</span>
             <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Clap{{post.likes == 1 ? '' : 's'}}</span>
           </ion-label>
-          <ion-modal class="share-modal" :is-open="dialog.open" :show-backdrop="true" @willDismiss="dialog.close">
+          <ion-modal class="share-modal" :is-open="share.show" :show-backdrop="true" @willDismiss="closeSharePost">
             <div class="ion-padding ion-margin ion-text-center">
               <div lines="none" style="font-size: 18px; font-weight: 550; margin-bottom: 15px;">
                 Share your post to help it reach more people!
@@ -110,7 +110,7 @@
                 <ion-icon :style="`color: ${network.color}; font-size: 40px`" :icon="network.icon"></ion-icon>
               </ShareNetwork>
               <div class="ion-margin-top">
-                <ion-button @click="dialog.close" size="small" color="light">Close</ion-button>
+                <ion-button @click="closeSharePost" size="small" color="light">Close</ion-button>
               </div>
             </div>
           </ion-modal>
@@ -138,10 +138,8 @@ import gql from 'graphql-tag'
 import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
-import { useDialogStore } from '@/stores/dialog'
 
 const user = useUserStore()
-const dialog = useDialogStore()
 const props = defineProps(['post', 'showEdit', 'position'])
 
 const share = reactive({
@@ -154,7 +152,8 @@ const share = reactive({
     { network: 'whatsapp', name: 'Whatsapp', icon: logoWhatsapp, color: '#25d366' },
     { network: 'facebook', name: 'Facebook', icon: logoFacebook, color: '#1877f2' },
     { network: 'linkedin', name: 'LinkedIn', icon: logoLinkedin, color: '#007bb5' }
-  ]
+  ],
+  show: false
 })
 
 share.url = `${document.URL}/${props.post.id}`
@@ -169,7 +168,11 @@ const userAvatar = computed(() => {
 })
 
 function sharePost() {
-  dialog.show('', '', [])
+  share.show = true
+}
+
+function closeSharePost() {
+  share.show = false
 }
 
 function likePost() {
