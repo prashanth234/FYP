@@ -221,6 +221,7 @@ import { reactive } from 'vue';
 import { closeCircleOutline, hourglassOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
 import { formatDateToCustomFormat  } from '@/mixims/common';
+import { onBeforeRouteLeave } from 'vue-router'
 
 interface Denomination {
 	points: number,
@@ -234,6 +235,11 @@ interface State {
 	loading: boolean,
 	denominations: Denomination[]
 }
+
+onBeforeRouteLeave(() => {
+  state.points = 0
+	state.selReward = -1
+})
 
 scrollTop()
 

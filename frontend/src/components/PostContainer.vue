@@ -50,7 +50,8 @@
           </text-clamp>
         </ion-item>
 
-        <ion-item lines="none" class="line-top" style="padding: 4px 0px 4px 5px;">
+        <ion-item lines="none" class="line-top" style="padding: 8px 0px 8px 5px;">
+
           <!-- <ion-icon
             @click="likePost()"
             class="cpointer"
@@ -67,13 +68,10 @@
               src="@/assets/icons/clap-fill-blue.svg"
               style="width: 28px; height: 28px;"
             />
-            <img
-              @click="likePost()"
-              class="cpointer like-icon"
+            <ClapOutline
               v-else
-              src="@/assets/icons/clap-outline.svg"
-              style="width: 28px; height: 28px;"
-            />
+              class="like-icon"
+            ></ClapOutline>
           </transition>
           <!-- <ion-icon
             @click="likePost()"
@@ -83,14 +81,24 @@
             size="large"
           /> -->
           <ion-label
-            style="font-weight: 450; font-size: 14px; padding-left: 10px;"
-          >
-            <span v-if="post.isBot">Clap</span>
-            <span v-else>{{ post.likes < 0 ? 0 : post.likes }} Clap{{post.likes == 1 ? '' : 's'}}</span>
+            v-if="!post.isBot"
+            class="like-count-label"
+          > 
+            <span>{{ post.likes < 0 ? 0 : post.likes }}</span>
           </ion-label>
-          <ion-modal class="share-modal" :is-open="share.show" :show-backdrop="true" @willDismiss="closeSharePost">
-            <div class="ion-padding ion-margin ion-text-center">
-              <div lines="none" style="font-size: 18px; font-weight: 550; margin-bottom: 15px;">
+          <ion-modal
+            class="share-modal"
+            :is-open="share.show"
+            :show-backdrop="true"
+            @willDismiss="closeSharePost"
+          >
+            <div 
+              class="ion-padding ion-margin ion-text-center"
+            >
+              <div
+                lines="none"
+                style="font-size: 18px; font-weight: 550; margin-bottom: 15px;"
+              >
                 Share your post to help it reach more people!
               </div>
               <ion-card class="ion-margin-bottom ion-padding" style="color: var(--ion-color-dark-tint)">
@@ -106,6 +114,7 @@
                 :quote="share.quote"
                 :hashtags="share.hashtags"
                 class="ion-padding"
+                @open="closeSharePost"
               >
                 <ion-icon :style="`color: ${network.color}; font-size: 40px`" :icon="network.icon"></ion-icon>
               </ShareNetwork>
@@ -115,6 +124,7 @@
             </div>
           </ion-modal>
           <ion-icon
+            v-if="!post.isBot"
             @click="sharePost()"
             class="cpointer share-icon"
             style="float: right;"
@@ -132,12 +142,13 @@
 
 <script lang="ts" setup>
 import { IonButton, IonModal, IonList, IonItem, IonImg, IonLabel, IonAvatar, IonCard, IonCardContent, IonIcon, IonBadge  } from '@ionic/vue';
-import { heartOutline, heart, pencilOutline, trashOutline, shareSocialOutline, logoWhatsapp, logoFacebook, logoLinkedin } from 'ionicons/icons'
+import { pencilOutline, trashOutline, shareSocialOutline, logoWhatsapp, logoFacebook, logoLinkedin } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
+import ClapOutline from './clapOutline.vue'
 
 const user = useUserStore()
 const props = defineProps(['post', 'showEdit', 'position'])
@@ -251,7 +262,7 @@ function likePost() {
     }
     
     &:hover:not(:has(.operations:hover)) .like-icon {
-      opacity: 1;
+      opacity: 0.8;
     }
   }
 
@@ -282,7 +293,16 @@ function likePost() {
       text-decoration: underline;
     }
   }
-  .share-icon, .like-icon {
+  .like-count-label {
+    font-weight: 500;
+    font-size: 14px;
+    padding-left: 10px;
+    margin: 0px;
+  }
+  .like-icon {
+    opacity: 0.6;
+  }
+  .share-icon {
     opacity: 0.5;
     &:hover {
       opacity: 1;
@@ -300,7 +320,6 @@ function likePost() {
   .slide-fade-enter-active, .slide-fade-leave-active {
     transition: all 0.3s;
   }
-
   .slide-fade-enter, .slide-fade-leave-to {
     transform: translateY(-100%);
     opacity: 0;

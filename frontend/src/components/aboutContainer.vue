@@ -35,12 +35,12 @@
       <ion-input :disabled="user.verified" label="Email" inputmode="email" v-model="fields.email" labelPlacement="floating"></ion-input>
     </ion-item>
 
-    <div class="ion-text-end cpointer" v-if="!user.verified">
+    <div class="ion-text-end cpointer" v-if="user.email && !user.verified">
       <a @click="verifyEmail">Verify Email</a>
     </div>
 
     <ion-item lines="none">
-      <ion-input label="Phone" inputmode="tel" type="number" v-model="fields.phone" :counter="true" :maxlength="10" labelPlacement="floating"></ion-input>
+      <ion-input label="Phone" inputmode="tel" type="tel" v-model="fields.phone" :counter="true" :maxlength="10" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-item>

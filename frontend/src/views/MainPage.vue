@@ -26,11 +26,11 @@
                 </ion-col>
                 <ion-col size="12" class="ion-text-center" style="padding-top: 20px; color: var(--ion-color-dark)">
                   <div v-if="user.success">
-                    <div style="font-size: 15px; font-weight: 600;"> Welcome </div>
+                    <div style="font-size: 16px; font-weight: 600;"> Welcome </div>
                     <div style="font-size: 20px; font-weight: 600;"> {{ displayName }} </div>
                   </div>
                   <div v-else>
-                    <div style="font-size: 15px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
                     <ion-button
                       class="ion-hide-lg-down"
                       @click="openAuth()"
@@ -81,8 +81,10 @@
             </ion-title>
             <ion-buttons slot="end">
               <!-- ion-hide-lg-down  -->
-              <ion-button class="ion-padding-end" color="primary" shape="round" fill="outline" @click="addNewPost">
-                <!-- <ion-icon slot="start" :icon="addOutline"></ion-icon> -->
+              <ion-button class="ion-hide-sm-up add-post-theme add-post-mobile" @click="addNewPost" shape="round">
+                <ion-icon :icon="addOutline"></ion-icon>
+              </ion-button>
+              <ion-button class="ion-hide-sm-down ion-margin-end add-post add-post-theme" shape="round" @click="addNewPost">
                 Add New Post
               </ion-button>
             </ion-buttons>
@@ -152,6 +154,28 @@
       />
     </ion-modal>
 
+    <!-- About Modal -->
+    <ion-modal
+      class="about-modal ion-text-center"
+      :is-open="state.aboutDialog"
+      :show-backdrop="true"
+      :backdropDismiss="false"
+      @willDismiss="closeAbout"
+    >
+      <div class="ion-padding">
+        <div>
+          About this app
+        </div>
+        <ion-button
+					size="small"
+					color="light"
+					@click="closeAbout"
+				>
+					Close
+				</ion-button>
+      </div>
+    </ion-modal>
+
     <!-- Common Dialog -->
     <common-dialog @action="$event => $event.control()"></common-dialog>
 
@@ -161,7 +185,7 @@
 
 <script setup lang="ts">
 import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
-import { logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, helpCircleOutline, helpCircle } from 'ionicons/icons'
+import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, fastFood } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens } from '@/composables/auth'
@@ -207,6 +231,7 @@ const displayName = computed(() => {
 const state = reactive({
   loading: true,
   disableAuthClose: false,
+  aboutDialog: false,
   navigations: [
     {
       name: 'Home',
@@ -239,10 +264,17 @@ const state = reactive({
       name: 'Support',
       rname: 'support',
       rpath: '/support',
-      auth: false,
-      dicon: helpCircleOutline,
+      auth: true,
+      dicon: help,
       micon: helpCircle,
       action: navigate.bind(null, '/support')
+    },
+    {
+      name: 'About',
+      auth: false,
+      dicon: information,
+      micon: informationCircle,
+      action: showAbout
     },
     {
       name: 'Logout',
@@ -385,6 +417,14 @@ function checkAuthStatus() {
   }
 }
 
+function showAbout() {
+  state.aboutDialog = true
+}
+
+function closeAbout() {
+  state.aboutDialog = false
+}
+
 function confirmLogout() {
   const buttons = [
     {title: 'Yes', color: 'primary', action: 'logout', control: logout},
@@ -480,5 +520,32 @@ checkAuthStatus()
   }
   .tab-bar-icon {
     font-size: 25px;
+  }
+  .add-post-theme {
+    --background: linear-gradient(135deg, #54BFFC, #0D51FC);
+    // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
+    --color: #ffffff;
+  }
+  .add-post-mobile {
+    --padding-end: 10px;
+    --padding-start: 10px;
+  }
+  .add-post {
+    --padding-end: 25px;
+    --padding-start: 25px;
+    font-size: 15px;
+    font-weight: 650;
+    margin: 10px;
+    margin-right: 20px;
+  }
+  .about-modal {
+    --max-width: 100%;
+  }
+  @media only screen and (min-width: 576px) {
+    // For sm and above screens
+    .about-modal {
+      --height: auto;
+      --max-width: 600px;
+    }
   }
 </style>

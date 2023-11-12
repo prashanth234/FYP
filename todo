@@ -3,7 +3,7 @@
 == 7th week
 
 === Left over ===
-
+ 
 == 1 day ==
 
 == DONE ==
@@ -31,12 +31,16 @@ Done
 .) Disable like for bot post (or remove it)
 .) Share option for post
 
-== 2 Week ==
+== 2nd Week ==
 
+Done
 .) Design add new post
-.) Select primary color
+.) Why am seeing this arrow options on phone number field? what it is used for?
 .) About Icon
-.) Think about side menu during mobile
+.) user is not able to view description clearly. (no padding and going down)
+.) search option in users page in admin
+.) add id column in rewards
+
 
 == Discusssion
 
@@ -47,6 +51,7 @@ Done
 .) Reduce image sizes for faster fetch
 .) Finalize the categories and there description, images. - 3 to 6 days
 
+
 == FINAL CHECKLIST
 
 .) Delete the migrations and start fresh
@@ -54,6 +59,13 @@ Done
 .) Increase upload image size for https request as well
 .) Enable https and brand name - 1-2 days
 .) Finalize coupons amount and realvalue
+.) Disable temp page
+
+== IF POSSIBLE
+
+.) Select primary color
+.) Think about side menu during mobile
+.) send email comment is saved.
 
 
 Total - 7 Weeks

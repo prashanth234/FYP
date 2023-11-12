@@ -144,6 +144,12 @@ ion-button {
   text-overflow: ellipsis;
 }
 
+.overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .close-icon {
   color: var(--ion-color-medium)
 }

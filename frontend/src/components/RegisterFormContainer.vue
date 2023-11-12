@@ -122,11 +122,6 @@ const toast = useToastStore();
 const user = useUserStore();
 const {fields, valid, getEmailOrPhone} = useAuth();
 
-fields.username = 'prashanth7'
-fields.emailphone = '7097904099'
-fields.password1 = 'Bobby#123'
-fields.password2 = 'Bobby#123'
-
 const disableRegister = computed(() => {
   return state.loading
 })

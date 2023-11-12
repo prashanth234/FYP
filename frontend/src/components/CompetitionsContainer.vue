@@ -62,13 +62,13 @@
 				}"
 				@mouseover="state.ihovered = index"
       	@mouseout="state.ihovered = null"
-			>	
+			>
 				<ion-row class="details ion-nowrap">
 					<ion-col size="auto" class="ion-padding-end">
 						<ion-img :src="`media/${competition.image}`"></ion-img>
 					</ion-col>
-					<ion-col>
-						<div class="title">
+					<ion-col style="overflow: hidden;">
+						<div class="title overflow-ellipsis">
 							{{ competition.name }}
 						</div>
 						<div class="cat-description" :title="competition.description">

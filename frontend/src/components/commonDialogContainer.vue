@@ -7,7 +7,7 @@
 						<ion-col size="auto" v-if="dialog.icon">
 							<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
 						</ion-col>
-						<ion-col v-if="dialog.title" style="padding-left: 5px;">
+						<ion-col style="padding-left: 5px;">
 							<div class="title" v-if="dialog.title"><strong>{{dialog.title}}</strong></div>
 							<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
 						</ion-col>
