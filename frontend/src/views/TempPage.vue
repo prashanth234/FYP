@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content class="ion-padding">
-      
+
       <!-- <h1 style="margin: 0px">Temp</h1>
 
       {{ ` ${state.name} = ${state.firstname}  ${state.lastname}`}}
@@ -20,7 +20,65 @@
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
           </div>
       </div> -->
+
+      <ion-button class="add-post" shape="round">
+        Add New Post
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post1" shape="round">
+        Add New Post1
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post2" shape="round">
+        Add New Post2
+      </ion-button>
+
+      <br>
       
+      <ion-button class="add-post3" shape="round">
+        Add New Post3
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post4" shape="round">
+        Add New Post4
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post5" shape="round">
+        Add New Post5
+      </ion-button>
+
+      <br>
+      
+      <ion-button class="add-post6" shape="round">
+        Add New Post6
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post7" shape="round">
+        Add New Post6
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post8" shape="round">
+        Add New Post6
+      </ion-button>
+
+      <br>
+
+      <ion-button class="add-post9" shape="round">
+        Add New Post6
+      </ion-button>
+
     </ion-content>
 
       <!-- <ion-router-outlet style="margin-top: 100px;"></ion-router-outlet> -->
@@ -76,6 +134,59 @@ onMounted(() => {
 </script>
 
 <style scoped>
+ion-button {
+  color: var(--ion-color-light);
+  font-size: 16px;
+  font-weight: 650;
+}
+.add-post {
+  /* --background: rgb(56,128,255); */
+  --background: linear-gradient(90deg, rgba(61,194,255,1) 0%, rgba(56,128,255,1) 100%);
+  
+}
+
+.add-post1 {
+  --background: radial-gradient(circle, rgba(61,194,255,1) 0%, rgba(59,161,255,1) 50%, rgba(56,128,255,1) 100%);
+}
+
+.add-post2 {
+  --background: linear-gradient(90deg, rgba(49,113,224,1) 0%, rgba(56,128,255,1) 100%);
+}
+
+.add-post3 {
+  --background: linear-gradient(90deg, rgba(56,128,255,1) 30%, rgba(61,194,255,1) 100%);
+}
+
+.add-post4 {
+  --background: linear-gradient(90deg, rgba(203,56,255,1) 0%, rgba(61,159,255,1) 100%);
+}
+
+.add-post5 {
+  --background: linear-gradient(135deg, #0263B7, #1A2B84);
+}
+
+.add-post6 {
+  /*
+* Created with https://www.css-gradient.com
+* Gradient link: https://www.css-gradient.com/?c1=54bffc&c2=0d51fc&gt=l&gd=dtl
+*/
+  --background: linear-gradient(135deg, #54BFFC, #0D51FC);
+}
+
+.add-post7 {
+  --background: linear-gradient(to right, #1565C0, #b92b27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.add-post8 {
+  --background: linear-gradient(to right, #cc5333, #23074d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.add-post9 {
+
+--background: linear-gradient(to right, #004e92, #000428); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
 
 body, html {
     margin: 0;

@@ -444,7 +444,7 @@ function logout(showToast: boolean = true) {
   navigate('/')
   user.reset()
   client.resetStore()
-  showToast && toast.$patch({message: "See you again soon! You've been logged out gracefully.", color: 'success', open: true})
+  showToast && toast.$patch({message: "Logged out. Seen you again soon!", color: 'success', open: true})
   dialog.open = false
 }
 
@@ -524,6 +524,8 @@ checkAuthStatus()
   .add-post-theme {
     --background: linear-gradient(135deg, #54BFFC, #0D51FC);
     // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
+    --background: linear-gradient(135deg, #3dc2ff, #0F52BA);
+    
     --color: #ffffff;
   }
   .add-post-mobile {
