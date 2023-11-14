@@ -206,7 +206,10 @@ class Query(graphene.ObjectType):
         total = queryset.count()
         
         if cursor:
-           queryset = queryset.filter(created_at__lt=dateparse.parse_datetime(cursor))
+           if cursor.isdigit():
+            queryset = queryset.filter(pk__lt=cursor)
+           else:
+            queryset = queryset.filter(created_at__lt=dateparse.parse_datetime(cursor))
         
         posts = queryset[:per_page]
 

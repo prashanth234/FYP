@@ -117,6 +117,14 @@ python manage.py runserver 0.0.0.0:8000
  http://localhost:8100
 
 
+# ######### Automation Tests ################
+
+pipenv run pytest
+
+# ######### Performance Tests ################
+
+pipenv run locust -f locustfiles/browse_categories.py
+
 # TROUBLESHOOT
 
 Problem

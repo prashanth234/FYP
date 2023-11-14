@@ -61,6 +61,7 @@ Done
 .) Finalize coupons amount and realvalue
 .) Disable temp page
 .) Allow send emails key environment variables
+.) Remove is_digit check in postschema
 
 == IF POSSIBLE
 
