@@ -51,16 +51,7 @@
         </ion-item>
 
         <ion-item lines="none" class="line-top" style="padding: 8px 0px 8px 5px;">
-
-          <!-- <ion-icon
-            @click="likePost()"
-            class="cpointer"
-            v-if="post.userLiked"
-            style="color:rgb(246, 73, 73)"
-            :icon="heart"
-            size="large"
-          /> -->
-          <transition name="slide-fade" mode="out-in">
+          <transition name="slide-up" mode="out-in">
             <img
               @click="likePost()"
               class="cpointer"
@@ -68,18 +59,13 @@
               src="@/assets/icons/clap-fill-blue.svg"
               style="width: 28px; height: 28px;"
             />
-            <ClapOutline
-              v-else
-              class="like-icon"
-            ></ClapOutline>
+            <div v-else style="height: 28px;">
+              <ClapOutline
+                @click="likePost()"
+                class="like-icon cpointer"
+              ></ClapOutline>
+            </div>
           </transition>
-          <!-- <ion-icon
-            @click="likePost()"
-            class="like-icon cpointer"
-            v-else
-            :icon="heartOutline"
-            size="large"
-          /> -->
           <ion-label
             v-if="!post.isBot"
             class="like-count-label"
@@ -148,7 +134,7 @@ import gql from 'graphql-tag'
 import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
-import ClapOutline from './clapOutline.vue'
+import ClapOutline from './icons/clapOutline.vue'
 
 const user = useUserStore()
 const props = defineProps(['post', 'showEdit', 'position'])
@@ -262,7 +248,7 @@ function likePost() {
     }
     
     &:hover:not(:has(.operations:hover)) .like-icon {
-      opacity: 0.8;
+      // opacity: 0.8;
     }
   }
 
@@ -317,11 +303,18 @@ function likePost() {
       --max-width: 470px;
     }
   }
-  .slide-fade-enter-active, .slide-fade-leave-active {
-    transition: all 0.3s;
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: all 0.25s ease-out;
   }
-  .slide-fade-enter, .slide-fade-leave-to {
-    transform: translateY(-100%);
+
+  .slide-up-enter-from {
     opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .slide-up-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
   }
 </style>

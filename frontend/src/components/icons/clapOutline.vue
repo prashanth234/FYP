@@ -67,7 +67,7 @@
 
 </script>
 
-<style>
+<style scoped>
   svg {
     fill: var(--ion-color-dark-tint);
   }

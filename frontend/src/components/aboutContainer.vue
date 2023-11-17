@@ -190,22 +190,31 @@ function imageSelected(blob: CropperResult, type: string) {
 function updateProfile () {
   state.errors = []
 
-  !valid.value.email && state.errors.push('Please enter a valid email')
-  !valid.value.phone && state.errors.push('Please enter a valid phone')
-  if (state.errors.length) { return }
+  const {firstName, lastName, gender, email, phone} = fields
 
-  const {firstName, lastName, gender, email} = fields
+  if (!email && !phone) {
+    state.errors.push('Please provide either email or phone number')
+  } else {
+    if (email && !valid.value.email) {
+      state.errors.push('Please enter a valid email')
+    } else if (phone && !valid.value.phone) {
+      state.errors.push('Please enter a valid phone number')
+    }
+  }
+
+  if (state.errors.length) { return }
 
   state.loading = true
 
   const { mutate, onDone, onError } = useMutation(gql`    
-    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String, $email: String) { 
+    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String, $email: String, $phone: String) { 
       updateAccount (
         gender: $gender,
         firstName: $firstName,
         lastName: $lastName,
         dateOfBirth: $dateOfBirth,
-        email: $email
+        email: $email,
+        phone: $phone
       ) {
           success
         } 
@@ -216,7 +225,8 @@ function updateProfile () {
         firstName: firstName != user.firstName ? firstName : undefined,
         lastName: lastName != user.lastName ? lastName : undefined,
         gender: gender != user.gender ? gender : undefined,
-        email: email != user.email ? email : undefined
+        email: email != user.email ? email : undefined,
+        phone: phone != user.phone ? phone : undefined
       },
     }
   )
@@ -225,13 +235,17 @@ function updateProfile () {
 
   onDone(({data}) => {
     toast.$patch({message: "Success! Your user account has been updated.", color: 'success', open: true})
-    data.updateAccount.success && user.$patch({firstName, lastName, gender, email})
+    data.updateAccount.success && user.$patch({firstName, lastName, gender, email, phone})
     state.loading = false
   })
 
   onError((error: any) => {
     state.loading = false
-    toast.$patch({message: error?.graphQLErrors[0]?.message || 'Profile update failed due to an error. Please attempt again.' , color: 'danger', open: true})
+    if (error?.graphQLErrors[0]?.message) {
+      state.errors.push(error.graphQLErrors[0].message)
+    } else {
+      toast.$patch({message: 'Profile update failed due to an error. Please attempt again.' , color: 'danger', open: true})
+    }
   })
 }
 

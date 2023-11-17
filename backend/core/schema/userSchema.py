@@ -7,6 +7,7 @@ from graphql import GraphQLError
 from django.core.files.base import ContentFile
 from datetime import datetime
 from graphql_auth.models import UserStatus
+from core.models.User import User
 
 # Type
 from core.schema.type.UserType import UserType
@@ -69,37 +70,46 @@ class UpdateAccountMutation(graphene.Mutation):
         lastName = graphene.String()
         dateOfBirth = graphene.String()
         email = graphene.String()
+        phone = graphene.String()
 
     user = graphene.Field(UserType)
     success = graphene.Boolean()
 
     @classmethod
     @login_required
-    def mutate(cls, root, info, gender=None, firstName=None, lastName=None, dateOfBirth=None, email=None):
+    def mutate(cls, root, info, gender=None, firstName=None, lastName=None, dateOfBirth=None, email=None, phone=None):
         
         user = info.context.user
         
         if user.status.verified and email:
             raise GraphQLError("Email can't be updated, please reachout to support", extensions={'status': 403})
         
-        if gender:
+        if email == "" and phone == "":
+            raise GraphQLError("Please provide either email or phone number", extensions={'status': 400})
+        
+        if gender is not None:
             user.gender = gender
 
-        if firstName:
+        if firstName is not None:
             user.first_name = firstName
 
-        if lastName:
+        if lastName is not None:
             user.last_name = lastName
 
         if dateOfBirth:
             user.date_of_birth = dateOfBirth
         
-        if email:
+        if email is not None:
             UserStatus.clean_email(email)
             user.email = email
 
-        user.save()
+        if phone is not None:
+            if User.objects.filter(phone=phone).exists():
+                raise GraphQLError("Phone number must be unique", extensions={'status': 400})
+            user.phone = phone
 
+        user.save()
+        
         return UpdateAccountMutation(user=user, success=True)
 
 class AuthMutation(graphene.ObjectType):
