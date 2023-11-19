@@ -74,38 +74,22 @@ WSGI_APPLICATION = 'fyp.wsgi.application'
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('JWT',),
-}
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
 
 AUTH_USER_MODEL = 'core.User'
-
-GRAPHQL_AUTH = {
-    "LOGIN_ALLOWED_FIELDS": ['email', 'phone'],
-    "REGISTER_MUTATION_FIELDS": ['username'],
-    "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
-    "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', False),
-    "EMAIL_TEMPLATE_VARIABLES": {
-        "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
-        "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),
-        "site_port": os.environ.get('FYP_SITE_PORT', ':8100')
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -164,10 +148,27 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
-    'django.contrib.auth.backends.ModelBackend',
     'graphql_auth.backends.GraphQLAuthBackend',
+    # 'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    
 ]
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+GRAPHQL_AUTH = {
+    "LOGIN_ALLOWED_FIELDS": ['email', 'phone'],
+    "REGISTER_MUTATION_FIELDS": ['username'],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
+    "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', False),
+    "EMAIL_TEMPLATE_VARIABLES": {
+        "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
+        "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),
+        "site_port": os.environ.get('FYP_SITE_PORT', ':8100')
+    }
+}
 
 # Public mutations don't require user to be logged in. You should add all of them in GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"] setting.
 GRAPHQL_JWT = {

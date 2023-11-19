@@ -524,7 +524,7 @@ checkAuthStatus()
   .add-post-theme {
     --background: linear-gradient(135deg, #54BFFC, #0D51FC);
     // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
-    --background: linear-gradient(135deg, #3dc2ff, #0F52BA);
+    // --background: linear-gradient(135deg, #3dc2ff, #0F52BA); (vue colors)
     
     --color: #ffffff;
   }
