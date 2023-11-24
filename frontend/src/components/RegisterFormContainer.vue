@@ -2,7 +2,7 @@
 
   <!-- Start of register form -->
   <form @submit.prevent="submitForm">
-    <ion-grid class="register-form">
+    <ion-grid v-if="!state.verify" class="register-form">
 
       <ion-row class="ion-text-center">
         
@@ -17,6 +17,8 @@
             type="text"
             placeholder="Email or Phone"
             required
+            ref="emailphoneref"
+            autofocus
           >
           </ion-input>
         </ion-col>
@@ -83,6 +85,14 @@
       </ion-row>
 
     </ion-grid>
+
+    <div v-else="state.verify">
+      <otp-container
+        class="cpointer"
+        :phone="fields.emailphone"
+        @editphone="editphone"
+      />
+    </div>
   </form>
   <!-- End of register form -->
 
@@ -92,15 +102,16 @@
 
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive, inject, computed } from 'vue'
+import { reactive, inject, computed, ref, nextTick } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
 import { useToastStore } from '@/stores/toast'
 import { useUserStore } from '@/stores/user'
 import errors from './errorContainer.vue'
+import OtpContainer from './OTPContainer.vue'
 
 const emit = defineEmits<{
-  (e: 'login'): void
+  (e: 'changeform', to: string): void
 }>()
 
 const { isAuthProcessing, authSuccess, authFailure } = inject<any>('auth')
@@ -109,35 +120,59 @@ interface State {
   errors: Array<string>,
   loading: boolean,
   isOpen: boolean,
+  verify: boolean
 }
 
 const state: State = reactive({
   loading: false,
   isOpen: false,
-  errors: []
+  errors: [],
+  verify: false
 })
 
 const ionRouter = useIonRouter();
 const toast = useToastStore();
 const user = useUserStore();
-const {fields, valid, getEmailOrPhone} = useAuth();
+const {fields, valid, getEmailOrPhone, emailphoneref, focusEmailPhone} = useAuth();
+
+fields.emailphone = '7097904099'
+fields.username = 'prashanth123'
+fields.password1 = 'prashanth123'
+fields.password2 = 'prashanth123'
 
 const disableRegister = computed(() => {
   return state.loading
 })
 
 function goToLogin() {
-  emit('login')
+  emit('changeform', 'login')
+}
+
+function editphone() {
+  state.verify = false
+  focusEmailPhone()
 }
 
 function submitForm () {
-
   if (!valid.value.emailphone) {
     state.errors = ["Please enter valid email or phone"]
     return
   }
 
   state.errors = []
+
+  const { phone } = getEmailOrPhone()
+
+  if (phone) {
+    state.verify = true
+  } else {
+    register()
+  }
+
+}
+
+function register () {
+
   state.loading = true
   isAuthProcessing(true)
 

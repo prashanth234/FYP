@@ -1,6 +1,5 @@
-import { reactive, computed } from "vue"
+import { reactive, computed, ref, nextTick } from "vue"
 import { isValidPhoneEmail, isValidEmail, isValidPhone } from "@/mixims/validations"
-import { fileTray } from "ionicons/icons"
 
 interface tokenObject {
     token: string,
@@ -61,12 +60,30 @@ function useAuth() {
         return isValidEmail(fields.emailphone) ? {email: fields.emailphone} : {phone: fields.emailphone}
     }
 
+    const emailphoneref = ref()
+
+    function focusEmailPhone() {
+        nextTick(() => {
+            setTimeout(() => {
+                emailphoneref.value.$el.setFocus()
+            },)
+        })
+    }
+
+    function clearPasswords() {
+        fields.password1 = ''
+        fields.password2 = ''
+    }
+
     return {
         touched,
         fields,
         valid,
         error,
-        getEmailOrPhone
+        getEmailOrPhone,
+        focusEmailPhone,
+        emailphoneref,
+        clearPasswords
     }
 }
 

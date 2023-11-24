@@ -58,11 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonInput, IonRow, IonCol, IonText, IonButton, IonSpinner, toastController } from '@ionic/vue'
+import { IonList, IonItem, IonInput, IonRow, IonCol, IonText, IonButton, IonSpinner } from '@ionic/vue'
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import store from '@/vuex'
 import { useToastStore } from '@/stores/toast'
 
 interface State {

@@ -1,14 +1,18 @@
 <template>
 
   <div class="auth-container">
-    <login-form-container v-if="state.login" @register="changeContainer"></login-form-container>
-    <register-form-container v-else @login="changeContainer"></register-form-container>
+    <login-form-container
+      v-if="state.form == 'login'"
+      @changeform="changeContainer"
+    />
+    <register-form-container
+      v-else-if="state.form == 'register'"
+      @changeform="changeContainer"
+    />
   </div>
 
   <!-- <ion-card>
-
     
-
     <ion-row>
 
       <ion-col size ="6" class="login-background">
@@ -53,11 +57,11 @@ import LoginFormContainer from './LoginFormContainer.vue';
 import RegisterFormContainer from './RegisterFormContainer.vue';
 
 const state = reactive({
-  login: true
+  form: 'login'
 })
 
-function changeContainer () {
-  state.login = !state.login
+function changeContainer (to: string) {
+  state.form = to
 }
 </script>
 

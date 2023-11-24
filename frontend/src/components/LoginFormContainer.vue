@@ -2,7 +2,7 @@
 
   <!-- Start of login form -->
   <form @submit.prevent="submitForm">
-    <ion-grid class="login-form">
+    <ion-grid v-if="state.form == 'login'" class="login-form">
 
       <ion-row class="ion-text-center">
 
@@ -29,6 +29,8 @@
             type="text"
             placeholder="Email or Phone"
             required
+            ref="emailphoneref"
+            autofocus
           >
           </ion-input>
           <!-- <div class="ion-text-start input-error-text" v-if="error.emailphone">
@@ -87,6 +89,38 @@
       </ion-row>
 
     </ion-grid>
+
+    <div v-else-if="state.form == 'verify'">
+      <otp-container
+        class="cpointer"
+        :phone="fields.emailphone"
+        @editphone="editphone"
+        title="Change Password"
+      >
+        <ion-row class="ion-padding-top">
+          <ion-col size="12">
+            <ion-input
+              class="custom-input"
+              v-model="fields.password1"
+              type="password"
+              placeholder="New Password"
+            ></ion-input>
+          </ion-col>
+
+          <ion-col size="12">
+            <ion-input
+            class="custom-input"
+              v-model="fields.password2"
+              type="password"
+              placeholder="Confirm Password"
+            ></ion-input>
+          </ion-col>
+          <ion-col size="12" v-if="state.errors.length">
+            <errors :errors="state.errors"/>
+          </ion-col>
+        </ion-row>
+      </otp-container>
+    </div>
   </form>
   <!-- End of login form -->
 
@@ -102,17 +136,20 @@ import { storeTokens, useAuth } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './errorContainer.vue'
+import OtpContainer from './OTPContainer.vue'
 
 interface State {
   errors: string[],
   forgotPassLoading: boolean,
-  loginLoading: boolean
+  loginLoading: boolean,
+  form: string
 }
 
 const state: State = reactive({
   loginLoading: false,
   errors: [],
   forgotPassLoading: false,
+  form: 'login'
 })
 
 const { isAuthProcessing, authSuccess, authFailure } = inject<any>('auth')
@@ -125,13 +162,13 @@ const processing = computed(() => {
 
 
 const emit = defineEmits<{
-  (e: 'register'): void
+  (e: 'changeform', to: string): void
 }>()
 
 const ionRouter = useIonRouter();
 const user = useUserStore();
 const toast = useToastStore();
-const {fields, valid, getEmailOrPhone} = useAuth();
+const {fields, valid, getEmailOrPhone, emailphoneref, focusEmailPhone, clearPasswords} = useAuth();
 
 function isValidEmail() {
   if (!valid.value.emailphone) {
@@ -141,14 +178,32 @@ function isValidEmail() {
   return true
 }
 
+function editphone() {
+  state.form = 'login'
+  focusEmailPhone()
+  clearPasswords()
+}
+
 function forgotPassword () {
 
-  if (valid.value.emailphone) {
-    toast.$patch({message: "A password reset link will be sent to your mobile shortly.", color: 'success', open: true})
+  if (!valid.value.emailphone) {
+    state.errors = ["Please enter valid email or phone"]
     return
   }
 
-  if (!isValidEmail()) { return }
+  state.errors = []
+
+  const { phone } = getEmailOrPhone()
+
+  if (phone) {
+    state.form = 'verify'
+    user.authMessage = ''
+    clearPasswords()
+    return
+  } else if (!isValidEmail()) { 
+    return 
+  }
+  
   state.forgotPassLoading = true
   state.errors = []
 
@@ -172,8 +227,11 @@ function forgotPassword () {
   mutate()
 
   onDone(({data: {sendPasswordResetEmail}}) => {
-    if (sendPasswordResetEmail.success) {
-      toast.$patch({message: "An email with a password reset link will be sent to you shortly.", color: 'success', open: true})
+    if (!sendPasswordResetEmail.success) {
+      // toast.$patch({message: "An email with a password reset link will be sent to you shortly.", color: 'success', open: true})
+      user.authMessage = 'Password reset link sent to your email. Kindly proceed to reset and log in.'
+    } else {
+      toast.$patch({message: "Apologies, but we couldn't send the password reset link to your email. Please try again.", color: 'danger', open: true})
     }
     state.forgotPassLoading = false
   })
@@ -254,7 +312,7 @@ function submitForm () {
 }
 
 function register() {
-  emit('register')
+  emit('changeform', 'register')
   user.authMessage = ''
 }
 
