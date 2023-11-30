@@ -5,3 +5,4 @@ static/**
 general.log
 .DS_Store
 credentials.sh
+fyp-firebase-conf.json

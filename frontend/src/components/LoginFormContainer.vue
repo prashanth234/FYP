@@ -56,14 +56,15 @@
 
         <ion-col size="12">
           <ion-button class="auth-button" color="primary" :disabled="processing" expand="block" type="submit">
-            <ion-spinner 
+            Login
+            <!-- <ion-spinner 
               class="button-loading-small"
               v-if="state.loginLoading"
               name="crescent"
             />
             <span v-else>
               Login
-            </span>
+            </span> -->
           </ion-button>
         </ion-col>
 
@@ -95,7 +96,9 @@
         class="cpointer"
         :phone="fields.emailphone"
         @editphone="editphone"
+        @submitOTP="submitOTP"
         title="Change Password"
+        :action="resetPassword"
       >
         <ion-row class="ion-padding-top">
           <ion-col size="12">
@@ -182,6 +185,14 @@ function editphone() {
   state.form = 'login'
   focusEmailPhone()
   clearPasswords()
+}
+
+function resetPassword() {
+
+}
+
+function submitOTP() {
+
 }
 
 function forgotPassword () {

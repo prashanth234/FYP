@@ -111,8 +111,8 @@
               <ion-label>{{ item.name }}</ion-label>
             </ion-tab-button>
 
-            <ion-tab-button tab="login" v-if="!isUserLogged">
-              <ion-icon :icon="logIn" class="tab-bar-icon" @click="openAuth()" />
+            <ion-tab-button tab="login" v-if="!isUserLogged" @click="openAuth()">
+              <ion-icon :icon="logIn" class="tab-bar-icon" />
               <ion-label>Login</ion-label>
             </ion-tab-button>
 
@@ -131,7 +131,8 @@
       :is-open="user.auth"
       @didDismiss="closeAuth"
     >
-      <ion-button @click="closeAuth" :disabled="state.disableAuthClose" class="close-login" fill="clear">
+      <ion-progress-bar v-if="state.disableAuthClose" type="indeterminate"></ion-progress-bar>
+      <ion-button v-else @click="closeAuth" :disabled="state.disableAuthClose" class="close-login" fill="clear">
         <ion-icon size="large" :icon="closeOutline"></ion-icon>
       </ion-button>
       <login-container style="margin-top: 20px;" />
@@ -184,7 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter } from '@ionic/vue';
+import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter, IonProgressBar } from '@ionic/vue';
 import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, fastFood } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'

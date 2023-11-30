@@ -14,12 +14,14 @@
         <otp-input v-model="state.otp" :digit-count="6"></otp-input>
       </ion-col>
 
-      <ion-col size="12">
-        <slot></slot>
+      <slot></slot>
+
+      <ion-col size="12" v-if="state.errors.length">
+        <errors :errors="state.errors"/>
       </ion-col>
 
       <ion-col size="11" class="ion-padding-vertical" style="margin: auto;">
-        <ion-button class="auth-button" color="primary" :disabled="state.verifying" expand="block" @click="verify()">
+        <ion-button class="auth-button" color="primary" :disabled="state.verifying" expand="block" @click="submit()">
           <ion-spinner 
             class="button-loading-small"
             v-if="state.verifying"
@@ -36,17 +38,26 @@
 </template>
 
 <script lang="ts" setup>
-import otpInput from '@/components/OTPInputContainer.vue'
+import otpInput from '@/components/OTPInputContainer.vue';
 import { IonCol, IonRow, IonButton, IonSpinner, IonGrid } from '@ionic/vue';
 import { reactive } from 'vue';
+import errors from './errorContainer.vue';
 
-const state = reactive({
+interface State {
+  verifying: boolean,
+  otp: string,
+  errors: Array<string>
+}
+
+const state: State = reactive({
   verifying: false,
-  otp: ''
+  otp: '',
+  errors: []
 })
 
 const emit = defineEmits<{
   (e: 'editphone'): void;
+  (e: 'submitOTP', otp: string, postVerify: any): void
 }>()
 
 const props = defineProps({
@@ -60,8 +71,21 @@ const props = defineProps({
   }
 })
 
-function verify() {
+function postVerify(response: {success: boolean, error: any}) {
+  if (response.error) {
+    if (response.error.code == 'auth/invalid-verification-code') {
+      state.errors = ["Invalid code. Check the OTP on your mobile."]
+    } else {
+      state.errors = ["Verification failed. Please try again."]
+    }
+  }
+  state.verifying = false
+}
 
+function submit() {
+  state.errors = []
+  state.verifying = true
+  emit('submitOTP', state.otp, postVerify)
 }
 
 </script>

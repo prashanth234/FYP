@@ -57,7 +57,7 @@ function useAuth() {
     })
     
     function getEmailOrPhone() {
-        return isValidEmail(fields.emailphone) ? {email: fields.emailphone} : {phone: fields.emailphone}
+        return isValidEmail(fields.emailphone) ? {email: fields.emailphone} : {phone: '+91' + fields.emailphone}
     }
 
     const emailphoneref = ref()

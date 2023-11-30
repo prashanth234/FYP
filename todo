@@ -248,3 +248,17 @@ Google Oauth login
 
 
 
+
+forgot password on click
+
+fields
+new password
+confirm password
+confirm code
+
+on submit
+  - emit the otp from child
+  - verify otp
+    - If not valid show errors in verify component
+  - If verified call change password api
+    - If change password failed show errors in forgot password

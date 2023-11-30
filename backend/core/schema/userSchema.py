@@ -8,6 +8,8 @@ from django.core.files.base import ContentFile
 from datetime import datetime
 from graphql_auth.models import UserStatus
 from core.models.User import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 # Type
 from core.schema.type.UserType import UserType
@@ -15,12 +17,12 @@ from core.schema.type.UserType import UserType
 # Authentications
 from graphql_jwt.decorators import login_required
 
-class AuthQuery(
-    # UserQuery,
-    MeQuery,
-    graphene.ObjectType
-):
-    pass
+# Firebase
+from firebase_admin import auth
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UserAvatarMutation(graphene.Mutation):
 
@@ -112,8 +114,49 @@ class UpdateAccountMutation(graphene.Mutation):
         
         return UpdateAccountMutation(user=user, success=True)
 
+class VerifyAndRegisterMutation(mutations.Register):
+
+    class Arguments:
+        token = graphene.String()
+
+    @classmethod
+    def registrationFailed(cls, message=None):
+        raise GraphQLError(message or "Failed to register user.")
+    
+    @classmethod
+    def mutate(cls, root, info, token=None, **kwargs):
+
+        phone = kwargs.get('phone')
+
+        if phone:
+            
+            if token is None:
+                logger.error(f"Token not found while registering user with phone number.")
+                cls.registrationFailed()
+            
+            try:
+                # Verify the Firebase token using the Firebase SDK
+                decoded_token = auth.verify_id_token(token)
+                user_phone = decoded_token.get('phone_number')
+
+                if phone != user_phone:
+                    logger.error(f"Firebase phone and register phone doesn't match.")
+                    cls.registrationFailed()
+
+                if User.objects.filter(phone=user_phone).exists():
+                    logger.error(f"User with this phone number already exits.")
+                    cls.registrationFailed("User with this phone number already exits.")
+                
+            except (auth.ExpiredIdTokenError, auth.InvalidIdTokenError, auth.RevokedIdTokenError) as e:
+                # Handle authentication error
+                logger.error(f"Firebase authentication error: {e}")
+                cls.registrationFailed()
+
+        return super().mutate(root, info, **kwargs)
+
 class AuthMutation(graphene.ObjectType):
-    register = mutations.Register.Field()
+    register = VerifyAndRegisterMutation.Field()
+    # register = mutations.Register.Field()
     verify_account = mutations.VerifyAccount.Field()
     resend_activation_email = mutations.ResendActivationEmail.Field()
     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
@@ -133,3 +176,59 @@ class AuthMutation(graphene.ObjectType):
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
+
+class UserCreationCheckType(graphene.ObjectType):
+
+    success = graphene.Boolean()
+    errors = graphene.List(graphene.String)
+
+class UserCreationCheckQuery(graphene.ObjectType):
+
+    user_check = graphene.Field(
+        UserCreationCheckType,
+        email=graphene.String(),
+        phone=graphene.String(),
+        password1=graphene.String(),
+        password2=graphene.String(),
+        username= graphene.String()
+    )
+
+    def resolve_user_check(self, info, username, password1, password2, email=None, phone=None):
+
+        errors = []
+
+        if email is None and phone is None:
+            errors.append("No Email or Phone.")
+
+        if email and User.objects.filter(email=email).exists():
+            errors.append("User with this Email already exists.")
+
+        if phone and User.objects.filter(phone=phone).exists():
+            errors.append("User with this Phone already exists.")
+            
+        if User.objects.filter(username=username).exists():
+            errors.append("A user with this username already exists.")
+
+        if password1.lower() != password2.lower():
+            errors.append("The two password fields didn’t match.")
+        else:
+            try:
+                validate_password(password1)
+            except ValidationError as e:
+                errors.append(f"Invalid password: {', '.join(e)}")
+
+        if len(errors) == 0:
+            return UserCreationCheckType(success=True)
+        else:
+            return UserCreationCheckType(success=False, errors=errors)
+        
+class AuthQuery(
+    UserCreationCheckQuery,
+    # UserQuery,
+    MeQuery,
+    graphene.ObjectType
+):
+    pass
+
+        
+        

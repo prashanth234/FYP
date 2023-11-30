@@ -32,6 +32,8 @@ import { createPinia } from 'pinia';
 
 import VueSocialSharing from 'vue-social-sharing';
 
+import "./firebase.js"
+
 const pinia = createPinia()
 
 const app = createApp(App)

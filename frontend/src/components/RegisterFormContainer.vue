@@ -2,7 +2,7 @@
 
   <!-- Start of register form -->
   <form @submit.prevent="submitForm">
-    <ion-grid v-if="!state.verify" class="register-form">
+    <ion-grid v-show="!state.verify" class="register-form">
 
       <ion-row class="ion-text-center">
         
@@ -64,16 +64,25 @@
         </ion-col>
 
         <ion-col size="12">
-          <ion-button color="primary" class="auth-button" :disabled="disableRegister" expand="block" type="submit">
+          <input
+            id="recaptcha-verifier"
+            type="submit"
+            value="Register"
+            class="auth-button"
+            :class="{'disable-button': disableRegister}"
+          >
+          <!-- <ion-button
+            v-show="state.loading"
+            color="primary"
+            class="auth-button"
+            :disabled="true"
+            expand="block"
+          >
             <ion-spinner 
               class="button-loading-small"
-              v-if="state.loading"
               name="crescent"
             />
-            <span v-else>
-              Register
-            </span>
-          </ion-button>
+          </ion-button> -->
         </ion-col>
 
         <ion-col size="12" class="line" style="margin-top: 8px; margin-bottom: 15px;"></ion-col>
@@ -86,11 +95,12 @@
 
     </ion-grid>
 
-    <div v-else="state.verify">
+    <div v-show="state.verify">
       <otp-container
         class="cpointer"
         :phone="fields.emailphone"
         @editphone="editphone"
+        @submitOTP="submitOTP"
       />
     </div>
   </form>
@@ -100,11 +110,12 @@
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonText, IonSpinner, useIonRouter } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonSpinner, useIonRouter } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { reactive, inject, computed, ref, nextTick } from 'vue'
+import { reactive, inject, computed } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
+import { useAuthVerify } from '@/composables/authVerify'
 import { useToastStore } from '@/stores/toast'
 import { useUserStore } from '@/stores/user'
 import errors from './errorContainer.vue'
@@ -133,7 +144,8 @@ const state: State = reactive({
 const ionRouter = useIonRouter();
 const toast = useToastStore();
 const user = useUserStore();
-const {fields, valid, getEmailOrPhone, emailphoneref, focusEmailPhone} = useAuth();
+const { fields, valid, getEmailOrPhone, emailphoneref, focusEmailPhone } = useAuth();
+const { sendOTP, status, verifyOTP, firebaseSignOut } = useAuthVerify();
 
 fields.emailphone = '7097904099'
 fields.username = 'prashanth123'
@@ -153,37 +165,54 @@ function editphone() {
   focusEmailPhone()
 }
 
-function submitForm () {
+function isProcessing(value: boolean) {
+  state.loading = value
+  // Send processing state to parent
+  isAuthProcessing(value)
+}
+
+async function submitOTP(otp: string, postVerify: any) {
+  isProcessing(true)
+  const response = await verifyOTP(otp)
+  if (response.success) {
+    // Register user
+    register(response.user.accessToken, postVerify.bind(null, response))
+  } else {
+    // OTP verification failed
+    postVerify(response)
+    isProcessing(false)
+  }
+}
+
+async function submitForm () {
   if (!valid.value.emailphone) {
     state.errors = ["Please enter valid email or phone"]
     return
   }
 
   state.errors = []
+  isProcessing(true)
 
   const { phone } = getEmailOrPhone()
 
   if (phone) {
-    state.verify = true
+    checkUserDetails()
   } else {
     register()
   }
-
 }
 
-function register () {
-
-  state.loading = true
-  isAuthProcessing(true)
+function register (token?: string, postRegister?: any) {
 
   const { mutate, onDone, onError } = useMutation(gql`
-       mutation ($email: String, $phone: String, $username: String!, $password1: String!, $password2: String!) {
+       mutation ($email: String, $phone: String, $username: String!, $password1: String!, $password2: String!, $token: String) {
         register (
           email: $email,
           phone: $phone,
           username: $username,
           password1: $password1,
           password2: $password2,
+          token: $token
         ) {
           success,
           errors,
@@ -197,7 +226,8 @@ function register () {
           username: fields.username,
           password1: fields.password1,
           password2: fields.password2,
-          ...getEmailOrPhone()
+          ...getEmailOrPhone(),
+          token
         },
         fetchPolicy: "no-cache"
       }
@@ -205,31 +235,90 @@ function register () {
 
   mutate()
 
+  const errorToastMsg = 'User creation failed. Retry, or for assistance, please contact our support team.'
+
   onDone((result) => {
-    state.loading = false
-    authFailure('register')
+    isProcessing(false)
     const response = result.data.register
     if (response.errors) {
-      const keys = Object.keys(response.errors)
-      state.errors = []
-      keys.forEach(key => {
-        response.errors[key].forEach((response: {message: string}) => {
-          state.errors.push(response.message)
+      authFailure('register')
+      if (token) {
+        // Mobile registration
+        toast.$patch({message: errorToastMsg, color: 'danger', open: true})
+      } else {
+        // Email Registration
+        const keys = Object.keys(response.errors)
+        state.errors = []
+        keys.forEach(key => {
+          response.errors[key].forEach((response: {message: string}) => {
+            state.errors.push(response.message)
+          })
         })
-      })
+      }
     } else if (response.success) {
       user.$patch({username: fields.username, auth: false, success: true})
       toast.$patch({message: "Success! You're now a valued member of our community.", color: 'success', open: true})
       user.getDetails()
       storeTokens(response, 'register')
       authSuccess('register')
+      firebaseSignOut()
     }
+    postRegister && postRegister()
   })
 
   onError(() => {
-    state.loading = false
+    isProcessing(false)
     authFailure('register')
-    toast.$patch({message: 'User creation failed. Retry, or for assistance, please contact our support team.', color: 'danger', open: true})
+    toast.$patch({message: errorToastMsg, color: 'danger', open: true})
+    postRegister && postRegister()
+  })
+}
+
+function checkUserDetails() {
+  const emailOrPhone = getEmailOrPhone()
+
+  const { mutate, onDone, onError } = useMutation(gql`
+       query ($email: String, $phone: String, $username: String!, $password1: String!, $password2: String!) {
+        userCheck (
+          email: $email,
+          phone: $phone,
+          username: $username,
+          password1: $password1,
+          password2: $password2
+        ) {
+          success,
+          errors
+        }
+      }
+    `,{
+        // Parameters
+        variables: {
+          username: fields.username,
+          password1: fields.password1,
+          password2: fields.password2,
+          ...emailOrPhone,
+        },
+        fetchPolicy: "no-cache"
+      }
+  )
+
+  mutate()
+
+  onDone(async ({data}) => {
+    if (data.userCheck.success) {
+      if (emailOrPhone.phone) {
+        const response = await sendOTP(emailOrPhone.phone)
+        // Show verification popup
+        response.success && (state.verify = true)
+      } 
+    } else {
+      state.errors = data.userCheck.errors
+    }
+    isProcessing(false)
+  })
+
+  onError(() => {
+    isProcessing(false)
   })
 }
 </script>
@@ -238,6 +327,23 @@ function register () {
 
 .register-form {
   --ion-grid-column-padding: 6px;
+}
+
+.auth-button {
+  width: 100%;
+  border: 0px;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-light);
+  border-radius: 8px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  &:hover {
+    opacity: 0.92;
+  }
+  &.disable-button {
+    cursor: default;
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 </style>
