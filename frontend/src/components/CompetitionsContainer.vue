@@ -106,9 +106,9 @@
 
 import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent } from '@ionic/vue';
 import { useCategoryInfoStore } from '@/stores/categoryInfo';
-import { CompetitionInfo } from '@/mixims/interfaces';
+import { CompetitionInfo } from '@/utils/interfaces';
 import { reactive, computed } from 'vue';
-import { formatDateToCustomFormat  } from '@/mixims/common';
+import { formatDateToCustomFormat  } from '@/utils/common';
 
 const props = defineProps<{
 	vertical: Boolean

@@ -179,12 +179,13 @@ import Competitions from '@/components/CompetitionsContainer.vue'
 import { getPosts, getWinners, getPostDetails } from '@/composables/posts'
 import { scrollTop } from '@/composables/scroll'
 
-import { CompetitionInfo } from '@/mixims/interfaces'
-import { Post as PostType } from '@/mixims/interfaces'
+import { CompetitionInfo } from '@/utils/interfaces'
+import { Post as PostType } from '@/utils/interfaces'
 
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import { useAuthStore } from '@/stores/auth'
 
 
 interface Winner {
@@ -218,6 +219,7 @@ const categoryInfo = useCategoryInfoStore();
 const user = useUserStore();
 const toast = useToastStore();
 const ionRouter = useIonRouter();
+const auth = useAuthStore();
 
 const props = defineProps({
   id: String,
@@ -282,8 +284,8 @@ function fetchMore(ev: InfiniteScrollCustomEvent) {
   } else {
     // To see more post, ask user to login
     // toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
-    user.auth = true
-    user.authMessage = 'Take your journey further! Log in to reveal more posts.'
+    auth.open()
+    auth.message = 'Take your journey further! Log in to reveal more posts.'
     ev.target.complete()
     content.value && content.value.$el.scrollByPoint(0, -50, 500);
     // Commented this code because because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.

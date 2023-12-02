@@ -33,7 +33,7 @@
                     <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
                     <ion-button
                       class="ion-hide-lg-down"
-                      @click="openAuth()"
+                      @click="auth.open"
                     >
                       Login
                     </ion-button>
@@ -111,7 +111,7 @@
               <ion-label>{{ item.name }}</ion-label>
             </ion-tab-button>
 
-            <ion-tab-button tab="login" v-if="!isUserLogged" @click="openAuth()">
+            <ion-tab-button tab="login" v-if="!isUserLogged" @click="auth.open">
               <ion-icon :icon="logIn" class="tab-bar-icon" />
               <ion-label>Login</ion-label>
             </ion-tab-button>
@@ -128,11 +128,11 @@
       class="login-modal"
       :show-backdrop="true"
       :backdropDismiss="false"
-      :is-open="user.auth"
-      @didDismiss="closeAuth"
+      :is-open="auth.show"
+      @didDismiss="auth.close"
     >
-      <ion-progress-bar v-if="state.disableAuthClose" type="indeterminate"></ion-progress-bar>
-      <ion-button v-else @click="closeAuth" :disabled="state.disableAuthClose" class="close-login" fill="clear">
+      <ion-progress-bar v-if="auth.processing" type="indeterminate"></ion-progress-bar>
+      <ion-button v-else @click="auth.close" :disabled="auth.processing" class="close-login" fill="clear">
         <ion-icon size="large" :icon="closeOutline"></ion-icon>
       </ion-button>
       <login-container style="margin-top: 20px;" />
@@ -189,7 +189,7 @@ import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList
 import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, fastFood } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { storeTokens } from '@/composables/auth'
+import { storeTokens, useAuth } from '@/composables/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import { reactive, computed, ref, provide } from 'vue'
@@ -197,22 +197,23 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
-import { useApolloClient } from '@vue/apollo-composable'
+
 
 import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/commonDialogContainer.vue'
 import { warningOutline } from 'ionicons/icons'
-
-const { resolveClient } = useApolloClient()
-const client = resolveClient()
+import { useAuthStore } from '@/stores/auth';
 
 
 const ionRouter = useIonRouter();
 const router = useRoute();
-const user = useUserStore();
 const postDialog = usePostDialog();
+
+const user = useUserStore();
 const toast = useToastStore();
 const dialog = useDialogStore();
+const auth = useAuthStore();
+const { resetClientStore } = useAuth();
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
@@ -291,32 +292,13 @@ const isUserLogged = computed(() => {
   return !state.loading && user.success
 })
 
-provide('auth', {
-  isAuthProcessing,
-  authSuccess,
-  authFailure
-})
-
 function addNewPost () {
   if (!user.success) {
-    user.authMessage = 'Ready to share your content? Log in and start posting!'
-    user.auth = true
+    auth.message = 'Ready to share your content? Log in and start posting!'
+    auth.open()
     return
   }
   postDialog.open()
-}
-
-function isAuthProcessing(value: boolean) {
-  state.disableAuthClose = value
-}
-
-function authSuccess(type: string) {
-  isAuthProcessing(false)
-  client.resetStore()
-}
-
-function authFailure(type: string) {
-  isAuthProcessing(false)
 }
 
 const closeMenu = async () => {
@@ -328,14 +310,6 @@ const closeMenu = async () => {
 function navigate(path: string) {
   closeMenu()
   ionRouter.push(path)
-}
-
-function closeAuth() {
-  user.$patch({auth: false, authMessage: ''})
-}
-
-function openAuth() {
-  user.auth = true
 }
 
 function checkAuthStatus() {
@@ -444,7 +418,7 @@ function confirmLogout() {
 function logout(showToast: boolean = true) {
   navigate('/')
   user.reset()
-  client.resetStore()
+  resetClientStore()
   showToast && toast.$patch({message: "Logged out. Seen you again soon!", color: 'success', open: true})
   dialog.open = false
 }

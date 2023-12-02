@@ -220,7 +220,7 @@ import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive } from 'vue';
 import { closeCircleOutline, hourglassOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
-import { formatDateToCustomFormat  } from '@/mixims/common';
+import { formatDateToCustomFormat  } from '@/utils/common';
 import { onBeforeRouteLeave } from 'vue-router'
 
 interface Denomination {

@@ -1,148 +1,186 @@
 <template>
-  
-  <ion-list>
 
-    <ion-item>
-      <ion-input v-model="state.oldPassword" type="password" label="Old Password" labelPlacement="floating"></ion-input>
-    </ion-item>
+  <form @submit.prevent="verifyAccount" id="forgot-password">
 
-    <ion-item>
-      <ion-input v-model="state.newPassword1" type="password" label="New Password" labelPlacement="floating"></ion-input>
-    </ion-item>
+    <ion-grid class="change-password-form">
+      <ion-row class="ion-padding-top">
 
-    <ion-item>
-      <ion-input v-model="state.newPassword2" type="password" label="Confirm Password" labelPlacement="floating"></ion-input>
-    </ion-item>
-    
-    <ion-item v-if="state.errors.length" lines="none">
-      <ion-text color="danger">
-        <ul style="padding-left: 15px">
-          <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-        </ul>
-      </ion-text>
-    </ion-item>
+        <ion-col
+          size="12"
+          class="ion-padding-bottom ion-text-center auth-header"
+        >
+          Password Reset
+        </ion-col>
 
-  </ion-list>
+        <ion-col size="12" class="ion-padding-top">
+          <ion-input
+            class="custom-input"
+            v-model="auth.fields.password1"
+            type="password"
+            placeholder="New Password"
+            autocomplete="new-password"
+          ></ion-input>
+        </ion-col>
 
-  <ion-row>
-    <ion-col size="12">
-      <ion-button
-        color="primary"
-        class="float-right"
-        size="small"
-        @click="changePassword"
-        :disabled="state.loading"
-      >
-        <ion-spinner 
-          class="button-loading-small"
-          v-if="state.loading"
-          name="crescent"
-        />
-        <span v-else>
-          Update
-        </span>
-      </ion-button>
-      <ion-button
-        color="light"
-        @click="clear"
-        class="float-right"
-        style="margin-right: 15px;"
-        :disabled="state.loading"
-        size="small"
-      >
-        Clear
-      </ion-button>
-    </ion-col>
-  </ion-row>
+        <ion-col size="12">
+          <ion-input
+            class="custom-input"
+            v-model="auth.fields.password2"
+            type="password"
+            placeholder="Confirm Password"
+            autocomplete="new-password"
+          ></ion-input>
+        </ion-col>
 
+        <ion-col size="12" class="ion-no-padding">
+          <errors :errors="auth.errors"/>
+        </ion-col>
+
+        <ion-col size="12" class="ion-padding-vertical" style="margin: auto;" v-if="props.hideIonButton">
+          <input
+            id="recaptcha-verifier"
+            type="submit"
+            value="Verify & Reset"
+            class="auth-button input-auth-button"
+            :class="{'disable-button': auth.processing}"
+          >
+        </ion-col>
+
+        <ion-col size="12" v-else>
+          <ion-button
+            class="auth-button"
+            color="primary"
+            expand="block"
+            @click="emit('submit')"
+            :disabled="auth.processing"
+          >
+            <ion-spinner 
+              class="button-loading-small"
+              v-if="auth.processing"
+              name="crescent"
+            />
+            <span v-else>
+              Submit
+            </span>
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
+  </form>
 </template>
 
-<script setup lang="ts">
-import { IonList, IonItem, IonInput, IonRow, IonCol, IonText, IonButton, IonSpinner } from '@ionic/vue'
-import { reactive } from 'vue'
-import { useMutation } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { useToastStore } from '@/stores/toast'
+<script lang="ts" setup>
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonSpinner } from '@ionic/vue';
+import { useAuthStore } from '@/stores/auth';
+import errors from './errorContainer.vue';
+import gql from 'graphql-tag';
+import { useMutation } from '@vue/apollo-composable';
+import { useToastStore } from '@/stores/toast';
+import { useRecaptchaVerifier } from '@/composables/auth'
 
-interface State {
-  oldPassword: string,
-  newPassword1: string,
-  newPassword2: string,
-  errors: string[],
-  loading: boolean
-}
-
-const state:State = reactive({
-  oldPassword: '',
-  newPassword1: '',
-  newPassword2: '',
-  errors: [],
-  loading: false
-})
-
+const auth = useAuthStore()
 const toast = useToastStore()
 
-function clear () {
-  state.newPassword1 = ''
-  state.newPassword2 = ''
-  state.oldPassword = ''
-  state.errors = []
+const props = defineProps({
+	hideIonButton: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const emit = defineEmits<{
+  (e: 'submit'): void;
+}>()
+
+useRecaptchaVerifier()
+
+async function verifyAccount() {
+  if (auth.fields.password1.toLocaleLowerCase() != auth.fields.password2.toLocaleLowerCase()) {
+    auth.errors = ["The two password fields didn’t match."]
+    return
+  }
+
+  if (auth.fields.password1.length < 9) {
+    auth.errors = ["The password must contain at least 9 characters."]
+    return
+  }
+
+  auth.processState(true)
+
+  const response = await auth.sendOTP()
+
+  // Show verification popup
+  if (response.success) {
+    auth.changeForm('verify', changePassword)
+  } else {
+    auth.errors = ['Verification code failed to send. Please retry!']
+  }
+
+  auth.processState(false)
 }
 
-function changePassword () {
-  const {oldPassword, newPassword1, newPassword2} = state
+function changePassword(user: any) {
+  const {password1, password2} = auth.fields
+  auth.processState(true)
 
-  state.loading = true
+  const { mutate, onDone, onError } = useMutation(gql`
+    mutation ($token: String!, $newPassword1: String!, $newPassword2: String!)  {
+      changePassword(
+          token: $token,
+          newPassword1: $newPassword1,
+          newPassword2: $newPassword2
+        ) {
+          success,
+          errors
+        }
+    }
+  `,
+    {
+      variables: {
+        token: user.accessToken,
+        newPassword1: password1,
+        newPassword2: password2
+      },
+    }
+  )
 
-  try {
-    const { mutate, onDone } = useMutation(gql`
-      mutation ($oldPassword: String!, $newPassword1: String!, $newPassword2: String!)  {
-        passwordChange(
-            oldPassword: $oldPassword,
-            newPassword1: $newPassword1,
-            newPassword2: $newPassword2
-          ) {
-            success,
-            errors,
-            token,
-            refreshToken
-          }
-      }
-    `,
-      {
-        variables: {
-          oldPassword,
-          newPassword1,
-          newPassword2
-        },
-      }
-    )
-    mutate()
-    onDone((result) => {
-      const response = result.data.passwordChange
+  mutate()
 
-      if (response.success) {
-        toast.$patch({message: 'Password Changed Successfully', color: 'success', open: true})
-        clear()
-      } else {
-        const keys = Object.keys(response.errors)
-        state.errors = []
-        keys.forEach(key => {
-          response.errors[key].forEach(({message}:{message: string}) => {
-            state.errors.push(message)
-          })
+  onDone((result) => {
+    const response = result.data.passwordReset
+    auth.processState(false)
+
+    if (response.success) {
+      auth.message = 'Password reset successful! You can now log in using your new password.'
+      auth.changeForm('login')
+    } else {
+      const keys = Object.keys(response.errors)
+      keys.forEach(key => {
+        response.errors[key].forEach(({message}:{message: string}) => {
+          auth.errors.push(message)
         })
-      }
+      })
+    }
 
-      state.loading = false
+    onError(() => {
+      toast.$patch({
+        message: "Password reset failed. If the issue persists, please contact our support team for assistance.",
+        color: 'danger',
+        open: true
+      })
+      auth.processState(false)
     })
-  } catch (error) {
-    console.error(error)
-    state.loading = false
-  }
+  })
 }
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+.change-password-form {
+  --ion-grid-column-padding: 6px;
+}
+
 </style>

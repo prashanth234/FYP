@@ -19,7 +19,7 @@ import { reactive } from 'vue'
 import { getPostDetails } from '@/composables/posts'
 import { useToastStore } from '@/stores/toast'
 import Post from '@/components/PostContainer.vue'
-import { Post as PostType } from '@/mixims/interfaces'
+import { Post as PostType } from '@/utils/interfaces'
 import { IonButton, useIonRouter, IonPage, IonContent, IonRow, IonCol } from '@ionic/vue';
 
 const props = defineProps({

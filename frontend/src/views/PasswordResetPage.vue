@@ -3,45 +3,15 @@
   <ion-page>
     <ion-content>
 
-      
-        <ion-grid>
-          <ion-row class="ion-padding forgot-password" style="margin: auto; margin-top: 100px; padding: 25px;">
+      <ion-grid>
+        <ion-row class="ion-padding forgot-password" style="margin: auto; margin-top: 100px; padding: 25px;">
+          <change-password
+            @submit="submitForm"
+            :hideIonButton="false"
+          ></change-password>
+        </ion-row>
+      </ion-grid>
 
-            <ion-col size="12" class="ion-text-center">
-              <h3>Reset Password</h3>
-            </ion-col>
-
-            <ion-col size="12">
-              <ion-input class="custom-input" v-model="state.newPassword1" type="password" placeholder="New Password"></ion-input>
-            </ion-col>
-
-            <ion-col size="12">
-              <ion-input class="custom-input" v-model="state.newPassword2" type="password" placeholder="Confirm Password"></ion-input>
-            </ion-col>
-
-            <ion-col size="12" v-if="state.errors.length">
-              <ion-text color="danger">
-                <ul style="padding-left: 15px">
-                  <li v-for="(message, index) in state.errors" :key="index">{{message}}</li>
-                </ul>
-              </ion-text>
-            </ion-col>
-
-            <ion-col size="12">
-              <ion-button class="auth-button" color="primary" :disabled="state.reseting" expand="block" @click="submitForm()">
-                <ion-spinner 
-                  class="button-loading-small"
-                  v-if="state.reseting"
-                  name="crescent"
-                />
-                <span v-else>
-                  Submit
-                </span>
-              </ion-button>
-            </ion-col>
-
-          </ion-row>
-        </ion-grid>
     </ion-content>
   </ion-page>
 
@@ -51,43 +21,28 @@
 import { useRoute } from 'vue-router'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { reactive } from 'vue'
-import { IonPage, IonContent, IonGrid, IonRow, IonCol, IonInput, IonButton, IonSpinner, IonText, IonTitle, useIonRouter } from '@ionic/vue'
+import { IonPage, IonContent, useIonRouter, IonGrid, IonRow } from '@ionic/vue'
 import { useToastStore } from '@/stores/toast'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
+import ChangePassword from '@/components/ChangePasswordContainer.vue'
 
 
 const router = useRoute();
 const ionRouter = useIonRouter();
 const toast = useToastStore();
-const user = useUserStore();
+const auth = useAuthStore();
 
 const token = router.params.token
 
-interface State {
-  newPassword1: string,
-  newPassword2: string,
-  errors: string[],
-  reseting: boolean
-}
-
-const state: State = reactive({
-  newPassword1: '',
-  newPassword2: '',
-  reseting: false,
-  errors: []
-})
-
 function clear () {
-  state.newPassword1 = ''
-  state.newPassword2 = ''
-  state.errors = []
+  auth.clearErrors()
+  auth.clearPasswords()
 }
 
 function submitForm () {
-  const {newPassword1, newPassword2} = state
+  const {password1, password2} = auth.fields
 
-  state.reseting = true
+  auth.processState(true)
 
   const { mutate, onDone, onError } = useMutation(gql`
     mutation ($token: String!, $newPassword1: String!, $newPassword2: String!)  {
@@ -104,8 +59,8 @@ function submitForm () {
     {
       variables: {
         token,
-        newPassword1,
-        newPassword2
+        newPassword1: password1,
+        newPassword2: password2
       },
     }
   )
@@ -114,26 +69,25 @@ function submitForm () {
 
   onDone((result) => {
     const response = result.data.passwordReset
-    state.reseting = false
+    auth.processState(false)
 
     if (response.success) {
-      toast.$patch({message: 'Password reset successful! You can now log in using your new password.', color: 'success', open: true})
-      // user.auth = true
-      // goHome()
+      goHome()
+      auth.open()
+      auth.message = 'Password reset successful! You can now log in using your new password.'
       clear()
     } else {
       const keys = Object.keys(response.errors)
-      state.errors = []
       keys.forEach(key => {
         response.errors[key].forEach(({message}:{message: string}) => {
-          state.errors.push(message)
+          auth.errors.push(message)
         })
       })
     }
 
     onError(() => {
       toast.$patch({message: "Password reset failed. If the issue persists, please contact our support team for assistance.", color: 'danger', open: true})
-      state.reseting = false
+      auth.processState(false)
     })
   })
 }
@@ -151,8 +105,5 @@ function goHome () {
     max-width: 350px;
     border: 1px solid var(--ion-color-light-shade);
   }
-}
-ion-grid {
-  --ion-grid-column-padding: 10px
 }
 </style>

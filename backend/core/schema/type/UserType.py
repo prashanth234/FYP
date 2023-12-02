@@ -1,5 +1,6 @@
 from graphene_django import DjangoObjectType
 from core.models.User import User
+from graphene import ObjectType, Boolean, List, String
 
 class UserType(DjangoObjectType):
     class Meta:
@@ -10,3 +11,7 @@ class UserType(DjangoObjectType):
     #     if self.avatar:
     #         self.avatar = info.context.build_absolute_uri(self.avatar.url)
     #     return self.avatar
+
+class UserCreationCheckType(ObjectType):
+    success = Boolean()
+    errors = List(String)

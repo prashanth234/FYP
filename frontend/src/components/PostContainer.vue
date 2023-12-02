@@ -135,8 +135,10 @@ import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
 import ClapOutline from './icons/clapOutline.vue'
+import { useAuthStore } from '@/stores/auth';
 
 const user = useUserStore()
+const auth = useAuthStore()
 const props = defineProps(['post', 'showEdit', 'position'])
 
 const share = reactive({
@@ -174,8 +176,8 @@ function closeSharePost() {
 
 function likePost() {
   if (!user.success) {
-    user.authMessage = 'Your like awaits! Sign in to show appreciation for posts.'
-    user.auth = true
+    auth.message = 'Your like awaits! Sign in to show appreciation for posts.'
+    auth.open()
     return
   }
 

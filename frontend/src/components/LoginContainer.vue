@@ -1,14 +1,20 @@
 <template>
 
   <div class="auth-container">
-    <login-form-container
-      v-if="state.form == 'login'"
-      @changeform="changeContainer"
-    />
-    <register-form-container
-      v-else-if="state.form == 'register'"
-      @changeform="changeContainer"
-    />
+    <Transition name="slide-side" mode="out-in">
+      <div v-if="auth.form == 'login'">
+        <LoginForm />
+      </div>
+      <div v-else-if="auth.form == 'register'">
+        <RegisterForm />
+      </div>
+      <div v-else-if="auth.form == 'change-password'">
+        <ChangePassword />
+      </div>
+      <div v-else-if="auth.form == 'verify'">
+        <OtpVerifier />
+      </div>
+    </Transition>
   </div>
 
   <!-- <ion-card>
@@ -51,18 +57,13 @@
 </template>
 
 <script lang="ts" setup>
-import { IonCol, IonRow, IonCard, IonImg } from '@ionic/vue';
-import { reactive } from 'vue';
-import LoginFormContainer from './LoginFormContainer.vue';
-import RegisterFormContainer from './RegisterFormContainer.vue';
-
-const state = reactive({
-  form: 'login'
-})
-
-function changeContainer (to: string) {
-  state.form = to
-}
+import LoginForm from './LoginFormContainer.vue';
+import RegisterForm from './RegisterFormContainer.vue';
+import ChangePassword from '@/components/ChangePasswordContainer.vue';
+import OtpVerifier from './OTPContainer.vue';
+import { useAuthStore } from '@/stores/auth';
+  
+const auth = useAuthStore();
 </script>
 
 <style>
@@ -92,4 +93,18 @@ function changeContainer (to: string) {
   width: 67px;
   height: 33px;
 }
+.slide-side-enter-active,
+  .slide-side-leave-active {
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-side-enter-from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  .slide-side-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
 </style>

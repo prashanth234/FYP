@@ -1,5 +1,8 @@
-import { reactive, computed, ref, nextTick } from "vue"
-import { isValidPhoneEmail, isValidEmail, isValidPhone } from "@/mixims/validations"
+import { reactive, computed, ref, nextTick, onMounted } from "vue"
+import { isValidPhoneEmail, isValidEmail, isValidPhone } from "@/utils/validations"
+import { getAuth, signOut, RecaptchaVerifier } from "firebase/auth";
+import { useAuthStore } from "@/stores/auth";
+import { useApolloClient } from '@vue/apollo-composable';
 
 interface tokenObject {
     token: string,
@@ -17,6 +20,24 @@ function storeTokens (response: tokenObject, type: string) {
     const { token, refreshToken } = response
     localStorage.setItem('fyptoken', token)
     localStorage.setItem('fyprefreshtoken', refreshToken)
+}
+
+function useRecaptchaVerifier () {
+    const firebaseAuth = getAuth()
+    const auth = useAuthStore()
+    onMounted(() => {
+        auth.recaptchaVerifier = new RecaptchaVerifier(firebaseAuth, 'recaptcha-verifier', {
+            'size': 'invisible',
+            'callback': (response: any) => {
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                console.log(response, 'captcha verifcation')
+            },
+            'expired-callback': () => {
+                // Response expired. Ask user to solve reCAPTCHA again.
+                console.log('expired')
+            }
+        })
+    }) 
 }
 
 function useAuth() {
@@ -75,16 +96,37 @@ function useAuth() {
         fields.password2 = ''
     }
 
+    const { resolveClient } = useApolloClient()
+    const client = resolveClient()
+
+    function resetClientStore() {
+        client.resetStore()
+    }
+
+    function firebaseSignOut() {
+        signOut(getAuth()).then(() => {
+          // Sign-out successful.
+        }).catch((error) => {
+          // An error happened.
+        })
+    }
+
     return {
         touched,
         fields,
         valid,
         error,
         getEmailOrPhone,
+        clearPasswords,
         focusEmailPhone,
         emailphoneref,
-        clearPasswords
+        firebaseSignOut,
+        resetClientStore
     }
 }
 
-export { storeTokens, useAuth }
+export {
+    storeTokens,
+    useAuth,
+    useRecaptchaVerifier
+}

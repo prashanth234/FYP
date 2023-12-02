@@ -23,7 +23,7 @@ class CoinActivity(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Q')
     description = models.TextField()
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     points = models.IntegerField()
 

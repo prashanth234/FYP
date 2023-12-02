@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { categoryObject } from '@/mixims/interfaces'
+import { categoryObject } from '@/utils/interfaces'
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({ 

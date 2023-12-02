@@ -10,6 +10,11 @@ from graphql_auth.models import UserStatus
 from core.models.User import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from core.schema.type.UserType import UserCreationCheckType
+from django.contrib.auth import get_user_model
+
+from graphql_auth.utils import revoke_user_refresh_token
+from graphql_auth.signals import user_verified
 
 # Type
 from core.schema.type.UserType import UserType
@@ -114,45 +119,110 @@ class UpdateAccountMutation(graphene.Mutation):
         
         return UpdateAccountMutation(user=user, success=True)
 
+class VerifyToken:
+
+    phone_exists = "User with this phone number already exits."
+
+    def __init__(self, verify_type) -> None:
+        
+        self.verify_type = verify_type
+
+        if verify_type == "REGISTER":
+            self.failure_msg = "Failed to register user."
+        elif verify_type == "CHANGEPSW":
+            self.failure_msg = "Failed to change password."
+
+    def raiseFailure(self, log_message, message=None):
+        logger.error(f"{self.verify_type} - {log_message}")
+        raise GraphQLError(message or self.failure_msg)
+
+    def verify(self, token, phone=None):
+        if token is None:
+            self.raiseFailure("Token not found.")
+
+        try:
+            # Verify the Firebase token using the Firebase SDK
+            decoded_token = auth.verify_id_token(token)
+
+            if self.verify_type == "REGISTER":
+                user_phone = decoded_token.get('phone_number')
+
+                if phone != user_phone:
+                    self.raiseFailure("Firebase phone and register phone doesn't match.")
+
+                if User.objects.filter(phone=user_phone).exists():
+                    self.raiseFailure(self.phone_exists, self.phone_exists)
+
+            return decoded_token
+            
+        except (auth.ExpiredIdTokenError, auth.InvalidIdTokenError, auth.RevokedIdTokenError) as e:
+            # Handle authentication error
+            self.raiseFailure(f"Firebase authentication error: {e}")
+
 class VerifyAndRegisterMutation(mutations.Register):
 
     class Arguments:
         token = graphene.String()
-
-    @classmethod
-    def registrationFailed(cls, message=None):
-        raise GraphQLError(message or "Failed to register user.")
     
     @classmethod
     def mutate(cls, root, info, token=None, **kwargs):
 
         phone = kwargs.get('phone')
+        email = kwargs.get('email')
 
         if phone:
-            
-            if token is None:
-                logger.error(f"Token not found while registering user with phone number.")
-                cls.registrationFailed()
-            
+            email and kwargs.pop('email')
+            auth = VerifyToken("REGISTER")
+            auth.verify(token, phone)
+        elif email:
+            # Delete the user if the user already exists and not verified.
             try:
-                # Verify the Firebase token using the Firebase SDK
-                decoded_token = auth.verify_id_token(token)
-                user_phone = decoded_token.get('phone_number')
+                user = User.objects.get(email=email)
+                if user.status.verified is False:
+                    user.delete()
+            except User.DoesNotExist:
+                pass
+        else:
+            return GraphQLError("No Email or Phone.")
 
-                if phone != user_phone:
-                    logger.error(f"Firebase phone and register phone doesn't match.")
-                    cls.registrationFailed()
+        response = super().mutate(root, info, **kwargs)
 
-                if User.objects.filter(phone=user_phone).exists():
-                    logger.error(f"User with this phone number already exits.")
-                    cls.registrationFailed("User with this phone number already exits.")
-                
-            except (auth.ExpiredIdTokenError, auth.InvalidIdTokenError, auth.RevokedIdTokenError) as e:
-                # Handle authentication error
-                logger.error(f"Firebase authentication error: {e}")
-                cls.registrationFailed()
+        # Mark the user as verified if it is from phone number
+        if response.success and phone:
+            user = User.objects.get(phone=phone)
+            if user.status.verified is False:
+                user.status.verified = True
+                user.status.save(update_fields=["verified"])
+                user_verified.send(sender=cls, user=user)
 
-        return super().mutate(root, info, **kwargs)
+        return response
+
+class ChangePasswordMutation(mutations.PasswordReset):
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        token = kwargs.pop("token")
+
+        auth = VerifyToken("CHANGEPSW")
+        user_decoded = auth.verify(token)
+
+        try:
+            user = User.objects.get(phone=user_decoded.get('phone_number'))
+        except User.DoesNotExist:
+            raise GraphQLError("User not found.")
+
+        f = cls.form(user, kwargs)
+        if f.is_valid():
+            revoke_user_refresh_token(user)
+            user = f.save()
+
+            if user.status.verified is False:
+                user.status.verified = True
+                user.status.save(update_fields=["verified"])
+                user_verified.send(sender=cls, user=user)
+
+            return cls(success=True)
+        return cls(success=False, errors=f.errors.get_json_data())
 
 class AuthMutation(graphene.ObjectType):
     register = VerifyAndRegisterMutation.Field()
@@ -161,6 +231,7 @@ class AuthMutation(graphene.ObjectType):
     resend_activation_email = mutations.ResendActivationEmail.Field()
     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
     password_reset = mutations.PasswordReset.Field()
+    change_password = ChangePasswordMutation.Field()
     # password_change = mutations.PasswordChange.Field()
     # archive_account = mutations.ArchiveAccount.Field()
     # delete_account = mutations.DeleteAccount.Field()
@@ -176,11 +247,6 @@ class AuthMutation(graphene.ObjectType):
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
-
-class UserCreationCheckType(graphene.ObjectType):
-
-    success = graphene.Boolean()
-    errors = graphene.List(graphene.String)
 
 class UserCreationCheckQuery(graphene.ObjectType):
 

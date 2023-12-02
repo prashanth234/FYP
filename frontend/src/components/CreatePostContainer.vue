@@ -139,7 +139,7 @@ import { IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons
 import { caretDown, closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed, ComputedRef } from 'vue'
-import { CompetitionInfo, UpdatePostVariables, categoryObject } from '@/mixims/interfaces'
+import { CompetitionInfo, UpdatePostVariables, categoryObject } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
@@ -148,6 +148,7 @@ import gql from 'graphql-tag'
 import { useCategoryStore } from '@/stores/category';
 import { useQuery } from '@vue/apollo-composable'
 import { getQuery } from '@/composables/posts'
+import { useAuthStore } from '@/stores/auth';
 
 interface PostFileType {
   file: string
@@ -245,6 +246,7 @@ const postType = computed(() => {
 const toast = useToastStore()
 const user = useUserStore()
 const category = useCategoryStore()
+const auth = useAuthStore()
 category.getCategories()
 
 const { QUERY: POST_QUERY } = getQuery('allPosts')
@@ -292,7 +294,7 @@ function onCategoryChange() {
 function createNewPost() {
 
   if (!user.success) {
-    user.auth = true
+    auth.open()
     return
   }
 

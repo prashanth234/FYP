@@ -6,30 +6,23 @@
         <h3 class="ion-no-margin">{{ props.title || "Verify Account" }}</h3>
       </ion-col>
 
+      <slot></slot>
+
       <ion-col size="12" class="ion-padding-vertical">
-        Enter the code we just sent to your mobile phone <a style="font-weight: 500;" @click="emit('editphone')">+91 {{ props.phone }}</a>
+        Enter the code we just sent to your mobile phone <a style="font-weight: 500;" @click="emit('editphone')">+91 {{ auth.fields.emailphone }}</a>
       </ion-col>
 
       <ion-col size="12">
-        <otp-input v-model="state.otp" :digit-count="6"></otp-input>
+        <otp-input v-model="auth.fields.otp" :digit-count="6"></otp-input>
       </ion-col>
 
-      <slot></slot>
-
-      <ion-col size="12" v-if="state.errors.length">
-        <errors :errors="state.errors"/>
+      <ion-col size="12" v-if="auth.errors.length">
+        <errors :errors="auth.errors"/>
       </ion-col>
 
       <ion-col size="11" class="ion-padding-vertical" style="margin: auto;">
-        <ion-button class="auth-button" color="primary" :disabled="state.verifying" expand="block" @click="submit()">
-          <ion-spinner 
-            class="button-loading-small"
-            v-if="state.verifying"
-            name="crescent"
-          />
-          <span v-else>
-            Submit
-          </span>
+        <ion-button class="auth-button" color="primary" :disabled="auth.processing" expand="block" @click="submit()">
+          Submit
         </ion-button>
       </ion-col>
 
@@ -39,53 +32,46 @@
 
 <script lang="ts" setup>
 import otpInput from '@/components/OTPInputContainer.vue';
-import { IonCol, IonRow, IonButton, IonSpinner, IonGrid } from '@ionic/vue';
-import { reactive } from 'vue';
+import { IonCol, IonRow, IonButton, IonGrid } from '@ionic/vue';
 import errors from './errorContainer.vue';
+import { useAuthStore } from '@/stores/auth';
 
-interface State {
-  verifying: boolean,
-  otp: string,
-  errors: Array<string>
-}
-
-const state: State = reactive({
-  verifying: false,
-  otp: '',
-  errors: []
-})
+const auth = useAuthStore();
 
 const emit = defineEmits<{
   (e: 'editphone'): void;
-  (e: 'submitOTP', otp: string, postVerify: any): void
+  (e: 'verified', user: any): void
 }>()
 
 const props = defineProps({
-  phone: {
-    type: String,
-    required: true
-  },
   title: {
     type: String,
     required: false
   }
 })
 
-function postVerify(response: {success: boolean, error: any}) {
-  if (response.error) {
-    if (response.error.code == 'auth/invalid-verification-code') {
-      state.errors = ["Invalid code. Check the OTP on your mobile."]
-    } else {
-      state.errors = ["Verification failed. Please try again."]
-    }
-  }
-  state.verifying = false
-}
+async function submit() {
+  const invalidError = "Invalid code. Check the OTP on your mobile."
 
-function submit() {
-  state.errors = []
-  state.verifying = true
-  emit('submitOTP', state.otp, postVerify)
+  if (auth.fields.otp.length != 6) {
+    auth.errors = [invalidError]
+    return
+  }
+
+  auth.processState(true)
+
+  try {
+    const response = await auth.otpVerifier.confirm(auth.fields.otp)
+    auth.postVerify && auth.postVerify(response.user)
+  } catch (error: any) {
+    console.log(error)
+    if (error?.code == 'auth/invalid-verification-code') {
+      auth.errors = [invalidError]
+    } else {
+      auth.errors = ["Verification failed. Please try again."]
+    }
+    auth.processState(false)
+  }
 }
 
 </script>
