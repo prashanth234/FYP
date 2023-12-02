@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 import otpInput from '@/components/OTPInputContainer.vue';
 import { IonCol, IonRow, IonButton, IonGrid } from '@ionic/vue';
-import errors from './errorContainer.vue';
+import errors from './ErrorContainer.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const auth = useAuthStore();

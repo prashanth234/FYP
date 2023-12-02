@@ -97,7 +97,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@vue/apollo-composable'
 import { useAuth, useRecaptchaVerifier } from '@/composables/auth'
 import { useToastStore } from '@/stores/toast'
-import errors from './errorContainer.vue'
+import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const toast = useToastStore();

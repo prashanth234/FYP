@@ -87,7 +87,7 @@ import { CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
 import { useDialogStore } from '@/stores/dialog';
-import CommonDialog from '@/components/commonDialogContainer.vue';
+import CommonDialog from '@/components/CommonDialogContainer.vue';
 import { scrollTop } from '@/composables/scroll'
 
 scrollTop()

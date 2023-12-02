@@ -74,7 +74,7 @@
 <script lang="ts" setup>
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonSpinner } from '@ionic/vue';
 import { useAuthStore } from '@/stores/auth';
-import errors from './errorContainer.vue';
+import errors from './ErrorContainer.vue';
 import gql from 'graphql-tag';
 import { useMutation } from '@vue/apollo-composable';
 import { useToastStore } from '@/stores/toast';

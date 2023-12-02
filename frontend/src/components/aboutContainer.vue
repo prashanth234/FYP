@@ -107,8 +107,8 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { useAuth } from '@/composables/auth'
 import { useDialogStore } from '@/stores/dialog'
-import CommonDialog from '@/components/commonDialogContainer.vue'
-import errors from './errorContainer.vue'
+import CommonDialog from '@/components/CommonDialogContainer.vue'
+import errors from './ErrorContainer.vue'
 
 interface State {
   image: null,

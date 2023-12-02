@@ -108,7 +108,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
-import errors from './errorContainer.vue'
+import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const user = useUserStore();

@@ -200,7 +200,7 @@ import { usePostDialog } from '@/composables/postDialog'
 
 
 import { useDialogStore } from '@/stores/dialog'
-import CommonDialog from '@/components/commonDialogContainer.vue'
+import CommonDialog from '@/components/CommonDialogContainer.vue'
 import { warningOutline } from 'ionicons/icons'
 import { useAuthStore } from '@/stores/auth';
 
