@@ -69,55 +69,55 @@ class UserAvatarMutation(graphene.Mutation):
 
         return UserAvatarMutation(user=user)
 
-class UpdateAccountMutation(graphene.Mutation):
+# class UpdateAccountMutation(graphene.Mutation):
 
-    class Arguments:
-        gender = graphene.String()
-        firstName = graphene.String()
-        lastName = graphene.String()
-        dateOfBirth = graphene.String()
-        email = graphene.String()
-        phone = graphene.String()
+#     class Arguments:
+#         gender = graphene.String()
+#         firstName = graphene.String()
+#         lastName = graphene.String()
+#         dateOfBirth = graphene.String()
+#         email = graphene.String()
+#         phone = graphene.String()
 
-    user = graphene.Field(UserType)
-    success = graphene.Boolean()
+#     user = graphene.Field(UserType)
+#     success = graphene.Boolean()
 
-    @classmethod
-    @login_required
-    def mutate(cls, root, info, gender=None, firstName=None, lastName=None, dateOfBirth=None, email=None, phone=None):
+#     @classmethod
+#     @login_required
+#     def mutate(cls, root, info, gender=None, firstName=None, lastName=None, dateOfBirth=None, email=None, phone=None):
         
-        user = info.context.user
+#         user = info.context.user
         
-        if user.status.verified and email:
-            raise GraphQLError("Email can't be updated, please reachout to support", extensions={'status': 403})
+#         if user.status.verified and email:
+#             raise GraphQLError("Email can't be updated, please reachout to support", extensions={'status': 403})
         
-        if email == "" and phone == "":
-            raise GraphQLError("Please provide either email or phone number", extensions={'status': 400})
+#         if email == "" and phone == "":
+#             raise GraphQLError("Please provide either email or phone number", extensions={'status': 400})
         
-        if gender is not None:
-            user.gender = gender
+#         if gender is not None:
+#             user.gender = gender
 
-        if firstName is not None:
-            user.first_name = firstName
+#         if firstName is not None:
+#             user.first_name = firstName
 
-        if lastName is not None:
-            user.last_name = lastName
+#         if lastName is not None:
+#             user.last_name = lastName
 
-        if dateOfBirth:
-            user.date_of_birth = dateOfBirth
+#         if dateOfBirth:
+#             user.date_of_birth = dateOfBirth
         
-        if email is not None:
-            UserStatus.clean_email(email)
-            user.email = email
+#         if email is not None:
+#             UserStatus.clean_email(email)
+#             user.email = email
 
-        if phone is not None:
-            if User.objects.filter(phone=phone).exists():
-                raise GraphQLError("Phone number must be unique", extensions={'status': 400})
-            user.phone = phone
+#         if phone is not None:
+#             if User.objects.filter(phone=phone).exists():
+#                 raise GraphQLError("Phone number must be unique", extensions={'status': 400})
+#             user.phone = phone
 
-        user.save()
+#         user.save()
         
-        return UpdateAccountMutation(user=user, success=True)
+#         return UpdateAccountMutation(user=user, success=True)
 
 class VerifyToken:
 
@@ -235,12 +235,12 @@ class AuthMutation(graphene.ObjectType):
     # password_change = mutations.PasswordChange.Field()
     # archive_account = mutations.ArchiveAccount.Field()
     # delete_account = mutations.DeleteAccount.Field()
-    # update_account = mutations.UpdateAccount.Field()
+    update_account = mutations.UpdateAccount.Field()
     # send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
     # verify_secondary_email = mutations.VerifySecondaryEmail.Field()
     # swap_emails = mutations.SwapEmails.Field()
     update_avatar = UserAvatarMutation.Field()
-    update_account = UpdateAccountMutation.Field()
+    # update_account = UpdateAccountMutation.Field()
 
     # django-graphql-jwt inheritances
     token_auth = mutations.ObtainJSONWebToken.Field()

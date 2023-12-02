@@ -105,26 +105,18 @@
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonCard, IonCardContent } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useMutation } from '@vue/apollo-composable'
-import { storeTokens, useAuth } from '@/composables/auth'
+import { storeTokens, useAuth, useEmailPhoneFocus } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
+import { onMounted } from 'vue';
 
 const user = useUserStore();
 const toast = useToastStore();
 const auth = useAuthStore();
-const {
-  emailphoneref,
-  focusEmailPhone,
-  resetClientStore
-} = useAuth();
-
-function editphone() {
-  auth.changeForm('login')
-  auth.clearPasswords()
-  focusEmailPhone()
-}
+const { resetClientStore } = useAuth();
+const { emailphoneref } = useEmailPhoneFocus();
 
 function forgotPassword () {
 
@@ -133,7 +125,7 @@ function forgotPassword () {
   }
 
   if (auth.isInputPhone) {
-    auth.changeForm('change-password')
+    auth.changeForm('changepassword')
     return
   }
   

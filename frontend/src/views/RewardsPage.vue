@@ -273,7 +273,6 @@ onResult(({data, loading}) => {
 
 function createReedem (reward: string) {
 	state.loading = true
-	console.log
 
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     

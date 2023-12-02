@@ -31,7 +31,7 @@
       <ion-input label="Username" :value="user.username" :disabled="true" labelPlacement="floating"></ion-input>
     </ion-item>
 
-    <ion-item>
+    <ion-item v-if="user.email">
       <ion-input :disabled="user.verified" label="Email" inputmode="email" v-model="fields.email" labelPlacement="floating"></ion-input>
     </ion-item>
 
@@ -39,8 +39,8 @@
       <a @click="verifyEmail">Verify Email</a>
     </div>
 
-    <ion-item lines="none">
-      <ion-input label="Phone" inputmode="tel" type="tel" v-model="fields.phone" :counter="true" :maxlength="10" labelPlacement="floating"></ion-input>
+    <ion-item lines="none" v-if="user.phone">
+      <ion-input :disabled="user.verified" label="Phone" inputmode="tel" type="tel" v-model="fields.phone" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -105,7 +105,7 @@ import gql from 'graphql-tag'
 import { cameraOutline, alertCircleOutline } from 'ionicons/icons'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
-import { useAuth } from '@/composables/auth'
+import { useUserFields } from '@/composables/auth'
 import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/CommonDialogContainer.vue'
 import errors from './ErrorContainer.vue'
@@ -128,7 +128,7 @@ const state: State = reactive({
 
 const user = useUserStore();
 const toast = useToastStore();
-const {fields, valid, error} = useAuth();
+const {fields, valid, error} = useUserFields();
 const dialog = useDialogStore();
 
 watch(() => user.username, setUserState)
@@ -190,31 +190,28 @@ function imageSelected(blob: CropperResult, type: string) {
 function updateProfile () {
   state.errors = []
 
-  const {firstName, lastName, gender, email, phone} = fields
+  const {firstName, lastName, gender} = fields
 
-  if (!email && !phone) {
-    state.errors.push('Please provide either email or phone number')
-  } else {
-    if (email && !valid.value.email) {
-      state.errors.push('Please enter a valid email')
-    } else if (phone && !valid.value.phone) {
-      state.errors.push('Please enter a valid phone number')
-    }
-  }
+  // if (!email && !phone) {
+  //   state.errors.push('Please provide either email or phone number')
+  // } else {
+  //   if (email && !valid.value.email) {
+  //     state.errors.push('Please enter a valid email')
+  //   } else if (phone && !valid.value.phone) {
+  //     state.errors.push('Please enter a valid phone number')
+  //   }
+  // }
 
   if (state.errors.length) { return }
 
   state.loading = true
 
   const { mutate, onDone, onError } = useMutation(gql`    
-    mutation ($gender: String, $firstName: String, $lastName: String, $dateOfBirth: String, $email: String, $phone: String) { 
+    mutation ($gender: String, $firstName: String, $lastName: String) { 
       updateAccount (
         gender: $gender,
         firstName: $firstName,
-        lastName: $lastName,
-        dateOfBirth: $dateOfBirth,
-        email: $email,
-        phone: $phone
+        lastName: $lastName
       ) {
           success
         } 
@@ -222,11 +219,11 @@ function updateProfile () {
   `,
     {
       variables: {
-        firstName: firstName != user.firstName ? firstName : undefined,
-        lastName: lastName != user.lastName ? lastName : undefined,
-        gender: gender != user.gender ? gender : undefined,
-        email: email != user.email ? email : undefined,
-        phone: phone != user.phone ? phone : undefined
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        // email: email != user.email ? email : undefined,
+        // phone: phone != user.phone ? phone : undefined
       },
     }
   )
@@ -235,7 +232,7 @@ function updateProfile () {
 
   onDone(({data}) => {
     toast.$patch({message: "Success! Your user account has been updated.", color: 'success', open: true})
-    data.updateAccount.success && user.$patch({firstName, lastName, gender, email, phone})
+    data.updateAccount.success && user.$patch({firstName, lastName, gender})
     state.loading = false
   })
 

@@ -162,6 +162,7 @@ GRAPHQL_AUTH = {
     "LOGIN_ALLOWED_FIELDS": ['email', 'phone'],
     "REGISTER_MUTATION_FIELDS": ['username'],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
+    "UPDATE_MUTATION_FIELDS": ['first_name', 'last_name', 'gender'],
     "ALLOW_LOGIN_NOT_VERIFIED": False,
     "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', False),
     "EMAIL_TEMPLATE_VARIABLES": {

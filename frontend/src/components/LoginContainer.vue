@@ -8,7 +8,7 @@
       <div v-else-if="auth.form == 'register'">
         <RegisterForm />
       </div>
-      <div v-else-if="auth.form == 'change-password'">
+      <div v-else-if="auth.form == 'changepassword'">
         <ChangePassword />
       </div>
       <div v-else-if="auth.form == 'verify'">

@@ -36,7 +36,7 @@
           <errors :errors="auth.errors"/>
         </ion-col>
 
-        <ion-col size="12" class="ion-padding-vertical" style="margin: auto;" v-if="props.hideIonButton">
+        <ion-col size="12" class="ion-padding-vertical" style="margin: auto;" v-if="auth.form">
           <input
             id="recaptcha-verifier"
             type="submit"
@@ -63,6 +63,12 @@
               Submit
             </span>
           </ion-button>
+        </ion-col>
+
+        <ion-col v-if="auth.form" size="12" class="line" style="margin-top: 8px; margin-bottom: 15px;"></ion-col>
+
+        <ion-col v-if="auth.form" size="12" class="ion-text-center">
+          Back to <a class="cpointer auth-link" :class="{'cursor-disable': auth.processing}" @click="auth.goPreviousForm"><b>Log In</b></a>
         </ion-col>
 
       </ion-row>

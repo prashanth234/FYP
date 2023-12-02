@@ -30,17 +30,38 @@ function useRecaptchaVerifier () {
             'size': 'invisible',
             'callback': (response: any) => {
                 // reCAPTCHA solved, allow signInWithPhoneNumber.
-                console.log(response, 'captcha verifcation')
+                // console.log(response, 'captcha verifcation')
             },
             'expired-callback': () => {
                 // Response expired. Ask user to solve reCAPTCHA again.
-                console.log('expired')
+                // console.log('expired')
             }
         })
     }) 
 }
 
-function useAuth() {
+function useEmailPhoneFocus() {
+    const emailphoneref = ref()
+
+    onMounted(() => {
+        setTimeout(() => {
+            emailphoneref.value.$el.setFocus()
+        },100)
+    })
+
+    function focusEmailPhone() {
+        nextTick(() => {
+            emailphoneref.value.$el.setFocus()
+        })
+    }
+
+    return {
+        emailphoneref,
+        focusEmailPhone
+    }
+}
+
+function useUserFields() {
     const touched = reactive({
         emailphone: false,
         email: false,
@@ -81,20 +102,23 @@ function useAuth() {
         return isValidEmail(fields.emailphone) ? {email: fields.emailphone} : {phone: '+91' + fields.emailphone}
     }
 
-    const emailphoneref = ref()
-
-    function focusEmailPhone() {
-        nextTick(() => {
-            setTimeout(() => {
-                emailphoneref.value.$el.setFocus()
-            },)
-        })
-    }
-
     function clearPasswords() {
         fields.password1 = ''
         fields.password2 = ''
     }
+
+    return {
+        touched,
+        fields,
+        valid,
+        error,
+        getEmailOrPhone,
+        clearPasswords
+    }
+}
+
+function useAuth() {
+    
 
     const { resolveClient } = useApolloClient()
     const client = resolveClient()
@@ -112,14 +136,6 @@ function useAuth() {
     }
 
     return {
-        touched,
-        fields,
-        valid,
-        error,
-        getEmailOrPhone,
-        clearPasswords,
-        focusEmailPhone,
-        emailphoneref,
         firebaseSignOut,
         resetClientStore
     }
@@ -128,5 +144,7 @@ function useAuth() {
 export {
     storeTokens,
     useAuth,
-    useRecaptchaVerifier
+    useRecaptchaVerifier,
+    useUserFields,
+    useEmailPhoneFocus
 }

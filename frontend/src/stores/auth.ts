@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({ 
     processing: false,
     errors: [] as string[],
+    previousForm: '',
     form: '',
     show: false,
     success: false,
@@ -48,6 +49,7 @@ export const useAuthStore = defineStore('auth', {
       this.message = ''
     },
     changeForm(to: string, postVerify: any = null) {
+      this.previousForm = this.form
       this.$patch({
         form: to,
         errors: []
@@ -57,10 +59,20 @@ export const useAuthStore = defineStore('auth', {
         this.fields.username = ''
         this.fields.otp = ''
         this.clearPasswords()
-      } else if (to == 'change-password') {
+      } else if (to == 'changepassword') {
         this.clearPasswords()
       }
       this.postVerify = postVerify
+    },
+    goPreviousForm() {
+      if (this.previousForm == 'changepassword') {
+        this.form = 'login'
+        this.clearPasswords()
+      } else {
+        this.form = this.previousForm
+      }
+      this.previousForm = ''
+      this.errors = []
     },
     isValidEmailPhone() {
       const valid = isValidPhoneEmail(this.fields.emailphone)

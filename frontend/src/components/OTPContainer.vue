@@ -9,7 +9,7 @@
       <slot></slot>
 
       <ion-col size="12" class="ion-padding-vertical">
-        Enter the code we just sent to your mobile phone <a style="font-weight: 500;" @click="emit('editphone')">+91 {{ auth.fields.emailphone }}</a>
+        Enter the code we just sent to your mobile phone <a class="cpointer auth-link" :class="{'cursor-disable': auth.processing}" @click="auth.goPreviousForm()">+91 {{ auth.fields.emailphone }}</a>
       </ion-col>
 
       <ion-col size="12">
@@ -64,7 +64,6 @@ async function submit() {
     const response = await auth.otpVerifier.confirm(auth.fields.otp)
     auth.postVerify && auth.postVerify(response.user)
   } catch (error: any) {
-    console.log(error)
     if (error?.code == 'auth/invalid-verification-code') {
       auth.errors = [invalidError]
     } else {

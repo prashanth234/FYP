@@ -13,7 +13,7 @@
 </template>
  
  <script lang="ts" setup>
-  import { reactive, ref } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
 
   const props = defineProps({
     digitCount: {
@@ -26,6 +26,12 @@
   const digits: string[] = reactive([])
   const otpCont = ref<HTMLInputElement[]>([])
   const emit = defineEmits(['update:modelValue'])
+
+  onMounted(() => {
+    setTimeout(() => {
+      otpCont.value[0].focus()
+    }, 100);
+  })
 
   for (let i =0; i < props.digitCount; i++) {
     digits[i] = ''
@@ -41,7 +47,6 @@
     }
     
     if (event.key === "Backspace") {
-      
       if (index != 0 && digits[index] == '') {
         otpCont.value[index-1].focus()
       }
@@ -57,7 +62,16 @@
       if (index != props.digitCount - 1) {
         otpCont.value[index+1].focus()
       }
-    } else {
+    } else if (event.key == 'ArrowRight') {
+      if (index != props.digitCount - 1) {
+        otpCont.value[index+1].focus()
+      }
+    } else if (event.key == 'ArrowLeft') {
+      if (index != 0) {
+        otpCont.value[index-1].focus()
+      }
+    }
+    else {
       digits[index] = ''
     }
 
