@@ -77,7 +77,7 @@ import gql from 'graphql-tag'
 import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
-import About from '@/components/aboutContainer.vue'
+import About from '@/components/AboutContainer.vue'
 // import ChangePassword from '@/components/changePasswordContainer.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { UpdatePostVariables, Post as PostType } from '@/utils/interfaces'
