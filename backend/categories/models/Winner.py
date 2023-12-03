@@ -13,7 +13,7 @@ class Winner(models.Model):
     
     POSITION_CHOICES = [(i, str(i)) for i in range(1, 4)]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.DO_NOTHING)
     post = models.OneToOneField(Post, on_delete=models.DO_NOTHING)
     won_by_likes = models.IntegerField()

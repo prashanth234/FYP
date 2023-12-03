@@ -1,6 +1,6 @@
 <template>
   <input
-    type="text"
+    type="number"
     class="digit-box"
     v-for="(el, ind) in digits"
     :autofocus="ind == 0"
@@ -71,9 +71,6 @@
         otpCont.value[index-1].focus()
       }
     }
-    else {
-      digits[index] = ''
-    }
 
     updateModel()
   }
@@ -100,5 +97,14 @@
 
 .digit-box:focus {
   border: 2px solid var(--ion-color-primary);
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
 }
 </style>

@@ -1,17 +1,17 @@
 import graphene
-import graphql_jwt
+# import graphql_jwt
 from graphql_auth import mutations
-from graphql_auth.schema import UserQuery, MeQuery
+from graphql_auth.schema import MeQuery
 from graphene_file_upload.scalars import Upload
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
 from datetime import datetime
-from graphql_auth.models import UserStatus
+# from graphql_auth.models import UserStatus
 from core.models.User import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from core.schema.type.UserType import UserCreationCheckType
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 
 from graphql_auth.utils import revoke_user_refresh_token
 from graphql_auth.signals import user_verified

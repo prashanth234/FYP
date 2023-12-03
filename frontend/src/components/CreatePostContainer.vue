@@ -327,14 +327,16 @@ function createNewPost() {
             },
             user {
               username,
-              avatar
+              avatar,
+              id
             },
             category {
               oftype
             },
             competition {
               expired
-            }
+            },
+            isBot
           }  
         }
     }

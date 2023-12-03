@@ -164,7 +164,7 @@ GRAPHQL_AUTH = {
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
     "UPDATE_MUTATION_FIELDS": ['first_name', 'last_name', 'gender'],
     "ALLOW_LOGIN_NOT_VERIFIED": False,
-    "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', False),
+    "SEND_ACTIVATION_EMAIL": bool(os.environ.get('SEND_ACTIVATION_EMAIL', False)),
     "EMAIL_TEMPLATE_VARIABLES": {
         "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
         "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),

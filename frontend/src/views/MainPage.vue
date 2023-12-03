@@ -27,7 +27,7 @@
                 <ion-col size="12" class="ion-text-center" style="padding-top: 20px; color: var(--ion-color-dark)">
                   <div v-if="user.success">
                     <div style="font-size: 16px; font-weight: 600;"> Welcome </div>
-                    <div style="font-size: 20px; font-weight: 600;"> {{ displayName }} </div>
+                    <div class="two-line-ellipsis" style="font-size: 20px; font-weight: 600;"> {{ displayName }} </div>
                   </div>
                   <div v-else>
                     <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>

@@ -110,7 +110,6 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
-import { onMounted } from 'vue';
 
 const user = useUserStore();
 const toast = useToastStore();
