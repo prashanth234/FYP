@@ -15,7 +15,8 @@ django-filter = "*"
 mysqlclient = "==2.1.0"
 gunicorn = "*"
 whitenoise = "*"
-firebase-admin = "*"
+firebase-admin = "==6.0.0"
+PyJWT = "==1.7.0"
 
 [dev-packages]
 pytest = "*"
