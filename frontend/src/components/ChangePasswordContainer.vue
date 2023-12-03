@@ -155,7 +155,7 @@ function changePassword(user: any) {
   mutate()
 
   onDone((result) => {
-    const response = result.data.passwordReset
+    const response = result.data.changePassword
     auth.processState(false)
 
     if (response.success) {

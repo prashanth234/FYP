@@ -107,10 +107,10 @@ const { emailphoneref } = useEmailPhoneFocus();
 
 useRecaptchaVerifier()
 
-auth.fields.emailphone = '7097904099'
-auth.fields.username = 'prashanth123'
-auth.fields.password1 = 'prashanth123'
-auth.fields.password2 = 'prashanth123'
+// auth.fields.emailphone = '7097904099'
+// auth.fields.username = 'prashanth123'
+// auth.fields.password1 = 'prashanth123'
+// auth.fields.password2 = 'prashanth123'
 
 function goToLogin() {
   auth.discardMessage()

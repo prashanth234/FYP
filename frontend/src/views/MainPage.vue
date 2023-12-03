@@ -106,6 +106,7 @@
               :selected="router.name == item.rname"
               :href="item.rpath"
               v-show="item.micon && (!item.auth || isUserLogged)"
+              @click="item.maction && item.maction()"
             >
               <ion-icon :icon="item.micon" class="tab-bar-icon"/>
               <ion-label>{{ item.name }}</ion-label>
@@ -276,7 +277,8 @@ const state = reactive({
       auth: false,
       dicon: information,
       micon: informationCircle,
-      action: showAbout
+      action: showAbout,
+      maction: showAbout
     },
     {
       name: 'Logout',
