@@ -74,7 +74,7 @@ function submitForm () {
     if (response.success) {
       goHome()
       auth.open()
-      auth.message = 'Password reset successful! You can now log in using your new password.'
+      auth.showMessage('Password reset successful! You can now log in using your new password.', 'success')
       clear()
     } else {
       const keys = Object.keys(response.errors)

@@ -176,7 +176,7 @@ function closeSharePost() {
 
 function likePost() {
   if (!user.success) {
-    auth.message = 'Your like awaits! Sign in to show appreciation for posts.'
+    auth.showMessage('Your like awaits! Sign in to show appreciation for posts.', 'info')
     auth.open()
     return
   }

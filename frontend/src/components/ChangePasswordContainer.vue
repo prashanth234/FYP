@@ -159,7 +159,7 @@ function changePassword(user: any) {
     auth.processState(false)
 
     if (response.success) {
-      auth.message = 'Password reset successful! You can now log in using your new password.'
+      auth.showMessage('Password reset successful! You can now log in using your new password.', 'success')
       auth.changeForm('login')
     } else {
       const keys = Object.keys(response.errors)

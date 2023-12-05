@@ -189,11 +189,11 @@ function register (user?: any) {
     } else if (response.success) {
       if (token) {
         // Mobile registration
-        auth.message = "Success! You're now a valued member of our community. Please Log In."
+        auth.showMessage("Success! You're now a valued member of our community. Please Log In.", 'success')
         
       } else {
         // Email registration
-        auth.message = "We've sent an activation email to your inbox. Activate now for seamless login!"
+        auth.showMessage("Success! We've sent an activation email to your inbox. Activate now for seamless login!", 'success')
       }
       auth.changeForm('login')
       // user.$patch({

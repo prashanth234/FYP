@@ -10,7 +10,8 @@ export const useAuthStore = defineStore('auth', {
     form: '',
     show: false,
     success: false,
-    message: '',
+    message: "",
+    msgType: '',
     postVerify: null as any,
     recaptchaVerifier: null as any,
     otpVerifier: null as any,
@@ -44,6 +45,9 @@ export const useAuthStore = defineStore('auth', {
     processState(value: boolean) {
       this.processing = value
       value && (this.errors = [])
+    },
+    showMessage(message: string, type: string) {
+      this.$patch({message, msgType: type})
     },
     discardMessage() {
       this.message = ''

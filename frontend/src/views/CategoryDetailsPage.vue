@@ -285,7 +285,7 @@ function fetchMore(ev: InfiniteScrollCustomEvent) {
     // To see more post, ask user to login
     // toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
     auth.open()
-    auth.message = 'Take your journey further! Log in to reveal more posts.'
+    auth.showMessage('Take your journey further! Log in to reveal more posts.', 'info')
     ev.target.complete()
     content.value && content.value.$el.scrollByPoint(0, -50, 500);
     // Commented this code because because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.

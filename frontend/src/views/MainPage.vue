@@ -296,7 +296,7 @@ const isUserLogged = computed(() => {
 
 function addNewPost () {
   if (!user.success) {
-    auth.message = 'Ready to share your content? Log in and start posting!'
+    auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
     auth.open()
     return
   }

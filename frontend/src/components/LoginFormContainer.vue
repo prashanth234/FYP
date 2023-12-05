@@ -12,7 +12,8 @@
         </ion-col>
 
         <ion-col v-if="auth.message">
-          <ion-card
+          <alert :message="auth.message" :type="auth.msgType"/>
+          <!-- <ion-card
             class="note-card"
             style="margin: 0px !important;"
             color="light"
@@ -20,7 +21,7 @@
             <ion-card-content class="ion-text-center" style="font-weight: 500;">
               {{ auth.message }}
             </ion-card-content>
-          </ion-card>
+          </ion-card> -->
         </ion-col>
 
         <ion-col size="12">
@@ -110,6 +111,7 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
+import alert from './AlertContainer.vue'
 
 const user = useUserStore();
 const toast = useToastStore();
@@ -152,7 +154,7 @@ function forgotPassword () {
   onDone(({data: {sendPasswordResetEmail}}) => {
     if (sendPasswordResetEmail.success) {
       // toast.$patch({message: "An email with a password reset link will be sent to you shortly.", color: 'success', open: true})
-      auth.message = 'Password reset link sent to your email. Kindly proceed to reset and log in.'
+      auth.showMessage('Password reset link sent to your email. Kindly proceed to reset and log in.', 'success')
     } else {
       toast.$patch({message: "Apologies, but we couldn't send the password reset link to your email. Please try again.", color: 'danger', open: true})
     }
