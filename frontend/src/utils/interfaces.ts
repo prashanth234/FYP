@@ -12,6 +12,7 @@ export interface Post {
   id: number,
   description: string,
   postfileSet: PostFileType[],
+  likes: number,
   category: {
     id: string,
     oftype: string

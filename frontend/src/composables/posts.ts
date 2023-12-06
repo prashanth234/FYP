@@ -1,9 +1,10 @@
 import { useQuery } from '@vue/apollo-composable'
 import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
-import { reactive, ref, watch } from 'vue'
+import { ref } from 'vue'
 
 export function getQuery(type: string) {
+  // Also update the create post and trending query and post details
   return {
     QUERY: gql`
       query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
@@ -175,12 +176,16 @@ export function getPostDetails(
           file
         },
         category {
-          id
+          id,
+          oftype
         },
         user {
           id,
           username,
           avatar
+        },
+        competition {
+          expired
         }
       }
     }
@@ -196,5 +201,48 @@ export function getPostDetails(
     loading,
     onResult,
     onError
+  }
+}
+
+export function getTrending(category: string | undefined, competition: string | undefined) {
+
+  const TRENDING_QUERY = gql`
+    query TrendingPosts ($competition: Int!) {
+      trendingPosts (competition: $competition) {
+        posts {
+          id,
+          likes,
+          userLiked,
+          description,
+          createdAt,
+          isBot,
+          postfileSet {
+            file
+          },
+          user {
+            id,
+            username,
+            avatar
+          },
+          category {
+            oftype
+          },
+          competition {
+            expired
+          }
+        },
+        total
+      }
+    }
+  `
+
+  const { result: trending, loading, refetch, onResult } = useQuery(TRENDING_QUERY, () => ({
+    competition,
+  }), { fetchPolicy: 'network-only' })
+
+  return {
+    trending,
+    refetch,
+    onResult
   }
 }

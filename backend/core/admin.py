@@ -19,8 +19,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Support)
 class SupportAdmin(admin.ModelAdmin):
-    list_display = ('user_link', 'description', 'comments', 'status')
-    list_filter = ['status']
+    list_display = ('description', 'user_link', 'comments', 'status', 'created_at')
+    list_filter = ['status', 'user']
+    ordering = ('-created_at',)
 
     def user_link(self, obj):
         # Generate a link to the related object's change page

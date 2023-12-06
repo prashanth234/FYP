@@ -169,10 +169,7 @@ class PostListType(graphene.ObjectType):
     posts = graphene.List(PostType)
     total = graphene.Int()
 
-class Query(graphene.ObjectType):
-
-    # post = graphene.relay.Node.Field(PostType)
-    # all_posts = DjangoFilterConnectionField(PostType)
+class AllPostsQuery(graphene.ObjectType):
 
     all_posts = graphene.Field(
         PostListType,
@@ -187,9 +184,9 @@ class Query(graphene.ObjectType):
     def resolve_all_posts(root, info, category=None, competition=None, page=1, per_page=10, trending=False, cursor=None):
 
         # If trending flag is set return top number of posts
-        if trending:
-            top_posts = Post.objects.filter(likes__gte=5, competition=competition).order_by('-likes', 'created_at')[:5]
-            return PostListType(posts=top_posts, total=len(top_posts))
+        # if trending:
+        #     top_posts = Post.objects.filter(likes__gte=5, competition=competition).order_by('-likes', 'created_at')[:5]
+        #     return PostListType(posts=top_posts, total=len(top_posts))
 
         if competition:
             queryset = Post.objects.filter(competition=competition).order_by('-created_at')
@@ -215,7 +212,9 @@ class Query(graphene.ObjectType):
 
         # Return paginated list of posts
         return PostListType(posts=posts, total=total)
-    
+
+class MyPostsQuery(graphene.ObjectType):
+
     my_posts = graphene.Field(
         PostListType,
         category= graphene.Int(),
@@ -251,8 +250,34 @@ class Query(graphene.ObjectType):
         # Return paginated list of posts
         return PostListType(posts=posts, total=total)
     
-    post_details = graphene.Field(PostType, id=graphene.String(), category=graphene.String()    )
+class PostDetailsQuery(graphene.ObjectType):
+    post_details = graphene.Field(PostType, id=graphene.String(), category=graphene.String())
 
     def resolve_post_details(root, info, id, category):
         return Post.objects.get(pk=id, category__id=category)
+
+class TrendingPostsQuery(graphene.ObjectType):
+
+    trending_posts = graphene.Field(
+        PostListType,
+        competition=graphene.Int(required=True)
+    )
+
+    def resolve_trending_posts(root, info, competition=None):
+        top_posts = Post.objects.filter(likes__gte=5, competition=competition).order_by('-likes', 'created_at')[:5]
+        return PostListType(posts=top_posts, total=len(top_posts))
+    
+class Query(
+    AllPostsQuery,
+    MyPostsQuery,
+    PostDetailsQuery,
+    TrendingPostsQuery,
+    graphene.ObjectType):
+    pass
+
+    
+    
+
+    
+    
         

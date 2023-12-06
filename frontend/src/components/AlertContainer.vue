@@ -42,7 +42,7 @@ const icons: Icons = reactive({
 
 <style lang="scss">
   .alert {
-    font-weight: 500;
+    font-weight: 520;
     padding: 10px;
     font-size: 15px;
     border-radius: 5px;

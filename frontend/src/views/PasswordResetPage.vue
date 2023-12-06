@@ -72,9 +72,10 @@ function submitForm () {
     auth.processState(false)
 
     if (response.success) {
-      goHome()
-      auth.open()
-      auth.showMessage('Password reset successful! You can now log in using your new password.', 'success')
+      // goHome()
+      // auth.open()
+      // auth.showMessage('Password reset successful! You can now log in using your new password.', 'success')
+      toast.$patch({message: "Password reset successful! You can now log in using your new password.", color: 'success', open: true})
       clear()
     } else {
       const keys = Object.keys(response.errors)

@@ -125,12 +125,22 @@
 
               <!-- Display the posts -->
               <ion-col
-                v-show="state.tabSelected != 'winners' && !state.pdShow"
+                v-show="state.tabSelected == 'allposts' && !state.pdShow"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
                 v-for="(post, index) in posts?.allPosts?.posts"
                 :key="post.id"
               >
                 <post :post="post"></post>
+              </ion-col>
+
+              <!-- Display Trending -->
+              <ion-col
+                v-show="state.tabSelected == 'trending'"
+                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
+                v-for="(post, index) in state.trending" 
+                :key="index"
+              >
+                <post v-if="post.likes >= 5" :post="post"></post>
               </ion-col>
 
               <!-- Display winners -->
@@ -176,7 +186,7 @@ import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonIn
 
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import { getPosts, getWinners, getPostDetails } from '@/composables/posts'
+import { getPosts, getWinners, getPostDetails, getTrending } from '@/composables/posts'
 import { scrollTop } from '@/composables/scroll'
 
 import { CompetitionInfo } from '@/utils/interfaces'
@@ -200,6 +210,7 @@ interface State {
   creatingPost: Boolean,
   tabSelected: SegmentValue | undefined,
   winners: Array<Winner>,
+  trending: Array<PostType>,
   pdShow: boolean,
   pdetails: PostType | null
 }
@@ -210,6 +221,7 @@ const state: State = reactive({
   refreshCreatePost: 1,
   tabSelected: 'allposts',
   winners: [],
+  trending: [],
   pdShow: false,
   pdetails: null
 })
@@ -267,13 +279,18 @@ function setCategoryDefault() {
 
 function tabChanged(value: string) {
   state.tabSelected = value
-  variables.trending.value = value == 'trending'
+  // variables.trending.value = value == 'trending'
 
   if (value == 'winners') {
     state.winners = []
     const { onResult } = getWinners(categoryInfo.selectedComptn?.id)
     onResult(({data, loading}) => {
       !loading && (state.winners = data.winners)
+    })
+  } else if (value == 'trending') {
+    const { onResult } = getTrending(undefined, categoryInfo.selectedComptn?.id)
+    onResult(({data, loading}) => {
+      !loading && (state.trending = data.trendingPosts.posts)
     })
   }
 }

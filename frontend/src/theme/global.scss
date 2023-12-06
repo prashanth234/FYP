@@ -218,6 +218,8 @@ ion-card {
   color: var(--ion-color-dark);
   margin-left: 10px !important;
   margin-right: 10px !important;
+  border: 0.1px solid var(--ion-color-light-shade);
+  font-weight: 450;
 }
 
 .primary-contrast {
