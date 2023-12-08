@@ -2,6 +2,16 @@
   <ion-page>
     <ion-content class="full-height" ref="content">
 
+      <ion-refresher slot="fixed" @ionRefresh="refreshPosts($event)">
+        <ion-refresher-content
+          :pulling-icon="chevronDownCircleOutline"
+          pulling-text="Pull to refresh"
+          refreshing-spinner="circles"
+          refreshing-text="Refreshing..."
+        >
+        </ion-refresher-content>
+      </ion-refresher>
+
       <ion-grid>
 
         <ion-row>
@@ -45,7 +55,7 @@
                     Feed
                     <ion-icon
                       ref="refreshRef"
-                      class="refresh-icon cpointer"
+                      class="refresh-icon cpointer ion-hide-sm-down"
                       :icon="refreshOutline"
                       @click="refreshPosts"
                     >
@@ -101,7 +111,7 @@
                   color="light"
                   v-if="categoryInfo.selectedComptn?.expired"
                 >
-                  <ion-card-content class="ion-text-center" style="font-weight: 500;">
+                  <ion-card-content class="ion-text-center note-msg">
                     The contest has concluded! Please take a look at our other ongoing contests.
                   </ion-card-content>
                 </ion-card>
@@ -111,8 +121,8 @@
                   color="light"
                   v-else-if="state.tabSelected == 'trending'"
                 >
-                  <ion-card-content>
-                    <div class="ion-text-center" style="font-weight: 600;" v-if="!posts?.allPosts?.posts.length">
+                  <ion-card-content class="note-msg">
+                    <div class="ion-text-center" v-if="!trendingPosts?.trendingPosts?.posts.length">
                       Can't spot any trending posts? Be the one who sparks a new wave!<br>Unlock the path to trendiness with just 5 likes for your post!
                     </div>
                     <div v-else>
@@ -193,8 +203,8 @@
 <script setup lang="ts">
 import { reactive, watch, ref, onMounted } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { createAnimation, IonIcon, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
-import { refreshOutline } from 'ionicons/icons'
+import { RefresherCustomEvent, IonRefresher, IonRefresherContent, createAnimation, IonIcon, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
+import { refreshOutline, chevronDownCircleOutline } from 'ionicons/icons'
 
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
@@ -301,13 +311,14 @@ onMounted(() => {
     .fromTo('transform', 'rotate(0)', 'rotate(360deg)')
 })
 
-function refreshPosts() {
+async function refreshPosts(event: RefresherCustomEvent) {
   refreshAni?.play()
   if (state.tabSelected == 'trending') {
-    refetchTrending()
+    await refetchTrending()
   } else if (state.tabSelected == 'allposts') {
-    refetch()
+    await refetch()
   }
+  event?.target && event.target.complete && event.target.complete()
 }
 
 function tabChanged(value: string) {
