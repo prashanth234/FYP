@@ -222,6 +222,7 @@ import { closeCircleOutline, hourglassOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
 import { formatDateToCustomFormat  } from '@/utils/common';
 import { onBeforeRouteLeave } from 'vue-router'
+import { getQuery } from '@/composables/coinActivity'
 
 interface Denomination {
 	points: number,
@@ -253,17 +254,8 @@ const state: State = reactive({
 	denominations: []
 })
 
-const QUERY = gql`
-									query CoinActivities {
-										coinactivities {
-											id,
-											points,
-											description,
-											status,
-											createdAt
-										}
-									}
-								`
+// Also update in create post
+const QUERY = getQuery()
 
 const { result: coinactivities, onResult, loading } = useQuery(QUERY)
 

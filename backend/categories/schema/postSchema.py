@@ -6,6 +6,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.utils import dateparse
+from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 import os
 
 
@@ -13,9 +15,14 @@ import os
 from categories.models.Competition import Competition
 from categories.models.Category import Category
 from categories.models.Post import Post, PostFile
+from core.models.CoinActivity import CoinActivity
 
 # Type
 from categories.schema.type.PostType import PostType
+from core.schema.type.CoinActivityType import CoinActivitiesType
+
+# Authentications
+from graphql_jwt.decorators import login_required
 
 
 class CreatePostMutation(graphene.Mutation):
@@ -30,11 +37,12 @@ class CreatePostMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     post = graphene.Field(PostType)
+    coin_activity = graphene.Field(CoinActivitiesType)
 
     @classmethod
+    @login_required
+    @transaction.atomic
     def mutate(cls, root, info, file=None, description='', category=None, competition=None):
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User not authenticated")
         
         if not category and not competition:
             raise GraphQLError("Almost there! To continue, kindly pick your interest.", extensions={'status': 404})
@@ -63,6 +71,20 @@ class CreatePostMutation(graphene.Mutation):
         
         post.save()
 
+        coinactivity = None
+
+        if competition:
+            ca_description = f'{competition.name} Contest - Participation Reward'
+            coinactivity = CoinActivity(
+                type='COMPPARTN',
+                user=user,
+                points=settings.COMPPARTN_POINTS,
+                description=ca_description,
+                content_object=post,
+                status='Q'
+            )
+            coinactivity.save()
+
         if file:
             postFile = PostFile(
                 post=post
@@ -77,7 +99,7 @@ class CreatePostMutation(graphene.Mutation):
 
             postFile.save()
 
-        return CreatePostMutation(post=post)
+        return CreatePostMutation(post=post, coin_activity=coinactivity)
     
 class UpdatePostMutation(graphene.Mutation):
     
@@ -137,11 +159,14 @@ class DeletePostMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     success = graphene.Boolean()
+    ca_id = graphene.ID()
 
     @classmethod
+    @login_required
+    @transaction.atomic
     def mutate(cls, root, info, id):
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User not authenticated")
+
+        ca_id = None
         
         try:
             post = Post.objects.get(pk=id, user=info.context.user)
@@ -156,9 +181,18 @@ class DeletePostMutation(graphene.Mutation):
         except PostFile.DoesNotExist:
             pass
 
-        post.delete()     
+        if post.competition:
+            try:
+                content_type = ContentType.objects.get_for_model(Post)
+                coinactivity = CoinActivity.objects.get(object_id=id, content_type=content_type)
+                ca_id = coinactivity.id
+                coinactivity.delete()
+            except CoinActivity.DoesNotExist:
+                pass
 
-        return DeletePostMutation(success=True)
+        post.delete()
+
+        return DeletePostMutation(success=True, ca_id=ca_id)
     
 class Mutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()

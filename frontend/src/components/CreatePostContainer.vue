@@ -145,10 +145,11 @@ import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { useCategoryStore } from '@/stores/category';
+import { useCategoryStore } from '@/stores/category'
 import { useQuery } from '@vue/apollo-composable'
 import { getQuery } from '@/composables/posts'
-import { useAuthStore } from '@/stores/auth';
+import { getQuery as getCoinActivityQuery, CoinActivities } from '@/composables/coinActivity'
+import { useAuthStore } from '@/stores/auth'
 
 interface PostFileType {
   file: string
@@ -337,7 +338,14 @@ function createNewPost() {
               expired
             },
             isBot
-          }  
+          },
+          coinActivity {
+            id,
+            points,
+            description,
+            status,
+            createdAt
+          } 
         }
     }
 
@@ -359,9 +367,23 @@ function createNewPost() {
           profile: cache.readQuery({query: MYPOSTS_QUERY, variables: variables.profile })
         }
 
-        if(state.competition) {
+        if (state.competition) {
           caches.competition = cache.readQuery({ query: POST_QUERY, variables: variables.competition })
           caches.trending = cache.readQuery({ query: POST_QUERY, variables: variables.trending })
+
+          // Update coin activities cache
+          const COINACTIVITY_QUERY = getCoinActivityQuery()
+          const caCache: CoinActivities | null = cache.readQuery({query: COINACTIVITY_QUERY})
+          if (caCache) {
+            const data = {
+              ...caCache,
+              coinactivities: [
+                createPost.coinActivity,
+                ...caCache.coinactivities
+              ]
+            }
+            cache.writeQuery({ query: COINACTIVITY_QUERY, data })
+          } 
         }
 
         for (let [key, data] of Object.entries(caches)) {
@@ -418,6 +440,7 @@ function createNewPost() {
   mutate()
 
   onDone(() => {
+    toast.$patch({message: 'Success! Your post has been uploaded.', color: 'success', open: true})
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')

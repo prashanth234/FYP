@@ -40,7 +40,18 @@
               <!-- Heading -->
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
                 <div class="feed">
-                  <div class="title">Feed</div>
+
+                  <div class="title">
+                    Feed
+                    <ion-icon
+                      ref="refreshRef"
+                      class="refresh-icon cpointer"
+                      :icon="refreshOutline"
+                      @click="refreshPosts"
+                    >
+                    </ion-icon>
+                  </div>
+
                   <ion-button
                     v-if="categoryInfo.selectedComptn && !categoryInfo.selectedComptn.expired"
                     :disabled="state.tabSelected == 'trending'"
@@ -137,10 +148,10 @@
               <ion-col
                 v-show="state.tabSelected == 'trending'"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-                v-for="(post, index) in state.trending" 
+                v-for="(post, index) in trendingPosts?.trendingPosts?.posts" 
                 :key="index"
               >
-                <post v-if="post.likes >= 5" :post="post"></post>
+                <post :post="post"></post>
               </ion-col>
 
               <!-- Display winners -->
@@ -180,9 +191,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue'
+import { reactive, watch, ref, onMounted } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
+import { createAnimation, IonIcon, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
+import { refreshOutline } from 'ionicons/icons'
 
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
@@ -210,7 +222,6 @@ interface State {
   creatingPost: Boolean,
   tabSelected: SegmentValue | undefined,
   winners: Array<Winner>,
-  trending: Array<PostType>,
   pdShow: boolean,
   pdetails: PostType | null
 }
@@ -221,7 +232,6 @@ const state: State = reactive({
   refreshCreatePost: 1,
   tabSelected: 'allposts',
   winners: [],
-  trending: [],
   pdShow: false,
   pdetails: null
 })
@@ -260,7 +270,8 @@ props.id && categoryInfo.getCategoryInfo(props.id, ionRouter)
 const { content } = scrollTop()
 
 const category =  props.id || undefined
-const { posts, getMore, variables } = getPosts('allPosts', category)
+const { posts, getMore, variables, refetch } = getPosts('allPosts', category)
+const { variables: trendingVars, refetch: refetchTrending, load: loadTrending, result: trendingPosts } = getTrending()
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
   hidePostDetails(true)
@@ -277,6 +288,28 @@ function setCategoryDefault() {
   state.tabSelected = 'allposts'
 }
 
+import type { Animation } from '@ionic/vue';
+
+const refreshRef = ref<any>(null);
+let refreshAni: Animation | undefined;
+
+onMounted(() => {
+  refreshAni = createAnimation()
+    .addElement(refreshRef.value?.$el)
+    .fill('none')
+    .duration(500)
+    .fromTo('transform', 'rotate(0)', 'rotate(360deg)')
+})
+
+function refreshPosts() {
+  refreshAni?.play()
+  if (state.tabSelected == 'trending') {
+    refetchTrending()
+  } else if (state.tabSelected == 'allposts') {
+    refetch()
+  }
+}
+
 function tabChanged(value: string) {
   state.tabSelected = value
   // variables.trending.value = value == 'trending'
@@ -288,10 +321,8 @@ function tabChanged(value: string) {
       !loading && (state.winners = data.winners)
     })
   } else if (value == 'trending') {
-    const { onResult } = getTrending(undefined, categoryInfo.selectedComptn?.id)
-    onResult(({data, loading}) => {
-      !loading && (state.trending = data.trendingPosts.posts)
-    })
+    trendingVars.competition.value = categoryInfo.selectedComptn?.id
+    loadTrending() || refetchTrending()
   }
 }
 
@@ -395,6 +426,18 @@ ion-grid {
     font-size: 18px;
     font-weight: 600;
     display: inline;
+  }
+}
+.refresh-icon {
+  font-weight: 600;
+  font-size: 25px;
+  position: absolute;
+  top: 12px;
+  left: 62px;
+  opacity: 0.4;
+  &:hover {
+    opacity: 1;
+    color: var(--ion-color-primary)
   }
 }
 </style>

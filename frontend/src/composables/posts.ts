@@ -1,4 +1,4 @@
-import { useQuery } from '@vue/apollo-composable'
+import { useLazyQuery, useQuery } from '@vue/apollo-composable'
 import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
 import { ref } from 'vue'
@@ -204,7 +204,7 @@ export function getPostDetails(
   }
 }
 
-export function getTrending(category: string | undefined, competition: string | undefined) {
+export function getTrending() {
 
   const TRENDING_QUERY = gql`
     query TrendingPosts ($competition: Int!) {
@@ -236,13 +236,19 @@ export function getTrending(category: string | undefined, competition: string | 
     }
   `
 
-  const { result: trending, loading, refetch, onResult } = useQuery(TRENDING_QUERY, () => ({
-    competition,
-  }), { fetchPolicy: 'network-only' })
+  const variables = {
+    competition: ref<string|undefined>('')
+  }
+
+  const { result, loading, refetch, onResult, load } = useLazyQuery(TRENDING_QUERY, () => ({
+    competition: variables.competition.value,
+  }))
 
   return {
-    trending,
+    result,
     refetch,
-    onResult
+    onResult,
+    load,
+    variables
   }
 }

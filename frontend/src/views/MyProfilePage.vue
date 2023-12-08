@@ -127,15 +127,21 @@ function deletePost() {
       deletePost (
         id: $id,
       ) {
-          success
+          success,
+          caId
         } 
     }
   `,
     () => ({
       variables: {id},
-      update: (cache) => {
-        const normalizedId = cache.identify({ id, __typename: 'PostType' });
-        cache.evict({ id: normalizedId })
+      update: (cache, { data: { deletePost } }) => {
+        const normalizedPostId = cache.identify({ id, __typename: 'PostType' });
+        cache.evict({ id: normalizedPostId })
+        if (deletePost.caId) {
+          // Delete the coin activity cache
+          const normalizedCAId = cache.identify({ id: deletePost.caId, __typename: 'CoinActivitiesType' });
+          cache.evict({ id: normalizedCAId })
+        }
         cache.gc()
       }
     })
