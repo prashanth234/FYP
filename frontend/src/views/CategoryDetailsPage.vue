@@ -53,50 +53,61 @@
 
                   <div class="title">
                     Feed
-                    <ion-icon
-                      ref="refreshRef"
-                      class="refresh-icon cpointer ion-hide-sm-down"
-                      :icon="refreshOutline"
-                      @click="refreshPosts"
-                    >
-                    </ion-icon>
                   </div>
 
-                  <ion-button
-                    v-if="categoryInfo.selectedComptn && !categoryInfo.selectedComptn.expired"
-                    :disabled="state.tabSelected == 'trending'"
-                    @click="tabChanged('trending')"
-                    style="margin-left: 15px;"
-                    class="close-button"
-                    size="small"
-                    shape="round"
-                    color="light"
-                  >
-                    Trending
-                  </ion-button>
-                  <ion-button
-                    v-if="categoryInfo.selectedComptn && categoryInfo.selectedComptn.expired"
-                    :disabled="state.tabSelected == 'winners'"
-                    @click="tabChanged('winners')"
-                    style="margin-left: 15px;"
-                    class="close-button"
-                    size="small"
-                    shape="round"
-                    color="light"
-                  >
-                    Winners
-                  </ion-button>
-                  <ion-button
-                    v-if="categoryInfo.selectedComptn"
-                    :disabled="!categoryInfo.selectedComptn || state.tabSelected == 'allposts'"
-                    @click="tabChanged('allposts')"
-                    class="close-button"
-                    size="small"
-                    shape="round"
-                    color="light"
-                  >
-                    All
-                  </ion-button>
+                  <img
+                    @click="refreshPosts(null)"
+                    ref="refreshRef"
+                    src="@/assets/icons/refresh.svg"
+                    class="refresh-icon cpointer ion-hide-sm-down"
+                    title="Refresh"
+                  />
+
+                  <Transition name="fade">
+                    <div
+                      class="ion-hide-sm-down"
+                      v-if="state.refreshing"
+                      style="padding-left: 5px; color: var(--ion-color-primary)">Refreshing...
+                    </div>
+                  </Transition>
+                  
+                  <div style="margin-left: auto;">
+                    <ion-button
+                      v-if="categoryInfo.selectedComptn && !categoryInfo.selectedComptn.expired"
+                      :disabled="state.tabSelected == 'trending'"
+                      @click="tabChanged('trending')"
+                      style="margin-left: 15px;"
+                      class="close-button"
+                      size="small"
+                      shape="round"
+                      color="light"
+                    >
+                      Trending
+                    </ion-button>
+                    <ion-button
+                      v-if="categoryInfo.selectedComptn && categoryInfo.selectedComptn.expired"
+                      :disabled="state.tabSelected == 'winners'"
+                      @click="tabChanged('winners')"
+                      style="margin-left: 15px;"
+                      class="close-button"
+                      size="small"
+                      shape="round"
+                      color="light"
+                    >
+                      Winners
+                    </ion-button>
+                    <ion-button
+                      v-if="categoryInfo.selectedComptn"
+                      :disabled="!categoryInfo.selectedComptn || state.tabSelected == 'allposts'"
+                      @click="tabChanged('allposts')"
+                      class="close-button"
+                      size="small"
+                      shape="round"
+                      color="light"
+                    >
+                      All
+                    </ion-button>
+                  </div>
                 </div>
               </ion-col>
 
@@ -201,10 +212,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref, onMounted } from 'vue'
+import { reactive, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { RefresherCustomEvent, IonRefresher, IonRefresherContent, createAnimation, IonIcon, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
-import { refreshOutline, chevronDownCircleOutline } from 'ionicons/icons'
+import { RefresherCustomEvent, IonRefresher, IonRefresherContent, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
+import { chevronDownCircleOutline } from 'ionicons/icons'
 
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
@@ -233,7 +244,8 @@ interface State {
   tabSelected: SegmentValue | undefined,
   winners: Array<Winner>,
   pdShow: boolean,
-  pdetails: PostType | null
+  pdetails: PostType | null,
+  refreshing: boolean
 }
 
 const state: State = reactive({
@@ -243,7 +255,8 @@ const state: State = reactive({
   tabSelected: 'allposts',
   winners: [],
   pdShow: false,
-  pdetails: null
+  pdetails: null,
+  refreshing: false
 })
 
 const route = useRoute();
@@ -298,27 +311,15 @@ function setCategoryDefault() {
   state.tabSelected = 'allposts'
 }
 
-import type { Animation } from '@ionic/vue';
-
-const refreshRef = ref<any>(null);
-let refreshAni: Animation | undefined;
-
-onMounted(() => {
-  refreshAni = createAnimation()
-    .addElement(refreshRef.value?.$el)
-    .fill('none')
-    .duration(500)
-    .fromTo('transform', 'rotate(0)', 'rotate(360deg)')
-})
-
-async function refreshPosts(event: RefresherCustomEvent) {
-  refreshAni?.play()
+async function refreshPosts(event: RefresherCustomEvent | null) {
+  state.refreshing = true
   if (state.tabSelected == 'trending') {
     await refetchTrending()
   } else if (state.tabSelected == 'allposts') {
     await refetch()
   }
   event?.target && event.target.complete && event.target.complete()
+  state.refreshing = false
 }
 
 function tabChanged(value: string) {
@@ -433,22 +434,35 @@ ion-grid {
 }
 .feed {
   padding: 5px;
+  display: flex;
+  flex-wrap: nowrap;
   .title {
     font-size: 18px;
     font-weight: 600;
-    display: inline;
   }
 }
 .refresh-icon {
-  font-weight: 600;
-  font-size: 25px;
-  position: absolute;
-  top: 12px;
-  left: 62px;
-  opacity: 0.4;
+  // font-weight: 600;
+  // font-size: 25px;
+  // position: absolute;
+  // top: 12px;
+  // left: 62px;
+  margin-left: 5px;
+  margin-top: 1px;
+  height: 22px;
+  width: 22px;
+  opacity: 0.9;
   &:hover {
     opacity: 1;
-    color: var(--ion-color-primary)
   }
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
