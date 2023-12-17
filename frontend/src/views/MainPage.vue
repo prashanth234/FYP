@@ -296,9 +296,9 @@ const isUserLogged = computed(() => {
 
 function addNewPost () {
   if (!user.success) {
-    auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
-    auth.open()
-    return
+  auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
+  auth.open()
+  return
   }
   postDialog.open()
 }
@@ -474,6 +474,19 @@ checkAuthStatus()
   .toolbar-nav {
   }
   .login-modal {
+    // For xs screens
+    --max-width: 100%;
+  }
+  .create-post-modal {
+    // For xs screens
+    --max-width: 100%;
+    
+    // &::part(content) {
+    //   background: none;
+    //   box-shadow: none;
+    // }
+  }
+  .about-modal {
     --max-width: 100%;
   }
   @media only screen and (min-width: 576px) {
@@ -486,13 +499,9 @@ checkAuthStatus()
       --max-width: 600px !important;
       --height: auto;
     }
-  }
-  .create-post-modal {
-    --max-width: 90%;
-
-    &::part(content) {
-      background: none;
-      box-shadow: none;
+    .about-modal {
+      --height: auto;
+      --max-width: 600px;
     }
   }
   .tab-bar-icon {
@@ -500,9 +509,9 @@ checkAuthStatus()
   }
   .add-post-theme {
     --background: linear-gradient(135deg, #54BFFC, #0D51FC);
-    // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
+// --background: linear-gradient(135deg, #3dc2ff, #3880FF);
     // --background: linear-gradient(135deg, #3dc2ff, #0F52BA); (vue colors)
-    
+
     --color: #ffffff;
   }
   .add-post-mobile {
@@ -516,15 +525,5 @@ checkAuthStatus()
     font-weight: 650;
     margin: 10px;
     margin-right: 20px;
-  }
-  .about-modal {
-    --max-width: 100%;
-  }
-  @media only screen and (min-width: 576px) {
-    // For sm and above screens
-    .about-modal {
-      --height: auto;
-      --max-width: 600px;
-    }
   }
 </style>

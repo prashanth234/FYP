@@ -8,7 +8,7 @@
 							<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
 						</ion-col>
 						<ion-col style="padding-left: 5px;">
-							<div class="title" v-if="dialog.title"><strong>{{dialog.title}}</strong></div>
+							<div class="title" v-if="dialog.title">{{dialog.title}}</div>
 							<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
 						</ion-col>
 					</ion-row>
@@ -61,6 +61,7 @@ function onClickButton (button: Button) {
   }
   .title {
     font-size: 16px;
+		font-weight: 500;
     color: var(--ion-color-dark);
   }
 	.description {

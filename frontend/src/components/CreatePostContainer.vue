@@ -1,7 +1,6 @@
 <template>
 
-    
-    <ion-card class="padding-zero margin-zero border-radius-std">
+    <div>
 
       <ion-toolbar color="light">
         <ion-title>{{ state.title }}</ion-title>
@@ -54,20 +53,17 @@
             </ion-select>
           </ion-col>
 
-          <ion-col size="12">
+          <ion-col size="12" class="content-container">
             <ion-textarea
-              label="Description"
+              label-placement="stacked"
               v-model="state.description"
-              placeholder="Describe your post"
+              placeholder="Describe your post."
               :auto-grow="true"
-              class="custom-textarea"     
+              class="custom-textarea"
             />
-          </ion-col>
-
-          <ion-col size="12" v-if="showImageUpload && state.preview">
-            <div :class="{'preview-image': props.fixedPreviewHeight}" style="margin: 10px">
+            <ion-col size="12" v-if="showImageUpload && state.preview">
               <ion-img :src="state.preview"></ion-img>
-            </div>
+            </ion-col>
           </ion-col>
 
           <ion-col size="12">
@@ -113,15 +109,6 @@
                         {{ state.uploadTitle }}
                       </span>
                     </ion-button>
-                    <!-- <ion-button
-                      size="small"
-                      @click="clearPostForm"
-                      color="light"
-                      class="ion-padding-end"
-                      class="float-right"
-                    >
-                      Clear
-                    </ion-button> -->
                   </ion-col>
                 </ion-row>
               </template>  
@@ -130,12 +117,14 @@
 
         </ion-row>
       </ion-grid>
-    </ion-card>
+
+    </div>
 
 </template>
 
 <script lang="ts" setup>
-import { IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
+import { useIonRouter, IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
+import { useRoute } from 'vue-router';
 import { caretDown, closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed, ComputedRef } from 'vue'
@@ -243,6 +232,9 @@ const postType = computed(() => {
 
   return ''
 })
+
+const ionRouter = useIonRouter();
+const router = useRoute();
 
 const toast = useToastStore()
 const user = useUserStore()
@@ -444,6 +436,8 @@ function createNewPost() {
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')
+    const routeToPath = `/interests/${state.category}/posts`
+    routeToPath != router.path && ionRouter.push(routeToPath)
   })
 
   onError((error: any) => {
@@ -530,15 +524,28 @@ function initialize() {
 initialize()
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .textarea {
   border: 1px solid #dddfe2;
-  /* padding: 20px;
-  border-radius: 4px; */
 }
 .preview-image {
   height: 250px;
   overflow: auto;
+}
+ion-toolbar {
+  --min-height: 50px;
+}
+.content-container {
+  margin-top: 10px;
+  padding-top: 0px;
+  max-height: calc(100vh - 225px);
+  overflow-y: auto;
+}
+@media only screen and (max-width: 576px) {
+	// For xs
+  .content-container {
+    max-height: calc(100vh - 350px);
+  }
 }
 </style>
 <style>

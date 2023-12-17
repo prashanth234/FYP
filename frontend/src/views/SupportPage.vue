@@ -26,7 +26,7 @@
 
 					<ion-col size="10" size-md="10" size-sm="10" size-xs="12">
 						<ion-textarea
-							class="custom-textarea"
+							class="custom-textarea support-textarea"
 							style="--padding-top: 10px;"
 							auto-grow
 							v-model="state.description"
@@ -116,7 +116,7 @@ function createSupport () {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 ion-grid {
 	--ion-grid-column-padding: 10px;
 }
@@ -129,5 +129,21 @@ ion-grid {
 }
 @media only screen and (min-width: 576px) {
 	
+}
+</style>
+<style lang="scss">
+@media only screen and (max-width: 992px) {
+	// For xs, sm, md  screens
+	.support-textarea {
+		label {
+			max-height: calc(100vh - 500px) !important;
+		}
+	}
+}
+.support-textarea {
+  label {
+    max-height: calc(100vh - 350px);
+		overflow-y: auto;
+  }
 }
 </style>
