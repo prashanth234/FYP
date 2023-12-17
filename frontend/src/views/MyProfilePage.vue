@@ -188,16 +188,12 @@ function tabChanged(event: SegmentCustomEvent) {
 <style lang="scss" scoped>
   @media only screen and (min-width: 576px) {
     .edit-post-modal {
-      --max-width: 600px;
+      --max-width: 600px !important;
+      --height: auto;
     }
   }
   .edit-post-modal {
-    --max-width: 90%;
-    --height: auto;
-
-    &::part(content) {
-      background: none;
-      box-shadow: none;
-    }
+    // For xs screens
+    --max-width: 100%;
   }
 </style>
