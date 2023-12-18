@@ -27,6 +27,7 @@ class Category(models.Model):
     key = models.CharField(max_length=100, unique=True)
     oftype = models.CharField(max_length=100, choices=TYPE_CHOICES, default="IMAGETEXT")
     image = models.ImageField(upload_to=custom_upload_to, default='')
+    order = models.PositiveIntegerField(default=0)
 
     def __str__(self) -> str:
       return self.name
