@@ -28,6 +28,7 @@ class Category(models.Model):
     oftype = models.CharField(max_length=100, choices=TYPE_CHOICES, default="IMAGETEXT")
     image = models.ImageField(upload_to=custom_upload_to, default='')
     order = models.PositiveIntegerField(default=0)
+    hide = models.BooleanField(default=False)
 
     def __str__(self) -> str:
       return self.name
