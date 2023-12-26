@@ -8,7 +8,7 @@
 
 					<ion-col size="12">
 						<ion-row class="ion-no-padding ion-justify-content-center">
-							<ion-col size="auto">
+							<ion-col size="auto" style="padding-right: 0px;">
 								<ion-img
 									style="width: 30px; height: 30px;"
 									src="/static/core/coins.png"

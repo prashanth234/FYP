@@ -120,9 +120,6 @@ function createSupport () {
 ion-grid {
 	--ion-grid-column-padding: 10px;
 }
-.row-main {
-	background-color: var(--ion-color-primary-contrast);
-}
 .submit-button {
   height: 32px;
 	width: 150px;

@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.conf import settings
   
 class Category(models.Model):
 
@@ -12,6 +13,11 @@ class Category(models.Model):
 
         # Generate a unique file name based on the instance's field
         unique_name = instance.key
+
+        # Remove image before creating if image already exists
+        file_path = os.path.join(settings.MEDIA_ROOT, f'categories/{unique_name}{file_extension}')
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
         # Return the custom file path
         return os.path.join('categories/', unique_name + file_extension)
