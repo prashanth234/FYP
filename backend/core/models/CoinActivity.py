@@ -7,21 +7,21 @@ from django.contrib.contenttypes.models import ContentType
 class CoinActivity(models.Model):
     STATUS_CHOICES = (
         ('Q', 'Pending'),
-        ('P', 'Processing'),
         ('S', 'Success'),
         ('F', 'Failed'),
     )
 
     TYPE_CHOICES = (
-       ('PARTN', 'Participation'),
-       ('COMPPARTN', 'Competition Participation'),
-       ('COMPWINNER', 'Competition Winner'),
+       ('PARPTN', 'Participation'),
+       ('CPARTN', 'Competition Participation'),
+       ('CWINER', 'Competition Winner'),
        ('SIGNUP', 'SignUp'),
        ('REDEEM', 'Redeem')
     )
 
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Q')
     description = models.TextField()
+    comments = models.TextField()
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -181,12 +181,12 @@ function likePost() {
     return
   }
 
-  const operation = props.post.userLiked ? 'unlikeItem' : 'likeItem'
+  // const operation = props.post.userLiked ? 'unlikeItem' : 'likeItem'
 
   const { mutate, onDone } = useMutation(gql`
       
       mutation ($id: ID!) { 
-        ${operation} (id: $id) {
+        likeItem (id: $id) {
           success,
           post {
             id,

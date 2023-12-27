@@ -1,6 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 
 # Models
 from categories.models.Like import Like
@@ -28,9 +29,17 @@ class AddLikeMutation(graphene.Mutation):
     def mutate(cls, root, info, id):
         try:
             post = Post.objects.get(pk=id)
-            post.likes += 1
-            like = Like(item=post, user=info.context.user)
-            like.save()
+            like, created = Like.objects.get_or_create(
+                item_type=ContentType.objects.get_for_model(Post),
+                item_id=id,
+                user=info.context.user
+            )
+            if created:
+                like.save()
+                post.likes += 1
+            else:
+                like.delete()
+                post.likes -= 1
             post.save()
             return AddLikeMutation(success=True, post=post)
         except Exception as err:
@@ -72,7 +81,7 @@ class UnLikeMutation(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     like_item = AddLikeMutation.Field()
-    unlike_item = UnLikeMutation.Field()
+    # unlike_item = UnLikeMutation.Field()
 
 class Query(graphene.ObjectType):
 

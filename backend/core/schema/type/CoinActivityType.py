@@ -9,4 +9,4 @@ class CoinActivitiesType(DjangoObjectType):
 
     class Meta:
         model = CoinActivity
-        fields = ("id", "status", "points", "created_at", "type", "description")
+        fields = ("id", "status", "points", "created_at", "type", "description", "comments")

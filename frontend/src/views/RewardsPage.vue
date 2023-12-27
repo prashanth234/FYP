@@ -1,6 +1,8 @@
 <template>
 	<ion-page>
 		<ion-content>
+			
+			<common-dialog />
 
 			<ion-grid style="max-width: 700px;margin-top: 20px">
 
@@ -14,15 +16,15 @@
 									src="/static/core/coins.png"
 								></ion-img>
 							</ion-col>
-							<ion-col size="auto" class="ion-align-self-center" style="font-size: 20px; font-weight: 600;">
-								{{ user.points}} Coins
+							<ion-col size="auto" class="ion-align-self-center" style="font-size: 19px; font-weight: 550;">
+								{{ user.points}} SparkPoints
 							</ion-col>
 						</ion-row>
 					</ion-col>
 
 					<ion-col size="12" class="ion-text-center" style="font-weight: 500;">
 						<!-- Hello, {{ user.username }}! Your coins are your shining stars. Keep adding more to light up your path!  -->
-						Your coins, your rewards! Select a gift card to treat yourself.
+						Your points, your rewards! Select a gift card to treat yourself.
 					</ion-col>
 
 					<ion-col size="12">
@@ -56,7 +58,7 @@
 										</ion-select>
 
 										<div class="redeem-note">
-											Note: Once coins are redeemed, they can't be cancelled.
+											Note: Once SparkPoints are redeemed, they can't be cancelled.
 										</div>
 
 										<div style="text-align: end; margin-top: 20px" class="action-buttons">
@@ -115,15 +117,13 @@
 								<ion-accordion-group>
 									<ion-accordion value="first">
 										<ion-item slot="header" color="light">
-											<ion-label style="font-weight: 550;">View Coin Activity</ion-label>
+											<ion-label style="font-weight: 550;">View Points Activity</ion-label>
 										</ion-item>
 										<div style="padding: 5px; overflow: auto; background-color: var(--ion-card-background)" slot="content">
 											<table style="width:100%;">
 												<tr>
 													<th style="min-width: 200px;">Activity</th>
-													<!-- <th style="min-width: 150px;">Status</th> -->
-													<th style="min-width: 100px;" class="ion-text-end">Coins</th>
-													<!-- <th class="ion-text-center">Action</th> -->
+													<th style="min-width: 100px;" class="ion-text-end">Points</th>
 												</tr>
 												<tr v-for="(coinactivity, index) in coinactivities?.coinactivities" :key="coinactivity.id">
 													<td>
@@ -133,15 +133,14 @@
 															{{ formatDateToCustomFormat(coinactivity.createdAt) }}
 														</div>
 													</td>
-													<!-- <td>
-														<span v-if="coinactivity.status == 'Q'">Pending</span>
-														<span v-else-if="coinactivity.status == 'P'">Processing</span>
-														<span v-else-if="coinactivity.status == 'S'">Success</span>
-														<span v-else-if="coinactivity.status == 'F'">Failed</span>
-													</td> -->
 													<td
 														class="ion-text-end"
-														:class="{'points-pending': coinactivity.status == 'Q', 'points-add': coinactivity.points > 0, 'points-minus': coinactivity.points < 0}"
+														:class="{
+															'points-pending': coinactivity.status == 'Q',
+															'points-failure': coinactivity.status == 'F',
+															'points-add': coinactivity.points > 0,
+															'points-minus': coinactivity.points < 0
+														}"
 														style="font-weight: 600; font-size: 15px;"
 													>
 														<ion-row class="points ion-nowrap ion-align-items-center" style="float: right;">
@@ -152,21 +151,19 @@
 																	style="font-size: 17px;"
 																	:icon="hourglassOutline"
 																/>
+																<ion-icon 
+																	v-else-if="coinactivity.status == 'F'"
+																	class="icon cpointer"
+																	style="font-size: 17px;"
+																	:icon="alertCircleOutline"
+																	@click="failureMessage"
+																/>
 															</ion-col>
 															<ion-col size="auto" style="padding-bottom: 5px;">
 																{{ `${coinactivity.points > 0 ? '+': ''}${coinactivity.points}` }}
 															</ion-col>
 														</ion-row>
 													</td>
-													<!-- <td class="ion-text-center">
-														<ion-icon 
-															v-if="coinactivity.status == 'Q'"
-															style="font-size: 20px;"
-															@click="deleteReedem(coinactivity.id)"
-															class="cpointer"
-															:icon="closeCircleOutline"
-														/>
-													</td> -->
 												</tr>
 												<tr v-if="!loading && !coinactivities?.coinactivities.length" >
 													<td class="ion-text-center" colspan="4">No Activites</td>
@@ -218,11 +215,15 @@ import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { reactive } from 'vue';
-import { closeCircleOutline, hourglassOutline } from 'ionicons/icons'
+import { hourglassOutline, alertCircleOutline } from 'ionicons/icons'
 import { scrollTop } from '@/composables/scroll'
 import { formatDateToCustomFormat  } from '@/utils/common';
 import { onBeforeRouteLeave } from 'vue-router'
 import { getQuery } from '@/composables/coinActivity'
+import CommonDialog from '@/components/CommonDialogContainer.vue'
+import { useDialogStore } from '@/stores/dialog'
+
+const dialog = useDialogStore();
 
 interface Denomination {
 	points: number,
@@ -262,6 +263,20 @@ const { result: coinactivities, onResult, loading } = useQuery(QUERY)
 onResult(({data, loading}) => {
 
 })
+
+function failureMessage() {
+  const buttons = [
+    {title: 'Close', color: 'light'}
+  ]
+
+  dialog.show(
+    "",
+    "Apologies, but we couldn't credit points for this post as it may be inappropriate or not genuine. Feel free to reach out to support if you have any concerns.",
+    buttons,
+    alertCircleOutline,
+    'danger'
+  )
+}
 
 function createReedem (reward: string) {
 	state.loading = true
@@ -517,5 +532,14 @@ ion-grid {
 .points {
 	--ion-grid-padding: 0px;
 	--ion-grid-column-padding: 0px;
+}
+.points-failure {
+	color: var(--ion-color-medium-shade);
+	.icon {
+		color: var(--ion-color-danger)
+	}
+	.icon:hover {
+		color: red;
+	}
 }
 </style>

@@ -66,6 +66,8 @@
           </ion-list>
           
         </ion-content>
+
+        <doc-links />
       </ion-menu>
 
       <!-- Content Page -->
@@ -193,12 +195,12 @@ import gql from 'graphql-tag'
 import { storeTokens, useAuth } from '@/composables/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
+import DocLinks from '@/components/DocLinksContainer.vue'
 import { reactive, computed, ref, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
-
 
 import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/CommonDialogContainer.vue'

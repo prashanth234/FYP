@@ -9,6 +9,9 @@ import ActivatePage from '@/views/ActivatePage.vue'
 import RewardsPage from '@/views/RewardsPage.vue'
 import SupportPage from '@/views/SupportPage.vue'
 import PasswordResetPage from '@/views/PasswordResetPage.vue'
+import PrivacyPage from '@/views/PrivacyPage.vue'
+import TermsPage from '@/views/TermsPage.vue'
+
 
 import { useUserStore } from '@/stores/user'
 
@@ -34,6 +37,16 @@ const routes: Array<RouteRecordRaw> = [
         component: TempChild
       }
     ]
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: PrivacyPage
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: TermsPage
   },
   {
     path: '/activate/:token',

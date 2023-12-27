@@ -15,6 +15,7 @@
         <OtpVerifier />
       </div>
     </Transition>
+    <doc-links v-if="['login', 'register'].includes(auth.form)" @on-click="auth.close()" />
   </div>
 
   <!-- <ion-card>
@@ -62,6 +63,7 @@ import RegisterForm from './RegisterFormContainer.vue';
 import ChangePassword from '@/components/ChangePasswordContainer.vue';
 import OtpVerifier from './OTPContainer.vue';
 import { useAuthStore } from '@/stores/auth';
+import DocLinks from '@/components/DocLinksContainer.vue';
   
 const auth = useAuthStore();
 </script>

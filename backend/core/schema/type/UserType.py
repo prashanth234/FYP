@@ -5,7 +5,8 @@ from graphene import ObjectType, Boolean, List, String
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("username", "avatar", "points", "gender", "first_name", "last_name", "email", "id", "phone")
+        fields = ("username", "avatar", "id")
+        # "points", "gender", "first_name", "last_name", "email", "phone"
     
     # def resolve_avatar(self, info):
     #     if self.avatar:
