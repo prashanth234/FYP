@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content class="full-height">
     
-      <div class="ion-padding primary-contrast privacy-terms">
+      <div class="ion-padding background-contrast privacy-terms">
         <h3><b>Terms and Conditions</b></h3>
         <b>Effective Date:</b> [Insert Date]<br>
         <p>Welcome to [Your website Name]! By using our , you agree to the following terms and conditions. If you do not agree with these terms, please refrain from using our website.</p>

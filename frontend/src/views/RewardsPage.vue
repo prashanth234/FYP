@@ -1,12 +1,10 @@
 <template>
 	<ion-page>
 		<ion-content>
-			
-			<common-dialog />
 
 			<ion-grid style="max-width: 700px;margin-top: 20px">
 
-				<ion-row class="ion-padding ion-justify-content-center primary-contrast">
+				<ion-row class="ion-padding ion-justify-content-center background-contrast">
 
 					<ion-col size="12">
 						<ion-row class="ion-no-padding ion-justify-content-center">
@@ -156,7 +154,7 @@
 																	class="icon cpointer"
 																	style="font-size: 17px;"
 																	:icon="alertCircleOutline"
-																	@click="failureMessage"
+																	@click="failureMessage(coinactivity.comments)"
 																/>
 															</ion-col>
 															<ion-col size="auto" style="padding-bottom: 5px;">
@@ -220,7 +218,6 @@ import { scrollTop } from '@/composables/scroll'
 import { formatDateToCustomFormat  } from '@/utils/common';
 import { onBeforeRouteLeave } from 'vue-router'
 import { getQuery } from '@/composables/coinActivity'
-import CommonDialog from '@/components/CommonDialogContainer.vue'
 import { useDialogStore } from '@/stores/dialog'
 
 const dialog = useDialogStore();
@@ -264,14 +261,14 @@ onResult(({data, loading}) => {
 
 })
 
-function failureMessage() {
+function failureMessage(msg: string) {
   const buttons = [
     {title: 'Close', color: 'light'}
   ]
 
   dialog.show(
     "",
-    "Apologies, but we couldn't credit points for this post as it may be inappropriate or not genuine. Feel free to reach out to support if you have any concerns.",
+    msg || "Apologies, but we couldn't process your request. Please contact our support if you have any concerns or questions.",
     buttons,
     alertCircleOutline,
     'danger'

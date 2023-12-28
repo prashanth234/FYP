@@ -38,12 +38,19 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-tertiary-tint: #6370ff;
 
   /** success **/
-  --ion-color-success: #2dd36f;
+  /* --ion-color-success: #2dd36f;
   --ion-color-success-rgb: 45, 211, 111;
   --ion-color-success-contrast: #ffffff;
   --ion-color-success-contrast-rgb: 255, 255, 255;
   --ion-color-success-shade: #28ba62;
-  --ion-color-success-tint: #42d77d;
+  --ion-color-success-tint: #42d77d; */
+
+  --ion-color-success: #4CAF50;
+	--ion-color-success-rgb: 76,175,80;
+	--ion-color-success-contrast: #ffffff;
+	--ion-color-success-contrast-rgb: 255, 255, 255;
+	--ion-color-success-shade: #439a46;
+	--ion-color-success-tint: #5eb762;
 
   /** warning **/
   --ion-color-warning: #ffc409;
@@ -98,6 +105,7 @@ http://ionicframework.com/docs/theming/ */
   --alert-bg-error: #F6E3E5;
   --alert-bg-warning: #FEF1E5;
 
+  --line-color: var(--ion-color-light-shade);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -110,11 +118,10 @@ http://ionicframework.com/docs/theming/ */
     
     /* --ion-color-primary: #afccff;
     --ion-color-primary-rgb: 175, 204, 255;
-    --ion-color-primary-shade: #9ab4e0;
-    --ion-color-primary-tint: #b7d1ff; */
-
     --ion-color-primary-contrast: #000000;
     --ion-color-primary-contrast-rgb: 0, 0, 0;
+    --ion-color-primary-shade: #9ab4e0;
+    --ion-color-primary-tint: #b7d1ff; */
 
     /* --ion-color-secondary: #50c8ff;
     --ion-color-secondary-rgb: 80,200,255;
@@ -130,12 +137,12 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-tertiary-shade: #5d58e0;
     --ion-color-tertiary-tint: #7974ff;
 
-    --ion-color-success: #2fdf75;
+    /* --ion-color-success: #2fdf75;
     --ion-color-success-rgb: 47,223,117;
     --ion-color-success-contrast: #000000;
     --ion-color-success-contrast-rgb: 0,0,0;
     --ion-color-success-shade: #29c467;
-    --ion-color-success-tint: #44e283;
+    --ion-color-success-tint: #44e283; */
 
     --ion-color-warning: #ffd534;
     --ion-color-warning-rgb: 255,213,52;
@@ -177,6 +184,8 @@ http://ionicframework.com/docs/theming/ */
     --alert-bg-success:  #051b11;
     --alert-bg-warning: #332701;
     --alert-bg-error: #2c0b0e;
+
+    --line-color: var(--ion-color-step-200);
   }
 
   /*
@@ -211,8 +220,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-step-900: #e6e6e6;
     --ion-color-step-950: #f2f2f2;
 
-    --ion-item-background: #000000;
-
+    --ion-item-background: #1c1c1d;
     --ion-card-background: #1c1c1d;
   }
 

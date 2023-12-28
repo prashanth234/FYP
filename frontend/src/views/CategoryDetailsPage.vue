@@ -387,9 +387,12 @@ function hidePostDetails (value: boolean) {
 </script>
 
 <style scoped lang="scss">
-.posts ion-card {
-  margin-left: 0px;
-  margin-right: 0px;
+.posts {
+  padding: 2px;
+  ion-card {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 }
 ion-content::part(scroll) {
   padding-top: 0px;

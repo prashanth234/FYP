@@ -4,7 +4,7 @@
 
 			<ion-grid style="max-width: 700px; margin-top:20px">
 
-				<ion-row class="ion-padding ion-justify-content-center primary-contrast">
+				<ion-row class="ion-padding ion-justify-content-center background-contrast">
 
 					<ion-col size="auto" class="ion-align-self-center" style="font-size: 20px; font-weight: 600;">
 						We're here to support you!

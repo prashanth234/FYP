@@ -15,7 +15,7 @@
         <OtpVerifier />
       </div>
     </Transition>
-    <doc-links v-if="['login', 'register'].includes(auth.form)" @on-click="auth.close()" />
+    <doc-links v-if="['login', 'register'].includes(auth.form)" />
   </div>
 
   <!-- <ion-card>

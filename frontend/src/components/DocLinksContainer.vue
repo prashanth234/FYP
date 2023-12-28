@@ -8,14 +8,11 @@
 
 
 <script lang="ts" setup>
-import { useIonRouter } from '@ionic/vue';
-const ionRouter = useIonRouter();
-
 const emit = defineEmits(['onClick'])
 
 function navigate(path: string) {
   emit('onClick')
-  ionRouter.push(path)
+  window.open(`${window.location.origin}${path}`)
 }
 
 
@@ -23,7 +20,7 @@ function navigate(path: string) {
 
 <style lang="scss" scoped>
 .privacy-terms-links {
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   font-size: 13px;
   display: flex;

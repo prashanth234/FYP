@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content class="full-height">
 
-    <div class="ion-padding primary-contrast privacy-terms">
+    <div class="ion-padding background-contrast privacy-terms">
       <h3><b>Privacy Policy</b></h3>
       <b>Effective Date:</b> [Insert Date]<br>
       <p>[Your Company/Organization Name] ("we," "our," or "us") is committed to protecting the privacy and security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.</p>

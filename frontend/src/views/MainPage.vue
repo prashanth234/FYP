@@ -196,7 +196,7 @@ import { storeTokens, useAuth } from '@/composables/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import DocLinks from '@/components/DocLinksContainer.vue'
-import { reactive, computed, ref, provide } from 'vue'
+import { reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
@@ -478,6 +478,7 @@ checkAuthStatus()
   .login-modal {
     // For xs screens
     --max-width: 100%;
+    // --height: auto;
   }
   .create-post-modal {
     // For xs screens

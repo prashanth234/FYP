@@ -13,13 +13,11 @@
           type="edit"
         />
       </ion-modal>
-      
-      <common-dialog @action="$event => $event.control()"></common-dialog>
 
       <ion-grid>
         <ion-row>
-          <ion-col size="5" size-xs="12" size-sm="12" size-md="6" size-lg="5" size-xl="4">
-            <ion-card>
+          <ion-col size="5" size-xs="12" size-sm="12" size-md="6" size-lg="5" size-xl="4" style="padding: 0px;">
+            <ion-card class="profile-card">
               <ion-segment value="about" @ionChange="tabChanged">
                 <ion-segment-button value="about">
                   <ion-label>About</ion-label>
@@ -40,7 +38,7 @@
               
             </ion-card>
           </ion-col>  
-          <ion-col size="7" size-xs="12" size-sm="12" size-md="6" size-lg="7" size-xl="8">
+          <ion-col size="7" size-xs="12" size-sm="12" size-md="6" size-lg="7" size-xl="8" style="padding: 0px;">
             <h5 class="ion-padding-start">My Posts</h5>
             <ion-row class="ion-justify-content-center">
               <ion-col
@@ -79,15 +77,13 @@ import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/AboutContainer.vue'
 // import ChangePassword from '@/components/changePasswordContainer.vue'
-import { useMutation, useQuery } from '@vue/apollo-composable'
-import { UpdatePostVariables, Post as PostType } from '@/utils/interfaces'
+import { useMutation } from '@vue/apollo-composable'
+import { Post as PostType } from '@/utils/interfaces'
 import { getPosts } from '@/composables/posts'
 import { warningOutline } from 'ionicons/icons'
-import { CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
 import { usePostDialog } from '@/composables/postDialog'
-import { useDialogStore } from '@/stores/dialog';
-import CommonDialog from '@/components/CommonDialogContainer.vue';
+import { useDialogStore } from '@/stores/dialog'
 import { scrollTop } from '@/composables/scroll'
 
 scrollTop()
@@ -95,13 +91,6 @@ scrollTop()
 interface State {
   editPost: PostType | null | undefined,
   selectedTab: SegmentValue | undefined
-}
-
-interface QueryResult {
-  myPosts: {
-    posts: PostType[],
-    total: number
-  }
 }
 
 const state: State = reactive({
@@ -195,5 +184,11 @@ function tabChanged(event: SegmentCustomEvent) {
   .edit-post-modal {
     // For xs screens
     --max-width: 100%;
+  }
+  .profile-card {
+    margin: 5px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
 </style>

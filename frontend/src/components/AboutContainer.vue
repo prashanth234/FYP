@@ -23,8 +23,6 @@
     </ion-col>
   </ion-row>
 
-  <common-dialog @action="$event => $event.control()"></common-dialog>
-
   <ion-list>
 
     <ion-item>
@@ -39,7 +37,7 @@
       <a @click="verifyEmail">Verify Email</a>
     </div>
 
-    <ion-item lines="none" v-if="user.phone">
+    <ion-item v-if="user.phone">
       <ion-input :disabled="user.verified" label="Phone" inputmode="tel" type="tel" v-model="fields.phone" labelPlacement="floating"></ion-input>
     </ion-item>
 
@@ -107,7 +105,6 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import { useUserFields } from '@/composables/auth'
 import { useDialogStore } from '@/stores/dialog'
-import CommonDialog from '@/components/CommonDialogContainer.vue'
 import errors from './ErrorContainer.vue'
 
 interface State {
@@ -314,5 +311,10 @@ function verifyEmail () {
   text-align: center;
   border-radius: 50%;
   padding: 6px;
+}
+ion-item {
+  &::part(native) {
+    padding-left: 2px;
+  }
 }
 </style>

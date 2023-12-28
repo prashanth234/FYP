@@ -209,7 +209,7 @@ const state = reactive({
 })
 
 const disableUpload = computed(() => {
-  return (showImageUpload.value && !state.preview) || (props.type == 'create' && !state.category) || state.creatingPost
+  return (showImageUpload.value && !state.preview) || (props.type == 'create' && !state.category) || state.creatingPost || (postType.value == 'TEXT' && !state.description)
 })
 
 const showImageUpload = computed(() => {
@@ -289,6 +289,15 @@ function createNewPost() {
   if (!user.success) {
     auth.open()
     return
+  }
+
+  // Description check for short stories
+  if (postType.value == "TEXT") {
+    const wordcount =  state.description.split(/\s+/).length
+    if (wordcount < 100 || wordcount > 1000) {
+      toast.$patch({message: 'Stories should be between 100 to 1000 words. Keep it concise and captivating!', color: 'warning', open: true})
+      return
+    } 
   }
 
   state.creatingPost = true

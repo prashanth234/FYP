@@ -9,7 +9,8 @@ export function getQuery() {
 											points,
 											description,
 											status,
-											createdAt
+											createdAt,
+											comments
 										}
 									}
 								`

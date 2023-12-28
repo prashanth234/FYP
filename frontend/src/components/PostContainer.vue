@@ -1,5 +1,5 @@
 <template>
-  <ion-card class="border-radius-std post-card" color="light">
+  <ion-card class="border-radius-std post-card">
 
     <ion-card-content @dblclick="likePost()" class="ion-no-padding">
       <ion-list class="ion-no-padding">
@@ -41,7 +41,7 @@
         </ion-item>
 
         <ion-item v-if="post.description" lines="none" class="post-description">
-          <text-clamp :text="post.description" :max-lines='3' auto-resize>
+          <text-clamp :text="post.description" :max-lines="post?.category.oftype == 'TEXT' ? 10 : 3" auto-resize>
             <template #after="{ toggle, expanded, clamped }">
               <a v-if="expanded || clamped" @click="toggle" class="cpointer">
                 {{ expanded ? ' See less' : ' See more' }}
@@ -241,8 +241,8 @@ function likePost() {
   .post-card {
     max-width: 480px;
     margin: auto !important;
-    transition: all;
-    transition-timing-function: ease-out;
+    // transition: all;
+    // transition-timing-function: ease-out;
 
     &:hover {
       // box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
@@ -276,7 +276,8 @@ function likePost() {
   .post-description {
     padding-top: 12px;
     padding-bottom: 12px;
-    font-size: 14px;
+    font-size: 15px;
+    white-space: pre-wrap;
     a:hover {
       text-decoration: underline;
     }
