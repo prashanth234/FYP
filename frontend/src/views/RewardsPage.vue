@@ -32,11 +32,13 @@
 							<div v-if="state.selReward > -1">
 								<ion-row>
 									<ion-col size-sm="auto" size-xs="12" style="margin-right: 10px;">
-										<ion-img class="reward-image" :src="`/media/${rewards.rewards[state.selReward].image}`">
-										</ion-img>
-										<div class="reward-title">
-											{{rewards.rewards[state.selReward].name}}
+										<div class="logo">
+											<ion-img class="reward-image" :src="`/media/${rewards.rewards[state.selReward].image}`">
+											</ion-img>
 										</div>
+										<!-- <div class="reward-title">
+											{{rewards.rewards[state.selReward].name}}
+										</div> -->
 									</ion-col>
 									<ion-col>
 										<ion-select
@@ -94,7 +96,7 @@
 								<div class="grid-container">
 
 									<div
-										class="grid-item cpointer"
+										class="grid-item cpointer logo"
 										v-for="(reward, index) in rewards?.rewards"
 										@click="selectReward(index)"
 										:key="index"
@@ -103,9 +105,9 @@
 										<ion-img :src="`/media/${reward.image}`">
 										</ion-img>
 
-										<div class="reward-title">
+										<!-- <div class="reward-title">
 											{{reward.name}}
-										</div>
+										</div> -->
 
 									</div>
 
@@ -452,13 +454,16 @@ const { result: faqs, onResult: faqsResult ,onError: faqsError } = useQuery(gql`
 	margin-bottom: 20px;
 }
 .grid-item {
-  border: 1px solid var(--ion-color-light-shade);
 	color: var(--ion-text-color);
-	border-radius: 10px;
-	padding: 10px;
 	display: flex;
 	flex-direction: column;
 	text-align: center;
+}
+.logo {
+	border: 1px solid var(--ion-color-light-shade);
+	border-radius: 7px;
+	padding: 10px;
+	background-color: #ffffff;
 }
 .grid-item:hover {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
@@ -468,8 +473,8 @@ const { result: faqs, onResult: faqsResult ,onError: faqsError } = useQuery(gql`
 	text-align: center;
 }
 .reward-image {
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
 }
 table {
   border-collapse: collapse;

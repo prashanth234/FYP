@@ -28,7 +28,8 @@ class Reward(models.Model):
 		('BMS', 'Book My Show'),
 		('AMAZON', 'Amazon'),
 		('FLIPKART', 'Flipkart'),
-		('MYNTRA', 'Myntra')
+		('MYNTRA', 'Myntra'),
+		('AJIO', 'Ajio')
 	)
 
 	name = models.CharField(max_length=255)
