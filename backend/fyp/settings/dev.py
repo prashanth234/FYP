@@ -23,6 +23,10 @@ DATABASES = {
     'NAME': 'fyp',
     'HOST': 'localhost',
     'USER': 'root',
-    'PASSWORD': 'root'
+    'PASSWORD': 'root',
+    'OPTIONS': {
+      'charset': 'utf8mb4',
+      'use_unicode': True, 
+    }
   }
 }
