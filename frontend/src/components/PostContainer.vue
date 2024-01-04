@@ -32,7 +32,13 @@
           <ion-badge v-else-if="post.isBot" color="primary" slot="end" style="margin-right: -5px; font-size: 12px; font-weight: 550;">Sample</ion-badge>
         </ion-item>
 
-        <ion-item class="image" lines="none" style="padding-top: 12px;" v-if="post.postfileSet.length">
+        <ion-item
+          class="image"
+          lines="none"
+          style="padding-top: 12px;"
+          v-if="post.postfileSet.length"
+          :class="{'content-padding': !post.description}"
+        > 
           <ion-img 
             class="ml-auto mr-auto"
             :src="`/media/${post.postfileSet[0].file}`"
@@ -40,8 +46,12 @@
           />
         </ion-item>
 
-        <ion-item v-if="post.description" lines="none" class="post-description">
-          <text-clamp :text="post.description" :max-lines="post?.category.oftype == 'TEXT' ? 10 : 3" auto-resize>
+        <ion-item
+          v-if="post.description"
+          lines="none"
+          class="post-description content-padding"
+        >
+          <text-clamp :key="post.description" :text="post.description" :max-lines="post?.category.oftype == 'TEXT' ? 10 : 3" auto-resize>
             <template #after="{ toggle, expanded, clamped }">
               <a v-if="expanded || clamped" @click="toggle" class="cpointer">
                 {{ expanded ? ' See less' : ' See more' }}
@@ -273,9 +283,11 @@ function likePost() {
       margin-bottom: 10px;
     }
   }
-  .post-description {
+  .content-padding {
     padding-top: 12px;
     padding-bottom: 12px;
+  }
+  .post-description {
     font-size: 15px;
     white-space: pre-wrap;
     a:hover {

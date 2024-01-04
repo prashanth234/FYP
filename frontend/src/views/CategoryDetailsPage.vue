@@ -159,7 +159,7 @@
               <ion-col
                 v-show="state.tabSelected == 'allposts' && !state.pdShow"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-                v-for="(post, index) in posts?.allPosts?.posts"
+                v-for="post in posts?.allPosts?.posts"
                 :key="post.id"
               >
                 <post :post="post"></post>

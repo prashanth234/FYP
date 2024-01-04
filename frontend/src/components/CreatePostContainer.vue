@@ -264,6 +264,7 @@ function clearPostForm () {
 
 function onCategoryChange() {
   state.catCompetitions = []
+  state.competition = ''
 
   const { onResult, onError } = useQuery(gql`
                                   query ($id: Int!) {
