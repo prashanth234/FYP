@@ -27,7 +27,7 @@ class Reward(models.Model):
 		('SWIGGY', 'Swiggy'),
 		('BMS', 'Book My Show'),
 		('AMAZON', 'Amazon'),
-		('FLIPKART', 'Flipkart'),
+		('FLIPKRT', 'Flipkart'),
 		('MYNTRA', 'Myntra'),
 		('AJIO', 'Ajio')
 	)
