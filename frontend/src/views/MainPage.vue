@@ -160,23 +160,35 @@
 
     <!-- About Modal -->
     <ion-modal
-      class="about-modal ion-text-center"
+      class="about-modal"
       :is-open="state.aboutDialog"
       :show-backdrop="true"
-      :backdropDismiss="false"
       @willDismiss="closeAbout"
     >
-      <div class="ion-padding">
+      <ion-toolbar color="light">
+        <ion-title>About</ion-title>
+        <ion-buttons slot="end">
+          <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="closeAbout"></ion-icon>
+        </ion-buttons>
+      </ion-toolbar>
+      <div class="ion-padding content">
         <div>
-          About this app
+          <div class="header">What is Hobbizy?</div>
+
+          Hobbizy is your gateway to a world of creativity. Create and share things of your interest with like-minded individuals, explore diverse interests, and let your talents shine. Hobbizy is where passion meets community, making your creative journey a rewarding adventure.
+
+          <div class="header">Diverse Interests</div>
+
+          Explore a wide range of interests and discover new passions within the Hobbizy community. Currently, we provide space for up to four interests, offering a glimpse into the diverse creative pursuits. We're actively working to expand this limit, allowing you to showcase even more facets of your creativity. Stay tuned for updates as we enrich your Hobbizy experience!
+
+          <div class="header">Create and Share</div>
+
+          Express yourself by creating and sharing content aligned with your interests on Hobbizy. Dive into the creative world of contests, where your posts can earn you rewards. If you've got content that doesn't quite fit a contest, no worries – upload it in the relevant category. Let your creativity shine, whether you're competing or simply sharing for others to recognize.
+
+          <div class="header">Recognition and Rewards</div>
+
+          With every post you create on Hobbizy, you earn recognition from fellow community members through likes. But that's not all – if you emerge as a contest winner, you'll be rewarded with valuable spark points. Accumulate these points and unlock the opportunity to redeem gift cards, turning your creative efforts into tangible rewards.
         </div>
-        <ion-button
-					size="small"
-					color="light"
-					@click="closeAbout"
-				>
-					Close
-				</ion-button>
       </div>
     </ion-modal>
 
@@ -490,7 +502,23 @@ checkAuthStatus()
     // }
   }
   .about-modal {
-    --max-width: 100%;
+    --max-width: 90%;
+    --height: 80vh;
+
+    .header {
+      font-size: 17px;
+      font-weight: 550;
+      text-align: center;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .content {
+      line-height: 1.8;
+      padding-top: 10px;
+      padding-bottom: 20px;
+      overflow: auto;
+    }
   }
   @media only screen and (min-width: 576px) {
     // For sm and above screens
@@ -503,8 +531,9 @@ checkAuthStatus()
       --height: auto;
     }
     .about-modal {
-      --height: auto;
-      --max-width: 600px;
+      --height: min(710px, 95vh);
+      --min-width: 800px !important;
+      --max-width: 800px !important;
     }
   }
   .tab-bar-icon {
@@ -512,7 +541,7 @@ checkAuthStatus()
   }
   .add-post-theme {
     --background: linear-gradient(135deg, #54BFFC, #0D51FC);
-// --background: linear-gradient(135deg, #3dc2ff, #3880FF);
+    // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
     // --background: linear-gradient(135deg, #3dc2ff, #0F52BA); (vue colors)
 
     --color: #ffffff;

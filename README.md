@@ -125,6 +125,20 @@ pipenv run pytest
 
 pipenv run locust -f locustfiles/browse_categories.py
 
+# ######### Intial Data Setup ################
+
+Ensure that first user is product user
+
+pipenv shell
+python manage.py loaddata ./initial_data/category_data.json
+python manage.py loaddata ./initial_data/competitions_data.json
+python manage.py loaddata ./initial_data/post_data.json
+python manage.py loaddata ./initial_data/postfile_data.json
+python manage.py loaddata ./initial_data/reward_data.json
+python manage.py loaddata ./initial_data/faq_data.json
+
+Replace the original media folder
+
 # TROUBLESHOOT
 
 Problem

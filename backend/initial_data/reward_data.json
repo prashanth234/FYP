@@ -1,0 +1,35 @@
+[
+  {
+    "model": "core.reward",
+    "pk": 1,
+    "fields": {
+      "name": "Amazon",
+      "image": "rewards/AMAZON.png",
+      "points": "1000, 1500, 2000, 2500, 3000",
+      "pointsvalue": 10,
+      "type": "AMAZON"
+    }
+  },
+  {
+    "model": "core.reward",
+    "pk": 2,
+    "fields": {
+      "name": "Flipkart",
+      "image": "rewards/FLIPKRT.png",
+      "points": "1000, 1500, 2000, 2500, 3000",
+      "pointsvalue": 10,
+      "type": "FLIPKRT"
+    }
+  },
+  {
+    "model": "core.reward",
+    "pk": 3,
+    "fields": {
+      "name": "Zomato",
+      "image": "rewards/ZOMATO.png",
+      "points": "1000, 1500, 2000, 2500, 3000",
+      "pointsvalue": 10,
+      "type": "ZOMATO"
+    }
+  }
+]

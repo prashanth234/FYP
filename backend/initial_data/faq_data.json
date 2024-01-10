@@ -1,0 +1,62 @@
+[
+  {
+    "model": "core.faq",
+    "pk": 1,
+    "fields": {
+      "question": "What are SparkPoints?",
+      "answer": "SparkPoints are digital rewards within our app, giving users the opportunity to earn and redeem them for various benefits.",
+      "type": "REWARD",
+      "order": 1
+    }
+  },
+  {
+    "model": "core.faq",
+    "pk": 2,
+    "fields": {
+      "question": "How can I earn SparkPoints?",
+      "answer": "You can earn SparkPoints through sign-up, participating in contests, and winning contests.",
+      "type": "REWARD",
+      "order": 2
+    }
+  },
+  {
+    "model": "core.faq",
+    "pk": 3,
+    "fields": {
+      "question": "How do I redeem SparkPoints?",
+      "answer": "Accumulate enough SparkPoints, then redeem them for gift cards of your choice.",
+      "type": "REWARD",
+      "order": 3
+    }
+  },
+  {
+    "model": "core.faq",
+    "pk": 4,
+    "fields": {
+      "question": "How do I get my gift cards after redeeming SparkPoints?",
+      "answer": "Gift cards will be sent to your registered email/phone within 2 business days.",
+      "type": "REWARD",
+      "order": 4
+    }
+  },
+  {
+    "model": "core.faq",
+    "pk": 5,
+    "fields": {
+      "question": "What if I don't receive gift cards after redeeming SparkPoints?",
+      "answer": "Contact us through the support window after 2 days of redeeming for assistance.",
+      "type": "REWARD",
+      "order": 5
+    }
+  },
+  {
+    "model": "core.faq",
+    "pk": 6,
+    "fields": {
+      "question": "Why aren't participation points reflecting in my SparkPoints?",
+      "answer": "Participation points will be credited once the contest ends within 2 business days. If not credited, the post may be inappropriate or not genuine.",
+      "type": "REWARD",
+      "order": 6
+    }
+  }
+]

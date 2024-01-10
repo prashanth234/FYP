@@ -1,0 +1,41 @@
+[
+  {
+    "model": "categories.competition",
+    "pk": 1,
+    "fields": {
+      "name": "Nature's Elegance",
+      "description": "Showcase the beauty of landscapes, flora, and fauna in your unique interpretation of our nature-inspired art contest.",
+      "category": 1,
+      "last_date": "2024-03-31",
+      "key": "NATART",
+      "image": "competitions/ART/NATART.png",
+      "points": "3000, 2000, 1500"
+    }
+  },
+  {
+    "model": "categories.competition",
+    "pk": 3,
+    "fields": {
+      "name": "Nature Snap",
+      "description": "Your lens, your unique perspective – Capture nature's landscapes, flora, and fauna through your photographs!",
+      "category": 3,
+      "last_date": "2024-03-31",
+      "key": "NTRPGY",
+      "image": "competitions/PHTGRY/NTRPGY.png",
+      "points": "3000, 2000, 1500"
+    }
+  },
+  {
+    "model": "categories.competition",
+    "pk": 4,
+    "fields": {
+      "name": "DIY Decor",
+      "description": "Unleash your creativity! Showcase your unique style through crafting custom decor. (DIY - Do It Yourself)",
+      "category": 4,
+      "last_date": "2024-03-31",
+      "key": "DECOR",
+      "image": "competitions/CRTCFT/DECOR.png",
+      "points": "3000, 2000, 1500"
+    }
+  }
+]

@@ -64,7 +64,7 @@ try {
     const {success, errors} = verifyAccount
     state.success = success
     if (success) {
-      state.message = 'Account verified successfully'
+      state.message = 'Account verified successfully.'
       // goHome()
     } else {
       state.message = errors.nonFieldErrors[0].message
@@ -77,7 +77,7 @@ try {
 }
 
 function goHome () {
-  toast.$patch({message: "Account verified successfully", color: 'success', open: true})
+  toast.$patch({message: "Account verified successfully.", color: 'success', open: true})
   ionRouter.push('/')
 }
 

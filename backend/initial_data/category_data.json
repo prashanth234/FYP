@@ -1,0 +1,50 @@
+[
+  {
+    "model": "categories.category",
+    "pk": 1,
+    "fields": {
+      "name": "Art",
+      "description": "Step into a world of visual art, from captivating paintings to expressive drawings, within our creative community. Be inspired to contribute your unique perspective and be part of this vibrant journey of creativity.",
+      "key": "ART",
+      "oftype": "IMAGETEXT",
+      "image": "categories/ART.png",
+      "order": 1
+    }
+  },
+  {
+    "model": "categories.category",
+    "pk": 2,
+    "fields": {
+      "name": "Short Stories",
+      "description": "Explore imaginative short stories in our vibrant community, where captivating narratives abound. Contribute your creativity and be part of this inspiring collection, letting inspiration fuel your storytelling journey. (100 - 1000 Words)",
+      "key": "SHTSTY",
+      "oftype": "TEXT",
+      "image": "categories/SHTSTY.png",
+      "order": 2
+    }
+  },
+  {
+    "model": "categories.category",
+    "pk": 3,
+    "fields": {
+      "name": "Photography",
+      "description": "Discover the magic of photography within our creative community, where every click tells a unique visual story. Feel inspired to showcase your unique perspective through the lens of photography.",
+      "key": "PHTGRY",
+      "oftype": "IMAGETEXT",
+      "image": "categories/PHTGRY.png",
+      "order": 3
+    }
+  },
+  {
+    "model": "categories.category",
+    "pk": 4,
+    "fields": {
+      "name": "Creative Crafts",
+      "description": "Enter the world of creative crafts in our imaginative community, where each craft unfolds into a unique expression of inventive beauty. Ignite your creativity and contribute your unique touch to this crafting journey.",
+      "key": "CRTCFT",
+      "oftype": "IMAGETEXT",
+      "image": "categories/CRTCFT.png",
+      "order": 4
+    }
+  }
+]
