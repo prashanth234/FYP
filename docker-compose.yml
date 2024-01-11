@@ -6,7 +6,7 @@ services:
     build: 
       context: ./frontend
       platforms:
-        - linux/amd64
+        - ${FYP_PLATFORM-linux/amd64}
     image: prashanth45/fyp:frontendv1
     ports:
       - "80:80"
@@ -25,7 +25,7 @@ services:
     build: 
       context: ./backend
       platforms:
-        - linux/amd64
+        - ${FYP_PLATFORM-linux/amd64}
     image: prashanth45/fyp:backendv1
     ports:
       - "8000:8000"
