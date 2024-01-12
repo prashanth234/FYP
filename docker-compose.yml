@@ -6,7 +6,7 @@ services:
     build: 
       context: ./frontend
       platforms:
-        - ${FYP_PLATFORM-linux/amd64}
+        - ${FYP_PLATFORM-linux/arm64}
     image: prashanth45/fyp:frontendv1
     ports:
       - "80:80"
@@ -25,13 +25,14 @@ services:
     build: 
       context: ./backend
       platforms:
-        - ${FYP_PLATFORM-linux/amd64}
+        - ${FYP_PLATFORM-linux/arm64}
     image: prashanth45/fyp:backendv1
     ports:
       - "8000:8000"
     volumes:
       #- /home/prashanth/FYP/backend/fyp/settings/prod.py:/app/fyp/settings/prod.py
-      - ${MEDIA_PATH}:/app/media
+        - ${FIREBASE_CONF_PATH}:${GOOGLE_APPLICATION_CREDENTIALS}
+        - ${MEDIA_PATH}:/app/media
     environment:
       - DJANGO_SETTINGS_MODULE=fyp.settings.prod
       - MYSQL_DBNAME=${MYSQL_DBNAME}
@@ -43,6 +44,7 @@ services:
       - FYP_SITE_PORT=${FYP_SITE_PORT}
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
     #restart: always
     depends_on:
       db:
