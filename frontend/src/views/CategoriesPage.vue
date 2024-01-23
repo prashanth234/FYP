@@ -13,7 +13,7 @@
 					@click="openCategory(cat)"
 				>
 
-					<ion-img class="cat-image" :src="`/media/${cat.image}`">
+					<ion-img class="cat-image" :src="`/media/${cat.image}`" :alt="cat.description">
 					</ion-img>
 
 					<div class="cat-title">

@@ -1,1 +1,74 @@
-[{"model": "categories.postfile", "pk": 1, "fields": {"file": "files/posts/user_1/post_1.png", "post": 1}}, {"model": "categories.postfile", "pk": 2, "fields": {"file": "files/posts/user_1/post_2.png", "post": 2}}, {"model": "categories.postfile", "pk": 3, "fields": {"file": "files/posts/user_1/post_3.png", "post": 3}}, {"model": "categories.postfile", "pk": 4, "fields": {"file": "files/posts/user_1/post_5.jpeg", "post": 5}}, {"model": "categories.postfile", "pk": 5, "fields": {"file": "files/posts/user_1/post_6.jpeg", "post": 6}}, {"model": "categories.postfile", "pk": 6, "fields": {"file": "files/posts/user_1/post_7.jpeg", "post": 7}}, {"model": "categories.postfile", "pk": 7, "fields": {"file": "files/posts/user_1/post_8.png", "post": 8}}, {"model": "categories.postfile", "pk": 8, "fields": {"file": "files/posts/user_1/post_9.png", "post": 9}}, {"model": "categories.postfile", "pk": 9, "fields": {"file": "files/posts/user_1/post_10.png", "post": 10}}]
+[
+  {
+    "model": "categories.postfile",
+    "pk": 1,
+    "fields": {
+      "file": "files/posts/user_1/post_1.jpeg",
+      "post": 1
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 2,
+    "fields": {
+      "file": "files/posts/user_1/post_2.jpeg",
+      "post": 2
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 3,
+    "fields": {
+      "file": "files/posts/user_1/post_3.jpeg",
+      "post": 3
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 4,
+    "fields": {
+      "file": "files/posts/user_1/post_5.jpeg",
+      "post": 5
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 5,
+    "fields": {
+      "file": "files/posts/user_1/post_6.jpeg",
+      "post": 6
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 6,
+    "fields": {
+      "file": "files/posts/user_1/post_7.jpeg",
+      "post": 7
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 7,
+    "fields": {
+      "file": "files/posts/user_1/post_8.jpeg",
+      "post": 8
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 8,
+    "fields": {
+      "file": "files/posts/user_1/post_9.jpeg",
+      "post": 9
+    }
+  },
+  {
+    "model": "categories.postfile",
+    "pk": 9,
+    "fields": {
+      "file": "files/posts/user_1/post_10.jpeg",
+      "post": 10
+    }
+  }
+]

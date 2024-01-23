@@ -12,6 +12,7 @@
 								<ion-img
 									style="width: 30px; height: 30px;"
 									src="/static/core/coins.png"
+									alt="SparkPoints"
 								></ion-img>
 							</ion-col>
 							<ion-col size="auto" class="ion-align-self-center" style="font-size: 19px; font-weight: 550;">
@@ -33,7 +34,11 @@
 								<ion-row>
 									<ion-col size-sm="auto" size-xs="12" style="margin-right: 10px;">
 										<div class="logo">
-											<ion-img class="reward-image" :src="`/media/${rewards.rewards[state.selReward].image}`">
+											<ion-img
+												class="reward-image"
+												:src="`/media/${rewards.rewards[state.selReward].image}`"
+												:alt="rewards.rewards[state.selReward].name"
+											>
 											</ion-img>
 										</div>
 										<!-- <div class="reward-title">
@@ -102,7 +107,7 @@
 										:key="index"
 									>
 
-										<ion-img :src="`/media/${reward.image}`">
+										<ion-img :src="`/media/${reward.image}`" :alt="reward.name">
 										</ion-img>
 
 										<!-- <div class="reward-title">

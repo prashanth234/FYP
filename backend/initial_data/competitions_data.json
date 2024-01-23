@@ -8,7 +8,7 @@
       "category": 1,
       "last_date": "2024-03-31",
       "key": "NATART",
-      "image": "competitions/ART/NATART.png",
+      "image": "competitions/ART/NATART.jpg",
       "points": "3000, 2000, 1500"
     }
   },
@@ -21,7 +21,7 @@
       "category": 3,
       "last_date": "2024-03-31",
       "key": "NTRPGY",
-      "image": "competitions/PHTGRY/NTRPGY.png",
+      "image": "competitions/PHTGRY/NTRPGY.jpg",
       "points": "3000, 2000, 1500"
     }
   },
@@ -34,7 +34,7 @@
       "category": 4,
       "last_date": "2024-03-31",
       "key": "DECOR",
-      "image": "competitions/CRTCFT/DECOR.png",
+      "image": "competitions/CRTCFT/DECOR.jpg",
       "points": "3000, 2000, 1500"
     }
   }

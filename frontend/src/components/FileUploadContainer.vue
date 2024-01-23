@@ -158,11 +158,14 @@ function reduceImageSize(event: Event) {
         canvas.width = width
         canvas.height = height
 
+        // file.type to get original file type
+        const fileType = 'image/jpeg'
+
         ctx?.drawImage(img, 0, 0, width, height)
 
         function handleBlob(blob: Blob | null) {
           if (blob) {
-            const resizedFile = new File([blob], file.name, { type: file.type });
+            const resizedFile = new File([blob], file.name, { type: fileType });
             state.image = resizedFile
             emit('update:modelValue', resizedFile)
           }
@@ -171,10 +174,10 @@ function reduceImageSize(event: Event) {
 
         // You can convert the canvas content back to an image or upload the canvas data directly
         // For example, convert to a blob and upload using FormData:
-        canvas.toBlob(handleBlob, file.type);
+        canvas.toBlob(handleBlob, fileType);
 
         // Display the resized image in the preview element
-        state.previewImage = canvas.toDataURL(file.type)
+        state.previewImage = canvas.toDataURL(fileType)
         emit('update:preview', state.previewImage)
       }
     }
@@ -252,7 +255,8 @@ function loadImage(event: Event) {
 
     reader.onload = (e) => {
       state.imageUrl = blob
-      state.imageType = getMimeType(e.target?.result, files[0].type)
+      // state.imageType = getMimeType(e.target?.result, files[0].type)
+      state.imageType = 'image/jpeg'
       state.openCropper = true
       state.cropperLoading = true
     }

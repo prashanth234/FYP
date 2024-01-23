@@ -42,7 +42,7 @@
           <ion-img 
             class="ml-auto mr-auto"
             :src="`/media/${post.postfileSet[0].file}`"
-            alt="Image"
+            :alt="post.description"
           />
         </ion-item>
 

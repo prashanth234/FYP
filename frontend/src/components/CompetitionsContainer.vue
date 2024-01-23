@@ -98,7 +98,7 @@
 			>
 				<ion-row class="details ion-nowrap">
 					<ion-col size="auto" class="ion-padding-end">
-						<ion-img :src="`media/${competition.image}`"></ion-img>
+						<ion-img :src="`media/${competition.image}`" :alt="competition.description"></ion-img>
 					</ion-col>
 					<ion-col style="overflow: hidden;">
 						<div class="title overflow-ellipsis">
