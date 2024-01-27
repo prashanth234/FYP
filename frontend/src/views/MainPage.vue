@@ -488,9 +488,6 @@ checkAuthStatus()
     box-shadow: none;
     position: initial;
   }
-  .toolbar-nav {
-    margin-top: 5px;
-  }
   .login-modal {
     // For xs screens
     --max-width: 100%;
@@ -538,6 +535,9 @@ checkAuthStatus()
       --height: min(710px, 95vh);
       --min-width: 800px !important;
       --max-width: 800px !important;
+    }
+    .toolbar-nav {
+      margin-top: 5px;
     }
   }
   .tab-bar-icon {

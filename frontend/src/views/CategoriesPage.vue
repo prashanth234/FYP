@@ -111,9 +111,11 @@ function openCategory (category: categoryObject) {
 		padding: 17px;
 	}
 }
-.interests-content {
-	&::part(scroll) {
-		padding-top: 10px;
+@media only screen and (min-width: 576px) {
+	.interests-content {
+		&::part(scroll) {
+			padding-top: 10px;
+		}
 	}
 }
 </style>
