@@ -108,8 +108,8 @@ async function verifyAccount() {
     return
   }
 
-  if (auth.fields.password1.length < 9) {
-    auth.errors = ["The password must contain at least 9 characters."]
+  if (auth.fields.password1.length < 8) {
+    auth.errors = ["The password must contain at least 8 characters."]
     return
   }
 

@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', {
     },
     isValidEmailPhone() {
       const valid = isValidPhoneEmail(this.fields.emailphone)
-      !valid && (this.errors = ['Please enter valid email or phone'])
+      !valid && (this.errors = ['Please enter valid email or 10 digit IN number'])
       return valid
     },
     isValidEmail() {

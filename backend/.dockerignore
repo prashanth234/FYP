@@ -1,6 +1,8 @@
 media/**
 static/**
 playground/**
+locustfiles/**
+sqlScripts/**
 dbmodel.png
 graph.md
 imageupload.sh

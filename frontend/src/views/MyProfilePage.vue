@@ -54,6 +54,15 @@
                 >
                 </post>
               </ion-col>
+              <ion-card
+                class="note-card"
+              >
+                <ion-card-content class="note-msg">
+                  <div class="ion-text-center" v-if="!posts?.myPosts?.posts.length">
+                    The creativity spotlight is ready for you! We'd love to see your unique posts bring this space to life.
+                  </div>
+                </ion-card-content>
+              </ion-card>
             </ion-row>
           </ion-col>
         </ion-row>

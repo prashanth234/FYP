@@ -95,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
         "OPTIONS": {
-            "min_length": 9,
+            "min_length": 8,
         },
     }
 ]
@@ -168,7 +168,8 @@ GRAPHQL_AUTH = {
     "EMAIL_TEMPLATE_VARIABLES": {
         "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
         "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),
-        "site_port": os.environ.get('FYP_SITE_PORT', ':8100')
+        "site_port": os.environ.get('FYP_SITE_PORT', ':8100'),
+        "site_protocal": os.environ.get('FYP_SITE_PROTOCAL', 'http')
     }
 }
 
@@ -199,11 +200,13 @@ GRAPHQL_JWT = {
 
 # Sending mails through smtp
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtpout.secureserver.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+DEFAULT_FROM_EMAIL = f'{os.environ.get("FYP_SITE_NAME")} <{EMAIL_HOST_USER}>'
+EMAIL_USE_SSL = False
 
 LOGGING = {
     'version': 1,

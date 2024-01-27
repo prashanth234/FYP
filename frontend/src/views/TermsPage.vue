@@ -5,7 +5,7 @@
       <div class="ion-padding background-contrast privacy-terms">
         <h3><b>Terms and Conditions</b></h3>
         <b>Effective Date:</b> [Insert Date]<br>
-        <p>Welcome to [Your website Name]! By using our , you agree to the following terms and conditions. If you do not agree with these terms, please refrain from using our website.</p>
+        <p>Welcome to Selfdive! By using our website, you agree to the following terms and conditions. If you do not agree with these terms, please refrain from using our website.</p>
         
         <h5><b>User-Generated Content</b></h5>
         <ul>
@@ -69,7 +69,7 @@
 
         <h5><b>Termination</b></h5>
         <ul>
-          <li>[Your Company/Organization Name] reserves the right to terminate or suspend user accounts for violations of these terms.</li>
+          <li>Selfdive reserves the right to terminate or suspend user accounts for violations of these terms.</li>
           <li>If we determine, in our discretion, that you have clearly, seriously, or repeatedly breached our Terms or Policies, we may suspend or permanently disable your access to our product, and we may permanently disable or delete your account.</li>
           <li>We may also disable or delete your account if you repeatedly infringe other people's intellectual property rights or where we are required to do so for legal reasons.</li>
         </ul>
@@ -82,7 +82,7 @@
 
         <h5><b>Contact Us</b></h5>
         <p>
-          If you have any questions or concerns regarding these terms, please contact us at [insert contact email].
+          If you have any questions or concerns regarding these terms, please contact us at support@selfdive.com.
         </p>
 
       </div>

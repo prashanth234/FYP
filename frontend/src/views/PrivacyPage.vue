@@ -5,7 +5,7 @@
     <div class="ion-padding background-contrast privacy-terms">
       <h3><b>Privacy Policy</b></h3>
       <b>Effective Date:</b> [Insert Date]<br>
-      <p>[Your Company/Organization Name] ("we," "our," or "us") is committed to protecting the privacy and security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.</p>
+      <p>Selfdive ("we," "our," or "us") is committed to protecting the privacy and security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.</p>
       
       <h5><b>Information We Collect</b></h5>
       <h6><b>Personal Information:</b></h6>
@@ -40,13 +40,13 @@
       We take reasonable measures to protect the confidentiality and security of your personal information. However, no method of transmission over the internet or electronic storage is 100% secure.
       
       <h5><b>Your Choices</b></h5>
-      You have the right to manage your profile information, control the visibility of your user-generated content, and opt-out of certain communications. To exercise these rights, please contact us at [insert contact email].
+      You have the right to manage your profile information, control the visibility of your user-generated content, and opt-out of certain communications. To exercise these rights, please contact us at support@selfdive.com.
 
       <h5><b>Updates to this Privacy Policy</b></h5>
       We may update this Privacy Policy from time to time. Any changes will be posted on this page, and the date of the latest revision will be indicated.
 
       <h5><b>Contact Us</b></h5>
-      If you have any questions about this Privacy Policy, please contact us at [insert contact email].
+      If you have any questions about this Privacy Policy, please contact us at support@selfdive.com.
     </div>
       
     </ion-content>

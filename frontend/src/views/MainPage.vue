@@ -78,8 +78,11 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title>
-              TBD
+            <ion-title >
+              <div class="logo">Selfdive</div>
+              <!-- <div style="display: flex;">
+                <img src="@/assets/logog.png" width="90"/>
+              </div> -->
             </ion-title>
             <ion-buttons slot="end">
               <!-- ion-hide-lg-down  -->
@@ -172,22 +175,22 @@
         </ion-buttons>
       </ion-toolbar>
       <div class="ion-padding content">
-        <div>
-          <div class="header">What is Hobbizy?</div>
+        <div v-once>
+          <div class="header">What is Selfdive?</div>
 
-          Hobbizy is your gateway to a world of creativity. Create and share things of your interest with like-minded individuals, explore diverse interests, and let your talents shine. Hobbizy is where passion meets community, making your creative journey a rewarding adventure.
+          Selfdive is your gateway to a world of creativity. Create and share things of your interest with like-minded individuals, explore diverse interests, and let your talents shine. Selfdive is where passion meets community, making your creative journey a rewarding adventure.
 
           <div class="header">Diverse Interests</div>
 
-          Explore a wide range of interests and discover new passions within the Hobbizy community. Currently, we provide space for up to four interests, offering a glimpse into the diverse creative pursuits. We're actively working to expand this limit, allowing you to showcase even more facets of your creativity. Stay tuned for updates as we enrich your Hobbizy experience!
+          Explore a wide range of interests and discover new passions within the Selfdive community. Currently, we provide space for up to four interests, offering a glimpse into the diverse creative pursuits. We're actively working to expand this limit, allowing you to showcase even more facets of your creativity. Stay tuned for updates as we enrich your Selfdive experience!
 
           <div class="header">Create and Share</div>
 
-          Express yourself by creating and sharing content aligned with your interests on Hobbizy. Dive into the creative world of contests, where your posts can earn you rewards. If you've got content that doesn't quite fit a contest, no worries – upload it in the relevant category. Let your creativity shine, whether you're competing or simply sharing for others to recognize.
+          Express yourself by creating and sharing content aligned with your interests on Selfdive. Dive into the creative world of contests, where your posts can earn you rewards. If you've got content that doesn't quite fit a contest, no worries – upload it in the relevant category. Let your creativity shine, whether you're competing or simply sharing for others to recognize.
 
           <div class="header">Recognition and Rewards</div>
 
-          With every post you create on Hobbizy, you earn recognition from fellow community members through likes. But that's not all – if you emerge as a contest winner, you'll be rewarded with valuable spark points. Accumulate these points and unlock the opportunity to redeem gift cards, turning your creative efforts into tangible rewards.
+          With every post you create on Selfdive, you earn recognition from fellow community members through likes. But that's not all – if you emerge as a contest winner, you'll be rewarded with valuable spark points. Accumulate these points and unlock the opportunity to redeem gift cards, turning your creative efforts into tangible rewards.
         </div>
       </div>
     </ion-modal>
@@ -486,6 +489,7 @@ checkAuthStatus()
     position: initial;
   }
   .toolbar-nav {
+    margin-top: 5px;
   }
   .login-modal {
     // For xs screens

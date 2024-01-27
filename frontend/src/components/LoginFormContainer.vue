@@ -8,7 +8,12 @@
       <ion-row class="ion-text-center">
 
         <ion-col size="12">
-          <ion-title>TBD</ion-title>
+          <ion-title class="logo" style="margin-bottom: 20px;">
+            Selfdive
+            <!-- <div style="display: flex;">
+              <img src="@/assets/logo.png" width="90"/>
+            </div> -->
+          </ion-title>
         </ion-col>
 
         <ion-col v-if="auth.message">
@@ -29,7 +34,7 @@
             class="custom-input"
             v-model="auth.fields.emailphone"
             type="text"
-            placeholder="Email or Phone"
+            placeholder="Email or IN Phone"
             required
             ref="emailphoneref"
             autofocus

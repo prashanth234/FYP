@@ -1,12 +1,14 @@
-<h3>{{ site_name }}</h3>
+<div style="font-size: 14px;">
+<h2>{{ site_name }}</h2>
 
-<p>Hello {{ user.username }},</p>
+<p>Hi {{ user.username }},</p>
 
 <p>Thank you for signing up at our website. To activate your account, please click the link below:</p>
 
-<p><a href="{{ protocol }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}">{{ protocol }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}</a></p>
+<p><a href="{{ site_protocal }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}">{{ site_protocal }}://{{ site_domain }}{{ site_port }}/{{ path }}/{{ token }}</a></p>
 
 <p>If you didn't create an account with us, you can safely ignore this email.</p>
 
-<p>Best regards,</p>
-<p>{{ site_name }} Team</p>
+<span>Best regards,</span><br>
+<span>{{ site_name }} Team</span>
+</div>

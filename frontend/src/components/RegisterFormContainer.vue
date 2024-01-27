@@ -18,7 +18,7 @@
             class="custom-input"
             v-model="auth.fields.emailphone"
             type="text"
-            placeholder="Email or Phone"
+            placeholder="Email or IN Phone"
             required
             ref="emailphoneref"
             autofocus
