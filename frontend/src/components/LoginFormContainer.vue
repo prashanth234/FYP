@@ -252,8 +252,8 @@ function register() {
     height: 30px;
   }
   .logo-col {
-    margin-top: 0px;
-    margin-bottom: 20px;
+    min-height: 50px;
+    margin-top: 0px !important;
   }
   .logo {
     font-size: 26px !important;
@@ -262,12 +262,10 @@ function register() {
 
 .logo-col {
   margin-top: 20px;
-  margin-bottom: 0px;
   .logo {
     font-size: 24px;
   }
 }
-
 .login-form {
   --ion-grid-column-padding: 6px;
 }

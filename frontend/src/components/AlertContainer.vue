@@ -46,7 +46,7 @@ const icons: Icons = reactive({
     padding: 10px;
     font-size: 15px;
     border-radius: 5px;
-    border-width: 0.1px;
+    border-width: 0.9px;
     border-style: solid;
     .icon {
       margin-top: auto;
