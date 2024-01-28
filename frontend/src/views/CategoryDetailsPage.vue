@@ -412,7 +412,7 @@ ion-grid {
   &.title {
     color: var(--ion-color-dark);
     font-size: 19px;
-    font-weight: 600;
+    font-weight: 580;
     text-transform: uppercase;
     line-height: 1.8;
   }
@@ -428,7 +428,7 @@ ion-grid {
   .title {
     color: var(--ion-color-dark);
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 580;
     line-height: 1.6;
   }
   .description {
@@ -441,11 +441,26 @@ ion-grid {
   flex-wrap: nowrap;
   .title {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 580;
+  }
+}
+@media only screen and (max-width: 576px) {
+	// For small screens
+	.feed {
+    padding: 0px;
+
+		.title {
+			font-size: 17px;
+		}
+	}
+  .category {
+    &.title {
+      font-size: 19px;
+    }
   }
 }
 .refresh-icon {
-  // font-weight: 600;
+  // font-weight: 580;
   // font-size: 25px;
   // position: absolute;
   // top: 12px;

@@ -7,26 +7,17 @@
 
       <ion-row class="ion-text-center">
 
-        <ion-col size="12">
-          <ion-title class="logo" style="margin-bottom: 20px;">
-            Selfdive
+        <ion-col size="12" class="logo-col">
+          <ion-title>
+            <div class="logo">Selfdive</div>
             <!-- <div style="display: flex;">
               <img src="@/assets/logo.png" width="90"/>
             </div> -->
           </ion-title>
         </ion-col>
 
-        <ion-col v-if="auth.message">
-          <alert :message="auth.message" :type="auth.msgType"/>
-          <!-- <ion-card
-            class="note-card"
-            style="margin: 0px !important;"
-            color="light"
-          >
-            <ion-card-content class="ion-text-center" style="font-weight: 500;">
-              {{ auth.message }}
-            </ion-card-content>
-          </ion-card> -->
+        <ion-col size="12">
+          <alert v-if="auth.message" :message="auth.message" :type="auth.msgType"/>
         </ion-col>
 
         <ion-col size="12">
@@ -256,8 +247,23 @@ function register() {
 
 <style lang="scss" scoped>
 @media only screen and (max-width: 576px) {
+  // Small Screens
 	.register-button {
     height: 30px;
+  }
+  .logo-col {
+    margin-top: 0px;
+    margin-bottom: 20px;
+  }
+  .logo {
+    font-size: 26px !important;
+  }
+}
+
+.logo-col {
+  margin-top: 20px;
+  .logo {
+    font-size: 24px;
   }
 }
 

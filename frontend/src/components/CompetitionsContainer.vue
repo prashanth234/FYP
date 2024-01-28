@@ -220,7 +220,7 @@ function closeCompDetails() {
 
 	.title {
 		font-size: 16px;
-		font-weight: 600;
+		font-weight: 580;
 		color: var(--ion-color-dark);
 		padding-bottom: 2px;
 	}
@@ -253,7 +253,7 @@ function closeCompDetails() {
 }
 .header {
 	font-size: 18px;
-	font-weight: 600;
+	font-weight: 580;
 	padding: 0px 5px 5px 5px;
 }
 .comp-details-modal {
@@ -277,6 +277,17 @@ function closeCompDetails() {
 		--height: min(530px, 95vh);
 		--min-width: 800px !important;
 		--max-width: 800px !important;
+	}
+}
+@media only screen and (max-width: 576px) {
+	// For small screens
+	.competition {
+		.title {
+			font-size: 15px;
+		}
+	}	
+	.header {
+		font-size: 17px;
 	}
 }
 
@@ -337,7 +348,7 @@ function closeCompDetails() {
 		text-align: center;
 	}
 	th {
-		background-color: #5d92ef;
+		background-color: var(--ion-color-primary-tint);
 		color: white;
 		font-weight: 550;
 	}

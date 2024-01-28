@@ -26,11 +26,11 @@
                 </ion-col>
                 <ion-col size="12" class="ion-text-center" style="padding-top: 20px; color: var(--ion-color-dark)">
                   <div v-if="user.success">
-                    <div style="font-size: 16px; font-weight: 600;"> Welcome </div>
-                    <div class="two-line-ellipsis" style="font-size: 20px; font-weight: 600;"> {{ displayName }} </div>
+                    <div style="font-size: 16px; font-weight: 580;"> Welcome </div>
+                    <div class="two-line-ellipsis" style="font-size: 20px; font-weight: 580;"> {{ displayName }} </div>
                   </div>
                   <div v-else>
-                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;"> Welcome User </div>
+                    <div style="font-size: 16px; font-weight: 580; margin-bottom: 10px;"> Welcome User </div>
                     <ion-button
                       class="ion-hide-lg-down"
                       @click="auth.open"
@@ -78,7 +78,7 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title >
+            <ion-title>
               <div class="logo">Selfdive</div>
               <!-- <div style="display: flex;">
                 <img src="@/assets/logog.png" width="90"/>
@@ -86,7 +86,7 @@
             </ion-title>
             <ion-buttons slot="end">
               <!-- ion-hide-lg-down  -->
-              <ion-button class="ion-hide-sm-up add-post-theme add-post-mobile" @click="addNewPost" shape="round">
+              <ion-button size="small" class="ion-hide-sm-up add-post-theme add-post-mobile" @click="addNewPost" shape="round">
                 <ion-icon :icon="addOutline"></ion-icon>
               </ion-button>
               <ion-button class="ion-hide-sm-down ion-margin-end add-post add-post-theme" shape="round" @click="addNewPost">
@@ -537,7 +537,16 @@ checkAuthStatus()
       --max-width: 800px !important;
     }
     .toolbar-nav {
-      margin-top: 5px;
+      // --background: #19422d;
+      // --color: white;
+
+      // --border-color: #f24aec;
+      // --border-width: 4px 0;
+      // --border-style: double;
+
+      // --min-height: 60px;
+      --padding-top: 5px;
+      // --padding-bottom: 5px;
     }
   }
   .tab-bar-icon {
@@ -545,14 +554,12 @@ checkAuthStatus()
   }
   .add-post-theme {
     --background: linear-gradient(135deg, #54BFFC, #0D51FC);
-    // --background: linear-gradient(135deg, #3dc2ff, #3880FF);
-    // --background: linear-gradient(135deg, #3dc2ff, #0F52BA); (vue colors)
-
     --color: #ffffff;
   }
   .add-post-mobile {
-    --padding-end: 10px;
-    --padding-start: 10px;
+    --padding-end: 7px;
+    --padding-start: 7px;
+    opacity: 0.9;
   }
   .add-post {
     --padding-end: 25px;

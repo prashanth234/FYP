@@ -23,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           context: "{{defaultContext}}:backend"
           tags: prashanth45/fyp:backendv1
       -
@@ -32,7 +32,7 @@ jobs:
         with:
           push: true
           context: "{{defaultContext}}:frontend"
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           tags: prashanth45/fyp:frontendv1
 
       

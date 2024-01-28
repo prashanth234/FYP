@@ -71,6 +71,8 @@ const auth = useAuthStore();
 <style>
 .auth-container {
   padding: 35px;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
 }
 .login-background {
   background-image: linear-gradient(314deg, #09c6f9 0%, #045de9 75%);

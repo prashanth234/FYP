@@ -146,7 +146,7 @@
 															'points-add': coinactivity.points > 0,
 															'points-minus': coinactivity.points < 0
 														}"
-														style="font-weight: 600; font-size: 15px;"
+														style="font-weight: 580; font-size: 15px;"
 													>
 														<ion-row class="points ion-nowrap ion-align-items-center" style="float: right;">
 															<ion-col class="ion-align" size="auto">
@@ -182,13 +182,13 @@
 								
 								<ion-row class="ion-padding-top">
 									
-									<ion-col size="12" style="font-weight: 600;">
+									<ion-col size="12" style="font-weight: 580;">
 										Frequently Asked Questions
 									</ion-col>
 
 									<ion-col size="12" v-for="(faq, index) in faqs?.faqs" :key="index" style="font-size: 15px;">
 
-										<div style="font-weight: 600;">
+										<div style="font-weight: 580;">
 											Q: {{ faq.question }}
 										</div>
 

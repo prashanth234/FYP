@@ -79,7 +79,7 @@
         <ion-col size="12" class="line" style="margin-top: 8px; margin-bottom: 15px;"></ion-col>
 
         <ion-col size="12">
-          Have an account? <a class="cpointer auth-link" :class="{'cursor-disable': auth.processing}" @click="goToLogin()"><b>Log in</b></a>
+          Have an account? <a class="cpointer auth-link" :class="{'cursor-disable': auth.processing}" @click="goToLogin()">Log in</a>
         </ion-col>
 
       </ion-row>

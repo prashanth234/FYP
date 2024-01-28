@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-content class="ion-padding interests-content">
+    <ion-content class="ion-padding">
       
       <!-- <p class="page-heading">Explore Your Interests</p> -->
 
@@ -109,13 +109,6 @@ function openCategory (category: categoryObject) {
 	}
 	.grid-item {
 		padding: 17px;
-	}
-}
-@media only screen and (min-width: 576px) {
-	.interests-content {
-		&::part(scroll) {
-			padding-top: 10px;
-		}
 	}
 }
 </style>
