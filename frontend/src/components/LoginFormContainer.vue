@@ -262,6 +262,7 @@ function register() {
 
 .logo-col {
   margin-top: 20px;
+  margin-bottom: 0px;
   .logo {
     font-size: 24px;
   }
