@@ -4,59 +4,57 @@ import { RouteRecordRaw } from 'vue-router'
 import MainPage from '@/views/MainPage.vue'
 import CategoriesPage from '@/views/CategoriesPage.vue'
 import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
-import MyProfilePage from '@/views/MyProfilePage.vue'
-import ActivatePage from '@/views/ActivatePage.vue'
-import RewardsPage from '@/views/RewardsPage.vue'
-import SupportPage from '@/views/SupportPage.vue'
-import PasswordResetPage from '@/views/PasswordResetPage.vue'
-import PrivacyPage from '@/views/PrivacyPage.vue'
-import TermsPage from '@/views/TermsPage.vue'
+// import MyProfilePage from '@/views/MyProfilePage.vue'
+// import ActivatePage from '@/views/ActivatePage.vue'
+// import RewardsPage from '@/views/RewardsPage.vue'
+// import SupportPage from '@/views/SupportPage.vue'
+// import PasswordResetPage from '@/views/PasswordResetPage.vue'
+// import PrivacyPage from '@/views/PrivacyPage.vue'
+// import TermsPage from '@/views/TermsPage.vue'
 
 
 import { useUserStore } from '@/stores/user'
 
-import TempChild from '@/views/TempChild.vue'
-import TempPage from '@/views/TempPage.vue'
-import TempMain from '@/views/TempMain.vue'
-
-
+// import TempChild from '@/views/TempChild.vue'
+// import TempPage from '@/views/TempPage.vue'
+// import TempMain from '@/views/TempMain.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: '/temp',
-    name: 'Temp',
-    component: TempPage,
-    props: true,
-    children: [
-      {
-        path: '',
-        component: TempMain
-      },
-      {
-        path: 'child/:id',
-        component: TempChild
-      }
-    ]
-  },
+  // {
+  //   path: '/temp',
+  //   name: 'Temp',
+  //   component: TempPage,
+  //   props: true,
+  //   children: [
+  //     {
+  //       path: '',
+  //       component: TempMain
+  //     },
+  //     {
+  //       path: 'child/:id',
+  //       component: TempChild
+  //     }
+  //   ]
+  // },
   {
     path: '/privacy',
     name: 'Privacy',
-    component: PrivacyPage
+    component: () => import('@/views/PrivacyPage.vue')
   },
   {
     path: '/terms',
     name: 'Terms',
-    component: TermsPage
+    component: () => import('@/views/TermsPage.vue')
   },
   {
     path: '/activate/:token',
     name: 'Activate',
-    component: ActivatePage
+    component: () => import('@/views/ActivatePage.vue')
   },
   {
     path: '/password-reset/:token',
     name: 'PasswordReset',
-    component: PasswordResetPage
+    component: () => import('@/views/PasswordResetPage.vue')
   },
   {
     path: '/',
@@ -78,7 +76,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'profile',
-        component: MyProfilePage,
+        component: () => import('@/views/MyProfilePage.vue'),
         name: 'profile',
         meta: {
           auth: true
@@ -86,7 +84,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'rewards',
-        component: RewardsPage,
+        component: () => import('@/views/RewardsPage.vue'),
         name: 'rewards',
         meta: {
           auth: true
@@ -94,7 +92,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'support',
-        component: SupportPage,
+        component: () => import('@/views/SupportPage.vue'),
         name: 'support',
         meta: {
           auth: true

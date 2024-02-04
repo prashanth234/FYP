@@ -32,7 +32,7 @@ export interface CompetitionInfo {
 export interface categoryObject {
   name: string,
   description: string,
-  type: string,
+  key: string,
   id: string,
   image: string,
   oftype: string

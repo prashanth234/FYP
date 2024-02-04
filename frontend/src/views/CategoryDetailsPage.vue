@@ -47,7 +47,7 @@
                 />
               </ion-col>
 
-              <!-- Heading -->
+              <!-- Feed Heading -->
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
                 <div class="feed">
 
@@ -188,7 +188,7 @@
 
             </ion-row>
 
-            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" threshold="0">
+            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" threshold="350%">
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 

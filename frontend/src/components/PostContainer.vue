@@ -39,7 +39,7 @@
           v-if="post.postfileSet.length"
           :class="{'content-padding': !post.description}"
         > 
-          <ion-img 
+          <img 
             class="ml-auto mr-auto"
             :src="`/media/${post.postfileSet[0].file}`"
             :alt="post.description"
@@ -269,7 +269,7 @@ function likePost() {
     &.image {
       --inner-padding-end: 0px;
       --padding-start: 0px;
-      ion-img::part(image) {
+      ion-img::part(image), img{
         max-height: 500px;
         min-height: 250px;
         object-fit: contain;

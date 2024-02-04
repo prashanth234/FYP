@@ -21,7 +21,8 @@ export const useCategoryStore = defineStore('category', {
                                   description,
                                   id,
                                   image,
-                                  oftype
+                                  oftype,
+                                  key
                                 }
                               }
                             `)

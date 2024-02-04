@@ -220,8 +220,8 @@ import { usePostDialog } from '@/composables/postDialog'
 import { useDialogStore } from '@/stores/dialog'
 import CommonDialog from '@/components/CommonDialogContainer.vue'
 import { warningOutline } from 'ionicons/icons'
-import { useAuthStore } from '@/stores/auth';
-
+import { useAuthStore } from '@/stores/auth'
+import { useCategoryStore } from '@/stores/category'
 
 const ionRouter = useIonRouter();
 const router = useRoute();
@@ -232,6 +232,9 @@ const toast = useToastStore();
 const dialog = useDialogStore();
 const auth = useAuthStore();
 const { resetClientStore } = useAuth();
+const category = useCategoryStore();
+
+category.getCategories()
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'

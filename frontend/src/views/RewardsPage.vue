@@ -448,7 +448,7 @@ const { result: faqs, onResult: faqsResult ,onError: faqsError } = useQuery(gql`
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

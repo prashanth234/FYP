@@ -49,7 +49,7 @@ export function getPosts(
     category: ref(category),
     trending: ref(false),
     page: 1,
-    perPage: 5
+    perPage: 4
   }
 
   const {QUERY: POST_QUERY} = getQuery(type)

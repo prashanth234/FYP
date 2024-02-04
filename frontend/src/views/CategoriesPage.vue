@@ -37,17 +37,31 @@ import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, useIonRouter  } from '@ionic/vue';
 import { categoryObject } from '@/utils/interfaces'
 import { scrollTop } from '@/composables/scroll'
+// import ART from '@/assets/images/categories/ART.jpg'
+// import CRTCFT from '@/assets/images/categories/CRTCFT.jpg'
+// import PHTGRY from '@/assets/images/categories/PHTGRY.jpg'
+// import SHTSTY from '@/assets/images/categories/SHTSTY.jpg'
 
 scrollTop()
 
 const ionRouter = useIonRouter();
 const category = useCategoryStore();
 
-category.getCategories()
+// category.getCategories()
 
 function openCategory (category: categoryObject) {
   ionRouter.push(`interests/${category.id}/posts`)
 }
+
+// function getImage(type: string) {
+// 	const image:{[key: string]: any} = {
+// 		'ART': ART,
+// 		'CRTCFT': CRTCFT,
+// 		'PHTGRY': PHTGRY,
+// 		'SHTSTY': SHTSTY
+// 	}
+// 	return image[type]
+// }
 </script>
 
 <style scoped>
@@ -80,11 +94,12 @@ function openCategory (category: categoryObject) {
 .grid-item:hover {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
-.cat-image::part(image) {
+.cat-image::part(image), .cat-image {
   max-width: 100%;
 	max-height: 220px;
   object-fit: cover;
 	border-radius: 5px;
+	aspect-ratio: 87 / 110;
 }
 .cat-title {
   font-size: 16px;

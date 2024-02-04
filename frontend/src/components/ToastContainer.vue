@@ -12,7 +12,6 @@
 
 <script lang="ts" setup>
 
-import store from '@/vuex'
 import { IonToast } from '@ionic/vue'
 import { ref } from 'vue'
 import { useToastStore } from '@/stores/toast'

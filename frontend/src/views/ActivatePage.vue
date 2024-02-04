@@ -29,7 +29,6 @@ import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { reactive } from 'vue'
 import { IonPage, IonContent, IonGrid, IonRow, IonCol, IonLoading, IonButton, useIonRouter } from '@ionic/vue'
-import store from '@/vuex';
 import { useToastStore } from '@/stores/toast'
 
 
