@@ -4,6 +4,8 @@ from django.conf import settings
 from categories.models.Category import *
 from categories.models.Competition import *
 
+import os
+
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField()
@@ -17,5 +19,13 @@ class Post(models.Model):
       return self.description
     
 class PostFile(models.Model):
-    file = models.FileField(upload_to="files")
+    file = models.FileField(upload_to="posts")
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    width = models.PositiveIntegerField(null=True, blank=True)
+    height = models.PositiveIntegerField(null=True, blank=True)
+
+    def get_absolute_path(self):
+        # Assuming 'image_field' is the name of your ImageField
+        if self.file:
+            return os.path.join(settings.MEDIA_ROOT, str(self.file))
+        return None

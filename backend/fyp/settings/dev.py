@@ -20,7 +20,7 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'fyp_1',
+    'NAME': 'fyp',
     'HOST': 'localhost',
     'USER': 'root',
     'PASSWORD': 'root',
@@ -42,3 +42,9 @@ DATABASES = {
 # Pacakge required by s3
 # boto3 = "*"
 # django-storages = "*"
+
+# Pacakge required by celery
+# redis = "*"
+# celery = "*"
+# Celery configuration
+# CELERY_BROKER_URL = 'redis://localhost:6379/1'

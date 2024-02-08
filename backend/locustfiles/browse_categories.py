@@ -39,7 +39,9 @@ class WebsiteUser(HttpUser):
                   createdAt,
                   isBot,
                   postfileSet {
-                    file
+                    file,
+                    width,
+                    height
                   },
                   user {
                     id,

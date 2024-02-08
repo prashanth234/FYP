@@ -52,7 +52,7 @@ services:
 
   db:
     container_name: mysql_db
-    image: mysql:latest
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DBNAME}
@@ -69,5 +69,22 @@ services:
       timeout: 5s
       retries: 3
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - redis_data:/data
+
+  celery:
+    container_name: celery
+    image: prashanth45/fyp:backendv1
+    command: pipenv run celery -A fyp worker --loglevel=info
+    depends_on:
+      - redis
+
 volumes:
   mysql_data:
+  redis_data:

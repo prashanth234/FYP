@@ -9,7 +9,8 @@ from django.utils import dateparse
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
 import os
-
+from categories.schema.helpers import remove_exisiting_files_in_dir
+from PIL import Image
 
 # Models
 from categories.models.Competition import Competition
@@ -24,6 +25,8 @@ from core.schema.type.CoinActivityType import CoinActivitiesType
 # Authentications
 from graphql_jwt.decorators import login_required
 
+# Tasks
+from categories.tasks import process_image
 
 class CreatePostMutation(graphene.Mutation):
     
@@ -86,18 +89,28 @@ class CreatePostMutation(graphene.Mutation):
             coinactivity.save()
 
         if file:
-            postFile = PostFile(
-                post=post
-            )
 
             filetype = file.content_type.split('/')[1]
-            filename = f"posts/user_{info.context.user.id}/post_{post.id}.{filetype}"
+            folder = f"post_{post.id}"
+            filename = f"user_{info.context.user.id}/{folder}/{folder}.{filetype}"
             file_content = ContentFile(file.read())
+            img = Image.open(file_content)
+            width, height = img.size
+
+            postFile = PostFile(
+                post=post,
+                width=width,
+                height=height
+            )
 
             # Save the updated file with the new filename
             postFile.file.save(filename, file_content, save=False)
 
             postFile.save()
+            
+            # Process image further in background
+            # process_image.delay(postFile.get_absolute_path())
+            process_image(postFile.get_absolute_path())
 
         return CreatePostMutation(post=post, coin_activity=coinactivity)
     
@@ -134,19 +147,23 @@ class UpdatePostMutation(graphene.Mutation):
             postFile = PostFile.objects.get(post=post)
 
             filetype = file.content_type.split('/')[1]
-            filename = f"posts/user_{info.context.user.id}/post_{post.id}.{filetype}"
+            folder = f"post_{post.id}"
+            filename = f"user_{info.context.user.id}/{folder}/{folder}.{filetype}"
             file_content = ContentFile(file.read())
-            original_filename = postFile.file.name
+            img = Image.open(file_content)
+            width, height = img.size
+
+            postFile.width = width
+            postFile.height = height
 
             # Save the updated file with the new filename
             postFile.file.save(filename, file_content)
 
-            # Remove the existing file if it exists
-            if original_filename:
-                file_path = os.path.join(settings.MEDIA_ROOT, original_filename)
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-
+            # Process image further in background
+            # process_image.delay(postFile.get_absolute_path())
+            process_image(postFile.get_absolute_path())
+            
+            #remove_exisiting_files_in_dir(postFile.file.name)
 
         return UpdatePostMutation(post=post)
 
@@ -177,7 +194,8 @@ class DeletePostMutation(graphene.Mutation):
         
         try:
             postFile = PostFile.objects.get(post=post)
-            postFile.file.storage.delete(postFile.file.name)
+            remove_exisiting_files_in_dir(postFile.file.name)
+            # postFile.file.storage.delete(postFile.file.name)
         except PostFile.DoesNotExist:
             pass
 

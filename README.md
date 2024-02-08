@@ -1,23 +1,25 @@
-# FYP Getting Started
+# FYP
 
-# Git Download 
+## Getting Started Project Setup
+
+#### Git Download 
 
 https://git-scm.com/downloads
 
-# Generate the ssh keys and add to the github account using below link
+#### Generate the ssh keys and add to the github account using below link
 
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
-# Download VS Code
+#### Download VS Code
 
 https://code.visualstudio.com/Download
 
-# Clone the repository 
+#### Clone the repository 
 
 git clone git@github.com:prashanth234/FYP.git
 
 
-# Download mysql community server 8.x
+#### Download mysql community server 8.x
 
 MacOS
 
@@ -33,15 +35,15 @@ https://dev.mysql.com/downloads/windows/installer/8.0.html
 
 Give password as root for the root user during installation.
 
-# Run the sql query
+#### Run the sql query
 
 CREATE SCHEMA `fyp` ; 
 
-# Download mysql community workbench any version (It comes windows msi installer)
+#### Download mysql community workbench any version (It comes windows msi installer)
 
 https://dev.mysql.com/downloads/workbench/
 
-# Install python 3.10
+#### Install python 3.10
 
 https://www.python.org/downloads/
 
@@ -51,34 +53,34 @@ check version - python --version
 
 https://www.python.org/downloads/macos/ (Download the macOS 64-bit universal2 installer)
 
-# Install pipenv to control the virtual environments 
+#### Install pipenv to control the virtual environments 
 
 pip3 install pipenv
 
-# Install the packages specified in pipfile.lock
+#### Install the packages specified in pipfile.lock
 
 pipenv install or pipenv install --dev (if there are dev dependencies) should be ran. That will install all the dependencies in the Pipfile
 if the virtualenv is already activated, you can also use pipenv sync or pipenv sync --dev for the same effect
 cd backend
 pipenv sync
 
-# ACTIVATE VIRTUAL ENV
+#### ACTIVATE VIRTUAL ENV
 
 pipenv shell
 
-# Now migration the tables to sql
+#### Now migration the tables to sql
 
 python manage.py migrate
 
-# Run the backend server
+#### Run the backend server
 
 python manage.py runserver
 
-# To generate a sceret key
+#### To generate a sceret key
 
 echo "$(openssl rand -hex 40)"
 
-# Download nvm to manage nodejs version or you can directly install nodejs 18.16.0
+#### Download nvm to manage nodejs version or you can directly install nodejs 18.16.0
 
 https://github.com/coreybutler/nvm-windows
 
@@ -91,13 +93,13 @@ check version - node --version
 Download installer for mac
 https://nodejs.org/en/download
 
-# Setup frontend
+#### Setup frontend
 
-# diable builtin typescript in vs code
+#### diable builtin typescript in vs code
 
 https://vuejs.org/guide/typescript/overview.html#volar-takeover-mode
 
-# Install ionic cli (7.0.1)
+#### Install ionic cli (7.0.1)
 npm i -g @ionic/cli
 
 ionic --version
@@ -112,20 +114,22 @@ ionic serve --external (To bind to 0.0.0.0 which allows you to access from mobil
 
 python manage.py runserver 0.0.0.0:8000
 
-# ########## Application has been setup ############
+#### ********** Application has been setup ********** 
 
  http://localhost:8100
 
 
-# ######### Automation Tests ################
+#### Automation Tests 
 
 pipenv run pytest
 
-# ######### Performance Tests ################
+#### Performance Tests
 
 pipenv run locust -f locustfiles/browse_categories.py
 
-# ######### Intial Data Setup ################
+#### Intial Data Setup
+
+Dump data - python manage.py dumpdata categories.post > ./initial_data/post_data.json
 
 Ensure that first user is product user
 
@@ -139,7 +143,7 @@ python manage.py loaddata ./initial_data/faq_data.json
 
 Replace the original media folder
 
-# TROUBLESHOOT
+#### TROUBLESHOOT
 
 Problem
 [pipenv.exceptions.ResolutionFailure]: Warning: Your dependencies could not be resolved. You likely have a mismatch in your sub-dependencies.

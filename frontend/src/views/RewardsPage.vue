@@ -31,8 +31,8 @@
 						<Transition name="slide-fade" mode="out-in">
 
 							<div v-if="state.selReward > -1">
-								<ion-row>
-									<ion-col size-sm="auto" size-xs="12" style="margin-right: 10px;">
+								<ion-row class="ion-justify-content-center">
+									<ion-col size="auto">
 										<div class="logo">
 											<ion-img
 												class="reward-image"
@@ -45,12 +45,13 @@
 											{{rewards.rewards[state.selReward].name}}
 										</div> -->
 									</ion-col>
-									<ion-col>
+									<ion-col size-xs="12" size-sm="auto">
 										<ion-select
 											class="custom-select"
 											v-model="state.points"
-											placeholder="Select"
-											label="Amount"
+											placeholder="Select Amount"
+											label-placement="stacked"
+											label=""
 											interface="popover"
 										>
 											<ion-select-option

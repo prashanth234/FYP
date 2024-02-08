@@ -12,7 +12,7 @@ from core.schema.type.UserType import UserType
 class PostFileType(DjangoObjectType):
     class Meta:
         model = PostFile
-        fields = ("file",)
+        fields = ("file", "width", "height")
     
     # def resolve_file(self, info):
     #     if self.file:

@@ -22,18 +22,18 @@ import { useUserStore } from '@/stores/user'
 const routes: Array<RouteRecordRaw> = [
   // {
   //   path: '/temp',
-  //   name: 'Temp',
-  //   component: TempPage,
-  //   props: true,
-  //   children: [
-  //     {
+    //   name: 'Temp',
+    //   component: TempPage,
+    //   props: true,
+    //   children: [
+      //     {
   //       path: '',
-  //       component: TempMain
-  //     },
-  //     {
+        //       component: TempMain
+      //     },
+      //     {
   //       path: 'child/:id',
-  //       component: TempChild
-  //     }
+        //       component: TempChild
+      //     }
   //   ]
   // },
   {

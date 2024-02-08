@@ -43,19 +43,6 @@
     "pk": 4,
     "fields": {
       "user": 1,
-      "description": "\nTitle: The Talking Trees \n \nIn a big forest near a small town, Jenna, who loved exploring nature, decided to go on an adventure. As she walked deeper, the trees got taller, and the air felt mysterious, like it held ancient stories. \n \nIn the middle of the forest, Jenna found an old house almost hidden by trees. Curious, she opened the squeaky door and discovered a room full of old books. The pages whispered forgotten tales, and Jenna felt a strange feeling, like someone was there with her. \n \nThe room got colder, and Jenna heard soft whispers, like the trees were talking. The stories in the books spoke about spirits in the forest, wanting to share their stories. Jenna felt a little scared but also curious. \n \nReading more, Jenna learned that the forest was once a safe place, but it changed over time, becoming a home for both the living and the spirits. It was like a place where the real world mixed with something magical. \n \nA gentle breeze moved the pages, and Jenna felt like she was being guided. She followed the feeling to an old tree in the middle of a clearing. There, she found a secret passage leading to a timeless place where the spirits shared their stories with her. \n \nJenna felt a connection with the spirits and their tales of love and sadness. As she explored this magical space, she became like a bridge between the living and the spirits of the Talking Trees. \n \nWhen Jenna came back, the forest seemed happy. She carried the stories of the forgotten spirits and became the storyteller of the old woods. The whispers of the past lived on through Jenna, making the forest a place where stories and magic never faded away.",
-      "category": 2,
-      "competition": null,
-      "created_at": "2024-01-10T19:59:19.016Z",
-      "likes": 0,
-      "is_bot": true
-    }
-  },
-  {
-    "model": "categories.post",
-    "pk": 5,
-    "fields": {
-      "user": 1,
       "description": "Snowy peaks, flowing river - a simple and breathtaking moment in nature's embrace.",
       "category": 3,
       "competition": 3,
@@ -66,7 +53,7 @@
   },
   {
     "model": "categories.post",
-    "pk": 6,
+    "pk": 5,
     "fields": {
       "user": 1,
       "description": "Pink blooms in nature's spotlight, a simple display of delicate beauty.",
@@ -79,7 +66,7 @@
   },
   {
     "model": "categories.post",
-    "pk": 7,
+    "pk": 6,
     "fields": {
       "user": 1,
       "description": "Captured the world's wonder, Taj Mahal, in a simple yet stunning photograph.",
@@ -92,7 +79,7 @@
   },
   {
     "model": "categories.post",
-    "pk": 8,
+    "pk": 7,
     "fields": {
       "user": 1,
       "description": "Simple and practical, a handmade cardboard pen holder for your desk essentials.",
@@ -105,7 +92,7 @@
   },
   {
     "model": "categories.post",
-    "pk": 9,
+    "pk": 8,
     "fields": {
       "user": 1,
       "description": "A creative caterpillar craft made from recycled bottle caps, adding a touch of charm to your space.",
@@ -118,13 +105,26 @@
   },
   {
     "model": "categories.post",
-    "pk": 10,
+    "pk": 9,
     "fields": {
       "user": 1,
       "description": "A lovely tortoise crafted from sticks and threads brings a natural vibe into any space.",
       "category": 4,
       "competition": null,
       "created_at": "2024-01-10T20:04:44.065Z",
+      "likes": 0,
+      "is_bot": true
+    }
+  },
+  {
+    "model": "categories.post",
+    "pk": 10,
+    "fields": {
+      "user": 1,
+      "description": "\nTitle: The Talking Trees \n \nIn a big forest near a small town, Jenna, who loved exploring nature, decided to go on an adventure. As she walked deeper, the trees got taller, and the air felt mysterious, like it held ancient stories. \n \nIn the middle of the forest, Jenna found an old house almost hidden by trees. Curious, she opened the squeaky door and discovered a room full of old books. The pages whispered forgotten tales, and Jenna felt a strange feeling, like someone was there with her. \n \nThe room got colder, and Jenna heard soft whispers, like the trees were talking. The stories in the books spoke about spirits in the forest, wanting to share their stories. Jenna felt a little scared but also curious. \n \nReading more, Jenna learned that the forest was once a safe place, but it changed over time, becoming a home for both the living and the spirits. It was like a place where the real world mixed with something magical. \n \nA gentle breeze moved the pages, and Jenna felt like she was being guided. She followed the feeling to an old tree in the middle of a clearing. There, she found a secret passage leading to a timeless place where the spirits shared their stories with her. \n \nJenna felt a connection with the spirits and their tales of love and sadness. As she explored this magical space, she became like a bridge between the living and the spirits of the Talking Trees. \n \nWhen Jenna came back, the forest seemed happy. She carried the stories of the forgotten spirits and became the storyteller of the old woods. The whispers of the past lived on through Jenna, making the forest a place where stories and magic never faded away.",
+      "category": 2,
+      "competition": null,
+      "created_at": "2024-01-10T19:59:19.016Z",
       "likes": 0,
       "is_bot": true
     }

@@ -326,7 +326,9 @@ function createNewPost() {
             description,
             createdAt,
             postfileSet {
-              file
+              file,
+              width,
+              height
             },
             user {
               username,
@@ -490,7 +492,9 @@ function updatePost() {
               id,
               description,
               postfileSet {
-                file
+                file,
+                width,
+                height
               },
             }
           }

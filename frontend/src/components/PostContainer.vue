@@ -38,12 +38,21 @@
           style="padding-top: 12px;"
           v-if="post.postfileSet.length"
           :class="{'content-padding': !post.description}"
-        > 
-          <img 
-            class="ml-auto mr-auto"
-            :src="`/media/${post.postfileSet[0].file}`"
-            :alt="post.description"
-          />
+        >
+        
+          <picture class="ml-auto mr-auto">
+            <source :srcset="`/media/${post.postfileSet[0].file.replace('.jpeg', '_lg.webp')}`" media="(min-width: 600px)" />
+            <source :srcset="`/media/${post.postfileSet[0].file.replace('.jpeg', '_md.webp')}`" media="(max-width: 600px)" />
+            <img
+              :src="`/media/${post.postfileSet[0].file}`"
+              :alt="post.description"
+              :width="post.width"
+              :height="post.height"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </picture>
+
         </ion-item>
 
         <ion-item
@@ -72,6 +81,8 @@
             <div v-else style="height: 28px;">
               <ClapOutline
                 @click="likePost()"
+                width="28px"
+                height="28px"
                 class="like-icon cpointer"
               ></ClapOutline>
             </div>
@@ -254,14 +265,14 @@ function likePost() {
     // transition: all;
     // transition-timing-function: ease-out;
 
-    &:hover {
+    // &:hover {
       // box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)!important;
       // box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
-    }
+    // }
     
-    &:hover:not(:has(.operations:hover)) .like-icon {
+    // &:hover:not(:has(.operations:hover)) .like-icon {
       // opacity: 0.8;
-    }
+    // }
   }
 
   ion-item {
@@ -269,16 +280,19 @@ function likePost() {
     &.image {
       --inner-padding-end: 0px;
       --padding-start: 0px;
-      ion-img::part(image), img{
+      img {
         max-height: 500px;
         min-height: 250px;
         object-fit: contain;
       }
+      &::part(native) .input-wrapper {
+        justify-content: center;
+      }
     }
-    &.image::part(native) {
+    // &.image::part(native) {
       // background-color: whitesmoke;
       // filter: blur(1px);
-    }
+    // }
     p {
       margin-bottom: 10px;
     }

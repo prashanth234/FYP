@@ -188,7 +188,7 @@
 
             </ion-row>
 
-            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" threshold="350%">
+            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" :threshold="user.success ? '350%' : '0'">
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 

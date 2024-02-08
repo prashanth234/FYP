@@ -17,7 +17,9 @@ export function getQuery(type: string) {
             createdAt,
             isBot,
             postfileSet {
-              file
+              file,
+              width,
+              height
             },
             user {
               id,
@@ -133,7 +135,9 @@ export function getWinners(competition: string | undefined) {
           userLiked,
           description,
           postfileSet {
-            file
+            file,
+            width,
+            height
           },
           user {
             id,
@@ -173,7 +177,9 @@ export function getPostDetails(
         createdAt,
         isBot,
         postfileSet {
-          file
+          file,
+          width,
+          height
         },
         category {
           id,
@@ -217,7 +223,9 @@ export function getTrending() {
           createdAt,
           isBot,
           postfileSet {
-            file
+            file,
+            width,
+            height
           },
           user {
             id,
