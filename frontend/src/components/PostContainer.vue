@@ -46,8 +46,8 @@
             <img
               :src="`/media/${post.postfileSet[0].file}`"
               :alt="post.description"
-              :width="post.width"
-              :height="post.height"
+              :width="post.postfileSet[0].width"
+              :height="post.postfileSet[0].height"
               loading="eager"
               fetchpriority="high"
             />
@@ -284,6 +284,8 @@ function likePost() {
         max-height: 500px;
         min-height: 250px;
         object-fit: contain;
+        max-inline-size: 100%;
+        block-size: auto;
       }
       &::part(native) .input-wrapper {
         justify-content: center;

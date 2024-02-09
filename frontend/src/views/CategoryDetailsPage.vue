@@ -24,7 +24,7 @@
               <!-- Information about category -->
               <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11" >
 
-                <ion-card class="ion-padding border-radius-std ion-no-margin" >
+                <ion-card style="min-height: 100px;" class="ion-padding border-radius-std ion-no-margin" >
 
                   <div class="title category">
                     {{ categoryInfo.name }}
@@ -48,7 +48,7 @@
               </ion-col>
 
               <!-- Feed Heading -->
-              <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
+              <ion-col size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
                 <div class="feed">
 
                   <div class="title">
@@ -151,7 +151,7 @@
               >
                 <post :post="state.pdetails"/>
                 <div class="ion-margin-vertical ion-text-center ion-padding-vertical">
-                  <ion-button fill="clear" @click="hidePostDetails(false)">Click to discover more posts</ion-button>
+                  <ion-button fill="clear" @click="hidePostDetails(true)">Click to discover more posts</ion-button>
                 </div>
               </ion-col>
 
@@ -254,6 +254,7 @@ const state: State = reactive({
   refreshCreatePost: 1,
   tabSelected: 'allposts',
   winners: [],
+  // pdshow is for showing single post details
   pdShow: false,
   pdetails: null,
   refreshing: false
