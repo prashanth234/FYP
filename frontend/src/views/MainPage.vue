@@ -441,7 +441,7 @@ function logout(showToast: boolean = true) {
   navigate('/')
   user.reset()
   resetClientStore()
-  showToast && toast.$patch({message: "Logged out. Seen you again soon!", color: 'success', open: true})
+  showToast && toast.$patch({message: "Logged out. See you again soon!", color: 'success', open: true})
   dialog.open = false
 }
 
@@ -524,6 +524,11 @@ checkAuthStatus()
       overflow: auto;
     }
   }
+  @media only screen and (max-width: 992px) {
+    ion-title.md {
+      padding: 0px;
+    }
+  }
   @media only screen and (min-width: 576px) {
     // For sm and above screens
     .login-modal {
@@ -556,7 +561,8 @@ checkAuthStatus()
     font-size: 25px;
   }
   .add-post-theme {
-    --background: linear-gradient(135deg, #54BFFC, #0D51FC);
+    // --background: linear-gradient(135deg, #54BFFC, #0D51FC);
+    --background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-primary));
     --color: #ffffff;
   }
   .add-post-mobile {

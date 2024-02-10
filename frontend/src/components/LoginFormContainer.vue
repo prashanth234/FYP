@@ -69,7 +69,7 @@
         <ion-col size="12" >
           <ion-button
             fill="clear"
-            @click="forgotPassword"
+            @click="userAvailableCheck"
             :disabled="auth.processing"
           >
             Forgotten password?
@@ -101,8 +101,8 @@
 
 import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonCard, IonCardContent } from '@ionic/vue';
 import gql from 'graphql-tag'
-import { useMutation } from '@vue/apollo-composable'
-import { storeTokens, useAuth, useEmailPhoneFocus } from '@/composables/auth'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { storeTokens, useAuth } from '@/composables/auth'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './ErrorContainer.vue'
@@ -113,13 +113,42 @@ const user = useUserStore();
 const toast = useToastStore();
 const auth = useAuthStore();
 const { resetClientStore } = useAuth();
-const { emailphoneref } = useEmailPhoneFocus();
+// const { emailphoneref } = useEmailPhoneFocus();
 
-function forgotPassword () {
-
+function userAvailableCheck() {
   if (!auth.isValidEmailPhone()) {
     return
   }
+
+  auth.processState(true)
+
+  const { onResult, onError } = useQuery(gql`
+                              query TrendingPosts ($email: String, $phone: String) {
+                                userAvailable (
+                                  email: $email,
+                                  phone: $phone
+                                )
+                              }
+                            `, {...auth.emailOrPhone})
+
+  onResult(({data, loading}) => {
+    if (!loading) {
+      if (data.userAvailable) {
+        forgotPassword()
+      } else {
+        auth.errors = ["Account not found. Please confirm email or phone."]
+        auth.processState(false)
+      }
+    }
+  })
+
+  onError(() => {
+    toast.$patch({message: "We couldn't process your request. Please try again later.", color: 'danger', open: true})
+    auth.processState(false)
+  })
+}
+
+function forgotPassword () {
 
   if (auth.isInputPhone) {
     auth.changeForm('changepassword')

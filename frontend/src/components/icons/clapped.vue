@@ -8,7 +8,6 @@
     xml:space="preserve"
     :height="props.height"
     :width="props.width"
-    fill="#4c8dff"
   >
 
     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -21,7 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-
   const props = defineProps({
     width: {
       type: String,
@@ -37,5 +35,8 @@
 
 </script>
 
-<style>
+<style scoped>
+  svg {
+    fill: var(--ion-color-primary-tint);
+  }
 </style>

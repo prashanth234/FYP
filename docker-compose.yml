@@ -11,7 +11,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - FYP_SITE_DOMAIN=${FYP_SITE_DOMAIN}
+      - FYP_NGINX_SERVERS=${FYP_NGINX_SERVERS}
       - FYP_BACKEND_HOST=${FYP_BACKEND_HOST}
     volumes:
       # - /home/prashanth/FYP/frontend/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -42,6 +42,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - FYP_SITE_DOMAIN=${FYP_SITE_DOMAIN}
       - FYP_SITE_PORT=${FYP_SITE_PORT}
+      - FYP_ALLOWED_HOSTS=${FYP_ALLOWED_HOSTS}
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}

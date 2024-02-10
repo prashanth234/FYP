@@ -61,9 +61,9 @@
               :auto-grow="true"
               class="custom-textarea"
             />
-            <ion-col size="12" v-if="showImageUpload && state.preview">
+            <div style="width: 100%; margin-top: 15px;" v-if="showImageUpload && state.preview">
               <ion-img :src="state.preview"></ion-img>
-            </ion-col>
+            </div>
           </ion-col>
 
           <ion-col size="12">
@@ -82,6 +82,7 @@
                       for="file-upload"
                       size="small"
                       color="primary"
+                      :disabled="loading || state.creatingPost"
                     >
                       <ion-spinner 
                         class="button-loading-small"
@@ -125,10 +126,10 @@
 <script lang="ts" setup>
 import { useIonRouter, IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
 import { useRoute } from 'vue-router';
-import { caretDown, closeOutline } from 'ionicons/icons'
+import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
-import { reactive, computed, ComputedRef } from 'vue'
-import { CompetitionInfo, UpdatePostVariables, categoryObject } from '@/utils/interfaces'
+import { reactive, computed } from 'vue'
+import { CompetitionInfo } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
@@ -466,6 +467,7 @@ function createNewPost() {
 
 function updatePost() {
   if (!props.post) { return }
+
   const variables = { id: props.post.id }
   const {description, postfileSet} = props.post
 
@@ -480,6 +482,8 @@ function updatePost() {
   if (Object.keys(variables).length == 1) {
     toast.$patch({message: 'No changes made', color: 'warning', open: true})
   } else {
+    state.creatingPost = true
+
     const { mutate, onDone, onError } = useMutation(gql`    
     
       mutation ($id: ID!, $file: Upload, $description: String) { 
@@ -508,10 +512,13 @@ function updatePost() {
     mutate()
 
     onDone((value) => {
+      toast.$patch({message: 'Success! Your post has been updated.', color: 'success', open: true})
+      state.creatingPost = false
       emit('postUpdated')
     })
 
     onError((error: any) => {
+      state.creatingPost = false
       if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
         toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
       } else {

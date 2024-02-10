@@ -71,13 +71,14 @@
 
         <ion-item lines="none" class="line-top" style="padding: 8px 0px 8px 5px;">
           <transition name="slide-up" mode="out-in">
-            <img
-              @click="likePost()"
-              class="cpointer"
-              v-if="post.userLiked"
-              src="@/assets/icons/clap-fill-blue.svg"
-              style="width: 28px; height: 28px;"
-            />
+            <div v-if="post.userLiked" style="height: 28px;">
+              <Clapped
+                @click="likePost()"
+                width="28px"
+                height="28px"
+                class="cpointer"
+              ></Clapped>
+            </div>
             <div v-else style="height: 28px;">
               <ClapOutline
                 @click="likePost()"
@@ -156,6 +157,7 @@ import { computed, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TextClamp from 'vue3-text-clamp'
 import ClapOutline from './icons/clapOutline.vue'
+import Clapped from './icons/clapped.vue'
 import { useAuthStore } from '@/stores/auth';
 
 const user = useUserStore()
@@ -273,6 +275,12 @@ function likePost() {
     // &:hover:not(:has(.operations:hover)) .like-icon {
       // opacity: 0.8;
     // }
+  }
+
+  @media only screen and (max-width: 576px) {
+    .image img {
+      min-height: 150px !important;
+    }
   }
 
   ion-item {

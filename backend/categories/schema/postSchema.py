@@ -1,16 +1,16 @@
 import graphene
 from graphql import GraphQLError
-from django.core.paginator import Paginator
+# from django.core.paginator import Paginator
 from graphene_file_upload.scalars import Upload
-from graphene_django.filter import DjangoFilterConnectionField
+# from graphene_django.filter import DjangoFilterConnectionField
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.utils import dateparse
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
-import os
 from categories.schema.helpers import remove_exisiting_files_in_dir
 from PIL import Image
+import logging
 
 # Models
 from categories.models.Competition import Competition
@@ -27,6 +27,9 @@ from graphql_jwt.decorators import login_required
 
 # Tasks
 from categories.tasks import process_image
+
+
+logger = logging.getLogger(__name__)
 
 class CreatePostMutation(graphene.Mutation):
     
@@ -46,6 +49,9 @@ class CreatePostMutation(graphene.Mutation):
     @login_required
     @transaction.atomic
     def mutate(cls, root, info, file=None, description='', category=None, competition=None):
+
+        user = info.context.user
+        logger.info(f"{user.username} intiatied the post creation.")
         
         if not category and not competition:
             raise GraphQLError("Almost there! To continue, kindly pick your interest.", extensions={'status': 404})
@@ -62,8 +68,6 @@ class CreatePostMutation(graphene.Mutation):
             category = competition.category
         elif category:
             category = Category.objects.get(pk=category)
-
-        user = info.context.user
 
         post = Post(
             user=user,
@@ -93,6 +97,7 @@ class CreatePostMutation(graphene.Mutation):
             filetype = file.content_type.split('/')[1]
             folder = f"post_{post.id}"
             filename = f"user_{info.context.user.id}/{folder}/{folder}.{filetype}"
+            logger.info(f"{filename} processing started.")
             file_content = ContentFile(file.read())
             img = Image.open(file_content)
             width, height = img.size
@@ -112,6 +117,7 @@ class CreatePostMutation(graphene.Mutation):
             # process_image.delay(postFile.get_absolute_path())
             process_image(postFile.get_absolute_path())
 
+        logger.info(f"Post creation intiatied by {user.username} is successful.")
         return CreatePostMutation(post=post, coin_activity=coinactivity)
     
 class UpdatePostMutation(graphene.Mutation):

@@ -55,13 +55,13 @@
                     Feed
                   </div>
 
-                  <img
-                    @click="refreshPosts(null)"
-                    ref="refreshRef"
-                    src="@/assets/icons/refresh.svg"
-                    class="refresh-icon cpointer ion-hide-sm-down"
-                    title="Refresh"
-                  />
+                  <div class="refresh-icon cpointer ion-hide-sm-down">
+                    <Refresh 
+                      @click="refreshPosts(null)"
+                      width="22px"
+                      height="22px"
+                    />
+                  </div>
 
                   <Transition name="fade">
                     <div
@@ -217,6 +217,7 @@ import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { RefresherCustomEvent, IonRefresher, IonRefresherContent, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
 import { chevronDownCircleOutline } from 'ionicons/icons'
 
+import Refresh from '@/components/icons/refresh.vue'
 import Post from '@/components/PostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import { getPosts, getWinners, getPostDetails, getTrending } from '@/composables/posts'

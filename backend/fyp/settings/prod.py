@@ -6,7 +6,7 @@ DEBUG = False
 SECRET_KEY = os.environ.setdefault('SECRET_KEY', 'django-insecure-beqx(l-u0_s2(%7&$jsq6o_5_$j@l_q+g9val&=tx_2f*ze4zn')
 
 # List of hosts that are allowed to serve your application
-ALLOWED_HOSTS = [os.environ.setdefault('FYP_SITE_DOMAIN', 'localhost')]
+ALLOWED_HOSTS = os.environ.setdefault('FYP_ALLOWED_HOSTS', 'localhost').split(',') 
 
 CORS_ORIGIN_ALLOW_ALL = False
 
