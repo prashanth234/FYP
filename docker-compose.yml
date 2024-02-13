@@ -7,7 +7,7 @@ services:
       context: ./frontend
       platforms:
         - ${FYP_PLATFORM-linux/arm64}
-    image: prashanth45/fyp:frontendv1
+    image: prashanth45/fyp:frontend${FYP_VERSION}
     ports:
       - "80:80"
     environment:
@@ -26,7 +26,7 @@ services:
       context: ./backend
       platforms:
         - ${FYP_PLATFORM-linux/arm64}
-    image: prashanth45/fyp:backendv1
+    image: prashanth45/fyp:backend${FYP_VERSION}
     ports:
       - "8000:8000"
     volumes:
