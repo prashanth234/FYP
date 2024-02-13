@@ -123,13 +123,13 @@ function userAvailableCheck() {
   auth.processState(true)
 
   const { onResult, onError } = useQuery(gql`
-                              query TrendingPosts ($email: String, $phone: String) {
+                              query userAvailable ($email: String, $phone: String) {
                                 userAvailable (
                                   email: $email,
                                   phone: $phone
                                 )
                               }
-                            `, {...auth.emailOrPhone})
+                            `, {...auth.emailOrPhone}, {fetchPolicy: "network-only"})
 
   onResult(({data, loading}) => {
     if (!loading) {
@@ -151,6 +151,7 @@ function userAvailableCheck() {
 function forgotPassword () {
 
   if (auth.isInputPhone) {
+    auth.processState(false)
     auth.changeForm('changepassword')
     return
   }
@@ -170,7 +171,8 @@ function forgotPassword () {
         // Parameters
         variables: {
           email: auth.fields.emailphone
-        }
+        },
+        fetchPolicy: "network-only"
       }
   )
 
@@ -181,7 +183,7 @@ function forgotPassword () {
       // toast.$patch({message: "An email with a password reset link will be sent to you shortly.", color: 'success', open: true})
       auth.showMessage('Password reset link sent to your email. Kindly proceed to reset and log in.', 'success')
     } else {
-      toast.$patch({message: "Apologies, but we couldn't send the password reset link to your email. Please try again.", color: 'danger', open: true})
+      // toast.$patch({message: "Apologies, but we couldn't send the password reset link to your email. Please try again.", color: 'danger', open: true})
     }
     auth.processState(false)
   })
