@@ -4,7 +4,7 @@
 
     <div class="ion-padding background-contrast privacy-terms">
       <h3>Privacy Policy</h3>
-      <h6>Effective Date: [Insert Date]<br></h6>
+      <h6>Effective Date: February 14, 2024<br></h6>
       <p>Selfdive ("we," "our," or "us") is committed to protecting the privacy and security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.</p>
       
       <h5>Information We Collect</h5>

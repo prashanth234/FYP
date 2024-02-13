@@ -41,7 +41,7 @@
 
 					<div class="ion-text-start" style="display: flex;">
 						<div class="mlr-auto">
-							<span class="comp-header">Participation</span>: 375<br>
+							<span class="comp-header">Participation</span>: 250<br>
 							<span class="comp-header">Last Date</span>: {{ lastDate }}
 						</div>
 					</div>

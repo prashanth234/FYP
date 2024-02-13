@@ -4,7 +4,7 @@
     
       <div class="ion-padding background-contrast privacy-terms">
         <h3>Terms and Conditions</h3>
-        <h6>Effective Date: [Insert Date]<br></h6>
+        <h6>Effective Date: February 14, 2024<br></h6>
         <p>Welcome to Selfdive! By using our website, you agree to the following terms and conditions. If you do not agree with these terms, please refrain from using our website.</p>
         
         <h5>User-Generated Content</h5>

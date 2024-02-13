@@ -6,7 +6,7 @@
       "name": "Nature's Elegance",
       "description": "Showcase the beauty of landscapes, flora, and fauna in your unique interpretation of our nature-inspired art contest.",
       "category": 1,
-      "last_date": "2024-03-31",
+      "last_date": "2024-02-29",
       "key": "NATART",
       "image": "competitions/ART/NATART.jpg",
       "points": "3000, 2000, 1500"
@@ -19,7 +19,7 @@
       "name": "Nature Snap",
       "description": "Your lens, your unique perspective – Capture nature's landscapes, flora, and fauna through your photographs!",
       "category": 3,
-      "last_date": "2024-03-31",
+      "last_date": "2024-02-29",
       "key": "NTRPGY",
       "image": "competitions/PHTGRY/NTRPGY.jpg",
       "points": "3000, 2000, 1500"
@@ -32,7 +32,7 @@
       "name": "DIY Decor",
       "description": "Unleash your creativity! Showcase your unique style through crafting custom decor. (DIY - Do It Yourself)",
       "category": 4,
-      "last_date": "2024-03-31",
+      "last_date": "2024-02-29",
       "key": "DECOR",
       "image": "competitions/CRTCFT/DECOR.jpg",
       "points": "3000, 2000, 1500"
