@@ -86,15 +86,28 @@
             </ion-title>
             <ion-buttons slot="end">
               <!-- ion-hide-lg-down  -->
-              <ion-button size="small" class="ion-hide-sm-up add-post-theme add-post-mobile" @click="addNewPost" shape="round">
-                <ion-icon :icon="addOutline"></ion-icon>
-              </ion-button>
-              <ion-button class="ion-hide-sm-down ion-margin-end add-post add-post-theme" shape="round" @click="addNewPost">
-                Add New Post
+              <div
+                class="ion-hide-sm-up cpointer add-post-mobile"
+                @click="addNewPost"
+              >
+                <ion-icon
+                  aria-label="addpostm"
+                  :icon="addOutline"
+                ></ion-icon>
+              </div>
+              <ion-button
+                aria-label="addpost"
+                fill="outline"
+                class="ion-hide-sm-down ion-margin-end add-post"
+                @click="addNewPost"
+                shape="round"
+              >
+                <ion-icon aria-hidden="true" :icon="addOutline"></ion-icon>
+                Add Post
               </ion-button>
             </ion-buttons>
           </ion-toolbar>
-        </ion-header>
+        </ion-header> 
 
         <ion-content class="ion-padding">
           <ion-loading v-if="state.loading" :isOpen="state.loading" message="Loading"></ion-loading>
@@ -560,21 +573,37 @@ checkAuthStatus()
   .tab-bar-icon {
     font-size: 25px;
   }
-  .add-post-theme {
-    // --background: linear-gradient(135deg, #54BFFC, #0D51FC);
-    --background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-primary));
-    --color: #ffffff;
-  }
+  // .add-post-theme {
+  //   // --background: linear-gradient(135deg, #54BFFC, #0D51FC);
+  //   --background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-primary));
+  //   --color: #ffffff;
+  // }
   .add-post-mobile {
-    --padding-end: 7px;
-    --padding-start: 7px;
-    opacity: 0.9;
+    border: 1px solid var(--ion-color-primary-tint);
+    width: 22px !important;
+    height: 22px !important;
+    display: flex;
+    border-radius: 5px;
+    color: var(--ion-color-primary-tint);
+    margin-right: 5px;
+
+    ion-icon {
+      font-size: 20px;
+    }
   }
   .add-post {
-    --padding-end: 25px;
-    --padding-start: 25px;
-    font-size: 15px;
-    font-weight: 650;
+    // --background: #ffffff;
+    --padding-end: 10px;
+    --padding-start: 10px;
+
+    --border-radius: 10px;
+    --border-color: var(--ion-color-primary-tint);
+    --border-style: solid;
+    --border-width: 1.8px;
+    color: var(--ion-color-primary-tint);
+
+    font-size: 16px;
+    font-weight: 600;
     margin: 10px;
     margin-right: 20px;
   }
