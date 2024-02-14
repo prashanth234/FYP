@@ -164,7 +164,7 @@ function register (user?: any) {
 
   mutate()
 
-  const errorToastMsg = 'User creation failed. Retry, or for assistance, please contact our support team.'
+  const errorToastMsg = 'User creation failed. Retry, or for assistance, please contact our support team support@selfdive.com.'
 
   onDone((result) => {
     auth.processState(false)

@@ -12,8 +12,18 @@
         Enter the code we just sent to your mobile phone <a class="cpointer auth-link" :class="{'cursor-disable': auth.processing}" @click="auth.goPreviousForm()">+91 {{ auth.fields.emailphone }}</a>
       </ion-col>
 
-      <ion-col size="12">
-        <otp-input v-model="auth.fields.otp" :digit-count="6"></otp-input>
+      <ion-col size="12" style="margin-bottom: 5px;">
+        <ion-input
+          ref="otp"
+          v-model="auth.fields.otp"
+          type="number"
+          :counter="true"
+          :maxlength="6"
+          class="otp-number custom-input"
+          placeholder="Enter OTP"
+          autofocus
+        ></ion-input>
+        <!-- <otp-input v-model="auth.fields.otp" :digit-count="6"></otp-input> -->
       </ion-col>
 
       <ion-col size="12" v-if="auth.errors.length">
@@ -31,10 +41,11 @@
 </template>
 
 <script lang="ts" setup>
-import otpInput from '@/components/OTPInputContainer.vue';
-import { IonCol, IonRow, IonButton, IonGrid } from '@ionic/vue';
+// import otpInput from '@/components/OTPInputContainer.vue';
+import { IonCol, IonRow, IonButton, IonGrid, IonInput } from '@ionic/vue';
 import errors from './ErrorContainer.vue';
 import { useAuthStore } from '@/stores/auth';
+import { onMounted, ref } from 'vue';
 
 const auth = useAuthStore();
 
@@ -48,6 +59,14 @@ const props = defineProps({
     type: String,
     required: false
   }
+})
+
+const otp = ref()
+
+onMounted(() => {
+    setTimeout(() => {
+        otp.value.$el.setFocus()
+    },100)
 })
 
 async function submit() {
@@ -75,6 +94,16 @@ async function submit() {
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.otp-number {
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
 
+  input[type=number] {
+    -moz-appearance:textfield;
+  }
+}
 </style>

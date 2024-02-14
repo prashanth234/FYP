@@ -11,6 +11,7 @@ from core.models.User import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from core.schema.type.UserType import UserCreationCheckType
+from django.contrib.auth.validators import UnicodeUsernameValidator
 # from django.contrib.auth import get_user_model
 
 from graphql_auth.utils import revoke_user_refresh_token
@@ -296,6 +297,16 @@ class UserCreationCheckQuery(graphene.ObjectType):
             
         if User.objects.filter(username=username).exists():
             errors.append("A user with this username already exists.")
+        else:
+            validator = UnicodeUsernameValidator()
+
+            try:
+                validator(username)
+            except ValidationError as e:
+                errors.append("Username may only contain letters, numbers and special characters @, ., +, -, and _  without spaces.")
+
+            if len(username) > 25:
+                errors.append('Username must be 25 characters or fewer.')
 
         if password1.lower() != password2.lower():
             errors.append("The two password fields didn’t match.")
