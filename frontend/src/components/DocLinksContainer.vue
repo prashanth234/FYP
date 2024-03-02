@@ -1,21 +1,18 @@
 <template>
   <div class="privacy-terms-links">
-    <a @click="navigate('/terms')">Terms</a>
+    <a target="_blank" href="/terms">Terms</a>
     <span>&middot;</span>
-    <a @click="navigate('/privacy')">Privacy</a>
+    <a target="_blank" href="/privacy">Privacy</a>
   </div>
 </template>
 
 
 <script lang="ts" setup>
-const emit = defineEmits(['onClick'])
+// const emit = defineEmits(['onClick'])
 
-function navigate(path: string) {
-  emit('onClick')
-  window.open(`${window.location.origin}${path}`)
-}
-
-
+// function navigate(path: string) {
+//   emit('onClick')
+// }
 </script>
 
 <style lang="scss" scoped>

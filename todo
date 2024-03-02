@@ -1,264 +1,274 @@
-#### P0 #####
+  #### P0 ####
+
+  == PENDING
+
+  .) Logo design and image
+  .) Take new mobile number
+
+  == Production
+  .) Prevent access to 8000. 3306 ports - Control using security rules and ip address
+
+  == Done
+
+  .) Change passwords for db.
+  .) Generate new production django key
+  .) Change to firebase production config.
+  .) Enable https and brand name - 1-2 days
+.) Change dates in privacy and terms
+  .) Update last date for contests
+  .) Add billing account to firebase
+
+  == Done
+  
+  .) Refresh Icon
+  .) Script to create interests and contest and rewards and faq questions
+  .) Interest Description
+  .) Interest Images
+  .) Amount for participation and winner.
+  .) Finalize Rewards.
+  .) Faq questions.
+  .) like and unlink things
+  .) Change rewards statues to Pending, Success, Failure
+  .) Rewards faliure message.
+  .) Terms and conditions - basic
+  .) Investigate selection rewards for coupon amount.
+  .) Finalize competitions and content in it.
+  .) Privacy policy - basic
+  .) Logout broken and add custom failure message in rewards.
+  .) increasing to 1000px terms and privacy
+  .) Open privacy and terms in new page.
+  .) Retain the formatting used when creation.
+  .) login is in scroll in mobile
+  .) black text for buttons
+  .) able to create blank post for short stories
+  .) mobile post is not good in dark mode.
+  .) Short Stories Contest & Personal - (100 - 1000 Words) - Add to description.
+  .) Rewards Images.
+  .) Bot - photography
+  .) About Product - add it to app.
+  .) Domain name
+  .) Change names in privacy and terms 
+  .) Bot Posts - short stories.
+  .) black text for register button
+  .) Load only privacy and terms page in new tab
+  .) Email creation
+  .) My posts add a text saying no posts available encourage to pariticipate
+  .) Provide helper for phone saying indian number
+  .) Copy email env's to production
+  .) Disable temp page
+  .) Get small icons for chrome tab present it is ionic
+  .) Delete the migrations and start fresh
+
+  == IF POSSIBLE
+
+  .) Select primary color
+  .) Send email comment is saved.
+  .) Trademark
+  .) Email on login failure - (Optional)
+
+  #### P1 #####
+
+  .) Learn about csrf token
+  .) Alternative way to maintain likes count consistently without concurrency issues
+  .) Getting category on the post see if it can be optimized
+  .) Able to create post through super user without login
+  .) Check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option. (This warning occured and but root user is created with password in docker run)
+  .) Mobile number login
+  .) If a user logout/login all the active queries are fetched again to update posts(userLiked), profile etc - See if it can be optimized
+  .) If a user scroll down the category and if he again open's category scroll is last opened position - See if scroll can be placed on top when a category is opened.
+  .) Winner model file is depenedent coin activity model - try if it can be made generic or not.
+  .) Resend option for email and phone
+  .) Refresh button in profile. due to refresh in other tab but profile in current page is not updated.
+  .) Increase width for short stories.
+  .) Share post embebbeded tag.
+  .) In post update case remove the old images
+  .) Register username error message is done no frontend for email, so move it to backend
+
+  #### P2 #####
+
+  .) convert login to page (Not Needed as of now)
+  .) customize the post (like cropping)
+  .) Way to disable phone registration
+
+  #### DONE #####
+
+  Add authentication for post creation - Frontend, Backend
+  Infinate scrolling on posts - Frontend. Backend
+  Reset Posts when competition are choosen
+  add navigation for competitions (breadcrumb)
+  fix the competition tab and check what happens when responsive
+  add table to competitions
+  Add about and change password tabs to profile page
+  Update avatar in all places if possible
+  Add router guard for profile
+  Remove REST packages
+  Always replace post image on edit
+  Profile page sub part - Frontend, Backend
+  Control size of the popup for the create post - Frontend
+  Add time to post created - Frontend
+  On click upload image browser popup is not opening - Frontend
+  Add unlike post option and highlight heart - Frontend, Backend
+  Fix this error on navigation
+  update post not working fix it
+  Show top 5 posts tab
+  ***
+  upon creating new post it is not showing up
+  ERROR
+  index.ts:188 Uncaught (in promise) TypeError: 'get' on proxy: property '0' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Object]' but got '[object Object]')
+  SOLUTION
+  Modified create post mutation response object to only id
+  ***
+  Page to do the activation
+  Add a key for description and photos according to there category.
+  Remove image on post delete and update
+  Fix issues while category navigation
+  Add Responsiveness for the login page - Frontend
+  cropper is not coming at center
+  Move person image to local
+  Fix image url to send to frontend
+  Check profile upload case - working fine
+  Static assets handling
+  Media assets handling - store in places where user both read and execute permissions
+  Environment varibale nginx servername and django allowed hosts
+  Prevent user to create post without login
+  Prepare for production - separate prod configuration and environment variables
+  Work on deployment - Build docker containers and deploy to aws
+  customize the post look - Made max size of post as 600px
+  User is not able to view "0" points when logged in for the first Time. - he can see rewards page
+  Add points icon and points page and backend
+  Logging for production
+  Email backend and user verification
+  Forgot password functionality.
+  Work on UX customization for details page and competition tabs
+  ***
+  File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 7, in <module>
+      class Migration(migrations.Migration):
+    File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 19, in Migration
+      ('image', models.ImageField(default='', upload_to=core.models.Reward.Reward.custom_upload_to)),
+  AttributeError: type object 'Reward' has no attribute 'Reward'
+  Solution:
+  Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_upload_to
+  ***
+  Sometimes page is continuously loading - need to find the senario - Fixed this may not occur (problem due to loading widget)
+
+  == 1st week
+
+  DONE
+
+  .) Refresh newly added posts
+  .) Refresh competitins and top 5 when a post is added
+  .) Implement UX customization for details page and competition tabs
+  .) Along with bottom navigation for mobile
+  .) disable competition after expiry and no edit delete option after expiry
+  .) Verify category and competition in backend
+  .) Only one competition post user
+
+  == 2nd week
+
+  DONE
+
+  .) Show winners
+  .) Plan on how points should be allocated to competitions
+  .) Work on UX customization for rewards page
+  .) Show points count on main page - Not doing
+  .) During login to able to see user points
+  .) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
+  .) Add points on signup (create coin activity)
+  .) The user needs to manually update the points in the user's table if winners are added.
+
+
+  == 3rd week
+
+  Done
+  .) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
+  .) Show only few posts if not loged in
+  .) Show user not verified and popup to send email - 1 day
+
+
+  == 4th week
+
+  Done
+
+  .) Fix login popup and move message to popup
+  .) Add no competition coming soon card - 1 to 2 days
+  .) Show some bot post - (Think and finalize it) - 1 to 2 days
+  .) Support page - 1 day
+
+  == 5th week
+
+  Done
+  .) Work on UI/UX coloring - Made color change at common place.
+
+  == 6th week
+
+  Done
+  .) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
+
+  == 1 Week ===
+
+  Done
+  .) Remove support withoout login
+  .) Confirm logout
+  .) Add FAQ to reward and contest
+  .) Disable like for bot post (or remove it)
+  .) Share option for post
+
+  == 2nd Week ==
+
+  Done
+  .) Design add new post
+  .) Why am seeing this arrow options on phone number field? what it is used for?
+  .) About Icon
+  .) user is not able to view description clearly. (no padding and going down)
+  .) search option in users page in admin
+  .) add id column in rewards
+
+  Done
+  - How will password reset work
+  - send email to admin on password reset
+
+
+  == 7th week
+  
+  == 1 day ==
+
+  == DONE ==
+
+  .) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
+  .) Make fixed width for posts and added image size reduce for post and profile image
+  .) add show more and less buttons
+  .) Profile Pic
+  Update not working until refreshed
+  1st time upload not working util refreshed
+  Even after udpate previous image is viewed
+
+  Done
+
+  .) On edit post api is calling 
+
+  Authentication
+
+  Done
+  .) Store auth keys as environment variables
+  .) Form transitions
+  .) Check changing of phone number from the verify form
+  .) Focus input email and otp
+  .) Check profile page
+  .) Remove console
+  .) New firebase project
+  .) About mobile is not working
+  .) Character check for otp fields
+  .) Remove sensitive from git and create another app
+  .) Change color of alert message in auth popup to make it more appealing
+  .) Add participation points.
+
+  Support
+
+  User is able to provide any email and any number on support page without logging in.
+  How would you trace his account with only mobile number?
+  If mobile number is given on logout support page, then how do you get his name?
+  Solution - Showing support only for loggedIn users
+
+  ##### DONE #####
 
-== 7th week
 
-=== Left over ===
- 
-== 1 day ==
-
-== DONE ==
-
-.) User is able to view "-1" LIKES on only one post. (if less than 0 than show 0)
-.) Make fixed width for posts and added image size reduce for post and profile image
-.) add show more and less buttons
-.) Profile Pic
-Update not working until refreshed
-1st time upload not working util refreshed
-Even after udpate previous image is viewed
-
-
-REWORK ON SHEET AND FINALIZE WHAT NEEDS TO BE DONE
-
-- How will password reset work
-- send email to admin on password reset
-
-== 1 Week ===
-
-Done
-.) Remove support withoout login
-.) Confirm logout
-.) Add FAQ to reward and contest
-.) Disable like for bot post (or remove it)
-.) Share option for post
-
-== 2nd Week ==
-
-Done
-.) Design add new post
-.) Why am seeing this arrow options on phone number field? what it is used for?
-.) About Icon
-.) user is not able to view description clearly. (no padding and going down)
-.) search option in users page in admin
-.) add id column in rewards
-
-
-== Discusssion
-
-.) Add participation points.
-
-== Product Things
-
-.) Reduce image sizes for faster fetch
-.) Finalize the categories and there description, images. - 3 to 6 days
-
-
-== FINAL CHECKLIST
-
-.) Delete the migrations and start fresh
-.) Prevent access to 8000 port - Control using security rules and ip address
-.) Increase upload image size for https request as well
-.) Enable https and brand name - 1-2 days
-.) Finalize coupons amount and realvalue
-.) Disable temp page
-.) Allow send emails key environment variables
-.) Remove is_digit check in postschema
-
-== IF POSSIBLE
-
-.) Select primary color
-.) Think about side menu during mobile
-.) send email comment is saved.
-
-
-Total - 7 Weeks
-(October End and Buffer of 2 weeks in november)
-
-
-##### DONE #####
-
-Add authentication for post creation - Frontend, Backend
-Infinate scrolling on posts - Frontend. Backend
-Reset Posts when competition are choosen
-add navigation for competitions (breadcrumb)
-fix the competition tab and check what happens when responsive
-add table to competitions
-Add about and change password tabs to profile page
-Update avatar in all places if possible
-Add router guard for profile
-Remove REST packages
-Always replace post image on edit
-Profile page sub part - Frontend, Backend
-Control size of the popup for the create post - Frontend
-Add time to post created - Frontend
-On click upload image browser popup is not opening - Frontend
-Add unlike post option and highlight heart - Frontend, Backend
-Fix this error on navigation
-update post not working fix it
-Show top 5 posts tab
-***
-upon creating new post it is not showing up
-ERROR
-index.ts:188 Uncaught (in promise) TypeError: 'get' on proxy: property '0' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Object]' but got '[object Object]')
-SOLUTION
-Modified create post mutation response object to only id
-***
-Page to do the activation
-Add a key for description and photos according to there category.
-Remove image on post delete and update
-Fix issues while category navigation
-Add Responsiveness for the login page - Frontend
-cropper is not coming at center
-Move person image to local
-Fix image url to send to frontend
-Check profile upload case - working fine
-Static assets handling
-Media assets handling - store in places where user both read and execute permissions
-Environment varibale nginx servername and django allowed hosts
-Prevent user to create post without login
-Prepare for production - separate prod configuration and environment variables
-Work on deployment - Build docker containers and deploy to aws
-customize the post look - Made max size of post as 600px
-User is not able to view "0" points when logged in for the first Time. - he can see rewards page
-Add points icon and points page and backend
-Logging for production
-Email backend and user verification
-Forgot password functionality.
-Work on UX customization for details page and competition tabs
-***
-File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 7, in <module>
-    class Migration(migrations.Migration):
-  File "/Users/prashanth/projects/FYP/backend/core/migrations/0006_auto_20231010_1357.py", line 19, in Migration
-    ('image', models.ImageField(default='', upload_to=core.models.Reward.Reward.custom_upload_to)),
-AttributeError: type object 'Reward' has no attribute 'Reward'
-Solution:
-Change core.models.Reward.Reward.custom_upload_to to core.models.Reward.custom_upload_to
-***
-Sometimes page is continuously loading - need to find the senario - Fixed this may not occur (problem due to loading widget)
-
-== 1st week
-
-DONE
-
-.) Refresh newly added posts
-.) Refresh competitins and top 5 when a post is added
-.) Implement UX customization for details page and competition tabs
-.) Along with bottom navigation for mobile
-.) disable competition after expiry and no edit delete option after expiry
-.) Verify category and competition in backend
-.) Only one competition post user
-
-== 2nd week
-
-DONE
-
-.) Show winners
-.) Plan on how points should be allocated to competitions
-.) Work on UX customization for rewards page
-.) Show points count on main page - Not doing
-.) During login to able to see user points
-.) Disable upload to competition after the expired date and show winners in competition - 1 to 2 days
-.) Add points on signup (create coin activity)
-.) The user needs to manually update the points in the user's table if winners are added.
-
-
-== 3rd week
-
-Done
-.) Plan and implement top 5 posts - handle scenarios like same like count - 2 to 3 days
-.) Show only few posts if not loged in
-.) Show user not verified and popup to send email - 1 day
-
-
-== 4th week
-
-Done
-
-.) Fix login popup and move message to popup
-.) Add no competition coming soon card - 1 to 2 days
-.) Show some bot post - (Think and finalize it) - 1 to 2 days
-.) Support page - 1 day
-
-== 5th week
-
-Done
-.) Work on UI/UX coloring - Made color change at common place.
-
-== 6th week
-
-Done
-.) CSS for fields missing on mobile - Need to investigate - 1 to 2 days
-
-##### DONE #####
-
-
-#### P1 #####
-
-.) Learn about csrf token
-.) Remove vuex package, main file and syntax in main.ts
-.) Alternative way to maintain likes count consistently without concurrency issues
-.) Getting category on the post see if it can be optimized
-.) Able to create post through super user without login
-.) Check it root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option. (This warning occured and but root user is created with password in docker run)
-.) Mobile number login
-.) If a user logout/login all the active queries are fetched again to update posts(userLiked), profile etc - See if it can be optimized
-.) If a user scroll down the category and if he again open's category scroll is last opened position - See if scroll can be placed on top when a category is opened.
-.) Winner model file is depenedent coin activity model - try if it can be made generic or not.
-
-Done
-
-.) On edit post api is calling again
-
-
-#### P2 #####
-
-.) convert login to page (Not Needed as of now)
-.) customize the post (like cropping)
-
-Alternative 1
-
-Leave as it is 
-User need to create a email and use
-
-Alternative 2
-
-Email login - If user doesn't have email
-
-Take phone number while registering.
-
-##### Login
-Phone/email
-Password
-
-Forgot password
-1) Ask for verification code sent to mobile
-2) Show the password change page
-
-Issue-1:: User is able to provide any email and any number on support page without logging in.
-How would you trace his account with only mobile number?
-
-If mobile number is given on logout support page, then how do you get his name?
-
-What is need of support page without login? 
-ans) only to register login issues
-sol) send email to admin on login errors
-
-Alternative 3
-
-Google Oauth login
-
-
-
-
-forgot password on click
-
-fields
-new password
-confirm password
-confirm code
-
-on submit
-  - emit the otp from child
-  - verify otp
-    - If not valid show errors in verify component
-  - If verified call change password api
-    - If change password failed show errors in forgot password

@@ -66,7 +66,9 @@
           </ion-list>
           
         </ion-content>
+        
 
+        <social-links />
         <doc-links />
       </ion-menu>
 
@@ -224,6 +226,7 @@ import { storeTokens, useAuth } from '@/composables/auth'
 import LoginContainer from '@/components/LoginContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import DocLinks from '@/components/DocLinksContainer.vue'
+import SocialLinks from '@/components/SocialContainer.vue'
 import { reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'

@@ -303,6 +303,7 @@ class UserCreationCheckQuery(graphene.ObjectType):
             try:
                 validator(username)
             except ValidationError as e:
+                # Also update message in UI code in register form
                 errors.append("Username may only contain letters, numbers and special characters @, ., +, -, and _  without spaces.")
 
             if len(username) > 25:

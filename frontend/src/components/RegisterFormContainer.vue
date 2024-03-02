@@ -182,7 +182,12 @@ function register (user?: any) {
         const keys = Object.keys(response.errors)
         keys.forEach(key => {
           response.errors[key].forEach((response: {message: string}) => {
-            auth.errors.push(response.message)
+            if (response.message.includes('Enter a valid username.')) {
+              // Also update message in userschema in backend
+              auth.errors.push("Username may only contain letters, numbers and special characters @, ., +, -, and _  without spaces.")
+            } else {
+              auth.errors.push(response.message)
+            }
           })
         })
       }
