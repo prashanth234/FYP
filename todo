@@ -1,74 +1,11 @@
   #### P0 ####
 
-  == PENDING
-
-  .) Logo design and image
-  .) Take new mobile number
-
-  == Production
   .) Prevent access to 8000. 3306 ports - Control using security rules and ip address
-
-  == Done
-
-  .) Change passwords for db.
-  .) Generate new production django key
-  .) Change to firebase production config.
-  .) Enable https and brand name - 1-2 days
-.) Change dates in privacy and terms
-  .) Update last date for contests
-  .) Add billing account to firebase
-
-  == Done
   
-  .) Refresh Icon
-  .) Script to create interests and contest and rewards and faq questions
-  .) Interest Description
-  .) Interest Images
-  .) Amount for participation and winner.
-  .) Finalize Rewards.
-  .) Faq questions.
-  .) like and unlink things
-  .) Change rewards statues to Pending, Success, Failure
-  .) Rewards faliure message.
-  .) Terms and conditions - basic
-  .) Investigate selection rewards for coupon amount.
-  .) Finalize competitions and content in it.
-  .) Privacy policy - basic
-  .) Logout broken and add custom failure message in rewards.
-  .) increasing to 1000px terms and privacy
-  .) Open privacy and terms in new page.
-  .) Retain the formatting used when creation.
-  .) login is in scroll in mobile
-  .) black text for buttons
-  .) able to create blank post for short stories
-  .) mobile post is not good in dark mode.
-  .) Short Stories Contest & Personal - (100 - 1000 Words) - Add to description.
-  .) Rewards Images.
-  .) Bot - photography
-  .) About Product - add it to app.
-  .) Domain name
-  .) Change names in privacy and terms 
-  .) Bot Posts - short stories.
-  .) black text for register button
-  .) Load only privacy and terms page in new tab
-  .) Email creation
-  .) My posts add a text saying no posts available encourage to pariticipate
-  .) Provide helper for phone saying indian number
-  .) Copy email env's to production
-  .) Disable temp page
-  .) Get small icons for chrome tab present it is ionic
-  .) Delete the migrations and start fresh
-
-  == IF POSSIBLE
-
-  .) Select primary color
-  .) Send email comment is saved.
-  .) Trademark
-  .) Email on login failure - (Optional)
-
   #### P1 #####
 
-  .) Learn about csrf token
+  .) Learn about csrf token.
+  .) Limit pariticipation price in competition.
   .) Alternative way to maintain likes count consistently without concurrency issues
   .) Getting category on the post see if it can be optimized
   .) Able to create post through super user without login
@@ -83,6 +20,10 @@
   .) Share post embebbeded tag.
   .) In post update case remove the old images
   .) Register username error message is done no frontend for email, so move it to backend
+  .) Select primary color
+  .) Send email comment is saved.
+  .) Trademark
+  .) Email on login failure - (Optional)
 
   #### P2 #####
 
@@ -268,6 +209,59 @@
   How would you trace his account with only mobile number?
   If mobile number is given on logout support page, then how do you get his name?
   Solution - Showing support only for loggedIn users
+
+    == Done
+
+  .) Change passwords for db.
+  .) Generate new production django key
+  .) Change to firebase production config.
+  .) Enable https and brand name - 1-2 days
+  .) Change dates in privacy and terms
+  .) Update last date for contests
+  .) Add billing account to firebase
+
+  == Done
+  
+  .) Refresh Icon
+  .) Script to create interests and contest and rewards and faq questions
+  .) Interest Description
+  .) Interest Images
+  .) Amount for participation and winner.
+  .) Finalize Rewards.
+  .) Faq questions.
+  .) like and unlink things
+  .) Change rewards statues to Pending, Success, Failure
+  .) Rewards faliure message.
+  .) Terms and conditions - basic
+  .) Investigate selection rewards for coupon amount.
+  .) Finalize competitions and content in it.
+  .) Privacy policy - basic
+  .) Logout broken and add custom failure message in rewards.
+  .) increasing to 1000px terms and privacy
+  .) Open privacy and terms in new page.
+  .) Retain the formatting used when creation.
+  .) login is in scroll in mobile
+  .) black text for buttons
+  .) able to create blank post for short stories
+  .) mobile post is not good in dark mode.
+  .) Short Stories Contest & Personal - (100 - 1000 Words) - Add to description.
+  .) Rewards Images.
+  .) Bot - photography
+  .) About Product - add it to app.
+  .) Domain name
+  .) Change names in privacy and terms 
+  .) Bot Posts - short stories.
+  .) black text for register button
+  .) Load only privacy and terms page in new tab
+  .) Email creation
+  .) My posts add a text saying no posts available encourage to pariticipate
+  .) Provide helper for phone saying indian number
+  .) Copy email env's to production
+  .) Disable temp page
+  .) Get small icons for chrome tab present it is ionic
+  .) Delete the migrations and start fresh
+  .) Take new mobile number
+  .) Logo design and image
 
   ##### DONE #####
 

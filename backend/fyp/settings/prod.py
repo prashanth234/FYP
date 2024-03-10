@@ -19,6 +19,10 @@ DATABASES = {
         'NAME': os.environ.setdefault('MYSQL_DBNAME', 'fyp'),
         'HOST': os.environ.setdefault('MYSQL_HOST', 'mysql_db'),
         'USER': os.environ.setdefault('MYSQL_USER', 'fypuser'),
-        'PASSWORD': os.environ.setdefault('MYSQL_PASSWORD', 'fyppass')
+        'PASSWORD': os.environ.setdefault('MYSQL_PASSWORD', 'fyppass'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True, 
+        }
     }
 }

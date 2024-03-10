@@ -15,20 +15,20 @@ http://ionicframework.com/docs/theming/ */
   /** primary **/
   --ion-font-family: 'open-sans', sans-serif;
   
-  --ion-color-primary: #3880FF;
-  --ion-color-primary-rgb: 56, 128, 255;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary: #357efb;
+	--ion-color-primary-rgb: 53,126,251;
+	--ion-color-primary-contrast: #ffffff;
+	--ion-color-primary-contrast-rgb: 255, 255, 255;
+	--ion-color-primary-shade: #2f6fdd;
+	--ion-color-primary-tint: #498bfb;
 
   /** secondary **/
-  --ion-color-secondary: #3dc2ff;
-  --ion-color-secondary-rgb: 61, 194, 255;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #36abe0;
-  --ion-color-secondary-tint: #50c8ff;
+  --ion-color-secondary: #3cbffc;
+	--ion-color-secondary-rgb: 60,191,252;
+	--ion-color-secondary-contrast: #ffffff;
+	--ion-color-secondary-contrast-rgb: 255, 255, 255;
+	--ion-color-secondary-shade: #35a8de;
+	--ion-color-secondary-tint: #50c5fc;
 
   /** tertiary **/
   --ion-color-tertiary: #5260ff;

@@ -81,7 +81,7 @@
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
             <ion-title>
-              <div class="logo">Selfdive</div>
+              <div @click="navigate('/')" class="logo cpointer">Selfdive</div>
               <!-- <div style="display: flex;">
                 <img src="@/assets/logog.png" width="90"/>
               </div> -->
