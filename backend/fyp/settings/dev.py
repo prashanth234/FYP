@@ -31,6 +31,8 @@ DATABASES = {
   }
 }
 
+ENABLE_FIREBASE=False
+
 # DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
 # # STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
 

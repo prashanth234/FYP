@@ -26,3 +26,5 @@ DATABASES = {
         }
     }
 }
+
+ENABLE_FIREBASE=True

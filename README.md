@@ -121,11 +121,17 @@ python manage.py runserver 0.0.0.0:8000
 
 #### Automation Tests 
 
-pipenv run pytest
+- Add graphl/(slash) in fyp/urls.py
+- pipenv run pytest
 
 #### Performance Tests
 
 pipenv run locust -f locustfiles/browse_categories.py
+
+#### To generate full schema
+
+pipenv run python manage.py graphql_schema --schema fyp.schema.schema --out schema.json
+pipenv run python manage.py graphql_schema --schema fyp.schema.schema --out schema.graphql
 
 #### Intial Data Setup
 

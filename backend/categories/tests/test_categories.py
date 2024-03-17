@@ -21,7 +21,7 @@ def test_fetch_categories(client_query):
 
 @pytest.mark.django_db
 def test_fetch_myposts(authenticate, client_query):
-    authenticate()
+    client, user, headers = authenticate()
 
     response = client_query(
         '''
@@ -33,7 +33,8 @@ def test_fetch_myposts(authenticate, client_query):
               }
             }
         }
-        '''
+        ''',
+        headers=headers
     )
 
     content = json.loads(response.content)
