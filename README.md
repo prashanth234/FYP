@@ -149,6 +149,12 @@ python manage.py loaddata ./initial_data/faq_data.json
 
 Replace the original media folder
 
+##### Mobile Setup
+
+https://capacitorjs.com/docs/getting-started - To setup capacitor, ios, android
+https://capacitorjs.com/docs/ios - To run the ios application
+https://ionic.io/blog/debugging-tips-for-your-ionic-app - To debug the ios app like network calls
+
 #### TROUBLESHOOT
 
 Problem
