@@ -231,8 +231,8 @@ class AllPostsQuery(graphene.ObjectType):
 
     all_posts = graphene.Field(
         PostListType,
-        category= graphene.Int(),
-        competition=graphene.Int(),
+        category= graphene.ID(),
+        competition=graphene.ID(),
         page=graphene.Int(),
         per_page=graphene.Int(),
         trending=graphene.Boolean(),
@@ -275,8 +275,8 @@ class MyPostsQuery(graphene.ObjectType):
 
     my_posts = graphene.Field(
         PostListType,
-        category= graphene.Int(),
-        competition=graphene.Int(),
+        category= graphene.ID(),
+        competition=graphene.ID(),
         page=graphene.Int(),
         per_page=graphene.Int(),
         trending=graphene.Boolean(),
@@ -309,7 +309,11 @@ class MyPostsQuery(graphene.ObjectType):
         return PostListType(posts=posts, total=total)
     
 class PostDetailsQuery(graphene.ObjectType):
-    post_details = graphene.Field(PostType, id=graphene.String(), category=graphene.String())
+    post_details = graphene.Field(
+        PostType,
+        id=graphene.ID(required=True),
+        category=graphene.ID()
+    )
 
     def resolve_post_details(root, info, id, category):
         return Post.objects.get(pk=id, category__id=category)
@@ -318,7 +322,7 @@ class TrendingPostsQuery(graphene.ObjectType):
 
     trending_posts = graphene.Field(
         PostListType,
-        competition=graphene.Int(required=True)
+        competition=graphene.ID(required=True)
     )
 
     def resolve_trending_posts(root, info, competition=None):

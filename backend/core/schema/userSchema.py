@@ -1,7 +1,7 @@
 import graphene
 # import graphql_jwt
 from graphql_auth import mutations
-from graphql_auth.schema import MeQuery
+from graphql_auth.queries import MeQuery
 from graphene_file_upload.scalars import Upload
 from graphql import GraphQLError
 from django.core.files.base import ContentFile

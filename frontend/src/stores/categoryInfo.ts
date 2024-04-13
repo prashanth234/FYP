@@ -19,7 +19,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
     getCategoryInfo (id: string, ionRouter: any) {
       this.loading = true
       const { result, onResult, onError } = useQuery(gql`
-                                    query categoryDetails ($id: Int!) {
+                                    query categoryDetails ($id: ID!) {
                                         categoryDetails (id: $id) {
                                             id,
                                             name,

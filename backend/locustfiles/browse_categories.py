@@ -29,7 +29,7 @@ class WebsiteUser(HttpUser):
   @task
   def view_posts(self):
     query = """
-            query allPosts ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
+            query allPosts ($category: ID, $competition: ID, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
               allPosts (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) {
                 posts {
                   id,

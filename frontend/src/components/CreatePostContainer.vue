@@ -268,7 +268,7 @@ function onCategoryChange() {
   state.competition = ''
 
   const { onResult, onError } = useQuery(gql`
-                                  query ($id: Int!) {
+                                  query ($id: ID!) {
                                     catCompetitions (id: $id) {
                                       name,
                                       id,

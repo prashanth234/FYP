@@ -28,7 +28,7 @@ services:
         - ${FYP_PLATFORM-linux/arm64}
     image: prashanth45/fyp:backend${FYP_VERSION}
     ports:
-      - "8000:8000"
+      - "8002:8000"
     volumes:
       #- /home/prashanth/FYP/backend/fyp/settings/prod.py:/app/fyp/settings/prod.py
         - ${FIREBASE_CONF_PATH}:${GOOGLE_APPLICATION_CREDENTIALS}

@@ -1,6 +1,7 @@
 import os
 from django.db import models
 from django.utils import timezone
+import zoneinfo
 
 from categories.models.Category import *
 from core.models.Reward import *
@@ -28,7 +29,7 @@ class Competition(models.Model):
 
     @property
     def is_expired(self):
-      kolkata_timezone = timezone.pytz.timezone('Asia/Kolkata')
+      kolkata_timezone = zoneinfo.ZoneInfo('Asia/Kolkata')
       current_time_in_kolkata = timezone.now().astimezone(kolkata_timezone)
       return self.last_date <= current_time_in_kolkata.date()
 

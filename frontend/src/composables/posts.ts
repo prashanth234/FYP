@@ -1,13 +1,13 @@
 import { useLazyQuery, useQuery } from '@vue/apollo-composable'
 import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export function getQuery(type: string) {
   // Also update the create post and trending query and post details
   return {
     QUERY: gql`
-      query ${type} ($category: Int, $competition: Int, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
+      query ${type} ($category: ID, $competition: ID, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
         ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
           posts {
             id,
@@ -65,25 +65,26 @@ export function getPosts(
     cursor: undefined
   }))
 
-  function getMore(ev: InfiniteScrollCustomEvent) {
-
+  const fetchMoreCompleted = computed(() => {
     if (!posts.value) {
-      ev.target.complete()
-      return
+      return false
     }
 
     const postsFetched = posts.value[type].posts.length
     const totalPosts = posts.value[type].total
 
-    if (postsFetched >= totalPosts) {
-      ev.target.complete() 
-      return 
-    }
+    return postsFetched >= totalPosts
+  })
 
+  function getMore(ev: InfiniteScrollCustomEvent) {
+
+    if (fetchMoreCompleted.value) { return }
+
+    const postsFetched = posts.value[type].posts.length
     const cursor = posts.value[type].posts[postsFetched-1].createdAt
     const page = Math.floor(postsFetched/variables.perPage) + 1
   
-    fetchMore({
+    return fetchMore({
       variables: {
         page,
         cursor
@@ -92,9 +93,7 @@ export function getPosts(
         // No new feed posts
         if (!fetchMoreResult) return previousResult
 
-        // Complete infinate loading event
-        ev.target.complete()
-  
+        
         // Concat previous feed with new feed posts
         return {
           ...previousResult,
@@ -121,13 +120,14 @@ export function getPosts(
     POST_QUERY,
     variables,
     getMore,
-    refetch
+    refetch,
+    fetchMoreCompleted
   }
 }
 
 export function getWinners(competition: string | undefined) {
   const WINNERS_QUERY = gql`
-    query winners ($competition: Int) {
+    query winners ($competition: ID!) {
       winners (competition: $competition) {
         post {
           id,
@@ -168,7 +168,7 @@ export function getPostDetails(
 ) {
 
   const QUERY = gql`
-    query PostDetails ($id: String, $category: String) {
+    query PostDetails ($id: ID!, $category: ID) {
       postDetails (id: $id, category: $category) {
         id,
         likes,
@@ -213,7 +213,7 @@ export function getPostDetails(
 export function getTrending() {
 
   const TRENDING_QUERY = gql`
-    query TrendingPosts ($competition: Int!) {
+    query TrendingPosts ($competition: ID!) {
       trendingPosts (competition: $competition) {
         posts {
           id,

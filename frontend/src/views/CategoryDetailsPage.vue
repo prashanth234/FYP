@@ -188,7 +188,12 @@
 
             </ion-row>
 
-            <ion-infinite-scroll :disabled="state.pdShow" @ionInfinite="fetchMore" :threshold="user.success ? '350%' : '0'">
+            <ion-infinite-scroll 
+              :disabled="state.pdShow || fetchMoreCompleted"
+              :key="`${fetchMoreCompleted}`"
+              @ionInfinite="fetchMore"
+              :threshold="user.success ? '400px' : '30px'"
+            >
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 
@@ -295,7 +300,7 @@ props.id && categoryInfo.getCategoryInfo(props.id, ionRouter)
 const { content } = scrollTop()
 
 const category =  props.id || undefined
-const { posts, getMore, variables, refetch } = getPosts('allPosts', category)
+const { posts, getMore, variables, refetch, fetchMoreCompleted } = getPosts('allPosts', category)
 const { variables: trendingVars, refetch: refetchTrending, load: loadTrending, result: trendingPosts } = getTrending()
 
 function loadCompetitionPosts(competition: CompetitionInfo) {
@@ -340,17 +345,22 @@ function tabChanged(value: string) {
   }
 }
 
-function fetchMore(ev: InfiniteScrollCustomEvent) {
-  if (user.success || posts.value?.allPosts.total <= 5) {
-    getMore(ev)
+async function fetchMore(ev: InfiniteScrollCustomEvent) {
+  // Show upto 8 posts if not authenticated and Show all posts if
+    // User is authenticated
+    // Total number of posts are less or equal to 8
+  if (user.success || posts.value?.allPosts.total <= 8 || posts.value?.allPosts.posts.length < 8) {
+    await getMore(ev)
+    setTimeout(() => { ev.target.complete() })
   } else {
     // To see more post, ask user to login
-    // toast.$patch({message: 'Take your journey further! Log in to reveal more posts.', color: 'primary', open: true})
     auth.open()
     auth.showMessage('Take your journey further! Log in to reveal more posts.', 'info')
-    ev.target.complete()
+    // scrollByPoint should be always higher than threshold
     content.value && content.value.$el.scrollByPoint(0, -50, 500);
-    // Commented this code because because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.
+    setTimeout(() => { ev.target.complete() }, 100)
+
+    // Commented this code because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.
     // const stopWatch = watch(user, () => {
     //   if (user.success) {
     //     getMore(ev)

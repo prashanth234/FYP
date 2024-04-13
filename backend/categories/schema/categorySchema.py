@@ -89,7 +89,10 @@ class Query(graphene.ObjectType):
 #       logger.info('getting categories')
         return Category.objects.filter(hide=False).order_by('order')
     
-    category_details = graphene.Field(CategoryType, id=graphene.Int())
+    category_details = graphene.Field(
+        CategoryType,
+        id=graphene.ID(required=True)
+    )
 
     def resolve_category_details(root, info, id):
         return Category.objects.get(pk=id)

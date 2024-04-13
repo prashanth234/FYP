@@ -69,7 +69,7 @@
         </ion-row>
       </ion-grid>
 
-      <ion-infinite-scroll @ionInfinite="getMore">
+      <ion-infinite-scroll @ionInfinite="fetchMore">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
 
@@ -82,7 +82,7 @@
 
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
-import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, InfiniteScrollCustomEvent, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/AboutContainer.vue'
@@ -180,6 +180,13 @@ function editPost(post: PostType, index: number) {
 
 function tabChanged(event: SegmentCustomEvent) {
   state.selectedTab = event.target.value
+}
+
+// Infinate Scroll Event
+
+async function fetchMore(ev: InfiniteScrollCustomEvent) {
+  await getMore(ev)
+  setTimeout(() => { ev.target.complete() })
 }
 
 </script>

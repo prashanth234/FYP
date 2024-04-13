@@ -6,7 +6,7 @@ import { createUploadLink } from "apollo-upload-client"
 // HTTP connection to the API
 const httpLink = createUploadLink({
   // You should use an absolute URL here
-  uri: `${import.meta.env.VITE_APP_BASE_URL}/graphql`,
+  uri: `${import.meta.env.VITE_APP_BASE_URL}/graphql/`,
 })
 
 // create auth link

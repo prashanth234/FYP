@@ -80,7 +80,7 @@ function submitForm () {
     } else {
       const keys = Object.keys(response.errors)
       keys.forEach(key => {
-        response.errors[key].forEach(({message}:{message: string}) => {
+        response.errors[key].forEach((message: string) => {
           auth.errors.push(message)
         })
       })

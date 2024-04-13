@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { informationCircleOutline, checkmarkCircleOutline, warningOutline, closeCircleOutline } from 'ionicons/icons'
 import { reactive } from 'vue';
+import { IonIcon} from '@ionic/vue';
 
 const props = defineProps({
   message: String,

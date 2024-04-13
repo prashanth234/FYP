@@ -17,7 +17,7 @@ class CreateCompetitionMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
         name = graphene.String(required=True)
-        category = graphene.ID(required=True)
+        category = graphene.String(required=True)
         description = graphene.String()
         last_date = graphene.Date(required=True)
         points = graphene.Int(required=True)
@@ -99,12 +99,18 @@ class Query(graphene.ObjectType):
     def resolve_all_competitions(root, info):
         return Competition.objects.all()
     
-    cat_competitions = graphene.List(CompetitionType, id=graphene.Int())
+    cat_competitions = graphene.List(
+        CompetitionType,
+        id=graphene.ID(required=True)
+    )
 
     def resolve_cat_competitions(root, info, id):
         return Competition.objects.filter(category_id=id)
     
-    competition_details = graphene.Field(CompetitionType, id=graphene.Int())
+    competition_details = graphene.Field(
+        CompetitionType,
+        id=graphene.ID(required=True)
+    )
 
     def resolve_competition_details(root, info, id):
         return Competition.objects.get(pk=id)
