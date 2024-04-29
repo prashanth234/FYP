@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from categories.models.Competition import *
-from categories.models.Post import *
+from post.models.Post import *
 
 from core.models.CoinActivity import *
   

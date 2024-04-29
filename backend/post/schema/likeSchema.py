@@ -4,11 +4,11 @@ from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
 
 # Models
-from categories.models.Like import Like
-from categories.models.Post import Post
+from post.models.Like import Like
+from post.models.Post import Post
 
 # Type
-from categories.schema.type.PostType import PostType
+from post.schema.type.PostType import PostType
 
 # Authentications
 from graphql_jwt.decorators import login_required

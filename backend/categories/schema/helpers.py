@@ -3,9 +3,6 @@ import logging
 from django.conf import settings
 from datetime import datetime
 
-from django.core.files.base import ContentFile
-from PIL import Image
-
 logger = logging.getLogger(__name__)
 
 def remove_exisiting_files_in_dir(filename):

@@ -4,6 +4,8 @@ from django.conf import settings
 from categories.models.Category import *
 from categories.models.Competition import *
 
+from entity.models.Entity import Entity
+
 import os
 
 class Post(models.Model):
@@ -11,6 +13,7 @@ class Post(models.Model):
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE, null=True, blank=True)
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.PositiveIntegerField(default=0)
     is_bot = models.BooleanField(default=False)

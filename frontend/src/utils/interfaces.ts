@@ -39,3 +39,9 @@ export interface categoryObject {
   image: string,
   oftype: string
 }
+
+export interface EntityType {
+  id: string,
+  name: string,
+  description: string
+}

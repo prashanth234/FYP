@@ -472,11 +472,6 @@ ion-grid {
   }
 }
 .refresh-icon {
-  // font-weight: 580;
-  // font-size: 25px;
-  // position: absolute;
-  // top: 12px;
-  // left: 62px;
   margin-left: 5px;
   margin-top: 1px;
   height: 22px;

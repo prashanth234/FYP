@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'corsheaders',
     # 'playground',
     'core',
-    'categories'
+    'categories',
+    'post',
+    'entity'
 ]
 
 MIDDLEWARE = [

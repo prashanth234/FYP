@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 from django.core.management.base import BaseCommand
-from categories.models.Post import PostFile
+from post.models.Post import PostFile
 
 class Command(BaseCommand):
     help = 'Updates width and height of images in PostFile model'

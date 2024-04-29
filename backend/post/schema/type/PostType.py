@@ -3,8 +3,8 @@ from graphene_django import DjangoObjectType
 from django.contrib.contenttypes.models import ContentType
 
 # Models
-from categories.models.Post import Post, PostFile
-from categories.models.Like import *
+from post.models.Post import Post, PostFile
+from post.models.Like import *
 
 # Type
 from core.schema.type.UserType import UserType

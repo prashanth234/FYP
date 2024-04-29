@@ -7,7 +7,7 @@
       <div class="grid-container">
 
 				<div
-					class="grid-item cpointer"
+					class="grid-item cpointer hover"
 					v-for="(cat, index) in category.categories"
 					:key="index"
 					@click="openCategory(cat)"
@@ -90,9 +90,6 @@ function openCategory (category: categoryObject) {
 	flex-direction: column;
 	text-align: center;
 	background: var(--ion-card-background);
-}
-.grid-item:hover {
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 .cat-image::part(image), .cat-image {
   max-width: 100%;

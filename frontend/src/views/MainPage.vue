@@ -68,7 +68,7 @@
         </ion-content>
         
 
-        <social-links />
+        <social-links orglinks class="mr-auto ml-auto"/>
         <doc-links />
       </ion-menu>
 
@@ -219,7 +219,7 @@
 
 <script setup lang="ts">
 import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter, IonProgressBar } from '@ionic/vue';
-import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, fastFood } from 'ionicons/icons'
+import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, businessOutline, business } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens, useAuth } from '@/composables/auth'
@@ -280,6 +280,15 @@ const state = reactive({
       dicon: homeOutline,
       micon: homefull,
       action: navigate.bind(null, '/')
+    },
+    {
+      name: 'Entities',
+      rname: 'entity',
+      rpath: '/entity',
+      auth: false,
+      dicon: businessOutline,
+      micon: business,
+      action: navigate.bind(null, '/entity')
     },
     {
       name: 'Rewards',

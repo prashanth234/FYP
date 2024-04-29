@@ -1,12 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
-from django.utils import timezone
 
 # Models
 from categories.models.Competition import Competition
-
-# Type
-from core.schema.type.RewardsType import RewardsType
 
 
 class CompetitionType(DjangoObjectType):
