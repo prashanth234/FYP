@@ -75,3 +75,6 @@ class UpdatePostMutation(graphene.Mutation):
             #remove_exisiting_files_in_dir(postFile.file.name)
 
         return UpdatePostMutation(post=post)
+    
+class UpdatePost(graphene.ObjectType):
+    update_post = UpdatePostMutation.Field()

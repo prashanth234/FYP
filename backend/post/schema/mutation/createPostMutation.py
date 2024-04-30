@@ -113,9 +113,9 @@ class CreatePostMutation(graphene.Mutation):
 
         logger.info(f"Post creation intiatied by {user.username} is successful.")
         return CreatePostMutation(post=post, coin_activity=coinactivity)
-
-    
-    
+  
+class CreatePost(graphene.ObjectType):
+    create_post = CreatePostMutation.Field()
 
     
     

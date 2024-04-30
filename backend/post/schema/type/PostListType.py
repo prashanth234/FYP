@@ -1,5 +1,5 @@
 import graphene
-from post.schema.type import PostType
+from post.schema.type.PostType import PostType
 
 class PostListType(graphene.ObjectType):
     posts = graphene.List(PostType)

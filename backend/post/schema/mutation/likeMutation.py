@@ -46,7 +46,6 @@ class AddLikeMutation(graphene.Mutation):
             print(f"Unexpected {err=}, {type(err)=}")
             raise GraphQLError("Mutation Failed")
 
-
 class UnLikeMutation(graphene.Mutation):
     
     class Arguments:
@@ -79,17 +78,6 @@ class UnLikeMutation(graphene.Mutation):
             print(f"Unexpected {err=}, {type(err)=}")
             raise GraphQLError("Mutation Failed")
 
-class Mutation(graphene.ObjectType):
+class LikeItem(graphene.ObjectType):
     like_item = AddLikeMutation.Field()
     # unlike_item = UnLikeMutation.Field()
-
-class Query(graphene.ObjectType):
-
-    like_count = graphene.Int(id=graphene.Int())
-
-    def resolve_like_count(root, info, id):
-        try:
-            return Like.objects.filter(item_id=id).count()
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            raise GraphQLError("Query Failed")

@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     # 'playground',
     'core',
     'categories',
-    'post',
-    'entity'
+    'post'
+    # 'entity'
 ]
 
 MIDDLEWARE = [

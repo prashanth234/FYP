@@ -1,7 +1,6 @@
 import graphene
 from graphql import GraphQLError
 # from django.core.paginator import Paginator
-# from graphene_django.filter import DjangoFilterConnectionField
 from django.utils import dateparse
 
 # Models
