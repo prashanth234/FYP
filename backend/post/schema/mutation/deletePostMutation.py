@@ -2,7 +2,7 @@ import graphene
 from graphql import GraphQLError
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
-from categories.schema.helpers import remove_exisiting_files_in_dir
+from post.helpers import remove_exisiting_files_in_dir
 from PIL import Image
 import logging
 
