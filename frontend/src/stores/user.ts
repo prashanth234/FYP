@@ -5,6 +5,8 @@ import { useQuery } from '@vue/apollo-composable'
 export const useUserStore = defineStore('user', {
   state: () => ({ 
     success: false,
+    token: '',
+    refreshToken: '',
     username: '',
     avatar: '',
     points: 0,

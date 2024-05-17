@@ -1,0 +1,71 @@
+from django.db import models
+from django.conf import settings
+from helpers.custom_upload import custom_upload
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import logging
+
+from entity.models.Entity import Entity
+from helpers.send_email import send_email_to_admins
+
+logger = logging.getLogger(__name__)
+
+class Verification(models.Model):
+    
+    # def custom_upload_to(instance, filename):
+    #   return custom_upload('internal/verifications', f'user_{instance.user.id}', filename)
+    
+    REQUEST_CHOICES = (
+      ('CREATE', 'Create'),
+      ('JOIN', 'Join'),
+    )
+
+    STATUS_CHOICES = {
+      ('SUCCESS', 'Success'),
+      ('INVAILD', 'Invalid'),
+      ('PENDING', 'Pending')
+    }
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
+    file = models.FileField()
+    request = models.CharField(max_length=100, choices=REQUEST_CHOICES)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+      constraints = [
+        models.UniqueConstraint(fields=['entity', 'user', 'request'], name='only_one_unique_validation')
+      ]
+
+    def __str__(self) -> str:
+      return self.user.username
+
+
+@receiver(post_save, sender=Verification)
+def verification_post_save(sender, instance, created, **kwargs):
+  if instance.status == "PENDING":
+    context = {
+      'user': instance.user.username,
+      'request_type': instance.request,
+      'entity': instance.entity.name,
+      'request_date': instance.updated_at
+    }
+
+    send_email_to_admins(
+      'New Verification Request',
+      context,
+      'new_verification_request.html'
+    )
+  elif not created and instance.status == "SUCCESS":
+    # If verification is succesfull and marked status as success by admin
+    logging.info(f'Adding user to entity - Verification: {instance.id}')
+    try:
+      instance.entity.users.add(instance.user)
+      instance.entity.save()
+    except Exception as e:
+      logging.info(f'Failed to add user to entity - Verification: {instance.id}, error: {str(e)}')
+    
+
+    

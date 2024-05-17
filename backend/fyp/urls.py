@@ -21,13 +21,15 @@ from django.conf.urls.static import static
 
 # Graphql
 from graphene_file_upload.django import FileUploadGraphQLView
-from graphene_django.views import GraphQLView
+# from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
+
+from core.views import serve_private_media
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('playground/', include('playground.urls')),
-    re_path(r'^graphql/?$', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=settings.DEBUG)))
+    re_path(r'^graphql/?$', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=settings.DEBUG))),
+    re_path(r'^media/private/(?P<path>.*)$', serve_private_media),
 ]
 
 if settings.DEBUG:

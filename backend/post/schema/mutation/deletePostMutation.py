@@ -43,7 +43,7 @@ class DeletePostMutation(graphene.Mutation):
         
         try:
             postFile = PostFile.objects.get(post=post)
-            remove_exisiting_files_in_dir(postFile.file.name)
+            # remove_exisiting_files_in_dir(postFile.file.name)
             # postFile.file.storage.delete(postFile.file.name)
         except PostFile.DoesNotExist:
             pass
@@ -58,6 +58,7 @@ class DeletePostMutation(graphene.Mutation):
                 pass
 
         post.delete()
+        postFile.delete()
 
         return DeletePostMutation(success=True, ca_id=ca_id)
     

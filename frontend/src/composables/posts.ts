@@ -17,7 +17,11 @@ export function getQuery(type: string) {
             createdAt,
             isBot,
             postfileSet {
-              file,
+              files {
+                lg,
+                md,
+                og
+              },
               width,
               height
             },
@@ -31,7 +35,8 @@ export function getQuery(type: string) {
             },
             competition {
               expired
-            }
+            },
+            ispublic
           },
           total
         }
@@ -135,7 +140,11 @@ export function getWinners(competition: string | undefined) {
           userLiked,
           description,
           postfileSet {
-            file,
+            files {
+              lg,
+              md,
+              og
+            },
             width,
             height
           },
@@ -177,7 +186,11 @@ export function getPostDetails(
         createdAt,
         isBot,
         postfileSet {
-          file,
+          files {
+            lg,
+            md,
+            og
+          },
           width,
           height
         },
@@ -223,7 +236,11 @@ export function getTrending() {
           createdAt,
           isBot,
           postfileSet {
-            file,
+            files {
+              lg,
+              md,
+              og
+            },
             width,
             height
           },

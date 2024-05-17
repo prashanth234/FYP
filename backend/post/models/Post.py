@@ -4,6 +4,8 @@ from django.conf import settings
 from categories.models.Category import *
 from categories.models.Competition import *
 
+from entity.models.Entity import Entity
+
 import os
 
 class Post(models.Model):
@@ -14,12 +16,14 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.PositiveIntegerField(default=0)
     is_bot = models.BooleanField(default=False)
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE, null=True, blank=True)
+    ispublic = models.BooleanField(default=True)
     
     def __str__(self) -> str:
       return self.description
     
 class PostFile(models.Model):
-    file = models.FileField(upload_to="posts")
+    file = models.FileField()
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     width = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)

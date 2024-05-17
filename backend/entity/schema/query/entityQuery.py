@@ -1,25 +1,30 @@
 import graphene
-from graphql import GraphQLError
 
 from entity.schema.type.EntityType import EntityType
 from entity.models.Entity import Entity
+
+# Authentications
+from graphql_jwt.decorators import login_required
+
+import time
 
 class Entities(graphene.ObjectType):
 
   entities = graphene.List(EntityType)
 
   def resolve_entities(root, info):
-    return Entity.objects.all()
+    return Entity.objects.filter(verified=True)
   
 class EntityDetails(graphene.ObjectType):
 
   entity_details = graphene.Field(
-      EntityType,
-      id=graphene.ID(required=True)
+    EntityType,
+    id=graphene.ID(required=True)
   )
 
   def resolve_entity_details(root, info, id):
-      return Entity.objects.get(pk=id)
+    return Entity.objects.get(pk=id, verified=True)
+
 
 
   

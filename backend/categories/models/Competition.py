@@ -1,23 +1,16 @@
-import os
 from django.db import models
 from django.utils import timezone
 import zoneinfo
 
 from categories.models.Category import *
 from core.models.Reward import *
+
+from helpers.custom_upload import custom_upload
   
 class Competition(models.Model):
+    
     def custom_path(instance, filename):
-      file_extension = os.path.splitext(filename)[1]
-      unique_name = instance.key
-      path = f'competitions/{instance.category.key}/'
-
-      # Remove image before creating if image already exists
-      file_path = os.path.join(settings.MEDIA_ROOT, f'{path}/{unique_name}{file_extension}')
-      if os.path.exists(file_path):
-          os.remove(file_path)
-
-      return os.path.join(path, unique_name + file_extension)
+      return custom_upload(f'public/competitions/{instance.category.key}', f'{instance.key}', filename)
        
     name = models.CharField(max_length=255)
     description = models.TextField()

@@ -9,6 +9,7 @@ from categories.schema.type.CategoryType import CategoryType
 
 # Authentication
 from graphql_jwt.decorators import login_required
+from graphql_auth.signals import user_verified
 
 import logging
 

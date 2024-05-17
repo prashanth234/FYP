@@ -36,7 +36,7 @@
 										<div class="logo">
 											<ion-img
 												class="reward-image"
-												:src="`/media/${rewards.rewards[state.selReward].image}`"
+												:src="rewards.rewards[state.selReward].image"
 												:alt="rewards.rewards[state.selReward].name"
 											>
 											</ion-img>
@@ -108,7 +108,7 @@
 										:key="index"
 									>
 
-										<ion-img :src="`/media/${reward.image}`" :alt="reward.name">
+										<ion-img :src="reward.image" :alt="reward.name">
 										</ion-img>
 
 										<!-- <div class="reward-title">

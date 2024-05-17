@@ -4,11 +4,12 @@ from graphene_django import DjangoObjectType
 # Models
 from categories.models.Competition import Competition
 
+from helpers.url_type import ImageUrlType
 
-class CompetitionType(DjangoObjectType):
+class CompetitionType(ImageUrlType, DjangoObjectType):
 
     expired = graphene.Boolean()
-
+    
     def resolve_expired(self, info):
         return self.is_expired
 

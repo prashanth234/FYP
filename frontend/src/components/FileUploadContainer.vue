@@ -7,7 +7,7 @@
       ref="fileupload"
       type="file"
       name="fileUpload"
-      accept="image/*"
+      :accept="props.fileType || 'image/*'"
       @input="$event => props.cropable ? loadImage($event) : reduceImageSize($event)" 
     />
 
@@ -19,7 +19,7 @@
 
   <div id="file-upload-form" class="uploader" v-else>
 
-    <input id="file-upload" @change="handleFileUpload" type="file" name="fileUpload" accept="image/*" />
+    <input id="file-upload" @change="handleFileUpload" type="file" name="fileUpload" :accept="props.fileType || 'image/*'" />
 
     <label for="file-upload" id="file-drag">
 
@@ -92,7 +92,8 @@ const props = defineProps<{
   simple: Boolean,
   modelValue: File | null,
   cropable: Boolean,
-  preview?: string | CropperResult
+  preview?: string | CropperResult,
+  fileType?: string
 }>()
 
 const emit = defineEmits(['update:modelValue', 'update:preview'])

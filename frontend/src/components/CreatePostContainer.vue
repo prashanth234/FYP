@@ -142,7 +142,12 @@ import { getQuery as getCoinActivityQuery, CoinActivities } from '@/composables/
 import { useAuthStore } from '@/stores/auth'
 
 interface PostFileType {
-  file: string
+  file: string,
+  files: {
+    lg: string,
+    md: string,
+    og: string
+  }
 }
 
 interface PostType {
@@ -308,17 +313,19 @@ function createNewPost() {
     file: state.image || undefined,
     description: state.description,
     competition: state.competition || undefined,
-    category: state.category
+    category: state.category,
+    entity: '1'
   }
 
   const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
     
-    mutation ($file: Upload, $category: ID, $competition: ID, $description: String!) { 
+    mutation ($file: Upload, $category: ID, $competition: ID, $description: String!, $entity: ID!) { 
       createPost (
         file: $file,
         competition: $competition,
         category: $category,
-        description: $description
+        description: $description,
+        entity: $entity
       ) {
           post {
             id,
@@ -327,7 +334,11 @@ function createNewPost() {
             description,
             createdAt,
             postfileSet {
-              file,
+              files {
+                lg,
+                md,
+                og
+              },
               width,
               height
             },
@@ -496,7 +507,11 @@ function updatePost() {
               id,
               description,
               postfileSet {
-                file,
+                files {
+                  lg,
+                  md,
+                  og
+                },
                 width,
                 height
               },
@@ -533,7 +548,7 @@ function initialize() {
     state.title = 'Edit Post'
     state.uploadTitle = 'Update'
     state.description = props.post.description
-    props.post.postfileSet.length && (state.preview = `/media/${props.post.postfileSet[0].file}`)
+    props.post.postfileSet.length && (state.preview = props.post.postfileSet[0].files.og )
     state.uploadAction = updatePost
   } else if (props.type == 'create') {
     state.title = 'Create Post'
@@ -552,9 +567,6 @@ initialize()
 .preview-image {
   height: 250px;
   overflow: auto;
-}
-ion-toolbar {
-  --min-height: 50px;
 }
 .content-container {
   margin-top: 10px;

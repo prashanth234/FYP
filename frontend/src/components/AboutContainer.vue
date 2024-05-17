@@ -142,7 +142,7 @@ function setUserState() {
 setUserState()
 
 const userAvatar = computed(() => {
-  return user.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
+  return user.avatar || '/static/core/avatar.svg'
 })
 
 // Profile image

@@ -9,56 +9,48 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
-        <ion-col
-          size="3"
+      <div class="grid-container">
+        <div
+          class="grid-item cpointer hover"
           v-for="entity in entities" :key="entity.id"
+          @click="openEntity(entity)"
         >
-          <ion-card class="card hover cpointer" @click="openEntity(entity)">
+          <ion-card class="card" >
 
             <div class="content">
 
-              <ion-row class="ion-nowrap">
+              <ion-row class="ion-nowrap" style="padding: 12px">
 
-                <ion-col class="ion-align-self-end"size="auto">
-                  <img class="image" :src="`/media/categories/ART.jpg`" />
+                <ion-col class="ion-align-self-end" size="auto">
+                  <img class="image" :src="entity.image" />
                 </ion-col>
 
-                <ion-col class="ion-padding-start">
-                  <div class="title ion-color-dark">{{ entity.name }}</div>
-                  <ion-grid class="subtitle">
-                    <ion-row>
-                      <ion-col size="auto" style="padding-right: 4px;">
-                        <ion-icon class="icon" :icon="businessOutline"></ion-icon>
-                      </ion-col>
-                      <ion-col class="text">School</ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="auto" style="padding-right: 4px;">
-                        <ion-icon class="icon" :icon="locationOutline"></ion-icon>
-                      </ion-col>
-                      <ion-col class="text">Hyderabad</ion-col>
-                    </ion-row>
-                  </ion-grid>
+                <ion-col style="padding-left: 10px;" class="overflow-ellipsis">
+                  <div>{{ entity.type }}</div>
+                  <div class="title ion-color-dark overflow-ellipsis" :title="entity.name" >{{ entity.name }}</div>
                 </ion-col>
 
               </ion-row>
 
-              <ion-row style="border-bottom: 1px solid var(--ion-color-secondary-tint); margin: 10px 5px;"></ion-row>
+              <ion-row class="line"></ion-row>
 
-              <ion-row class="ion-text-center stat">
+              <ion-row class="ion-text-center" style="padding: 5px">
 
                 <ion-col size="6">
 
-                  <div>Users</div>
-                  <div>250</div>
+                  <div class="stat">
+                    <ion-icon class="icon" :icon="personOutline"></ion-icon>
+                    <div class="text">{{ entity.stats.users }}</div>
+                  </div>
 
                 </ion-col>
 
                 <ion-col size="6">
 
-                  <div>Posts</div>
-                  <div>250</div>
+                  <div class="stat">
+                    <ion-icon class="icon" :icon="trendingUpOutline"></ion-icon>
+                    <div class="text">{{ entity.stats.posts }}</div>
+                  </div>
 
                 </ion-col>
 
@@ -67,13 +59,12 @@
             </div>
 
           </ion-card>
-        </ion-col>
-        
-        <ion-col size="12" v-if="!loading && !entities.length" class="ion-text-center ion-padding">
-          Couldn't find your entity please register
-        </ion-col>
+        </div>
+      </div>
 
-      </ion-row>
+      <ion-col size="12" v-if="!loading && !entities.length" class="ion-text-center ion-padding">
+        Couldn't find your entity please register
+      </ion-col>
       
     </ion-content>
   </ion-page>
@@ -81,7 +72,7 @@
 
 <script lang="ts" setup>
 import { IonGrid, IonPage, IonContent, IonSearchbar, useIonRouter, IonIcon, IonRow, IonCol, IonCardTitle, IonCardHeader, IonCard, IonCardSubtitle  } from '@ionic/vue'
-import { businessOutline, locationOutline } from 'ionicons/icons'
+import { personOutline, trendingUpOutline } from 'ionicons/icons'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { EntityType } from '@/utils/interfaces';
@@ -97,7 +88,15 @@ const { result: data, loading } : { result: any, loading: any } = useQuery(gql`
                                           entities {
                                             id,
                                             name,
-                                            description
+                                            description,
+                                            image,
+                                            city, 
+                                            type,
+                                            typeOthers,
+                                            stats {
+                                              users,
+                                              posts
+                                            }
                                           }
                                         }
                                       `)
@@ -115,58 +114,69 @@ const entities = computed(() => {
 
 
 function openEntity (entity: EntityType) {
-  ionRouter.push(`entity/${entity.id}`)
+  ionRouter.push(`entity/${entity.id}/posts`)
 }
 </script>
 
 <style lang="scss" scoped>
+.grid-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	grid-gap: 20px;
+	grid-auto-rows: auto;
+	padding: 15px;
+}
+.grid-item {
+	color: var(--ion-text-color);
+	border-radius: 10px;
+}
+.line {
+  border-width: 1px;
+}
 .search {
   --border-radius: 10px
 }
 .card {
   border-radius: 7px;
-  border: 1px solid var(--ion-color-secondary-tint);
-  .content {
-    padding: 7px;
-  }
+  margin: 0px;
   .title {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 590;
     color: var(--ion-color-dark);
   }
-  .subtitle {
-    line-height: 1.5;
-    .icon {
-      font-size: 20px;
-    }
-  }
   .image {
-    border: 1px solid var(--ion-color-secondary-tint);
-    border-radius: 4px;
+    border-radius: 50%;
     object-fit: cover;
-    width: 60px;
-    height: 60px;
-  }
-  .stat {
-    // background-color: #e8f1ff;
-    line-height: 1.8;
-    margin: 5px;
-    font-size: 14px;
-    font-weight: 600;
-    // color: var(--ion-card-color);
-    border-radius: 5px;
+    width: 55px;
+    height: 55px;
   }
 }
-.subtitle {
-  --ion-grid-padding: 0px;
-  --ion-grid-column-padding:  0px;
-  padding-top: 5px;
+.stat {
+  color: var(--ion-color-medium-shade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 590;
+
   .icon {
     font-size: 18px;
   }
+  
   .text {
-    font-size: 14px;
+    font-size: 16px;
+    padding-left: 12px;
   }
+}
+
+@media only screen and (max-width: 576px) {
+	.grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		padding: 0px;
+		grid-gap: 15px;
+	}
+	.grid-item {
+		padding: 2px 15px;
+	}
 }
 
 </style>

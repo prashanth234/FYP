@@ -238,6 +238,7 @@ import CommonDialog from '@/components/CommonDialogContainer.vue'
 import { warningOutline } from 'ionicons/icons'
 import { useAuthStore } from '@/stores/auth'
 import { useCategoryStore } from '@/stores/category'
+import { useMainStore } from '@/stores/main'
 
 const ionRouter = useIonRouter();
 const router = useRoute();
@@ -247,6 +248,7 @@ const user = useUserStore();
 const toast = useToastStore();
 const dialog = useDialogStore();
 const auth = useAuthStore();
+const main = useMainStore();
 const { resetClientStore } = useAuth();
 const category = useCategoryStore();
 
@@ -341,9 +343,9 @@ const isUserLogged = computed(() => {
 
 function addNewPost () {
   if (!user.success) {
-  auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
-  auth.open()
-  return
+    auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
+    auth.open()
+    return
   }
   postDialog.open()
 }

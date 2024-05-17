@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { isValidPhoneEmail, isValidEmail, isValidPhone } from "@/utils/validations"
 import { getAuth, signInWithPhoneNumber } from "firebase/auth"
 
+// Used for login, register, forgot passwords and otp forms.
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({ 
     processing: false,

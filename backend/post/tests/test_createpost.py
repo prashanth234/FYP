@@ -5,18 +5,12 @@ import shutil
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from post.models.Post import Post
-from categories.models.Category import Category
 
 
 @pytest.mark.django_db
-def test_create_post_mutation(authenticate, file_client_query):
+def test_create_post_mutation(authenticate, file_client_query, create_category):
     
-    category = Category.objects.create(
-        name="Photography",
-        description="This is photography interest",
-        key="photography",
-        oftype="IMAGETEXT"
-    )
+    category = create_category()
 
     # Define the mutation
     mutation = """
@@ -29,7 +23,11 @@ def test_create_post_mutation(authenticate, file_client_query):
                 description
                 createdAt
                 postfileSet {
-                    file
+                    files {
+                        lg,
+                        md,
+                        og
+                    },
                     width
                     height
                 }

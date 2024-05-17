@@ -13,7 +13,7 @@
 					@click="openCategory(cat)"
 				>
 
-					<ion-img class="cat-image" :src="`/media/${cat.image}`" :alt="cat.description">
+					<ion-img class="cat-image" :src="cat.image" :alt="cat.description">
 					</ion-img>
 
 					<div class="cat-title">
@@ -37,10 +37,6 @@ import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, useIonRouter  } from '@ionic/vue';
 import { categoryObject } from '@/utils/interfaces'
 import { scrollTop } from '@/composables/scroll'
-// import ART from '@/assets/images/categories/ART.jpg'
-// import CRTCFT from '@/assets/images/categories/CRTCFT.jpg'
-// import PHTGRY from '@/assets/images/categories/PHTGRY.jpg'
-// import SHTSTY from '@/assets/images/categories/SHTSTY.jpg'
 
 scrollTop()
 
@@ -53,15 +49,6 @@ function openCategory (category: categoryObject) {
   ionRouter.push(`interests/${category.id}/posts`)
 }
 
-// function getImage(type: string) {
-// 	const image:{[key: string]: any} = {
-// 		'ART': ART,
-// 		'CRTCFT': CRTCFT,
-// 		'PHTGRY': PHTGRY,
-// 		'SHTSTY': SHTSTY
-// 	}
-// 	return image[type]
-// }
 </script>
 
 <style scoped>

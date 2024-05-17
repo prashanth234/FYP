@@ -37,11 +37,11 @@ class UpdatePostMutation(graphene.Mutation):
     @login_required
     @transaction.atomic
     def mutate(cls, root, info, id, file=None, description=None):
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User not authenticated")
+        
+        user = info.context.user
         
         try:
-            post = Post.objects.get(pk=id, user=info.context.user)
+            post = Post.objects.get(pk=id, user=user)
             if post.competition and post.competition.is_expired:
                 raise GraphQLError("You can't delete or edit posts in closed contests to ensure fairness and transparency. Thanks for understanding!", extensions={'status': 405})
         except Post.DoesNotExist:
@@ -56,8 +56,12 @@ class UpdatePostMutation(graphene.Mutation):
             postFile = PostFile.objects.get(post=post)
 
             filetype = file.content_type.split('/')[1]
-            folder = f"post_{post.id}"
-            filename = f"user_{info.context.user.id}/{folder}/{folder}.{filetype}"
+            post_folder = f"post_{post.id}"
+            root_dir = 'public' if post.ispublic else 'private'
+            directory = f"{root_dir}/posts/user_{user.id}/{post_folder}"
+            filename = f"{post_folder}.{filetype}"
+            path = f"{directory}/{filename}"
+
             file_content = ContentFile(file.read())
             img = Image.open(file_content)
             width, height = img.size
@@ -66,11 +70,11 @@ class UpdatePostMutation(graphene.Mutation):
             postFile.height = height
 
             # Save the updated file with the new filename
-            postFile.file.save(filename, file_content)
+            postFile.file.save(path, file_content)
 
             # Process image further in background
             # process_image.delay(postFile.get_absolute_path())
-            process_image(postFile.get_absolute_path())
+            process_image(img, directory, filename)
             
             #remove_exisiting_files_in_dir(postFile.file.name)
 

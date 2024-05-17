@@ -12,6 +12,8 @@ from categories.models.Competition import Competition
 from categories.models.Category import Category
 from post.models.Post import Post, PostFile
 from core.models.CoinActivity import CoinActivity
+from entity.models.Entity import Entity
+from entity.models.Verification import Verification
 
 # Type
 from post.schema.type.PostType import PostType
@@ -33,6 +35,7 @@ class CreatePostMutation(graphene.Mutation):
         category = graphene.ID()
         competition = graphene.ID()
         file = Upload()
+        entity = graphene.ID(required=True)
 
 
     # The class attributes define the response of the mutation
@@ -42,10 +45,10 @@ class CreatePostMutation(graphene.Mutation):
     @classmethod
     @login_required
     @transaction.atomic
-    def mutate(cls, root, info, file=None, description='', category=None, competition=None):
+    def mutate(cls, root, info, entity, file=None, description='', category=None, competition=None):
 
         user = info.context.user
-        logger.info(f"{user.username} intiatied the post creation.")
+        logger.info(f"User: {user.username} - intiatied the post creation.")
         
         if not category and not competition:
             raise GraphQLError("Almost there! To continue, kindly pick your interest.", extensions={'status': 404})
@@ -63,11 +66,22 @@ class CreatePostMutation(graphene.Mutation):
         elif category:
             category = Category.objects.get(pk=category)
 
+        # Check if user part of entity if not check if verification is pending
+        entity = Entity.objects.get(pk=entity, verified=True)
+
+        if not user.user_of_entities.filter(pk=entity.id).exists():
+            try:
+                Verification.objects.get(user=user, entity=entity, status='PENDING')
+            except Verification.DoesNotExist:
+                raise GraphQLError("Failed: Join the entity first to post within it.", extensions={'status': 403})
+
         post = Post(
             user=user,
             description=description,
             category=category,
-            competition=competition or None
+            competition=competition or None,
+            entity=entity,
+            ispublic=entity.ispublic
         )
         
         post.save()
@@ -89,9 +103,15 @@ class CreatePostMutation(graphene.Mutation):
         if file:
 
             filetype = file.content_type.split('/')[1]
-            folder = f"post_{post.id}"
-            filename = f"user_{info.context.user.id}/{folder}/{folder}.{filetype}"
-            logger.info(f"{filename} processing started.")
+
+            post_folder = f"post_{post.id}"
+            root_dir = 'public' if post.ispublic else 'private'
+            directory = f"{root_dir}/posts/user_{user.id}/{post_folder}"
+            filename = f"{post_folder}.{filetype}"
+            path = f"{directory}/{filename}"
+
+            logger.info(f"{path} processing started.")
+
             file_content = ContentFile(file.read())
             img = Image.open(file_content)
             width, height = img.size
@@ -103,15 +123,15 @@ class CreatePostMutation(graphene.Mutation):
             )
 
             # Save the updated file with the new filename
-            postFile.file.save(filename, file_content, save=False)
+            postFile.file.save(path, file_content, save=False)
 
             postFile.save()
             
             # Process image further in background
             # process_image.delay(postFile.get_absolute_path())
-            process_image(postFile.get_absolute_path())
+            process_image(img, directory, filename)
 
-        logger.info(f"Post creation intiatied by {user.username} is successful.")
+        logger.info(f"User: {user.username} - Post creation is successful.")
         return CreatePostMutation(post=post, coin_activity=coinactivity)
   
 class CreatePost(graphene.ObjectType):
