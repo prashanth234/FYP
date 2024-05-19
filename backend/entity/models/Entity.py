@@ -17,7 +17,6 @@ class Entity(models.Model):
     description = models.TextField(null=True, blank=True)
     key = models.CharField(max_length=100, unique=True, null=True, blank=True)
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
-    type_others = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to=custom_upload_to, default='', null=True, blank=True)
     ispublic = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)

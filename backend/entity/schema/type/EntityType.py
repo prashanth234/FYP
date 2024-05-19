@@ -78,7 +78,6 @@ class EntityType(ImageUrlType, DjangoObjectType):
       "image",
       "city",
       "type",
-      "type_others",
       "all_stats",
       "stats",
       "linkedin",

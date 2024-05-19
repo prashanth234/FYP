@@ -15,27 +15,27 @@ import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 
 import { useUserStore } from '@/stores/user'
 
-import TempChild from '@/views/TempChild.vue'
-import TempPage from '@/views/TempPage.vue'
-import TempMain from '@/views/TempMain.vue'
+// import TempChild from '@/views/TempChild.vue'
+// import TempPage from '@/views/TempPage.vue'
+// import TempMain from '@/views/TempMain.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: '/temp',
-      name: 'Temp',
-      component: TempPage,
-      props: true,
-      children: [
-          {
-        path: '',
-              component: TempMain
-          },
-          {
-        path: 'child/:id',
-              component: TempChild
-          }
-    ]
-  },
+  // {
+  //   path: '/temp',
+  //     name: 'Temp',
+  //     component: TempPage,
+  //     props: true,
+  //     children: [
+  //         {
+  //       path: '',
+  //             component: TempMain
+  //         },
+  //         {
+  //       path: 'child/:id',
+  //             component: TempChild
+  //         }
+  //   ]
+  // },
   {
     path: '/privacy',
     name: 'Privacy',
@@ -78,6 +78,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'entity',
         component: () => import('@/views/EntityPage.vue'),
         name: 'entity'
+      },
+      {
+        path: 'entity/create',
+        component: () => import('@/views/CreateEntityPage.vue'),
+        name: 'createEntity'
       },
       {
         path: 'entity/:id/posts/:postid?',

@@ -84,7 +84,7 @@
 
         </ion-col>
 
-        <div size="12" style="padding: 0px 15px;">
+        <div style="padding: 0px 15px;">
           <errors :errors="state.errors"/>
         </div>
 
@@ -122,7 +122,7 @@ import { reactive } from 'vue';
 import { closeOutline } from 'ionicons/icons'
 import alert from './AlertContainer.vue'
 import { useToastStore } from '@/stores/toast'
-import errors from './ErrorContainer.vue'
+import errors from '@/components/ErrorContainer.vue'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 
@@ -153,6 +153,8 @@ const state: State = reactive({
   errors: []
 })
 
+const ENTIY_ERROR = 'Enter code or upload ID to continue!'
+
 function close() {
   emit('update:show', false)
 }
@@ -161,7 +163,7 @@ function submit() {
   state.errors = []
 
   if (!state.code && !state.file) {
-    state.errors.push('Enter code or upload ID to continue!')
+    state.errors.push(ENTIY_ERROR)
     return
   }
 
@@ -235,12 +237,6 @@ function submit() {
 
     .label {
       padding-bottom: 15px;
-    }
-
-    .uploaded-filename {
-      padding-top: 10px;
-      font-size: 14px;
-      color: var(--ion-color-medium-shade);
     }
   }
 </style>

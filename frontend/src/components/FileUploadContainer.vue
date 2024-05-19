@@ -275,7 +275,7 @@ function cropImage() {
     canvas.toBlob((blob: Blob | null) => {
       state.image = blob
       emit('update:modelValue', blob)
-      emit('update:preview', state.previewImage, state.imageType.split('/')[1])
+      emit('update:preview', state.cropperPreview, state.imageType.split('/')[1])
       closeCropper()
     }, state.imageType)
   }

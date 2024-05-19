@@ -59,13 +59,21 @@ def verification_post_save(sender, instance, created, **kwargs):
       'new_verification_request.html'
     )
   elif not created and instance.status == "SUCCESS":
-    # If verification is succesfull and marked status as success by admin
-    logging.info(f'Adding user to entity - Verification: {instance.id}')
-    try:
-      instance.entity.users.add(instance.user)
+    if instance.request == 'JOIN' :
+      # If verification is succesfull and marked status as success by admin
+      logging.info(f'Adding user to entity - Verification: {instance.id}')
+      try:
+        instance.entity.users.add(instance.user)
+        instance.entity.save()
+      except Exception as e:
+        logging.info(f'Failed to add user to entity - Verification: {instance.id}, error: {str(e)}')
+    elif instance.request == 'CREATE':
+      # If verification is succesfull and mark entity as public
+      logging.info(f'Marking the entity as public - Verification: {instance.id}')
+      instance.entity.verified = True
       instance.entity.save()
-    except Exception as e:
-      logging.info(f'Failed to add user to entity - Verification: {instance.id}, error: {str(e)}')
+
+
     
 
     

@@ -7,6 +7,9 @@
         <ion-col size-xs="12" size-sm="12" size-md="8" size-lg="6" size-xl="6">
           <ion-searchbar class="search" placeholder="Search Entity" v-model="state.search"></ion-searchbar>
         </ion-col>
+        <ion-col size="12" class="ion-text-center">
+          Don't see your entity? Be the one to create and represent it by clicking <a @click="createEntity" class="cpointer text-bold">create</a>
+        </ion-col>
       </ion-row>
 
       <div class="grid-container">
@@ -62,9 +65,9 @@
         </div>
       </div>
 
-      <ion-col size="12" v-if="!loading && !entities.length" class="ion-text-center ion-padding">
+      <div v-if="!loading && !entities.length" class="ion-text-center ion-padding">
         Couldn't find your entity please register
-      </ion-col>
+      </div>
       
     </ion-content>
   </ion-page>
@@ -92,7 +95,6 @@ const { result: data, loading } : { result: any, loading: any } = useQuery(gql`
                                             image,
                                             city, 
                                             type,
-                                            typeOthers,
                                             stats {
                                               users,
                                               posts
@@ -115,6 +117,10 @@ const entities = computed(() => {
 
 function openEntity (entity: EntityType) {
   ionRouter.push(`entity/${entity.id}/posts`)
+}
+
+function createEntity () {
+  ionRouter.push('entity/create')
 }
 </script>
 

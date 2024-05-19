@@ -21,7 +21,6 @@ class CreateEntityMutation(graphene.Mutation):
     name = graphene.String(required=True)
     description = graphene.String()
     type = graphene.String(required=True)
-    type_others = graphene.String()
     image = Upload()
     city = graphene.String(required=True)
     proof = Upload(required=True)
@@ -33,7 +32,7 @@ class CreateEntityMutation(graphene.Mutation):
   @classmethod
   @login_required
   @transaction.atomic
-  def mutate(cls, root, info, name, type, city, proof=None, image=None, type_others=None, description=None):
+  def mutate(cls, root, info, name, type, city, proof=None, image=None, description=None):
 
     user = info.context.user
 
@@ -44,8 +43,8 @@ class CreateEntityMutation(graphene.Mutation):
       type=type,
       city=city,
       image=image,
-      type_others=type_others,
-      description=description
+      description=description,
+      ispublic=True
     )
 
     entity.save()

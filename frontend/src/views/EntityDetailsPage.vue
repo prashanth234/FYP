@@ -222,7 +222,6 @@ const ENTITY_DETAILS = gql`
       name,
       description,
       type,
-      typeOthers,
       image,
       city,
       instagram,
@@ -266,12 +265,6 @@ function openJoinEntity() {
 </script>
 
 <style lang="scss" scoped>
-
-.card {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 2px;
-  border-radius: 10px;
-  background-color: var(--ion-card-background);
-}
 
 .entity {
   position: relative;
