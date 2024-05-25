@@ -2,6 +2,7 @@ import graphene
 from graphene_file_upload.scalars import Upload
 # from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import transaction
+from graphql import GraphQLError
 
 # Models
 from entity.models.Verification import Verification
@@ -21,6 +22,7 @@ class CreateEntityMutation(graphene.Mutation):
     name = graphene.String(required=True)
     description = graphene.String()
     type = graphene.String(required=True)
+    otherType = graphene.String()
     image = Upload()
     city = graphene.String(required=True)
     proof = Upload(required=True)
@@ -32,15 +34,19 @@ class CreateEntityMutation(graphene.Mutation):
   @classmethod
   @login_required
   @transaction.atomic
-  def mutate(cls, root, info, name, type, city, proof=None, image=None, description=None):
+  def mutate(cls, root, info, name, type, city, proof, otherType=None, image=None, description=None):
 
     user = info.context.user
+
+    if type == 'Others' and not otherType:
+      raise GraphQLError("Others type is required.")
 
     logger.info(f'User: {user.username} - requested for creation of entity: {name}')
 
     entity = Entity(
       name=name,
       type=type,
+      other_type=otherType,
       city=city,
       image=image,
       description=description,

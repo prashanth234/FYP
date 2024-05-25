@@ -2,6 +2,7 @@
 from io import BytesIO
 from django.core.files.storage import default_storage
 import os
+from django.conf import settings
 
 #@shared_task
 def process_image(img, directory, filename, webp_quality=95, jpeg_quality=95):
@@ -56,7 +57,7 @@ def upload_to_s3(resized_img, webp_quality, path):
 def upload_to_disk(resized_img, webp_quality, path):
 
     # Save as WebP format with specified quality
-    resized_img.save(path, "WEBP", quality=webp_quality)
+    resized_img.save(os.path.join(settings.MEDIA_ROOT, path), "WEBP", quality=webp_quality)
 
     # Save as JPEG format with specified quality after converting to RGB
     # resized_img.convert("RGB").save(output_path_jpeg, "JPEG", quality=jpeg_quality)

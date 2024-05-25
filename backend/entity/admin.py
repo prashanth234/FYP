@@ -10,4 +10,4 @@ class VerificationAdmin(admin.ModelAdmin):
 
 @admin.register(Entity)
 class EntityAdmin(admin.ModelAdmin):
-  list_display = ('name', 'description', 'phone', 'email', 'city', 'ispublic', 'verified')
+  list_display = ('name', 'description', 'type', 'other_type', 'city', 'phone', 'email', 'ispublic', 'verified')

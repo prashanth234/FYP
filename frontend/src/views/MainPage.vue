@@ -239,6 +239,7 @@ import { warningOutline } from 'ionicons/icons'
 import { useAuthStore } from '@/stores/auth'
 import { useCategoryStore } from '@/stores/category'
 import { useMainStore } from '@/stores/main'
+import { useEntityStore } from '@/stores/entity';
 
 const ionRouter = useIonRouter();
 const router = useRoute();
@@ -251,8 +252,10 @@ const auth = useAuthStore();
 const main = useMainStore();
 const { resetClientStore } = useAuth();
 const category = useCategoryStore();
+const entity = useEntityStore();
 
 category.getCategories()
+entity.getEntities()
 
 const userAvatar = computed(() => {
   return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'

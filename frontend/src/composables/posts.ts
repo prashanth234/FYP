@@ -2,73 +2,142 @@ import { useLazyQuery, useQuery } from '@vue/apollo-composable'
 import { InfiniteScrollCustomEvent } from '@ionic/vue'
 import gql from 'graphql-tag'
 import { ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
+
+export const POST_COMMON_FIELDS = `
+  id,
+  likes,
+  userLiked,
+  description,
+  createdAt,
+  postfileSet {
+    files {
+      lg,
+      md,
+      og
+    },
+    width,
+    height
+  },
+  user {
+    id,
+    username,
+    avatar
+  },
+  category {
+    oftype
+  }
+`
 
 export function getQuery(type: string) {
-  // Also update the create post and trending query and post details
-  return {
-    QUERY: gql`
-      query ${type} ($category: ID, $competition: ID, $page: Int, $perPage: Int, $trending: Boolean, $cursor: String) {
-        ${type} (category: $category, competition: $competition, page: $page, perPage: $perPage, trending: $trending, cursor: $cursor) @connection(key: "feed", filter: ["category", "competition", "trending"]) {
-          posts {
-            id,
-            likes,
-            userLiked,
-            description,
-            createdAt,
-            isBot,
-            postfileSet {
-              files {
-                lg,
-                md,
-                og
-              },
-              width,
-              height
+  // This is common query can be use for allPosts, myPosts and entityPosts Queries
+
+  if (type == 'entityPosts') {
+    return {
+      QUERY: gql`
+        query ${type} (
+          $entity: ID!,
+          $perPage: Int,
+          $cursor: String
+        ) {
+          ${type} (
+            entity: $entity,
+            perPage: $perPage,
+            cursor: $cursor
+          ) @connection(key: "entity-feed", filter: ["entity"]) {
+            posts {
+              ${POST_COMMON_FIELDS}
             },
-            user {
-              id,
-              username,
-              avatar
-            },
-            category {
-              oftype
-            },
-            competition {
-              expired
-            },
-            ispublic
-          },
-          total
+            total
+          }
         }
-      }
-    `
+      `
+    }
+  } else if (type == 'allPosts') {
+    return {
+      QUERY: gql`
+        query ${type} (
+          $category: ID!,
+          $competition: ID,
+          $perPage: Int,
+          $cursor: String
+        ) {
+          ${type} (
+            category: $category,
+            competition: $competition,
+            perPage: $perPage,
+            cursor: $cursor
+          ) @connection(key: "feed", filter: ["category", "competition"]) {
+            posts {
+              ${POST_COMMON_FIELDS},
+              isBot
+            },
+            total
+          }
+        }
+      `
+    }
+  } else {
+    // Return myPosts query
+    return {
+      QUERY: gql`
+        query ${type} (
+          $category: ID,
+          $competition: ID,
+          $perPage: Int,
+          $cursor: String
+        ) {
+          ${type} (
+            category: $category,
+            competition: $competition,
+            perPage: $perPage,
+            cursor: $cursor
+          ) @connection(key: "myposts", filter: ["category", "competition"]) {
+            posts {
+              ${POST_COMMON_FIELDS},
+              competition {
+                expired
+              }
+            },
+            total
+          }
+        }
+      `
+    }
   }
 }
 
 export function getPosts(
   type: string,
   category?: string,
-  competition?: string
+  competition?: string,
+  entity?: string
 ) {
+
+  const PER_PAGE = 4
+  const MAX_POSTS_WITHOUT_LOGIN = 8
+  const CHECK_MAX_POSTS = type != 'myPosts'
 
   const variables = {
     competition: ref(competition),
     category: ref(category),
-    trending: ref(false),
-    page: 1,
-    perPage: 4
+    entity: ref(entity),
+    perPage: PER_PAGE
   }
 
   const {QUERY: POST_QUERY} = getQuery(type)
+  const user = useUserStore()
+  const auth = useAuthStore()
 
   const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
-    page: variables.page,
-    perPage: variables.perPage,
-    competition: variables.competition.value,
     category: variables.category.value,
-    trending: variables.trending.value,
+    competition: variables.competition.value,
+    entity: variables.entity.value,
+    perPage: variables.perPage,
     cursor: undefined
   }))
+
 
   const fetchMoreCompleted = computed(() => {
     if (!posts.value) {
@@ -81,9 +150,24 @@ export function getPosts(
     return postsFetched >= totalPosts
   })
 
-  function getMore(ev: InfiniteScrollCustomEvent) {
+  function getMore(ev: InfiniteScrollCustomEvent, content: any) {
 
     if (fetchMoreCompleted.value) { return }
+
+    // Show max of MAX_POSTS_WITHOUT_LOGIN post if user is not authenticated and ask user to login/register
+    if (
+      CHECK_MAX_POSTS &&
+      !user.success &&
+      posts.value[type].total > MAX_POSTS_WITHOUT_LOGIN &&
+      posts.value[type].posts.length >= MAX_POSTS_WITHOUT_LOGIN
+    ) {
+      auth.open()
+      auth.showMessage('Take your journey further! Log in to reveal more posts.', 'info')
+      // scrollByPoint should be always higher than threshold
+      content.value && content.value.$el.scrollByPoint(0, -50, 500);
+      setTimeout(() => { ev.target.complete() }, 100)
+      return
+    }
 
     const postsFetched = posts.value[type].posts.length
     const cursor = posts.value[type].posts[postsFetched-1].createdAt
@@ -91,13 +175,14 @@ export function getPosts(
   
     return fetchMore({
       variables: {
-        page,
         cursor
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
+        // Finish the infinate event
+        setTimeout(() => { ev.target.complete() }, 100)
+
         // No new feed posts
         if (!fetchMoreResult) return previousResult
-
         
         // Concat previous feed with new feed posts
         return {
@@ -135,24 +220,7 @@ export function getWinners(competition: string | undefined) {
     query winners ($competition: ID!) {
       winners (competition: $competition) {
         post {
-          id,
-          likes,
-          userLiked,
-          description,
-          postfileSet {
-            files {
-              lg,
-              md,
-              og
-            },
-            width,
-            height
-          },
-          user {
-            id,
-            username,
-            avatar
-          }
+          ${POST_COMMON_FIELDS}
         },
         position,
         wonByLikes
@@ -173,45 +241,21 @@ export function getWinners(competition: string | undefined) {
 
 export function getPostDetails(
   id: string,
-  category: string
+  category: string | undefined,
+  entity: string | undefined
 ) {
 
   const QUERY = gql`
-    query PostDetails ($id: ID!, $category: ID) {
-      postDetails (id: $id, category: $category) {
-        id,
-        likes,
-        userLiked,
-        description,
-        createdAt,
-        isBot,
-        postfileSet {
-          files {
-            lg,
-            md,
-            og
-          },
-          width,
-          height
-        },
-        category {
-          id,
-          oftype
-        },
-        user {
-          id,
-          username,
-          avatar
-        },
-        competition {
-          expired
-        }
+    query PostDetails ($id: ID!, $category: ID, $entity: ID) {
+      postDetails (id: $id, category: $category, entity: $entity) {
+        ${POST_COMMON_FIELDS}
       }
     }
   `
 
   const { result: post, loading, onResult, onError } = useQuery(QUERY, () => ({
     id,
+    entity,
     category
   }))
 
@@ -229,32 +273,7 @@ export function getTrending() {
     query TrendingPosts ($competition: ID!) {
       trendingPosts (competition: $competition) {
         posts {
-          id,
-          likes,
-          userLiked,
-          description,
-          createdAt,
-          isBot,
-          postfileSet {
-            files {
-              lg,
-              md,
-              og
-            },
-            width,
-            height
-          },
-          user {
-            id,
-            username,
-            avatar
-          },
-          category {
-            oftype
-          },
-          competition {
-            expired
-          }
+          ${POST_COMMON_FIELDS}
         },
         total
       }

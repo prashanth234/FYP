@@ -21,6 +21,19 @@
   .md .logo {
     font-size: 22px;
   }
+
+  .note-card .note-msg {
+		font-size: 14px !important;
+    padding: 15px;
+	}
+  
+  .feed {
+    padding: 0px;
+
+		.title {
+			font-size: 17px;
+		}
+	}
 }
 
 ion-input.custom-input {
@@ -285,14 +298,6 @@ ion-card {
   visibility: hidden !important;
 }
 
-@media only screen and (max-width: 576px) {
-	// Upto sm
-	.note-card .note-msg {
-		font-size: 14px !important;
-    padding: 15px;
-	}
-}
-
 .privacy-terms {
   max-width: 1000px;
   margin: auto;
@@ -330,4 +335,18 @@ ion-toolbar {
   padding-top: 10px;
   font-size: 14px;
   color: var(--ion-color-medium-shade);
+}
+
+.grey-text {
+  color: var(--ion-color-step-550, #737373);
+}
+
+.feed {
+  padding: 5px;
+  display: flex;
+  flex-wrap: nowrap;
+  .title {
+    font-size: 18px;
+    font-weight: 580;
+  }
 }

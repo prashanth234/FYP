@@ -43,5 +43,14 @@ export interface categoryObject {
 export interface EntityType {
   id: string,
   name: string,
-  description: string
+  description: string,
+  image: string,
+  city: string,
+  type: string,
+  userAccess: string,
+  ispublic: boolean,
+  stats: {
+    users: string,
+    posts: string
+  }
 }

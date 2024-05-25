@@ -12,46 +12,82 @@
       <ion-grid style="padding: 10px">
         <ion-row>
 
-          <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
-            <ion-select
-              class="custom-select"
-              v-model="state.category"
-              placeholder="Select"
-              label="Interest"
-              interface="popover"
-              @ionChange="onCategoryChange"
-            >
-              <ion-select-option
-                v-for="cat in category.categories"
-                :key="cat.id"
-                :value="cat.id"
+          <ion-col size="12" class="ion-no-padding">
+
+            <ion-row v-if="type=='create'">
+              <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" >
+                <ion-select
+                  class="custom-select"
+                  v-model="state.category"
+                  placeholder="Select"
+                  label="Interest"
+                  interface="popover"
+                  @ionChange="onCategoryChange"
+                >
+                  <ion-select-option
+                    v-for="cat in category.categories"
+                    :key="cat.id"
+                    :value="cat.id"
+                  >
+                    {{ cat.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-col>
+
+              <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6">
+                <ion-select
+                  class="custom-select"
+                  v-model="state.entity"
+                  placeholder="Select"
+                  label="Entity"
+                  interface="popover"
+                >
+                  <ion-select-option
+                    v-for="entity in entity.entities"
+                    :key="entity.id"
+                    :value="entity"
+                  >
+                    {{ entity.name }}
+                  </ion-select-option>
+                </ion-select>
+
+              </ion-col>
+
+              <ion-col size="12">
+                <ion-select
+                  class="custom-select"
+                  v-model="state.competition"
+                  placeholder="Select"
+                  label="Contest"
+                  interface="popover"
+                >
+                  <ion-select-option value="">
+                    None
+                  </ion-select-option>
+                  <ion-select-option
+                    v-for="competition in state.catCompetitions"
+                    :key="competition.id"
+                    :class="{'competition-expired': competition.expired}"
+                    :value="competition.id"
+                  >
+                    {{ competition.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-col>
+
+              <ion-col
+                v-if="state.competition && !state.entity.ispublic && state.entity.userAccess == 'SUCCESS'"
+                class="ion-text-start"
+                style="color: var(--ion-color-warning);"
               >
-                {{ cat.name }}
-              </ion-select-option>
-            </ion-select>
+                Selected entity is private. Posting in the contest makes post public.
+              </ion-col>
+
+            </ion-row>
+
           </ion-col>
 
-          <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" v-if="type=='create'">
-            <ion-select
-              class="custom-select"
-              v-model="state.competition"
-              placeholder="Select"
-              label="Contest"
-              interface="popover"
-            >
-              <ion-select-option value="">
-                None
-              </ion-select-option>
-              <ion-select-option
-                v-for="competition in state.catCompetitions"
-                :key="competition.id"
-                :class="{'competition-expired': competition.expired}"
-                :value="competition.id"
-              >
-                {{ competition.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-col>
+         
 
           <ion-col size="12" class="content-container">
             <ion-textarea
@@ -129,15 +165,16 @@ import { useRoute } from 'vue-router';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed } from 'vue'
-import { CompetitionInfo } from '@/utils/interfaces'
+import { CompetitionInfo, EntityType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useCategoryStore } from '@/stores/category'
+import { useEntityStore } from '@/stores/entity'
 import { useQuery } from '@vue/apollo-composable'
-import { getQuery } from '@/composables/posts'
+import { getQuery, POST_COMMON_FIELDS } from '@/composables/posts'
 import { getQuery as getCoinActivityQuery, CoinActivities } from '@/composables/coinActivity'
 import { useAuthStore } from '@/stores/auth'
 
@@ -160,11 +197,7 @@ interface PostType {
 }
 
 interface AllPostsType {
-  allPosts?: {
-    posts: PostType[],
-    total: number
-  },
-  myPosts?: {
+  [key: string]: {
     posts: PostType[],
     total: number
   }
@@ -174,7 +207,8 @@ interface VariablesType {
   [key: string]: {
     category?: string,
     competition?: string,
-    trending: boolean,
+    entity?: string,
+    trending?: boolean,
   }
 }
 
@@ -182,7 +216,8 @@ interface CachesType {
   category: AllPostsType | null,
   competition: AllPostsType | null,
   trending: AllPostsType | null,
-  profile: AllPostsType | null
+  profile: AllPostsType | null,
+  entity: AllPostsType | null
 }
 
 const props = defineProps<{
@@ -204,6 +239,7 @@ const state = reactive({
   description: '',
   category: '',
   competition: '',
+  entity: {} as EntityType,
 
   catCompetitions: [] as CompetitionInfo[],
   preview: '',
@@ -245,11 +281,13 @@ const router = useRoute();
 const toast = useToastStore()
 const user = useUserStore()
 const category = useCategoryStore()
+const entity = useEntityStore()
 const auth = useAuthStore()
-category.getCategories()
+// category.getCategories()
 
 const { QUERY: POST_QUERY } = getQuery('allPosts')
 const { QUERY: MYPOSTS_QUERY } = getQuery('myPosts')
+const { QUERY: ENTITYPOSTS_QUERY } = getQuery('entityPosts')
 
 if (props.type == 'create') {
   // Intialize create post data
@@ -298,6 +336,12 @@ function createNewPost() {
     return
   }
 
+  // Check if user part of entity 
+  if (state.entity.userAccess == 'NOTFOUND') {
+    toast.$patch({message: `You're not part of ${state.entity.name} entity. Please join the entity to post in it.`, color: 'primary', open: true})
+    return
+  } 
+
   // Description check for short stories
   if (postType.value == "TEXT") {
     const wordcount =  state.description.split(/\s+/).length
@@ -314,7 +358,7 @@ function createNewPost() {
     description: state.description,
     competition: state.competition || undefined,
     category: state.category,
-    entity: '1'
+    entity: state.entity.id
   }
 
   const { mutate, onDone, error: sendMessageError, onError } = useMutation(gql`    
@@ -328,28 +372,7 @@ function createNewPost() {
         entity: $entity
       ) {
           post {
-            id,
-            likes,
-            userLiked,
-            description,
-            createdAt,
-            postfileSet {
-              files {
-                lg,
-                md,
-                og
-              },
-              width,
-              height
-            },
-            user {
-              username,
-              avatar,
-              id
-            },
-            category {
-              oftype
-            },
+            ${POST_COMMON_FIELDS},
             competition {
               expired
             },
@@ -373,6 +396,7 @@ function createNewPost() {
           category: {category: state.category, trending: false},
           competition: {category: state.category, competition: state.competition, trending: false},
           trending: {category: state.category, competition: state.competition, trending: true},
+          entity: {entity: state.entity.id},
           profile: {trending: false}
         }
 
@@ -380,7 +404,8 @@ function createNewPost() {
           category: cache.readQuery({ query: POST_QUERY, variables: variables.category }),
           competition: null,
           trending: null,
-          profile: cache.readQuery({query: MYPOSTS_QUERY, variables: variables.profile })
+          profile: cache.readQuery({query: MYPOSTS_QUERY, variables: variables.profile }),
+          entity: cache.readQuery({query: ENTITYPOSTS_QUERY, variables: variables.entity })
         }
 
         if (state.competition) {
@@ -402,47 +427,39 @@ function createNewPost() {
           } 
         }
 
+        function updatePosts(type: string, data: AllPostsType, addAtEnd: boolean = false) {
+          const start = [], end = []
+          addAtEnd ? end.push(createPost.post) : start.push(createPost.post)
+
+          return {
+            ...data,
+            [type]: {
+              ...data[type],
+              posts: [
+                ...start,
+                ...data[type].posts,
+                ...end
+              ]
+            }
+          }
+        }
+
         for (let [key, data] of Object.entries(caches)) {
           if (data) {
 
             if (key == 'profile') {
-              data = {
-                ...data,
-                myPosts: {
-                  ...data.myPosts,
-                  posts: [
-                    createPost.post,
-                    ...data.myPosts.posts
-                  ]
-                }
-              }
-
+              data = updatePosts('myPosts', data)
               cache.writeQuery({ query: MYPOSTS_QUERY, data, variables: variables[key] })
               continue
             } else if (key == 'trending') {
               if (data.allPosts.posts.length >= 5) { continue }
-              data = {
-                ...data,
-                allPosts: {
-                  ...data.allPosts,
-                  posts: [
-                    ...data.allPosts.posts,
-                    createPost.post
-                  ]
-                }
-              }
-              
+              data = updatePosts('allPosts', data, true)
+            } else if (key == 'entity') {
+              data = updatePosts('entityPosts', data)
+              cache.writeQuery({ query: ENTITYPOSTS_QUERY, data, variables: variables[key] })
+              continue
             } else {
-              data = {
-                ...data,
-                allPosts: {
-                  ...data.allPosts,
-                  posts: [
-                    createPost.post,
-                    ...data.allPosts.posts
-                  ]
-                }
-              }
+              data = updatePosts('allPosts', data)
             }
 
             cache.writeQuery({ query: POST_QUERY, data, variables: variables[key] })
@@ -456,7 +473,11 @@ function createNewPost() {
   mutate()
 
   onDone(() => {
-    toast.$patch({message: 'Success! Your post has been uploaded.', color: 'success', open: true})
+    if (state.entity.userAccess == 'PENDING') {
+      toast.$patch({message: "Post uploaded. It'll show in the entity once your join entity request is verified.", color: 'success', open: true})
+    } else {
+      toast.$patch({message: 'Success! Your post has been uploaded.', color: 'success', open: true})
+    }
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')

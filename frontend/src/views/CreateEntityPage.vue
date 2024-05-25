@@ -8,6 +8,11 @@
         <ion-grid class="create-entity-grid card">
           <ion-row class="ion-justify-content-center ion-text-center">
 
+            <ion-col size="12">
+              <div style="font-size: 22px; font-weight: 590;">Request Entity</div>
+              <div style="font-size: 15px; padding: 5px 0px;">Be the one to represent your entity</div>
+            </ion-col>
+
             <ion-col size="auto">
               <FileUpload
                 v-model:preview="state.imagePreview"
@@ -59,27 +64,33 @@
                 class="custom-select"
                 v-model="state.type"
                 @ionChange="onTypeChange"
-                placeholder="Entity Type"
+                placeholder="Type"
                 label-placement="stacked"
                 interface="popover"
                 required
               >
-                <ion-select-option value="OTHERS">Others</ion-select-option>
+                <ion-select-option
+                  v-for="(entity, index) in state.entities"
+                  :value="entity"
+                  :key="index"
+                >
+                  {{ entity }}
+                </ion-select-option>
               </ion-select>
             </ion-col>
 
-            <ion-col size="12" v-if="state.type == 'OTHERS'">
+            <ion-col size="12" v-if="state.type == 'Others'">
               <ion-input
                 class="custom-input"
-                v-model="state.typeOthers"
+                v-model="state.otherType"
                 type="text"
-                placeholder="Enter entity type"
+                placeholder="Enter Entity Type"
                 required
               >
               </ion-input>
             </ion-col>
 
-            <ion-col size="12" class="ion-text-start">
+            <!-- <ion-col size="12" class="ion-text-start">
               <ion-select
                 class="custom-select"
                 v-model="state.city"
@@ -91,14 +102,14 @@
               >
                 <ion-select-option value="OTHERS">Others</ion-select-option>
               </ion-select>
-            </ion-col>
+            </ion-col> -->
 
-            <ion-col size="12" v-if="state.city == 'OTHERS'">
+            <ion-col size="12">
               <ion-input
                 class="custom-input"
-                v-model="state.cityOthers"
+                v-model="state.city"
                 type="text"
-                placeholder="Enter city name"
+                placeholder="City"
                 required
               >
               </ion-input>
@@ -180,6 +191,7 @@
 <script lang="ts" setup>
 import { IonSelect, useIonRouter, IonSelectOption, IonGrid, IonPage, IonContent, IonInput, IonAvatar, IonIcon, IonRow, IonCol, IonButton, IonSpinner, IonCard } from '@ionic/vue'
 import { reactive } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { cameraOutline, businessOutline, checkmarkCircleOutline } from 'ionicons/icons'
 import { Preview, CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
@@ -194,28 +206,42 @@ interface State {
   name: string,
   description: string,
   type: string,
-  typeOthers: string,
+  otherType: string,
   image: string,
   city: string,
   cityOthers: string,
   loading: boolean,
   errors: string[],
   proof: any,
-  imagePreview: CropperResult | undefined
+  imagePreview: CropperResult | undefined,
+  entities: string[]
 }
 
-const state: State = reactive({
+const intialState: State = {
   name: '',
   description: '',
   type: '',
-  typeOthers: '',
+  otherType: '',
   image: '',
   city: '',
   cityOthers: '',
   loading: false,
   errors: [],
   proof: undefined,
-  imagePreview: undefined
+  imagePreview: undefined,
+  // Also update entites in backend
+  entities: [
+    "School",
+    "College",
+    "Institute",
+    "Others"
+  ]
+}
+
+const state: State = reactive({...intialState})
+
+onBeforeRouteLeave(() => {
+  Object.assign(state, intialState)
 })
 
 const toast = useToastStore()
@@ -223,7 +249,6 @@ const ionRouter = useIonRouter()
 const dialog = useDialogStore()
 
 const TYPE_ERROR = 'Please select the entity type.'
-const CITY_ERROR = 'Please select the entity city.'
 const PROOF_ERROR = 'Please upload ID to continue.'
 
 function submit() {
@@ -231,31 +256,29 @@ function submit() {
 
   if (!state.type || !state.city || !state.proof) {
     !state.type && state.errors.push(TYPE_ERROR)
-    !state.city && state.errors.push(CITY_ERROR)
     !state.proof && state.errors.push(PROOF_ERROR)
     return
   }
 
   state.loading = true
 
-  const { name, description, type: entityType, typeOthers, image, city, cityOthers, proof } = state
+  const { name, description, type: entityType, otherType, image, city, proof } = state
 
   let variables = {
-    name, description, image, proof,
-    type: typeOthers || entityType,
-    city: cityOthers || city
+    name, description, image, proof, city, entityType, otherType, type: entityType
   }
 
   const { mutate, onDone, onError } = useMutation(gql`    
     
-    mutation createEntity ($name: String!, $description: String, $image: Upload, $proof: Upload!, $type: String!, $city: String!) { 
+    mutation createEntity ($name: String!, $description: String, $image: Upload, $proof: Upload!, $type: String!, $city: String!, $otherType: String) { 
       createEntity (
         name: $name,
         description: $description,
         image: $image,
         proof: $proof,
         type: $type,
-        city: $city
+        city: $city,
+        otherType: $otherType
       ) {
           success,
           message
@@ -307,13 +330,8 @@ function routerToEntity() {
   ionRouter.push('/entity')
 }
 
-function onCityChange() {
-  state.cityOthers = ''
-  removeError(CITY_ERROR)
-}
-
 function onTypeChange() {
-  state.typeOthers = ''
+  state.otherType = ''
   removeError(TYPE_ERROR)
 }
 

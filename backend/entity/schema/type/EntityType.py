@@ -64,7 +64,7 @@ class EntityType(ImageUrlType, DjangoObjectType):
     return StatsType(**all_stats)
   
   def resolve_type(self, info):
-    return dict(Entity.TYPE_CHOICES).get(self.type, None)
+    return (self.other_type if self.type == 'Others' else self.type)
 
   def resolve_user_access(self, info):
     return UserEntityCheck.get_status(info.context.user, self.id)

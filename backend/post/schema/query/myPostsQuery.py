@@ -15,13 +15,11 @@ class MyPostsQuery(graphene.ObjectType):
         PostListType,
         category= graphene.ID(),
         competition=graphene.ID(),
-        page=graphene.Int(),
         per_page=graphene.Int(),
-        trending=graphene.Boolean(),
         cursor=graphene.String()
     )
     
-    def resolve_my_posts(root, info, category=None, competition=None, page=1, per_page=10, trending=False, cursor=None):
+    def resolve_my_posts(root, info, category=None, competition=None, per_page=10, cursor=None):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not authenticated")
         
@@ -31,10 +29,7 @@ class MyPostsQuery(graphene.ObjectType):
             queryset = Post.objects.filter(category=category, user=info.context.user).order_by('-created_at')
         else:
             queryset = Post.objects.filter(user=info.context.user).order_by('-created_at')
-        
-        # paginator = Paginator(queryset, per_page)
-        # page_obj = paginator.page(page)
-        # posts = page_obj.object_list
+
 
         total = queryset.count()
         

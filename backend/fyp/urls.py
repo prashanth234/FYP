@@ -28,8 +28,8 @@ from core.views import serve_private_media
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^graphql/?$', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=settings.DEBUG))),
-    re_path(r'^media/private/(?P<path>.*)$', serve_private_media),
+    re_path(r'^graphql/?$', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=settings.DEBUG)))
+    # re_path(r'^media/private/(?P<path>.*)$', serve_private_media),
 ]
 
 if settings.DEBUG:

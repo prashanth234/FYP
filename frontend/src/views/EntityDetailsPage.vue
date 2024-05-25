@@ -2,7 +2,17 @@
   <ion-page>
     <ion-content>
 
-      <ion-grid>
+      <ion-refresher slot="fixed" @ionRefresh="refreshPosts($event)">
+        <ion-refresher-content
+          :pulling-icon="chevronDownCircleOutline"
+          pulling-text="Pull to refresh"
+          refreshing-spinner="circles"
+          refreshing-text="Refreshing..."
+        >
+        </ion-refresher-content>
+      </ion-refresher>
+
+      <ion-grid style="max-width: 700px;">
 
         <ion-row class="ion-justify-content-center" v-if="!loadingDetails">
 
@@ -13,7 +23,7 @@
 
           <!-- Entity Details -->
           <ion-col 
-            size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8"
+            size="12"
             class="entity card"
           >
 
@@ -90,7 +100,7 @@
 
           <!-- Entity Stats -->
           <ion-col 
-            size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8"
+            size="12"
             class="card stats"
           >
 
@@ -110,6 +120,7 @@
           
           </ion-col>
 
+          <!-- Private Entity Message-->
           <ion-col
             size="12"
             class="ion-text-center ion-padding text-bold"
@@ -118,13 +129,38 @@
             This entity is private. Only members have access to posts.
           </ion-col>
 
+          <!-- Show single post for shared posts -->
+          <ion-col
+            size="12"
+            v-else-if="state.showSinglePost && props.postid"
+          >
+            <SinglePost
+              :id="props.postid"
+              :entity="props.id"
+              @more="state.showSinglePost = false"
+            />
+          </ion-col>
+
+
           <!-- Entity posts -->
           <ion-col
             size="12"
-            v-else-if="!loadingPosts"
+            class="ion-no-padding"
+            v-else-if="entityPosts?.entityPosts.posts.length"
           >
 
             <ion-row>
+
+              <ion-col
+                size="12"
+              >
+                <div class="feed">
+                  <div class="title">
+                    Feed
+                  </div>
+                  <Refresh @refresh="refreshPosts(null)" :refreshing="state.refreshing"/>
+                </div>
+              </ion-col>
 
               <ion-col
                 size="12"
@@ -145,6 +181,15 @@
 
             </ion-row>
 
+            <ion-infinite-scroll 
+              :disabled="state.showSinglePost || fetchMoreCompleted"
+              :key="`${fetchMoreCompleted}`"
+              @ionInfinite="fetchMore"
+              :threshold="user.success ? '400px' : '30px'"
+            >
+              <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+
           </ion-col>
 
         </ion-row>
@@ -156,10 +201,13 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton  } from '@ionic/vue'
-import { businessOutline, locationOutline } from 'ionicons/icons'
+import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent} from '@ionic/vue'
+import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
 import SocialLinks from '@/components/SocialContainer.vue'
-import JoinEntity from '@/components/joinEntityContainer.vue'
+import JoinEntity from '@/components/JoinEntityContainer.vue'
+import SinglePost from '@/components/SinglePostContainer.vue'
+import Refresh from '@/components/RefreshContainer.vue'
+import { getPosts } from '@/composables/posts'
 import Post from '@/components/PostContainer.vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -168,52 +216,25 @@ import { useMainStore } from '@/stores/main'
 import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
+import { scrollTop } from '@/composables/scroll'
 
 
-const user = useUserStore();
-const auth = useAuthStore();
-const main = useMainStore();
+const user = useUserStore()
+const auth = useAuthStore()
+const main = useMainStore()
+const { content } = scrollTop()
+
 
 const props = defineProps({
-  id: String
+  id: String,
+  postid: String
 })
 
 const state = reactive({
-  showJoinEntity: false
+  showJoinEntity: false,
+  showSinglePost: !!props.postid,
+  refreshing: false
 })
-
-const ENTITY_POSTS_QUERY = gql`
-  query EntityPosts ($id: ID!) {
-    entityPosts (id: $id) {
-      posts {
-        id,
-        likes,
-        userLiked,
-        description,
-        createdAt,
-        isBot,
-        postfileSet {
-          files {
-            lg,
-            md,
-            og
-          },
-          width,
-          height
-        },
-        user {
-          id,
-          username,
-          avatar
-        },
-        category {
-          oftype
-        }
-      },
-      total
-    }
-  }
-`
 
 const ENTITY_DETAILS = gql`
   query EntityDetails ($id: ID!) {
@@ -241,10 +262,6 @@ const ENTITY_DETAILS = gql`
   }
 `
 
-const { result: entityPosts, loading: loadingPosts } = useQuery(ENTITY_POSTS_QUERY, () => ({
-  id: props.id,
-}))
-
 const { result: ed, loading: loadingDetails, onResult } = useQuery(ENTITY_DETAILS, () => ({
   id: props.id,
 }))
@@ -253,6 +270,14 @@ onResult(({loading}) => {
   main.pageloading = loading
 })
 
+const { 
+  posts: entityPosts,
+  loading: loadingPosts,
+  getMore,
+  fetchMoreCompleted,
+  refetch
+} = getPosts('entityPosts', undefined, undefined, props.id)
+
 function openJoinEntity() {
   if (!user.success) {
     auth.showMessage('Ready to join the entity? Log in now!', 'info')
@@ -260,6 +285,17 @@ function openJoinEntity() {
     return
   }
   state.showJoinEntity = true
+}
+
+function fetchMore(ev: InfiniteScrollCustomEvent) {
+  getMore(ev, content)
+}
+
+async function refreshPosts(event: RefresherCustomEvent | null) {
+  state.refreshing = true
+  await refetch()
+  state.refreshing = false
+  event?.target && event.target.complete && event.target.complete()
 }
 
 </script>
@@ -323,7 +359,7 @@ function openJoinEntity() {
 }
 
 .stats {
-  margin: 20px 0;
+  margin-top: 20px;
   color: black;
   max-width: 750px !important;
 

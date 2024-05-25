@@ -7,8 +7,8 @@
         <ion-col size-xs="12" size-sm="12" size-md="8" size-lg="6" size-xl="6">
           <ion-searchbar class="search" placeholder="Search Entity" v-model="state.search"></ion-searchbar>
         </ion-col>
-        <ion-col size="12" class="ion-text-center">
-          Don't see your entity? Be the one to create and represent it by clicking <a @click="createEntity" class="cpointer text-bold">create</a>
+        <ion-col size="12" class="ion-text-center grey-text" style="padding: 5px 0px;">
+          Don't see your entity? Be the one to represent your entity by clicking <a @click="createEntity" class="cpointer text-bold">request entity</a>.
         </ion-col>
       </ion-row>
 
@@ -65,55 +65,36 @@
         </div>
       </div>
 
-      <div v-if="!loading && !entities.length" class="ion-text-center ion-padding">
-        Couldn't find your entity please register
-      </div>
+      <!-- <div v-if="!loading && !entities.length" class="ion-text-center ion-padding">
+        Entity not found.
+      </div> -->
       
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts" setup>
-import { IonGrid, IonPage, IonContent, IonSearchbar, useIonRouter, IonIcon, IonRow, IonCol, IonCardTitle, IonCardHeader, IonCard, IonCardSubtitle  } from '@ionic/vue'
+import { IonPage, IonContent, IonSearchbar, useIonRouter, IonIcon, IonRow, IonCol, IonCard  } from '@ionic/vue'
 import { personOutline, trendingUpOutline } from 'ionicons/icons'
-import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import { EntityType } from '@/utils/interfaces';
+import { EntityType } from '@/utils/interfaces'
 import { reactive, computed } from 'vue';
+import { useEntityStore } from '@/stores/entity'
 
-const ionRouter = useIonRouter();
+
+const ionRouter = useIonRouter()
+const entity = useEntityStore()
+
 const state = reactive({
   search: ''
 })
 
-const { result: data, loading } : { result: any, loading: any } = useQuery(gql`
-                                        query Entities {
-                                          entities {
-                                            id,
-                                            name,
-                                            description,
-                                            image,
-                                            city, 
-                                            type,
-                                            stats {
-                                              users,
-                                              posts
-                                            }
-                                          }
-                                        }
-                                      `)
-
 const entities = computed(() => {
-  if (data.value?.entities) {
-    if (state.search) {
-      return data.value.entities.filter((entity: EntityType) => entity.name.toLowerCase().includes(state.search.toLowerCase()))
-    } else {
-      return data.value.entities
-    }
+  if (state.search) {
+    return entity.entities.filter((entity: EntityType) => entity.name.toLowerCase().includes(state.search.toLowerCase()))
+  } else {
+    return entity.entities
   }
-  return []
 })
-
 
 function openEntity (entity: EntityType) {
   ionRouter.push(`entity/${entity.id}/posts`)

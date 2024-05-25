@@ -14,20 +14,20 @@ class EntityPosts(graphene.ObjectType):
 
   entity_posts = graphene.Field(
     EntityPostsType,
-    id=graphene.ID(required=True),
+    entity=graphene.ID(required=True),
     per_page=graphene.Int(),
     cursor=graphene.String()
   )
 
-  def resolve_entity_posts(root, info, id, per_page=10, cursor=None):
+  def resolve_entity_posts(root, info, entity, per_page=10, cursor=None):
 
-    entity = Entity.objects.get(pk=id)
+    entity = Entity.objects.get(pk=entity)
     user = info.context.user
 
     if not entity.ispublic and not (user.is_authenticated and user.user_of_entities.filter(pk=id).exists()):
       raise GraphQLError("Failed to get posts.")
 
-    queryset = Post.objects.filter(entity=id).order_by('-created_at')
+    queryset = Post.objects.filter(entity=entity).order_by('-created_at')
     total = queryset.count()
     
     if cursor:

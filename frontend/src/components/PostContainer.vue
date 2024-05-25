@@ -178,7 +178,7 @@ const share = reactive({
   show: false
 })
 
-share.url = `${document.URL}/${props.post.id}`
+share.url = document.URL.replace(/posts.*/, `posts/${props.post.id}`)
 
 const emit = defineEmits<{
   (e: 'editPost'): void

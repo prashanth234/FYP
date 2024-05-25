@@ -55,21 +55,10 @@
                     Feed
                   </div>
 
-                  <div class="refresh-icon cpointer ion-hide-sm-down">
-                    <Refresh 
-                      @click="refreshPosts(null)"
-                      width="22px"
-                      height="22px"
-                    />
-                  </div>
-
-                  <Transition name="fade">
-                    <div
-                      class="ion-hide-sm-down"
-                      v-if="state.refreshing"
-                      style="padding-left: 5px; color: var(--ion-color-primary)">Refreshing...
-                    </div>
-                  </Transition>
+                  <Refresh
+                    @refresh="refreshPosts(null)"
+                    :refreshing="state.refreshing"
+                  />
                   
                   <div style="margin-left: auto;">
                     <ion-button
@@ -146,13 +135,14 @@
 
               <!-- Single post -->
               <ion-col
-                v-if="state.pdShow"
+                v-if="state.pdShow && props.postid"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
               >
-                <post :post="state.pdetails"/>
-                <div class="ion-margin-vertical ion-text-center ion-padding-vertical">
-                  <ion-button fill="clear" @click="hidePostDetails(true)">Click to discover more posts</ion-button>
-                </div>
+                <SinglePost
+                  :id="props.postid"
+                  :category="props.id"
+                  @more="hidePostDetails(true)"
+                />
               </ion-col>
 
               <!-- Display the posts -->
@@ -175,7 +165,7 @@
                 <post :post="post"></post>
               </ion-col>
 
-              <!-- Display winners -->
+              <!-- Display Winners -->
               <ion-col
                 v-show="state.tabSelected == 'winners'"
                 size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
@@ -222,20 +212,18 @@ import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { RefresherCustomEvent, IonRefresher, IonRefresherContent, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
 import { chevronDownCircleOutline } from 'ionicons/icons'
 
-import Refresh from '@/components/icons/refresh.vue'
 import Post from '@/components/PostContainer.vue'
+import SinglePost from '@/components/SinglePostContainer.vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import { getPosts, getWinners, getPostDetails, getTrending } from '@/composables/posts'
+import Refresh from '@/components/RefreshContainer.vue'
+import { getPosts, getWinners, getTrending } from '@/composables/posts'
 import { scrollTop } from '@/composables/scroll'
 
 import { CompetitionInfo } from '@/utils/interfaces'
 import { Post as PostType } from '@/utils/interfaces'
 
 import { useUserStore } from '@/stores/user'
-import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
-import { useAuthStore } from '@/stores/auth'
-
 
 interface Winner {
   post: PostType,
@@ -250,7 +238,6 @@ interface State {
   tabSelected: SegmentValue | undefined,
   winners: Array<Winner>,
   pdShow: boolean,
-  pdetails: PostType | null,
   refreshing: boolean
 }
 
@@ -262,16 +249,13 @@ const state: State = reactive({
   winners: [],
   // pdshow is for showing single post details
   pdShow: false,
-  pdetails: null,
   refreshing: false
 })
 
 const route = useRoute();
 const categoryInfo = useCategoryInfoStore();
 const user = useUserStore();
-const toast = useToastStore();
 const ionRouter = useIonRouter();
-const auth = useAuthStore();
 
 const props = defineProps({
   id: String,
@@ -290,11 +274,10 @@ watch(() => route.params.id, () => {
 onBeforeRouteLeave(() => {
   setCategoryDefault()
   categoryInfo.name && categoryInfo.$reset()
-  props.postid && (state.pdShow = true)
+  props.postid && hidePostDetails(false)
 })
 
-props.postid && fetchPostDetails(props.postid, props.id || '')
-
+props.postid && hidePostDetails(false)
 props.id && categoryInfo.getCategoryInfo(props.id, ionRouter)
 
 const { content } = scrollTop()
@@ -313,7 +296,6 @@ function loadCompetitionPosts(competition: CompetitionInfo) {
 function setCategoryDefault() {
   if (!variables.competition.value) { return }
   variables.competition.value = undefined
-  variables.trending.value = false
   categoryInfo.selectedComptn = null
   state.tabSelected = 'allposts'
 }
@@ -331,7 +313,6 @@ async function refreshPosts(event: RefresherCustomEvent | null) {
 
 function tabChanged(value: string) {
   state.tabSelected = value
-  // variables.trending.value = value == 'trending'
 
   if (value == 'winners') {
     state.winners = []
@@ -345,52 +326,8 @@ function tabChanged(value: string) {
   }
 }
 
-async function fetchMore(ev: InfiniteScrollCustomEvent) {
-  // Show upto 8 posts if not authenticated and Show all posts if
-    // User is authenticated
-    // Total number of posts are less or equal to 8
-  if (user.success || posts.value?.allPosts.total <= 8 || posts.value?.allPosts.posts.length < 8) {
-    await getMore(ev)
-    setTimeout(() => { ev.target.complete() })
-  } else {
-    // To see more post, ask user to login
-    auth.open()
-    auth.showMessage('Take your journey further! Log in to reveal more posts.', 'info')
-    // scrollByPoint should be always higher than threshold
-    content.value && content.value.$el.scrollByPoint(0, -50, 500);
-    setTimeout(() => { ev.target.complete() }, 100)
-
-    // Commented this code because on login posts are refetched and cache is cleard, if call for more posts then coflicts may occur.
-    // const stopWatch = watch(user, () => {
-    //   if (user.success) {
-    //     getMore(ev)
-    //   }
-    //   stopWatch()
-    // })
-  }
-
-}
-
-// Get indivual post details if searched using url
-function fetchPostDetails (id: string, category: string) {
-  if (id && category) {
-    state.pdetails = null
-    const { onResult, onError } = getPostDetails(id, category)
-    onResult(({data, loading}) => {
-      if (!loading) {
-        state.pdetails = data.postDetails
-        hidePostDetails(false)
-      }
-    })
-    onError((error) => {
-      if (error?.graphQLErrors) {
-        toast.$patch({message: error?.graphQLErrors[0].message, color: 'danger', open: true})
-      } else {
-        toast.$patch({message: 'Post retrieval error. Please Retry.', color: 'danger', open: true})
-      }
-      ionRouter.replace(`/interests/${props.id}/posts`)
-    })
-  }
+function fetchMore(ev: InfiniteScrollCustomEvent) {
+  getMore(ev, content)
 }
 
 function hidePostDetails (value: boolean) {
@@ -447,47 +384,13 @@ ion-grid {
     color: var(--ion-color-dark-tint);
   }
 }
-.feed {
-  padding: 5px;
-  display: flex;
-  flex-wrap: nowrap;
-  .title {
-    font-size: 18px;
-    font-weight: 580;
-  }
-}
+
 @media only screen and (max-width: 576px) {
 	// For small screens
-	.feed {
-    padding: 0px;
-
-		.title {
-			font-size: 17px;
-		}
-	}
   .category {
     &.title {
       font-size: 19px;
     }
   }
-}
-.refresh-icon {
-  margin-left: 5px;
-  margin-top: 1px;
-  height: 22px;
-  width: 22px;
-  opacity: 0.9;
-  &:hover {
-    opacity: 1;
-  }
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 1s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
