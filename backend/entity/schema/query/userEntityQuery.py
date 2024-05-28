@@ -32,7 +32,7 @@ class UserEntityCheck(graphene.ObjectType):
     else:
       try:
         # Check if verification is pending
-        verfication = Verification.objects.get(user=user, entity_id=entity_id)
+        verfication = Verification.objects.get(user=user, entity_id=entity_id, request="JOIN")
         status = verfication.status
       except Verification.DoesNotExist:
         pass

@@ -4,7 +4,7 @@ from graphene_django import DjangoObjectType
 # Models
 from categories.models.Competition import Competition
 
-from helpers.url_type import ImageUrlType
+from helpers.urlType import ImageUrlType
 
 class CompetitionType(ImageUrlType, DjangoObjectType):
 

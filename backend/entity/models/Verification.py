@@ -1,12 +1,12 @@
 from django.db import models
 from django.conf import settings
-from helpers.custom_upload import custom_upload
+from helpers.customUpload import custom_upload
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import logging
 
 from entity.models.Entity import Entity
-from helpers.send_email import send_email_to_admins
+from helpers.sendEmail import send_email_to_admins
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Verification(models.Model):
     request = models.CharField(max_length=100, choices=REQUEST_CHOICES)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
       constraints = [

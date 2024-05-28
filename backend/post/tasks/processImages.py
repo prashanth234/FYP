@@ -5,11 +5,14 @@ import os
 from django.conf import settings
 
 #@shared_task
-def process_image(img, directory, filename, webp_quality=95, jpeg_quality=95):
+def process_image(img, path, webp_quality=95, jpeg_quality=95):
     target_sizes = {
         'md': 800,
         'lg': 1000
     }
+
+    directory = os.path.dirname(path)
+    filename = os.path.basename(path)
 
     # Calculate new dimensions while maintaining the aspect ratio
     original_width, original_height = img.size

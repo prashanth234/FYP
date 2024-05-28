@@ -127,7 +127,16 @@ function deletePost() {
         id: $id,
       ) {
           success,
-          caId
+          caId,
+          entity {
+            id,
+            stats {
+              posts,
+              categories {
+                count
+              }
+            }
+          }
         } 
     }
   `,

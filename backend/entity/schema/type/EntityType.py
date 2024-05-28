@@ -3,7 +3,7 @@ import graphene
 from entity.models.Entity import Entity
 from post.models.Post import Post
 from categories.models.Category import Category
-from helpers.url_type import ImageUrlType
+from helpers.urlType import ImageUrlType
 from entity.schema.query.userEntityQuery import UserEntityCheck
 
 # Dynamic graphql fields
@@ -22,7 +22,7 @@ from entity.schema.query.userEntityQuery import UserEntityCheck
 
 class CategoryStatType(graphene.ObjectType):
   name = graphene.String()
-  count = graphene.Int()
+  count = graphene.Int(entity_id=graphene.ID())
   color = graphene.String()
 
 class StatsType(graphene.ObjectType):
@@ -30,38 +30,34 @@ class StatsType(graphene.ObjectType):
   posts = graphene.Int()
   categories = graphene.List(CategoryStatType)
 
-class EntityType(ImageUrlType, DjangoObjectType):
-
-  stats = graphene.Field(StatsType)
-  all_stats = graphene.Field(StatsType)
-  user_access = graphene.String()
-
-  def resolve_stats(self, info):
-    posts = Post.objects.filter(entity=self.id)   
-    stats = {
-      "posts": posts.count(),
-      "users": self.users.count()
-    } 
-    return StatsType(**stats)
+  def resolve_users(self, info):
+    return self.users.count()
   
-  def resolve_all_stats(self, info):
+  def resolve_posts(self, info):
+    return Post.objects.filter(entity=self.id).count()
+  
+  def resolve_categories(self, info):
     posts = Post.objects.filter(entity=self.id)
     categories = Category.objects.all()
 
-    all_stats = {
-      "posts": posts.count(),
-      "users": self.users.count(),
-      "categories": []
-    }
+    categories_stats = []
     category_stat = {}
 
     for category in categories:
       category_stat["name"] = category.name
       category_stat["color"] = category.color
       category_stat["count"] = posts.filter(category=category).count()
-      all_stats["categories"].append(CategoryStatType(**category_stat))
+      categories_stats.append(CategoryStatType(**category_stat))
     
-    return StatsType(**all_stats)
+    return categories_stats
+
+class EntityType(ImageUrlType, DjangoObjectType):
+
+  stats = graphene.Field(StatsType)
+  user_access = graphene.String()
+
+  def resolve_stats(self, info):
+    return self
   
   def resolve_type(self, info):
     return (self.other_type if self.type == 'Others' else self.type)
@@ -78,7 +74,6 @@ class EntityType(ImageUrlType, DjangoObjectType):
       "image",
       "city",
       "type",
-      "all_stats",
       "stats",
       "linkedin",
       "facebook",

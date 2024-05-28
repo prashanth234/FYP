@@ -2,13 +2,12 @@ import graphene
 from graphql import GraphQLError
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
-from post.helpers import remove_exisiting_files_in_dir
-from PIL import Image
 import logging
 
 # Models
 from post.models.Post import Post, PostFile
 from core.models.CoinActivity import CoinActivity
+from entity.schema.type.EntityType import EntityType
 
 # Authentications
 from graphql_jwt.decorators import login_required
@@ -26,6 +25,7 @@ class DeletePostMutation(graphene.Mutation):
     # The class attributes define the response of the mutation
     success = graphene.Boolean()
     ca_id = graphene.ID()
+    entity = graphene.Field(EntityType)
 
     @classmethod
     @login_required
@@ -36,17 +36,11 @@ class DeletePostMutation(graphene.Mutation):
         
         try:
             post = Post.objects.get(pk=id, user=info.context.user)
+            entity = post.entity
             if post.competition and post.competition.is_expired:
                 raise GraphQLError("You can't delete or edit posts in closed contests to ensure fairness and transparency. Thanks for understanding! ")
         except Post.DoesNotExist:
             raise GraphQLError("Post with logged in user does not exist.")
-        
-        try:
-            postFile = PostFile.objects.get(post=post)
-            # remove_exisiting_files_in_dir(postFile.file.name)
-            # postFile.file.storage.delete(postFile.file.name)
-        except PostFile.DoesNotExist:
-            pass
 
         if post.competition:
             try:
@@ -58,9 +52,8 @@ class DeletePostMutation(graphene.Mutation):
                 pass
 
         post.delete()
-        postFile.delete()
 
-        return DeletePostMutation(success=True, ca_id=ca_id)
+        return DeletePostMutation(success=True, ca_id=ca_id, entity=entity)
     
 class DeletePost(graphene.ObjectType):
     delete_post = DeletePostMutation.Field()

@@ -75,9 +75,9 @@
                 size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6"
                 class="ion-align-self-center global-stats"
               >
-                <span class="count" style="padding: 5px;">{{ ed.entityDetails.allStats.users }}</span>
+                <span class="count" style="padding: 5px;">{{ ed.entityDetails.stats.users }}</span>
                 <span class="label">Users</span>
-                <span class="count" style="padding: 0px 5px 0px 15px;">{{ ed.entityDetails.allStats.posts }}</span>
+                <span class="count" style="padding: 0px 5px 0px 15px;">{{ ed.entityDetails.stats.posts }}</span>
                 <span class="label">Posts</span>
               </ion-col>
 
@@ -108,7 +108,7 @@
               <ion-row class="ion-justify-content-center">
                 <ion-col
                   size="8" size-xs="6" size-sm="6" size-md="3" size-lg="3" size-xl="3"
-                  v-for="(stat, index) in ed.entityDetails.allStats.categories" :key="index"
+                  v-for="(stat, index) in ed.entityDetails.stats.categories" :key="index"
                 >
                   <div class="one-card" :style="`background-color: ${stat.color}`">
                     <div class="count">{{ stat.count }}</div>
@@ -249,7 +249,8 @@ const ENTITY_DETAILS = gql`
       linkedin,
       facebook,
       userAccess,
-      allStats {
+      ispublic,
+      stats {
         users,
         posts,
         categories {

@@ -57,7 +57,13 @@ class CreateEntityMutation(graphene.Mutation):
 
     # proof = SimpleUploadedFile("updated_file.txt", b"Updated file content")
     verification = Verification(user=user, entity=entity, request='CREATE')
-    verification.file = proof
+
+    filetype = proof.content_type.split('/')[1]
+    directory = f"internal/verifications/create_entity_{entity.id}"
+    filename = f"user_{user.id}.{filetype}"
+    path = f"{directory}/{filename}"
+
+    verification.file.save(path, proof, save=False)
     verification.save()
 
     logger.info(f'User: {user.username} - entity creation request successfull. entity: {entity.id}, verifiaction: {verification.id}')

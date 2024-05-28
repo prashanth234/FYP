@@ -3,11 +3,6 @@ import graphene
 from entity.schema.type.EntityType import EntityType
 from entity.models.Entity import Entity
 
-# Authentications
-from graphql_jwt.decorators import login_required
-
-import time
-
 class Entities(graphene.ObjectType):
 
   entities = graphene.List(EntityType)

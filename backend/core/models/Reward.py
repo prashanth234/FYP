@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-from helpers.custom_upload import custom_upload
+from helpers.customUpload import custom_upload
 
 class Reward(models.Model):
 
@@ -23,6 +23,8 @@ class Reward(models.Model):
 	points = models.CharField(max_length=255)
 	pointsvalue = models.PositiveIntegerField(null=True, blank=True)
 	type = models.CharField(max_length=100, choices=TYPE_CHOICES)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self) -> str:
 			return self.name

@@ -69,14 +69,13 @@ class UpdatePostMutation(graphene.Mutation):
             postFile.width = width
             postFile.height = height
 
+            postFile._context = {'file': postFile.file.name}
             # Save the updated file with the new filename
             postFile.file.save(path, file_content)
 
             # Process image further in background
             # process_image.delay(postFile.get_absolute_path())
-            process_image(img, directory, filename)
-            
-            #remove_exisiting_files_in_dir(postFile.file.name)
+            process_image(img, postFile.file.name)
 
         return UpdatePostMutation(post=post)
     

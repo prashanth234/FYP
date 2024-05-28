@@ -25,6 +25,7 @@ class CoinActivity(models.Model):
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     points = models.IntegerField()
 
     # Examples

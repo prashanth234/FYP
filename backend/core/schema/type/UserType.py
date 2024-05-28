@@ -1,7 +1,7 @@
 from graphene_django import DjangoObjectType
 from core.models.User import User
 from graphene import ObjectType, Boolean, List, String
-from helpers.url_type import AvatartUrlType
+from helpers.urlType import AvatartUrlType
 
 class UserType(AvatartUrlType, DjangoObjectType):
 

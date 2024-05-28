@@ -17,6 +17,7 @@ from entity.models.Verification import Verification
 
 # Type
 from post.schema.type.PostType import PostType
+from entity.schema.type.EntityType import EntityType
 from core.schema.type.CoinActivityType import CoinActivitiesType
 
 # Authentications
@@ -41,6 +42,7 @@ class CreatePostMutation(graphene.Mutation):
     # The class attributes define the response of the mutation
     post = graphene.Field(PostType)
     coin_activity = graphene.Field(CoinActivitiesType)
+    entity = graphene.Field(EntityType)
 
     @classmethod
     @login_required
@@ -129,10 +131,10 @@ class CreatePostMutation(graphene.Mutation):
             
             # Process image further in background
             # process_image.delay(postFile.get_absolute_path())
-            process_image(img, directory, filename)
+            process_image(img, postFile.file.name)
 
         logger.info(f"User: {user.username} - Post creation is successful.")
-        return CreatePostMutation(post=post, coin_activity=coinactivity)
+        return CreatePostMutation(post=post, coin_activity=coinactivity, entity=entity)
   
 class CreatePost(graphene.ObjectType):
     create_post = CreatePostMutation.Field()

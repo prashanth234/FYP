@@ -18,7 +18,9 @@ class Winner(models.Model):
     post = models.OneToOneField(Post, on_delete=models.DO_NOTHING)
     won_by_likes = models.IntegerField()
     position = models.PositiveIntegerField(choices=POSITION_CHOICES)
-    points = models.PositiveBigIntegerField()  
+    points = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
       return self.user.username

@@ -66,14 +66,12 @@ class JoinEntityMutation(graphene.Mutation):
       verification, created = Verification.objects.get_or_create(user=user, entity=entity, request='JOIN')
       
       filetype = file.content_type.split('/')[1]
-      user_folder = f"user_{user.id}"
-      directory = f"internal/verifications/entity_{entity_id}/{user_folder}"
-      filename = f"{user_folder}.{filetype}"
+      directory = f"internal/verifications/join_entity_{entity_id}"
+      filename = f"user_{user.id}.{filetype}"
       path = f"{directory}/{filename}"
 
       verification.file.save(path, file, save=False)
       verification.status = 'PENDING'
-      verification.updated_at = timezone.now()
       verification.save()
       logger.info(f'User: {user.username} - Verification is created id: {verification.id}')
       message = "Your request is being processed. Once verified, you'll be added to the entity."

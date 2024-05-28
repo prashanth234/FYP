@@ -5,7 +5,7 @@ import zoneinfo
 from categories.models.Category import *
 from core.models.Reward import *
 
-from helpers.custom_upload import custom_upload
+from helpers.customUpload import custom_upload
   
 class Competition(models.Model):
     
@@ -19,6 +19,8 @@ class Competition(models.Model):
     key = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to=custom_path, default='')
     points = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def is_expired(self):

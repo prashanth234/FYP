@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from helpers.custom_upload import custom_upload
+from helpers.customUpload import custom_upload
   
 class Category(models.Model):
 
@@ -21,6 +21,8 @@ class Category(models.Model):
     order = models.PositiveIntegerField(default=0)
     hide = models.BooleanField(default=False)
     color = models.CharField(max_length=20, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
       return self.name

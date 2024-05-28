@@ -329,6 +329,11 @@ function onCategoryChange() {
   })
 }
 
+function selectDefaultEntity() {
+  const sdEntity = entity.entities.find(item => item.id == '1')
+  if (sdEntity) { state.entity = sdEntity }
+}
+
 function createNewPost() {
 
   if (!user.success) {
@@ -339,8 +344,9 @@ function createNewPost() {
   // Check if user part of entity 
   if (state.entity.userAccess == 'NOTFOUND') {
     toast.$patch({message: `You're not part of ${state.entity.name} entity. Please join the entity to post in it.`, color: 'primary', open: true})
+    selectDefaultEntity()
     return
-  } 
+  }
 
   // Description check for short stories
   if (postType.value == "TEXT") {
@@ -384,7 +390,16 @@ function createNewPost() {
             description,
             status,
             createdAt
-          } 
+          },
+          entity {
+            id,
+            stats {
+              posts,
+              categories {
+                count
+              }
+            }
+          }
         }
     }
 
@@ -575,6 +590,7 @@ function initialize() {
     state.title = 'Create Post'
     state.uploadTitle = 'Upload'
     state.uploadAction = createNewPost
+    selectDefaultEntity()
   }
 }
 

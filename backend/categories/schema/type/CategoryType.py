@@ -1,5 +1,5 @@
 from graphene_django import DjangoObjectType
-from helpers.url_type import ImageUrlType
+from helpers.urlType import ImageUrlType
 
 # Models
 from categories.models.Category import Category
