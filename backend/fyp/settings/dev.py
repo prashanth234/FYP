@@ -20,7 +20,7 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'fyp',
+    'NAME': 'fyp_prod_clone',
     'HOST': 'localhost',
     'USER': 'root',
     'PASSWORD': 'root',
@@ -33,13 +33,23 @@ DATABASES = {
 
 ENABLE_FIREBASE=False
 
-# DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
-# # STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
-
-# AWS_S3_ACCESS_KEY_ID = "AKIA3KJ5UR7V3YUG6HHK"
-# AWS_SECRET_ACCESS_KEY = "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"
-# AWS_STORAGE_BUCKET_NAME = "fypassets"
-# AWS_S3_REGION_NAME = "ap-south-1"
+# STORAGES = {
+#   "default": {
+#     "BACKEND": "fyp.customStorage.CustomS3Storage",
+#     "OPTIONS": {
+#       "access_key": os.environ.get('AWS_S3_ACCESS_KEY_ID'),
+#       "secret_key": os.environ.get('AWS_SECRET_ACCESS_KEY'),
+#       "bucket_name": os.environ.get('AWS_STORAGE_BUCKET_NAME'),
+#       "region_name": os.environ.get('AWS_S3_REGION_NAME'),
+#       "endpoint_url": os.environ.get('AWS_S3_ENDPOINT_URL'),
+#       "addressing_style": "virtual",
+#       "file_overwrite": True
+#     }
+#   },
+#   "staticfiles": {
+#     "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#   }
+# }
 
 # Pacakge required by s3
 # boto3 = "*"

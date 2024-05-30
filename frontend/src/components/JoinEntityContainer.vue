@@ -187,7 +187,10 @@ function submit() {
           message,
           entity {
             id,
-            userAccess
+            userAccess,
+            stats {
+              users
+            }
           }
         }
     }

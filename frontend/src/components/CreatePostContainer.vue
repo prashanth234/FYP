@@ -496,7 +496,7 @@ function createNewPost() {
     state.creatingPost = false
     clearPostForm()
     emit('postCreated')
-    const routeToPath = `/interests/${state.category}/posts`
+    const routeToPath = state.entity.ispublic ? `/interests/${state.category}/posts` : `/entity/${state.entity.id}/posts`
     routeToPath != router.path && ionRouter.push(routeToPath)
   })
 

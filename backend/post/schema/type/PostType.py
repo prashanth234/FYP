@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.storage import default_storage
+from fyp.customStorage import CustomS3Storage
 
 # Models
 from post.models.Post import Post, PostFile
@@ -21,11 +22,28 @@ class PostFileType(DjangoObjectType):
     files = graphene.Field(FilesType)
 
     def resolve_files(self, info):
-        files = {
-            "lg": default_storage.url(self.file.name.replace(".jpeg", "_lg.webp")),
-            "md": default_storage.url(self.file.name.replace(".jpeg", "_md.webp")),
-            "og": self.file.url
-        }
+
+        if isinstance(default_storage, CustomS3Storage):
+
+            isprivate = not self.post.ispublic
+            name = self.file.name
+
+            files = {
+                "lg": default_storage.url(name.replace(".jpeg", "_lg.webp"), signed=isprivate),
+                "md": default_storage.url(name.replace(".jpeg", "_md.webp"), signed=isprivate),
+                "og": default_storage.url(name, signed=isprivate)
+            }
+
+        else:
+
+            name = self.file.url
+
+            files = {
+                "lg": name.replace(".jpeg", "_lg.webp"),
+                "md": name.replace(".jpeg", "_md.webp"),
+                "og": name
+            }
+
         return FilesType(**files)
     
     class Meta:

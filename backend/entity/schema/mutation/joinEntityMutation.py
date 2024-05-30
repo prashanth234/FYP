@@ -70,9 +70,14 @@ class JoinEntityMutation(graphene.Mutation):
       filename = f"user_{user.id}.{filetype}"
       path = f"{directory}/{filename}"
 
+      if not created:
+        # If already user requested to join entity then override it.
+        verification.file.delete()
+        verification.status = 'PENDING'
+
       verification.file.save(path, file, save=False)
-      verification.status = 'PENDING'
       verification.save()
+
       logger.info(f'User: {user.username} - Verification is created id: {verification.id}')
       message = "Your request is being processed. Once verified, you'll be added to the entity."
 

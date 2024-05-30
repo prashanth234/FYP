@@ -24,7 +24,7 @@ class EntityPosts(graphene.ObjectType):
     entity = Entity.objects.get(pk=entity)
     user = info.context.user
 
-    if not entity.ispublic and not (user.is_authenticated and user.user_of_entities.filter(pk=id).exists()):
+    if not entity.ispublic and not (user.is_authenticated and user.user_of_entities.filter(pk=user.id).exists()):
       raise GraphQLError("Failed to get posts.")
 
     queryset = Post.objects.filter(entity=entity).order_by('-created_at')

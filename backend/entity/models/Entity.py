@@ -1,13 +1,20 @@
 from django.db import models
 from django.conf import settings
 from helpers.customUpload import custom_upload
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
+from helpers.deleteFiles import delete_files
 from django.utils.translation import gettext_lazy as _
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class Entity(models.Model):
 
     def custom_upload_to(instance, filename):
-      folder = f'entity_{instance.id}'
-      return custom_upload('public/entities', f'{folder}/{folder}', filename)
+      newfilename = f"entity_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+      return custom_upload('public/entities', newfilename, filename)
 
     # Also update in UI
     TYPE_CHOICES = (
@@ -43,12 +50,8 @@ class Entity(models.Model):
 
     def __str__(self) -> str:
       return self.name
-    
-    def save(self, *args, **kwargs):
-      if not self.id:
-        temp_image = self.image
-        self.image = None
-        super(Entity, self).save(*args, **kwargs)
-        self.image.save('filename.jpeg', temp_image)
-      else:
-        super(Entity, self).save(*args, **kwargs)
+
+@receiver(post_delete, sender=Entity)
+def entity_post_delete(sender, instance, **kwargs):
+    delete_files([instance.image.name])
+    logger.info(f'Entity: {instance.id} deleted. Removing the files.')

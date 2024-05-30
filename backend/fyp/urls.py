@@ -24,7 +24,7 @@ from graphene_file_upload.django import FileUploadGraphQLView
 # from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
 
-from core.views import serve_private_media
+# from core.views import serve_private_media
 
 urlpatterns = [
     path('admin/', admin.site.urls),

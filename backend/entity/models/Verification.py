@@ -1,8 +1,8 @@
 from django.db import models
 from django.conf import settings
-from helpers.customUpload import custom_upload
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from helpers.deleteFiles import delete_files
 import logging
 
 from entity.models.Entity import Entity
@@ -33,6 +33,7 @@ class Verification(models.Model):
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    comments = models.TextField(null=True, blank=True)
 
     class Meta:
       constraints = [
@@ -73,7 +74,7 @@ def verification_post_save(sender, instance, created, **kwargs):
       instance.entity.verified = True
       instance.entity.save()
 
-
-    
-
-    
+@receiver(post_delete, sender=Verification)
+def postfile_post_delete(sender, instance, **kwargs):
+    delete_files([instance.file.name])
+    logger.info(f'Verification: {instance.id} deleted. Removing the files.')
