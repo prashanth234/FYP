@@ -71,6 +71,7 @@ def verification_post_save(sender, instance, created, **kwargs):
     elif instance.request == 'CREATE':
       # If verification is succesfull and mark entity as public
       logging.info(f'Marking the entity as public - Verification: {instance.id}')
+      instance.entity.users.add(instance.user)
       instance.entity.verified = True
       instance.entity.save()
 
