@@ -41,7 +41,7 @@ class PostFile(models.Model):
 @receiver(post_save, sender=PostFile)
 def postfile_post_save(sender, instance, created, **kwargs):
     context = getattr(instance, '_context', None)
-    if not created:
+    if not created and context:
         logger.info(f'Post file: {instance.id} of the post: {instance.post.id} udpated. Removing the old files: {context}')
         delete_images(context["file"])
 

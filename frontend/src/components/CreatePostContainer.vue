@@ -15,6 +15,11 @@
           <ion-col size="12" class="ion-no-padding">
 
             <ion-row v-if="type=='create'">
+
+              <ion-col size="12" v-if="state.alertMsg">
+                <alert :message="state.alertMsg" type="warning"/>
+              </ion-col>
+              
               <ion-col size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6" >
                 <ion-select
                   class="custom-select"
@@ -177,6 +182,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { getQuery, POST_COMMON_FIELDS } from '@/composables/posts'
 import { getQuery as getCoinActivityQuery, CoinActivities } from '@/composables/coinActivity'
 import { useAuthStore } from '@/stores/auth'
+import alert from './AlertContainer.vue'
 
 interface PostFileType {
   file: string,
@@ -247,7 +253,8 @@ const state = reactive({
   uploadTitle: '',
   refreshFileUpload: 0,
   creatingPost: false,
-  uploadAction: () => {}
+  uploadAction: () => {},
+  alertMsg: ''
 })
 
 const disableUpload = computed(() => {
@@ -343,7 +350,7 @@ function createNewPost() {
 
   // Check if user part of entity 
   if (state.entity.userAccess == 'NOTFOUND') {
-    toast.$patch({message: `You're not part of ${state.entity.name} entity. Please join the entity to post in it.`, color: 'primary', open: true})
+    state.alertMsg = `You're not part of the ${state.entity.name} entity. Join it to post there, or click upload to post in Selfdive entity.`
     selectDefaultEntity()
     return
   }
