@@ -164,7 +164,7 @@ export function getPosts(
       auth.open()
       auth.showMessage('Take your journey further! Log in to reveal more posts.', 'info')
       // scrollByPoint should be always higher than threshold
-      content.value && content.value.$el.scrollByPoint(0, -50, 500);
+      content && (content.value && content.value.$el.scrollByPoint(0, -50, 500))
       setTimeout(() => { ev.target.complete() }, 100)
       return
     }

@@ -6,6 +6,11 @@ export interface UpdatePostVariables {
 
 interface PostFileType {
   file: string,
+  files: {
+    lg: string,
+    md: string,
+    og: string
+  },
   width: number,
   height: number
 }

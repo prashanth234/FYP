@@ -7,10 +7,10 @@ cp /Users/prashanth/projects/fyp-prod/.env.production /Users/prashanth/projects/
 cp /Users/prashanth/projects/FYP/frontend/index.html /Users/prashanth/projects/FYP/frontend/index.html.bkp
 cp /Users/prashanth/projects/fyp-prod/index.html /Users/prashanth/projects/FYP/frontend
 
-cd /Users/prashanth/projects/FYP && docker compose build
+cd /Users/prashanth/projects/FYP && docker compose build frontend
 
 rm /Users/prashanth/projects/FYP/frontend/.env.production  
 rm /Users/prashanth/projects/FYP/frontend/index.html
 mv /Users/prashanth/projects/FYP/frontend/index.html.bkp /Users/prashanth/projects/FYP/frontend/index.html
 
-# docker compose push frontend backend
+# docker compose push frontend

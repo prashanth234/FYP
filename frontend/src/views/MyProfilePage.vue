@@ -194,7 +194,7 @@ function tabChanged(event: SegmentCustomEvent) {
 // Infinate Scroll Event
 
 async function fetchMore(ev: InfiniteScrollCustomEvent) {
-  await getMore(ev)
+  await getMore(ev, null)
   setTimeout(() => { ev.target.complete() })
 }
 

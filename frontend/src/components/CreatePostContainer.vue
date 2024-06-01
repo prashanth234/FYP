@@ -48,11 +48,11 @@
                   interface="popover"
                 >
                   <ion-select-option
-                    v-for="entity in entity.entities"
-                    :key="entity.id"
-                    :value="entity"
+                    v-for="ety in entity.entities"
+                    :key="ety.id"
+                    :value="ety"
                   >
-                    {{ entity.name }}
+                    {{ ety.name }}
                   </ion-select-option>
                 </ion-select>
 
@@ -170,7 +170,7 @@ import { useRoute } from 'vue-router';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed } from 'vue'
-import { CompetitionInfo, EntityType } from '@/utils/interfaces'
+import { CompetitionInfo, EntityType, Post as PostType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { useUserStore } from '@/stores/user'
@@ -183,24 +183,6 @@ import { getQuery, POST_COMMON_FIELDS } from '@/composables/posts'
 import { getQuery as getCoinActivityQuery, CoinActivities } from '@/composables/coinActivity'
 import { useAuthStore } from '@/stores/auth'
 import alert from './AlertContainer.vue'
-
-interface PostFileType {
-  file: string,
-  files: {
-    lg: string,
-    md: string,
-    og: string
-  }
-}
-
-interface PostType {
-  id: number,
-  description: string,
-  postfileSet: PostFileType[],
-  category: {
-    oftype: string
-  }
-}
 
 interface AllPostsType {
   [key: string]: {

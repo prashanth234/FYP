@@ -14,6 +14,6 @@ export async function fetchImage(url: string) {
     const blob = await response.blob()
     return URL.createObjectURL(blob)
   } catch (error) {
-    throw new Error('Error fetching image:', error);
+    // throw new Error('Error fetching image:', error);
   }
 }
