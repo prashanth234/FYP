@@ -16,6 +16,8 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 @admin.register(Winner)
 class WinnerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'competition', 'post', 'won_by_likes', 'position', "points")
+    fields = ['post', 'won_by_likes', 'position', 'points']
+    list_display = ('user', 'competition', 'post', 'won_by_likes', 'points', 'position')
+    list_filter = ['competition']
 
 # admin.site.register(Competition)

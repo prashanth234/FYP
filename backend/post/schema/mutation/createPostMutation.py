@@ -93,7 +93,7 @@ class CreatePostMutation(graphene.Mutation):
         if competition:
             ca_description = f'{competition.name} Contest - Participation Reward'
             coinactivity = CoinActivity(
-                type='COMPPARTN',
+                type='CPARTN',
                 user=user,
                 points=settings.COMPPARTN_POINTS,
                 description=ca_description,

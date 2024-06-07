@@ -28,7 +28,7 @@ class Post(models.Model):
     ispublic = models.BooleanField(default=True)
     
     def __str__(self) -> str:
-      return self.description
+      return self.description[:25] if self.description else str(self.id)
     
 class PostFile(models.Model):
     file = models.FileField()
@@ -36,7 +36,6 @@ class PostFile(models.Model):
     width = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
 @receiver(post_save, sender=PostFile)
 def postfile_post_save(sender, instance, created, **kwargs):

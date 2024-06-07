@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from helpers.sendEmail import send_email_to_admins
   
 class Support(models.Model):
     
@@ -18,3 +21,20 @@ class Support(models.Model):
 
     def __str__(self) -> str:
       return self.description
+    
+@receiver(post_save, sender=Support)
+def perform_activity(sender, instance, created, **kwargs):
+  if created:
+    
+    context = {
+      'user': instance.user.username,
+      'phone': instance.user.email,
+      'email': instance.user.phone,
+      'description': instance.description
+    }
+
+    send_email_to_admins(
+      'New Support Request',
+      context,
+      'support_request.html'
+    )

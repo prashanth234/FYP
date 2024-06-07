@@ -42,7 +42,14 @@
 							class="submit-button"
 							:disabled="disable"
 						>
-							Submit
+							<ion-spinner 
+								class="button-loading-small"
+								v-if="state.loading"
+								name="crescent"
+							/>
+							<span v-else>
+								Submit
+							</span>
 						</ion-button>
 					</ion-col>
 
@@ -55,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonGrid, IonPage, IonContent, IonRow, IonCol, IonTextarea, IonButton, IonInput } from '@ionic/vue';
+import { IonGrid, IonPage, IonContent, IonRow, IonCol, IonTextarea, IonButton, IonSpinner } from '@ionic/vue';
 import { useUserStore } from '@/stores/user';
 import { useToastStore } from '@/stores/toast';
 import gql from 'graphql-tag'
@@ -70,7 +77,8 @@ const toast = useToastStore()
 
 const state = reactive({
 	description: '',
-	contact: ''
+	contact: '',
+	loading: false
 })
 
 const disable = computed(() => {
@@ -82,6 +90,8 @@ const disable = computed(() => {
 })
 
 function createSupport () {
+	state.loading = true
+
 	const { mutate, onDone, error, onError } = useMutation(gql`    
     
     mutation ($description: String!, $contact: String) { 
@@ -107,10 +117,12 @@ function createSupport () {
 		toast.$patch({message: "Thank you for reaching out! We'll get back to you shortly.", color: 'success', open: true})
 		state.description = ''
 		state.contact = ''
+		state.loading = false
   })
 
   onError((error: any) => {
 		toast.$patch({message: error.message, color: 'danger', open: true})
+		state.loading = false
   })
 }
 

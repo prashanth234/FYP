@@ -16,6 +16,11 @@ class Migration(migrations.Migration):
             name='updated_at',
             field=models.DateTimeField(auto_now=True),
         ),
+        migrations.AlterField(
+            model_name='coinactivity',
+            name='comments',
+            field=models.TextField(blank=True, null=True),
+        ),
         migrations.AddField(
             model_name='reward',
             name='created_at',

@@ -21,6 +21,7 @@ class Competition(models.Model):
     points = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    message = models.TextField(null=True, blank=True)
 
     @property
     def is_expired(self):
