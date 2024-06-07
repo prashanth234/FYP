@@ -33,7 +33,8 @@ export interface CompetitionInfo {
   lastDate: string,
   points: string,
   image: string,
-  expired: boolean
+  expired: boolean,
+  message: string
 }
 
 export interface categoryObject {

@@ -12,6 +12,10 @@
 	>
 		<ion-row v-if="categoryInfo.selectedComptn" style="overflow: auto; padding: 10px">
 
+			<ion-col size="12" v-if="categoryInfo.selectedComptn.message">
+				<alert :message="categoryInfo.selectedComptn.message" type="info"/>
+			</ion-col>
+
 			<ion-col size="12" class="title ion-text-center" >
 				{{ categoryInfo.selectedComptn.name }}
 			</ion-col>
@@ -142,6 +146,7 @@ import { useCategoryInfoStore } from '@/stores/categoryInfo';
 import { CompetitionInfo } from '@/utils/interfaces';
 import { reactive, computed } from 'vue';
 import { formatDateToCustomFormat  } from '@/utils/common';
+import alert from './AlertContainer.vue'
 
 const props = defineProps<{
 	vertical: Boolean
@@ -274,7 +279,7 @@ function closeCompDetails() {
 @media only screen and (min-width: 576px) {
 	// For sm and above screens
 	.comp-details-modal {
-		--height: min(530px, 95vh);
+		--height: min(580px, 95vh);
 		--min-width: 800px !important;
 		--max-width: 800px !important;
 	}
