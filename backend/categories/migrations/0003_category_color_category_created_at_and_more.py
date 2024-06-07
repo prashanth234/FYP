@@ -39,6 +39,11 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
+            model_name='competition',
+            name='message',
+            field=models.TextField(blank=True, null=True),
+        ),
+        migrations.AddField(
             model_name='winner',
             name='created_at',
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),

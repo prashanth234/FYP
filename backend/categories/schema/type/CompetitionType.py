@@ -15,4 +15,4 @@ class CompetitionType(ImageUrlType, DjangoObjectType):
 
     class Meta:
         model = Competition
-        fields = ("id", "name", "description", "category", "last_date", "image", "expired", "points")
+        fields = ("id", "name", "description", "category", "last_date", "image", "expired", "points", "message")

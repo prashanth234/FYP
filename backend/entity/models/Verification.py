@@ -22,8 +22,8 @@ class Verification(models.Model):
 
     STATUS_CHOICES = {
       ('SUCCESS', 'Success'),
-      ('INVAILD', 'Invalid'),
-      ('PENDING', 'Pending')
+      ('PENDING', 'Pending'),
+      ('INVAILD', 'Invalid')
     }
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
