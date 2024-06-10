@@ -38,7 +38,7 @@
               size="small"
               :disabled="ed.entityDetails.userAccess == 'PENDING'"
             >
-              {{ ed.entityDetails.userAccess == 'PENDING' ? 'Requested' : 'JOIN'}}
+              <span style="font-family: sans-serif;">{{ ed.entityDetails.userAccess == 'PENDING' ? 'Requested' : 'JOIN'}}</span>
             </ion-button>
 
             <ion-row class="details ion-padding">

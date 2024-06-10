@@ -82,7 +82,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'entity/create',
         component: () => import('@/views/CreateEntityPage.vue'),
-        name: 'createEntity'
+        name: 'createEntity',
+        meta: {
+          auth: true
+        }
       },
       {
         path: 'entity/:id/posts/:postid?',

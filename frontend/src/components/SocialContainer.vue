@@ -39,7 +39,15 @@ const icons = reactive({
   mail: mailOutline
 })
 
-const orglinks = {
+interface Links {
+  instagram?: string,
+  facebook?: string,
+  whatsapp?: string,
+  linkedin?: string,
+  mail?: string 
+}
+
+let orglinks: Links = {
   instagram: 'https://www.instagram.com/_selfdive/',
   facebook: 'https://www.facebook.com/profile.php?id=61556241308978&mibextid=LQQJ4d',
   whatsapp: 'https://wa.me/+919494990138',
@@ -47,13 +55,18 @@ const orglinks = {
   mail: 'mailto:support@selfdive.com'
 }
 
-const links = reactive(props.orglinks ? orglinks : {
-  instagram: props.instagram,
-  facebook: props.facebook,
-  whatsapp: props.whatsapp,
-  linkedin: props.linkedin,
-  mail: props.mail
-})
+const entityLinks: Links = {}
+
+if (!props.orglinks) {
+  props.instagram && (entityLinks.instagram = props.instagram)
+  props.facebook && (entityLinks.facebook = props.facebook)
+  props.whatsapp && (entityLinks.whatsapp = props.whatsapp)
+  props.linkedin && (entityLinks.linkedin = props.linkedin)
+  props.mail && (entityLinks.mail = props.mail)
+  orglinks = entityLinks
+}
+
+const links = reactive(orglinks)
 </script>
 
 <style lang="scss" scoped>

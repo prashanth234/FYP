@@ -7,8 +7,8 @@
         <ion-col size-xs="12" size-sm="12" size-md="8" size-lg="6" size-xl="6">
           <ion-searchbar class="search" placeholder="Search Entity" v-model="state.search"></ion-searchbar>
         </ion-col>
-        <ion-col size="12" class="ion-text-center grey-text" style="padding: 5px 0px;">
-          Don't see your entity? Be the one to represent your entity by clicking <a @click="createEntity" class="cpointer text-bold">request entity</a>.
+        <ion-col size="12" class="ion-text-center grey-text" style="padding: 5px;">
+          Don't see your entity? Be the one to represent your entity by clicking <a @click="createEntity" class="cpointer text-bold">request entity</a>
         </ion-col>
       </ion-row>
 
@@ -79,10 +79,14 @@ import { personOutline, trendingUpOutline } from 'ionicons/icons'
 import { EntityType } from '@/utils/interfaces'
 import { reactive, computed } from 'vue';
 import { useEntityStore } from '@/stores/entity'
+import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
 
 
 const ionRouter = useIonRouter()
 const entity = useEntityStore()
+const user = useUserStore()
+const auth = useAuthStore()
 
 const state = reactive({
   search: ''
@@ -101,6 +105,11 @@ function openEntity (entity: EntityType) {
 }
 
 function createEntity () {
+  if (!user.success) {
+    auth.showMessage('Ready to join the entity? Log in now!', 'info')
+    auth.open()
+    return
+  }
   ionRouter.push('entity/create')
 }
 </script>

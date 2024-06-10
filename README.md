@@ -146,8 +146,16 @@ python manage.py loaddata ./initial_data/post_data.json
 python manage.py loaddata ./initial_data/postfile_data.json
 python manage.py loaddata ./initial_data/reward_data.json
 python manage.py loaddata ./initial_data/faq_data.json
+python manage.py loaddata ./initial_data/entity_data.json
 
 Replace the original media folder
+
+#### To run docker locally
+
+Create override env variable in local path - /path/local.docker.env
+
+To check config - docker compose --env-file .env --env-file /path/local.docker.env config
+To bring up - docker compose --env-file .env --env-file /path/local.docker.env up
 
 #### TROUBLESHOOT
 

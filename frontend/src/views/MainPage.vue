@@ -68,7 +68,7 @@
         </ion-content>
         
 
-        <social-links orglinks class="mr-auto ml-auto"/>
+        <social-links size="25" orglinks class="mr-auto ml-auto"/>
         <doc-links />
       </ion-menu>
 
@@ -326,7 +326,6 @@ const state = reactive({
       name: 'About',
       auth: false,
       dicon: information,
-      micon: informationCircle,
       action: showAbout,
       maction: showAbout
     },

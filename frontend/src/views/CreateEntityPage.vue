@@ -69,6 +69,7 @@
                 interface="popover"
                 required
               >
+                <select v-if="!state.type" slot="end" required class="select-required"></select>
                 <ion-select-option
                   v-for="(entity, index) in state.entities"
                   :value="entity"
@@ -362,5 +363,15 @@ function removeError(error: string) {
 .errors-div {
   padding: 0px 15px;
 }
-
+.select-required {
+  border: 0px;
+  appearance: none;
+  background-color: transparent;
+  outline: none;
+  width: 0.5px;
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
+}
 </style>
