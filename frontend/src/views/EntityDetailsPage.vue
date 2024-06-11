@@ -34,7 +34,7 @@
               aria-label="join-entity"
               fill="outline"
               class="join-entity"
-              @click="openJoinEntity"
+              @click="openJoinEntity(ed.entityDetails)"
               size="small"
               :disabled="ed.entityDetails.userAccess == 'PENDING'"
             >
@@ -120,13 +120,13 @@
           
           </ion-col>
 
-          <!-- Private Entity Message-->
+          <!-- Ask user to join the entity -->
           <ion-col
             size="12"
-            class="ion-text-center ion-padding text-bold"
-            v-if="!ed.entityDetails.ispublic && ed.entityDetails.userAccess != 'SUCCESS'"
+            class="ion-text-center ion-padding text-bold padding-y"
+            v-if="ed.entityDetails.userAccess != 'SUCCESS'"
           >
-            This entity is private. Only members have access to posts.
+            You're not a member of this entity. Please join to view the posts.
           </ion-col>
 
           <!-- Show single post for shared posts -->
@@ -171,14 +171,6 @@
                 <post :post="post"></post>
               </ion-col>
 
-              <ion-col
-                size="12"
-                class="ion-text-center ion-padding text-bold"
-                v-else
-              >
-                No posts here yet! Join in and start sharing!
-              </ion-col>
-
             </ion-row>
 
             <ion-infinite-scroll 
@@ -190,6 +182,15 @@
               <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
 
+          </ion-col>
+
+          <!-- No posts message -->
+          <ion-col
+            size="12"
+            class="ion-text-center text-bold padding-y"
+            v-else
+          >
+            Dive in and share your creative posts! You can be the first to post.
           </ion-col>
 
         </ion-row>
@@ -217,11 +218,15 @@ import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { scrollTop } from '@/composables/scroll'
+import { EntityType } from '@/utils/interfaces'
+import { useToastStore } from '@/stores/toast'
+import { useJoinEntityAPI } from '@/composables/entity'
 
 
 const user = useUserStore()
 const auth = useAuthStore()
 const main = useMainStore()
+const toast = useToastStore()
 const { content } = scrollTop()
 
 
@@ -279,13 +284,24 @@ const {
   refetch
 } = getPosts('entityPosts', undefined, undefined, props.id)
 
-function openJoinEntity() {
+function openJoinEntity(ed: EntityType) {
   if (!user.success) {
     auth.showMessage('Ready to join the entity? Log in now!', 'info')
     auth.open()
     return
   }
-  state.showJoinEntity = true
+
+  if (ed.ispublic) {
+    // For public entity directly add user to entity
+    const { mutate, onDone, onError } = useJoinEntityAPI()
+    mutate({entityId: ed.id})
+    onDone(({data}) => {
+      toast.$patch({message: data.joinEntity.message, color: 'success', open: true})
+    })
+  } else {
+    // For private entity ask for code or proof
+    state.showJoinEntity = true
+  }
 }
 
 function fetchMore(ev: InfiniteScrollCustomEvent) {
@@ -422,5 +438,10 @@ async function refreshPosts(event: RefresherCustomEvent | null) {
 
     }
   }
+}
+
+.padding-y {
+  padding-top: 25px;
+  padding-bottom: 25px;
 }
 </style>

@@ -458,8 +458,8 @@ function confirmLogout() {
   ]
 
   dialog.show(
-    'Are you sure you want to log out?',
     '',
+    'Are you sure you want to log out?',
     buttons,
     warningOutline,
     'warning'

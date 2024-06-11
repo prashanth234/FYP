@@ -106,7 +106,7 @@ function openEntity (entity: EntityType) {
 
 function createEntity () {
   if (!user.success) {
-    auth.showMessage('Ready to join the entity? Log in now!', 'info')
+    auth.showMessage('Please log in to create an entity request.', 'info')
     auth.open()
     return
   }

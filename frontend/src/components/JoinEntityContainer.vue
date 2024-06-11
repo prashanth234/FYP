@@ -123,8 +123,7 @@ import { closeOutline } from 'ionicons/icons'
 import alert from './AlertContainer.vue'
 import { useToastStore } from '@/stores/toast'
 import errors from '@/components/ErrorContainer.vue'
-import { useMutation } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
+import { useJoinEntityAPI } from '@/composables/entity'
 
 const props = defineProps({
   show: Boolean,
@@ -175,33 +174,8 @@ function submit() {
     entityId: props.entity
   }
 
-  const { mutate, onDone, onError } = useMutation(gql`    
-    
-    mutation joinEntity ($file: Upload, $code: String, $entityId: ID!) { 
-      joinEntity (
-        file: $file,
-        code: $code,
-        entityId: $entityId
-      ) {
-          success,
-          message,
-          entity {
-            id,
-            userAccess,
-            stats {
-              users
-            }
-          }
-        }
-    }
-
-  `, () => ({
-      variables: variables
-    })
-
-  )
-
-  mutate()
+  const { mutate, onDone, onError } = useJoinEntityAPI()
+  mutate(variables)
 
   onDone(({data}) => {
     if (data.joinEntity.success) {
