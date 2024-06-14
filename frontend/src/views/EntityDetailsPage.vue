@@ -14,11 +14,11 @@
 
       <ion-grid style="max-width: 700px;">
 
-        <ion-row class="ion-justify-content-center" v-if="!loadingDetails">
+        <ion-row class="ion-justify-content-center" v-if="!entity.loading">
 
           <JoinEntity
             v-model:show="state.showJoinEntity"
-            :entity="ed.entityDetails.id"
+            :entity="entity.details.id"
           />
 
           <!-- Entity Details -->
@@ -27,29 +27,29 @@
             class="entity card"
           >
 
-            <img class="image" :src="ed.entityDetails.image" />
+            <img class="image" :src="entity.details.image" />
 
             <ion-button
-              v-if="ed.entityDetails.userAccess != 'SUCCESS'"
-              aria-label="join-entity"
+              v-if="entity.details.userAccess != 'SUCCESS'"
+              aria-label="join-entity.details"
               fill="outline"
               class="join-entity"
-              @click="openJoinEntity(ed.entityDetails)"
+              @click="openJoinEntity(entity.details)"
               size="small"
-              :disabled="ed.entityDetails.userAccess == 'PENDING'"
+              :disabled="entity.details.userAccess == 'PENDING'"
             >
-              <span style="font-family: sans-serif;">{{ ed.entityDetails.userAccess == 'PENDING' ? 'Requested' : 'JOIN'}}</span>
+              <span style="font-family: sans-serif;">{{ entity.details.userAccess == 'PENDING' ? 'Requested' : 'JOIN'}}</span>
             </ion-button>
 
             <ion-row class="details ion-padding">
 
               <!-- Title -->
               <ion-col size="12" class="title ion-text-start">
-                {{ ed.entityDetails.name }}
+                {{ entity.details.name }}
               </ion-col>
 
-              <ion-col size="12" v-if="ed.entityDetails.description">
-                <text-clamp :key="ed.entityDetails.description" :text="ed.entityDetails.description" :max-lines="2" auto-resize>
+              <ion-col size="12" v-if="entity.details.description">
+                <text-clamp :key="entity.details.description" :text="entity.details.description" :max-lines="2" auto-resize>
                   <template #after="{ toggle, expanded, clamped }">
                     <a v-if="expanded || clamped" @click="toggle" class="cpointer">
                       {{ expanded ? ' See less' : ' See more' }}
@@ -62,11 +62,11 @@
               <ion-col size="12">
                 <div class="subtitle">
                   <ion-icon class="icon" :icon="businessOutline"></ion-icon>
-                  <div class="text">{{ ed.entityDetails.type }}</div>
+                  <div class="text">{{ entity.details.type }}</div>
                 </div>
                 <div class="subtitle" style="padding-top: 5px">
                   <ion-icon class="icon" :icon="locationOutline"></ion-icon>
-                  <div class="text">{{ ed.entityDetails.city }}</div>
+                  <div class="text">{{ entity.details.city }}</div>
                 </div>
               </ion-col>
 
@@ -75,9 +75,9 @@
                 size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6"
                 class="ion-align-self-center global-stats"
               >
-                <span class="count" style="padding: 5px;">{{ ed.entityDetails.stats.users }}</span>
+                <span class="count" style="padding: 5px;">{{ entity.details.stats?.users }}</span>
                 <span class="label">Users</span>
-                <span class="count" style="padding: 0px 5px 0px 15px;">{{ ed.entityDetails.stats.posts }}</span>
+                <span class="count" style="padding: 0px 5px 0px 15px;">{{ entity.details.stats?.posts }}</span>
                 <span class="label">Posts</span>
               </ion-col>
 
@@ -86,9 +86,9 @@
                 size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6"
               >
                 <social-links
-                  :linkedin="ed.entityDetails.linkedin"
-                  :instagram="ed.entityDetails.instagram"
-                  :facebook="ed.entityDetails.facebook"
+                  :linkedin="entity.details.linkedin"
+                  :instagram="entity.details.instagram"
+                  :facebook="entity.details.facebook"
                   size="30"
                   style="padding: 0px; float: right;"
                 />
@@ -108,7 +108,7 @@
               <ion-row class="ion-justify-content-center">
                 <ion-col
                   size="8" size-xs="6" size-sm="6" size-md="3" size-lg="3" size-xl="3"
-                  v-for="(stat, index) in ed.entityDetails.stats.categories" :key="index"
+                  v-for="(stat, index) in entity.details.stats?.categories" :key="index"
                 >
                   <div class="one-card" :style="`background-color: ${stat.color}`">
                     <div class="count">{{ stat.count }}</div>
@@ -124,7 +124,7 @@
           <ion-col
             size="12"
             class="ion-text-center ion-padding text-bold padding-y"
-            v-if="ed.entityDetails.userAccess != 'SUCCESS'"
+            v-if="entity.details.userAccess != 'SUCCESS'"
           >
             You're not a member of this entity. Please join to view the posts.
           </ion-col>
@@ -204,30 +204,30 @@
 <script lang="ts" setup>
 import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent} from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import SocialLinks from '@/components/SocialContainer.vue'
 import JoinEntity from '@/components/JoinEntityContainer.vue'
 import SinglePost from '@/components/SinglePostContainer.vue'
 import Refresh from '@/components/RefreshContainer.vue'
 import { getPosts } from '@/composables/posts'
 import Post from '@/components/PostContainer.vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
 import TextClamp from 'vue3-text-clamp'
-import { useMainStore } from '@/stores/main'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { scrollTop } from '@/composables/scroll'
 import { EntityType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useJoinEntityAPI } from '@/composables/entity'
+import { useEntityInfoStore } from '@/stores/entityInfo'
 
 
 const user = useUserStore()
 const auth = useAuthStore()
-const main = useMainStore()
 const toast = useToastStore()
 const { content } = scrollTop()
+const entity  = useEntityInfoStore()
+const route = useRoute()
 
 
 const props = defineProps({
@@ -241,39 +241,18 @@ const state = reactive({
   refreshing: false
 })
 
-const ENTITY_DETAILS = gql`
-  query EntityDetails ($id: ID!) {
-    entityDetails (id: $id) {
-      id,
-      name,
-      description,
-      type,
-      image,
-      city,
-      instagram,
-      linkedin,
-      facebook,
-      userAccess,
-      ispublic,
-      stats {
-        users,
-        posts,
-        categories {
-          name,
-          count,
-          color
-        }
-      }
-    }
+props.id && entity.getEntityDetails(props.id)
+
+// When another entity is opened after a entity is opened, page is not rendered again so need to watch router params
+watch(() => route.params.id, () => {
+  if (route.name == 'entityDetails' && route.params.id == props.id) {
+    entity.getEntityDetails(props.id)
   }
-`
+})
 
-const { result: ed, loading: loadingDetails, onResult } = useQuery(ENTITY_DETAILS, () => ({
-  id: props.id,
-}))
-
-onResult(({loading}) => {
-  main.pageloading = loading
+// When the router leaves the details page, clear the entity information store
+onBeforeRouteLeave(() => {
+  entity.details.name && entity.$reset()
 })
 
 const { 

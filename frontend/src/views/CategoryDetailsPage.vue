@@ -262,8 +262,7 @@ const props = defineProps({
   postid: String
 })
 
-// As opened category details page are opened again need to update the categorydetails since
-// once the category details is opened it will not get rerendered again
+// When another category is opened after a category is opened, page is not rendered again so need to watch router params
 watch(() => route.params.id, () => {
   if (route.name == 'CategoryDetails' && route.params.id == props.id) {
     categoryInfo.getCategoryInfo(props.id, ionRouter)

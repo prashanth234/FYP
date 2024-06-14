@@ -3,6 +3,8 @@ import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { CompetitionInfo } from '@/utils/interfaces'
 
+// This store stores information about a openend category, through out the app
+
 export const useCategoryInfoStore = defineStore('categoryInfo', {
   state: () => ({ 
     id: '',
@@ -18,28 +20,28 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
   actions: {
     getCategoryInfo (id: string, ionRouter: any) {
       this.loading = true
-      const { result, onResult, onError } = useQuery(gql`
-                                    query categoryDetails ($id: ID!) {
-                                        categoryDetails (id: $id) {
-                                            id,
-                                            name,
-                                            description,
-                                            oftype,
-                                            competitionSet {
-                                                id,
-                                                name,
-                                                description,
-                                                lastDate,
-                                                image,
-                                                expired,
-                                                points,
-                                                message
-                                            }
-                                        }
-                                    }
-                                    `, {
-                                    id: id,
-                                  })
+
+      const CATEGORY_DETAILS = gql`
+      query categoryDetails ($id: ID!) {
+          categoryDetails (id: $id) {
+              id,
+              name,
+              description,
+              oftype,
+              competitionSet {
+                  id,
+                  name,
+                  description,
+                  lastDate,
+                  image,
+                  expired,
+                  points,
+                  message
+              }
+          }
+      }
+      `
+      const { result, onResult, onError } = useQuery(CATEGORY_DETAILS, { id: id })
 
       onResult(value => {
         if (!value.loading) {

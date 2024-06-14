@@ -43,7 +43,9 @@ export interface categoryObject {
   key: string,
   id: string,
   image: string,
-  oftype: string
+  oftype: string,
+  count: string,
+  color: string
 }
 
 export interface EntityType {
@@ -56,7 +58,18 @@ export interface EntityType {
   userAccess: string,
   ispublic: boolean,
   stats: {
-    users: string,
-    posts: string
+    users: number,
+    posts: number,
+  }
+}
+
+export interface EntityDetailsType extends EntityType {
+  instagram: '',
+  linkedin: '',
+  facebook: '',
+  stats: {
+    users: number,
+    posts: number,
+    categories: categoryObject[]
   }
 }
