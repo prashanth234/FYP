@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { EntityDetailsType } from '@/utils/interfaces'
+import { EntityDetailsType, CompetitionType } from '@/utils/interfaces'
 
 export const useEntityInfoStore = defineStore('entityInfo', {
   state: () => ({ 
     details: {} as EntityDetailsType,
-    loading: false
+    loading: false,
+    selectedComptn: null as CompetitionType | null
   }),
   getters: {
   },
@@ -28,6 +29,16 @@ export const useEntityInfoStore = defineStore('entityInfo', {
             facebook,
             userAccess,
             ispublic,
+            competitions {
+              id,
+              name,
+              description,
+              lastDate,
+              image,
+              expired,
+              points,
+              message
+            },
             stats {
               users,
               posts,

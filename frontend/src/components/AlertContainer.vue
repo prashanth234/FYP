@@ -80,4 +80,9 @@ const icons: Icons = reactive({
     color: var(--ion-color-danger);
     border-color: var(--ion-color-danger);
   }
+
+  .alert-light {
+    background-color: var(--ion-color-light-tint);
+    border-color: var(--ion-color-light-shade);
+  }
 </style>

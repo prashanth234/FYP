@@ -20,7 +20,13 @@ class UserEntityCheck(graphene.ObjectType):
   )
 
   @classmethod
+  def has_access(cls, user, entity_id):
+    # check if user has access to the entity
+    return cls.get_status(user, entity_id) == 'SUCCESS'
+
+  @classmethod
   def get_status(cls, user, entity_id):
+    # check status of the user being part of the entity
     status = 'NOTFOUND'
 
     if not user.is_authenticated:

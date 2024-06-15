@@ -27,7 +27,7 @@
                   placeholder="Select"
                   label="Interest"
                   interface="popover"
-                  @ionChange="onCategoryChange"
+                  @ionChange="getCompetitions"
                 >
                   <ion-select-option
                     v-for="cat in category.categories"
@@ -46,6 +46,7 @@
                   placeholder="Select"
                   label="Entity"
                   interface="popover"
+                  @ionChange="getCompetitions"
                 >
                   <ion-select-option
                     v-for="ety in entity.entities"
@@ -69,11 +70,22 @@
                   <ion-select-option value="">
                     None
                   </ion-select-option>
+                  <ion-select-option disabled class="select-option-header" v-if="state.competitions.globalList.length">
+                    Global Contests
+                  </ion-select-option>
                   <ion-select-option
-                    v-for="competition in state.catCompetitions"
-                    :key="competition.id"
-                    :class="{'competition-expired': competition.expired}"
-                    :value="competition.id"
+                    v-for="competition in state.competitions.globalList"
+                    :key="competition.id" :value="competition.id"
+                    style="padding-left: 10px;"
+                  >
+                    {{ competition.name }}
+                  </ion-select-option>
+                  <ion-select-option disabled class="select-option-header" v-if="state.competitions.entityList.length">
+                    Entity's Contests
+                  </ion-select-option>
+                  <ion-select-option
+                    v-for="competition in state.competitions.entityList"
+                    :key="competition.id" :value="competition.id"
                   >
                     {{ competition.name }}
                   </ion-select-option>
@@ -170,9 +182,10 @@ import { useRoute } from 'vue-router';
 import { closeOutline } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed } from 'vue'
-import { CompetitionInfo, EntityType, Post as PostType } from '@/utils/interfaces'
+import { CompetitionType, EntityType, PostType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import { useEntityInfoStore } from '@/stores/entityInfo'
 import { useUserStore } from '@/stores/user'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -208,6 +221,11 @@ interface CachesType {
   entity: AllPostsType | null
 }
 
+interface Competitions {
+  globalList: CompetitionType[],
+  entityList: CompetitionType[]
+}
+
 const props = defineProps<{
   post?: PostType | null,
   type: string,
@@ -229,7 +247,7 @@ const state = reactive({
   competition: '',
   entity: {} as EntityType,
 
-  catCompetitions: [] as CompetitionInfo[],
+  competitions: {globalList: [], entityList: []} as Competitions,
   preview: '',
   title: '',
   uploadTitle: '',
@@ -272,21 +290,12 @@ const user = useUserStore()
 const category = useCategoryStore()
 const entity = useEntityStore()
 const auth = useAuthStore()
-// category.getCategories()
+const categoryInfo = useCategoryInfoStore()
+const entityInfo = useEntityInfoStore()
 
 const { QUERY: POST_QUERY } = getQuery('allPosts')
 const { QUERY: MYPOSTS_QUERY } = getQuery('myPosts')
 const { QUERY: ENTITYPOSTS_QUERY } = getQuery('entityPosts')
-
-if (props.type == 'create') {
-  // Intialize create post data
-  const { id, selectedComptn } = useCategoryInfoStore()
-  state.category = id
-  if (id) {
-    onCategoryChange()
-  }
-  state.competition = !selectedComptn?.expired && selectedComptn?.id ? selectedComptn.id : ''
-}
 
 function clearPostForm () {
   state.preview = ''
@@ -295,32 +304,46 @@ function clearPostForm () {
   state.refreshFileUpload++
 }
 
-function onCategoryChange() {
-  state.catCompetitions = []
+function getCompetitions() {
+  if (!state.category || !state.entity) { return }
   state.competition = ''
 
   const { onResult, onError } = useQuery(gql`
-                                  query ($id: ID!) {
-                                    catCompetitions (id: $id) {
-                                      name,
-                                      id,
-                                      expired
-                                    }
-                                  }
-                                `,
-                                  {
-                                    id: state.category
-                                  }
-                                )
+    query competitions ($categoryId: ID!, $entityId: ID!) @connection(key: "competitions", filter: ["categoryId", "entityId"]) {
+      competitions (categoryId: $categoryId, entityId: $entityId) {
+        globalList {
+          name,
+          id
+        },
+        entityList {
+          name,
+          id
+        }
+      }
+    }
+  `,
+    {
+      categoryId: state.category,
+      entityId: state.entity.id
+    }
+  )
 
   onResult(({data, loading}) => {
-    !loading && (state.catCompetitions = data.catCompetitions)
+    !loading && (state.competitions = data.competitions)
   })
 }
 
-function selectDefaultEntity() {
-  const sdEntity = entity.entities.find(item => item.id == '1')
-  if (sdEntity) { state.entity = sdEntity }
+function selectEntity(entityId='1') {
+  const entityObj = entity.entities.find(item => item.id == entityId)
+  if (entityObj) { state.entity = entityObj }
+}
+
+function selectDefault() {
+  // Select default entity, category, competition based on the page user is in.
+  const { id, selectedComptn } = categoryInfo
+  state.category = id
+  state.competition = (!selectedComptn?.expired && selectedComptn?.id) ? selectedComptn.id : ''
+  selectEntity(entityInfo.details.id ? entityInfo.details.id : '1')
 }
 
 function createNewPost() {
@@ -333,7 +356,7 @@ function createNewPost() {
   // Check if user part of entity 
   if (state.entity.userAccess == 'NOTFOUND') {
     state.alertMsg = `You're not part of the ${state.entity.name} entity. Join it to post there, or click upload to post in Selfdive entity.`
-    selectDefaultEntity()
+    selectEntity()
     return
   }
 
@@ -579,7 +602,8 @@ function initialize() {
     state.title = 'Create Post'
     state.uploadTitle = 'Upload'
     state.uploadAction = createNewPost
-    selectDefaultEntity()
+    selectDefault()
+    getCompetitions()
   }
 }
 
@@ -607,8 +631,15 @@ initialize()
   }
 }
 </style>
-<style>
-.competition-expired {
-  display: none;
+
+<style lang="scss">
+.select-option-header {
+  background-color: var(--ion-color-medium-shade);
+  font-size: 15px;
+  --min-height: 30px !important;
+  ion-radio {
+    min-height: 30px !important;
+    height: 30px;
+  }
 }
 </style>

@@ -10,24 +10,24 @@
 		:is-open="state.showCompDetails"
 		@didDismiss="closeCompDetails"
 	>
-		<ion-row v-if="categoryInfo.selectedComptn" style="overflow: auto; padding: 10px">
+		<ion-row v-if="data.selectedComptn" style="overflow: auto; padding: 10px">
 
-			<ion-col size="12" v-if="categoryInfo.selectedComptn.message">
-				<alert :message="categoryInfo.selectedComptn.message" type="info"/>
+			<ion-col size="12" v-if="data.selectedComptn.message">
+				<alert :message="data.selectedComptn.message" type="info"/>
 			</ion-col>
 
 			<ion-col size="12" class="title ion-text-center" >
-				{{ categoryInfo.selectedComptn.name }}
+				{{ data.selectedComptn.name }}
 			</ion-col>
 
 			<ion-col size="12" style="line-height: 1.7;">
 				
 				<div class="ion-text-start">
 					<span class="comp-header">The Quest:</span>
-					{{ categoryInfo.selectedComptn.description }}
+					{{ data.selectedComptn.description }}
 				</div>
 
-				<div class="ion-text-center points-table">
+				<div class="ion-text-center points-table" v-if="data.selectedComptn.points">
 
 					<h5>SparkPoints</h5>
 					<table class="mlr-auto">
@@ -37,15 +37,15 @@
 							<th>3rd Place</th>
 						</tr>
 						<tr>
-							<td>3000</td>
-							<td>2000</td>
-							<td>1500</td>
+							<td>{{ points.first }}</td>
+							<td>{{ points.second }}</td>
+							<td>{{ points.third }}</td>
 						</tr>
 					</table>
 
 					<div class="ion-text-start" style="display: flex;">
 						<div class="mlr-auto">
-							<span class="comp-header">Participation</span>: 250<br>
+							<span v-if="points.participation"><span class="comp-header">Participation</span>: {{ points.participation }}</span><br>
 							<span class="comp-header">Last Date</span>: {{ lastDate }}
 						</div>
 					</div>
@@ -74,7 +74,7 @@
 	<ion-card
 		class="note-card"
 		color="light"
-		v-if="!categoryInfo.competitionSet.length"
+		v-if="!data.details.competitions?.length"
 	>
 		<ion-card-content class="ion-text-center" style="font-weight: 500;">
 			Comming Soon!
@@ -86,14 +86,14 @@
 			:size-md="props.vertical ? '12' : 'auto'"
 			:size-lg="props.vertical ? '11' : 'auto'"
 			:size-xl="props.vertical ? '10' : 'auto'"
-			v-for="(competition, index) in categoryInfo.competitionSet"
+			v-for="(competition, index) in data.details.competitions"
 			:key="index"
 		>
 			<ion-card
 				@click="selectCompetition(competition)"
 				class="competition cpointer ion-no-margin"
 				:class="{
-					'competition-selected': categoryInfo.selectedComptn?.id == competition.id,
+					'competition-selected': data.selectedComptn?.id == competition.id,
 					'expired': competition.expired,
 					'hovered': state.ihovered == index
 				}"
@@ -114,7 +114,7 @@
 					</ion-col>
 				</ion-row>
 				<transition name="slide-fade">
-					<div v-if="categoryInfo.selectedComptn?.id == competition.id">
+					<div v-if="data.selectedComptn?.id == competition.id">
 						<ion-button
 							class="ion-no-margin float-right"
 							size="small"
@@ -141,20 +141,22 @@
 
 <script lang="ts" setup>
 
-import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent } from '@ionic/vue';
+import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent, pickerController } from '@ionic/vue';
 import { useCategoryInfoStore } from '@/stores/categoryInfo';
-import { CompetitionInfo } from '@/utils/interfaces';
+import { useEntityInfoStore } from '@/stores/entityInfo';
+import { CompetitionType } from '@/utils/interfaces';
 import { reactive, computed } from 'vue';
 import { formatDateToCustomFormat  } from '@/utils/common';
 import alert from './AlertContainer.vue'
 
 const props = defineProps<{
-	vertical: Boolean
+	vertical: Boolean,
+	type: String
 }>()
 
 const emit = defineEmits<{
-  (e: 'selectCompetition', competition: CompetitionInfo): void;
-	(e: 'closeCompetition', competition: CompetitionInfo): void;
+  (e: 'selectCompetition', competition: CompetitionType): void;
+	(e: 'closeCompetition', competition: CompetitionType): void;
 }>()
 
 interface State {
@@ -168,37 +170,39 @@ const state: State = reactive({
 })
 
 const points = computed(() => {
-	if (categoryInfo.selectedComptn) {
-		// return categoryInfo.selectedComptn.points.split(',').sort((a, b) => {
-		// 	return parseInt(b) - parseInt('a')
-		// })
-		const [firstplace, secondplace, thridplace, pariticipation] = categoryInfo.selectedComptn.points.split(',')
+	if (data.selectedComptn) {
+		const [first, second, third, participation] = data.selectedComptn.points.split(',')
 		return {
-			'1st Place': firstplace,
-			'2nd Place': secondplace,
-			'3rd Place': thridplace,
-			'Participation': pariticipation
+			first,
+			second,
+			third,
+			participation
 		}
 	}
-	return []
+	return {}
 })
 
 const lastDate = computed(() => {
-	return categoryInfo.selectedComptn ? formatDateToCustomFormat(categoryInfo.selectedComptn.lastDate) : ''
+	return data.selectedComptn ? formatDateToCustomFormat(data.selectedComptn.lastDate) : ''
 })
 
-const categoryInfo = useCategoryInfoStore()
+const data = props.type == 'entity' ? useEntityInfoStore() : useCategoryInfoStore()
 
-function selectCompetition(competition: CompetitionInfo) {
+function selectCompetition(competition: CompetitionType) {
+	data.selectedComptn = competition
+	data.hideSinglePost(true)
+	data.tabSelected = 'allposts'
 	emit('selectCompetition', competition)
 }
 
-function closeCompetition(competition: CompetitionInfo) {
+function closeCompetition(competition: CompetitionType) {
+	data.selectedComptn = null
+	data.tabSelected = 'allposts'
 	emit('closeCompetition', competition)
 	state.ihovered = null
 }
 
-function moreCompDetails(competition: CompetitionInfo) {
+function moreCompDetails(competition: CompetitionType) {
 	state.showCompDetails = true
 }
 

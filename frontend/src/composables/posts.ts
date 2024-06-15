@@ -38,14 +38,16 @@ export function getQuery(type: string) {
       QUERY: gql`
         query ${type} (
           $entity: ID!,
+          $competition: ID,
           $perPage: Int,
           $cursor: String
         ) {
           ${type} (
             entity: $entity,
+            competition: $competition,
             perPage: $perPage,
             cursor: $cursor
-          ) @connection(key: "entity-feed", filter: ["entity"]) {
+          ) @connection(key: "entity-feed", filter: ["entity", "competition"]) {
             posts {
               ${POST_COMMON_FIELDS}
             },
@@ -130,14 +132,15 @@ export function getPosts(
   const user = useUserStore()
   const auth = useAuthStore()
 
-  const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, () => ({
+  const queryVariables = () => ({
     category: variables.category.value,
     competition: variables.competition.value,
     entity: variables.entity.value,
     perPage: variables.perPage,
     cursor: undefined
-  }))
+  })
 
+  const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, queryVariables)
 
   const fetchMoreCompleted = computed(() => {
     if (!posts.value) {
@@ -215,7 +218,7 @@ export function getPosts(
   }
 }
 
-export function getWinners(competition: string | undefined) {
+export function getWinners(competition?: string | undefined) {
   const WINNERS_QUERY = gql`
     query winners ($competition: ID!) {
       winners (competition: $competition) {
@@ -228,14 +231,20 @@ export function getWinners(competition: string | undefined) {
     }
   `
 
-  const { result: winners, loading, refetch, onResult } = useQuery(WINNERS_QUERY, () => ({
-    competition
+  const variables = {
+    competition: ref<string|undefined>(competition)
+  }
+
+  const { result: posts, loading, refetch, onResult, load } = useLazyQuery(WINNERS_QUERY, () => ({
+    competition: variables.competition.value
   }))
 
   return {
-    winners,
+    posts,
     refetch,
-    onResult
+    onResult,
+    load,
+    variables
   }
 }
 
@@ -267,7 +276,7 @@ export function getPostDetails(
   }
 }
 
-export function getTrending() {
+export function getTrending(competition?: string | undefined) {
 
   const TRENDING_QUERY = gql`
     query TrendingPosts ($competition: ID!) {
@@ -281,15 +290,15 @@ export function getTrending() {
   `
 
   const variables = {
-    competition: ref<string|undefined>('')
+    competition: ref<string|undefined>(competition)
   }
 
-  const { result, loading, refetch, onResult, load } = useLazyQuery(TRENDING_QUERY, () => ({
+  const { result: posts, loading, refetch, onResult, load } = useLazyQuery(TRENDING_QUERY, () => ({
     competition: variables.competition.value,
   }))
 
   return {
-    result,
+    posts,
     refetch,
     onResult,
     load,

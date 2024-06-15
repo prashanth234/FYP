@@ -5,6 +5,7 @@ from django.utils import dateparse
 from post.models.Post import Post
 from post.schema.type.PostType import PostType
 from entity.models.Entity import Entity
+from categories.models.Competition import Competition
 
 class EntityPostsType(graphene.ObjectType):
   posts = graphene.List(PostType)
@@ -15,19 +16,25 @@ class EntityPosts(graphene.ObjectType):
   entity_posts = graphene.Field(
     EntityPostsType,
     entity=graphene.ID(required=True),
+    competition=graphene.ID(),
     per_page=graphene.Int(),
     cursor=graphene.String()
   )
 
-  def resolve_entity_posts(root, info, entity, per_page=10, cursor=None):
+  def resolve_entity_posts(root, info, entity, competition=None, per_page=10, cursor=None):
 
     entity = Entity.objects.get(pk=entity)
     user = info.context.user
 
     if not (user.is_authenticated and user.user_of_entities.filter(pk=user.id).exists()):
       raise GraphQLError("Failed to get posts.")
+    
+    if competition:
+      competition = Competition.objects.get(id=competition)
+      queryset = Post.objects.filter(entity=entity, category=competition.category, competition=competition).order_by('-created_at')
+    else:
+      queryset = Post.objects.filter(entity=entity).order_by('-created_at')
 
-    queryset = Post.objects.filter(entity=entity).order_by('-created_at')
     total = queryset.count()
     
     if cursor:

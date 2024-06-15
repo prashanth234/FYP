@@ -1,10 +1,16 @@
 from graphene_django import DjangoObjectType
 import graphene
+from helpers.urlType import ImageUrlType
+from entity.schema.query.userEntityQuery import UserEntityCheck
+
+# Models
+from categories.models.Competition import Competition
 from entity.models.Entity import Entity
 from post.models.Post import Post
 from categories.models.Category import Category
-from helpers.urlType import ImageUrlType
-from entity.schema.query.userEntityQuery import UserEntityCheck
+
+# Type
+from categories.schema.type.CompetitionType import CompetitionType
 
 # Dynamic graphql fields
 # def get_stats_dict():
@@ -55,6 +61,7 @@ class EntityType(ImageUrlType, DjangoObjectType):
 
   stats = graphene.Field(StatsType)
   user_access = graphene.String()
+  competitions = graphene.List(CompetitionType)
 
   def resolve_stats(self, info):
     return self
@@ -64,6 +71,12 @@ class EntityType(ImageUrlType, DjangoObjectType):
 
   def resolve_user_access(self, info):
     return UserEntityCheck.get_status(info.context.user, self.id)
+
+  def resolve_competitions(self, info):
+    if self.ispublic or UserEntityCheck.has_access(info.context.user, self.id):
+      return Competition.objects.filter(entity_id=self.id)
+    else:
+      return []
 
   class Meta:
     model = Entity
@@ -79,6 +92,7 @@ class EntityType(ImageUrlType, DjangoObjectType):
       "facebook",
       "instagram",
       "user_access",
-      "ispublic"
+      "ispublic",
+      "competitions"
     )
     convert_choices_to_enum = False

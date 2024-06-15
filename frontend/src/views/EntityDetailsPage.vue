@@ -120,6 +120,20 @@
           
           </ion-col>
 
+          <!-- Competitions -->
+          <ion-col
+            size="12"
+            style="overflow: auto;"
+            v-if="entity.details.competitions?.length"
+          >
+            <competitions
+              type="entity"
+              :vertical="false"
+              @close-competition="closeCompetition"
+              @select-competition="loadCompetitionPosts"
+            />
+          </ion-col>
+
           <!-- Ask user to join the entity -->
           <ion-col
             size="12"
@@ -137,7 +151,7 @@
             <SinglePost
               :id="props.postid"
               :entity="props.id"
-              @more="state.showSinglePost = false"
+              @more="hidePostDetails(true)"
             />
           </ion-col>
 
@@ -205,6 +219,7 @@
 import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent} from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import Competitions from '@/components/CompetitionsContainer.vue'
 import SocialLinks from '@/components/SocialContainer.vue'
 import JoinEntity from '@/components/JoinEntityContainer.vue'
 import SinglePost from '@/components/SinglePostContainer.vue'
@@ -220,6 +235,7 @@ import { EntityType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useJoinEntityAPI } from '@/composables/entity'
 import { useEntityInfoStore } from '@/stores/entityInfo'
+import { CompetitionInfo } from '@/utils/interfaces';
 
 
 const user = useUserStore()
@@ -253,6 +269,7 @@ watch(() => route.params.id, () => {
 // When the router leaves the details page, clear the entity information store
 onBeforeRouteLeave(() => {
   entity.details.name && entity.$reset()
+  props.postid && hidePostDetails(false)
 })
 
 const { 
@@ -260,8 +277,23 @@ const {
   loading: loadingPosts,
   getMore,
   fetchMoreCompleted,
-  refetch
+  refetch,
+  variables
 } = getPosts('entityPosts', undefined, undefined, props.id)
+
+function loadCompetitionPosts(competition: CompetitionInfo) {
+  hidePostDetails(true)
+  variables.competition.value = competition.id
+}
+
+function closeCompetition() {
+  if (!variables.competition.value) { return }
+  variables.competition.value = undefined
+}
+
+function hidePostDetails(value: boolean) {
+  state.showSinglePost = !value
+}
 
 function openJoinEntity(ed: EntityType) {
   if (!user.success) {

@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, useIonRouter  } from '@ionic/vue';
-import { categoryObject } from '@/utils/interfaces'
+import { categoryType } from '@/utils/interfaces'
 import { scrollTop } from '@/composables/scroll'
 
 scrollTop()
@@ -45,7 +45,7 @@ const category = useCategoryStore();
 
 // category.getCategories()
 
-function openCategory (category: categoryObject) {
+function openCategory (category: categoryType) {
   ionRouter.push(`interests/${category.id}/posts`)
 }
 

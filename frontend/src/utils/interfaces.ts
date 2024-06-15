@@ -15,7 +15,7 @@ interface PostFileType {
   height: number
 }
 
-export interface Post {
+export interface PostType {
   id: number,
   description: string,
   postfileSet: PostFileType[],
@@ -26,7 +26,7 @@ export interface Post {
   }
 }
 
-export interface CompetitionInfo {
+export interface CompetitionType {
   id: string,
   name: string,
   description: string,
@@ -37,7 +37,7 @@ export interface CompetitionInfo {
   message: string
 }
 
-export interface categoryObject {
+export interface categoryType {
   name: string,
   description: string,
   key: string,
@@ -45,7 +45,8 @@ export interface categoryObject {
   image: string,
   oftype: string,
   count: string,
-  color: string
+  color: string,
+  competitions: CompetitionType[],
 }
 
 export interface EntityType {
@@ -70,6 +71,13 @@ export interface EntityDetailsType extends EntityType {
   stats: {
     users: number,
     posts: number,
-    categories: categoryObject[]
-  }
+    categories: categoryType[]
+  },
+  competitions: CompetitionType[]
+}
+
+export interface WinnerType {
+  post: PostType,
+  position: number,
+  wonByLikes: number
 }

@@ -11,6 +11,8 @@ from categories.models.Category import Category
 # Type
 from categories.schema.type.CompetitionType import CompetitionType
 
+from entity.schema.query.userEntityQuery import UserEntityCheck
+from helpers.common import get_today_date
 
 class CreateCompetitionMutation(graphene.Mutation):
     
@@ -92,6 +94,10 @@ class Mutation(graphene.ObjectType):
     update_competition = UpdateCompetitionMutation.Field()
     delete_competition = DeleteCompetitionMutation.Field()
 
+class CompetitionList(graphene.ObjectType):
+    global_list = graphene.List(CompetitionType)
+    entity_list = graphene.List(CompetitionType)
+
 class Query(graphene.ObjectType):
 
     all_competitions = graphene.List(CompetitionType)
@@ -99,13 +105,23 @@ class Query(graphene.ObjectType):
     def resolve_all_competitions(root, info):
         return Competition.objects.all()
     
-    cat_competitions = graphene.List(
-        CompetitionType,
-        id=graphene.ID(required=True)
+    competitions = graphene.Field(
+        CompetitionList,
+        category_id=graphene.ID(),
+        entity_id=graphene.ID()
     )
 
-    def resolve_cat_competitions(root, info, id):
-        return Competition.objects.filter(category_id=id)
+    def resolve_competitions(root, info, category_id, entity_id):
+        selfdive_entity = '1'
+        entity_list = []
+
+        competitions = Competition.objects.filter(category_id=category_id, last_date__gte=get_today_date())
+        global_list = competitions.filter(entity_id=selfdive_entity)
+        
+        if selfdive_entity != entity_id and UserEntityCheck.has_access(info.context.user, entity_id):
+            entity_list = competitions.filter(entity_id=entity_id)
+
+        return CompetitionList(global_list=global_list, entity_list=entity_list)
     
     competition_details = graphene.Field(
         CompetitionType,

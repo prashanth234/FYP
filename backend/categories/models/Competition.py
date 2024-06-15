@@ -1,11 +1,11 @@
 from django.db import models
-from django.utils import timezone
-import zoneinfo
 
 from categories.models.Category import *
 from core.models.Reward import *
+from entity.models.Entity  import Entity
 
 from helpers.customUpload import custom_upload
+from helpers.common import get_today_date
   
 class Competition(models.Model):
     
@@ -14,7 +14,8 @@ class Competition(models.Model):
        
     name = models.CharField(max_length=255)
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
     last_date = models.DateField()
     key = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to=custom_path, default='')
@@ -25,9 +26,7 @@ class Competition(models.Model):
 
     @property
     def is_expired(self):
-      kolkata_timezone = zoneinfo.ZoneInfo('Asia/Kolkata')
-      current_time_in_kolkata = timezone.now().astimezone(kolkata_timezone)
-      return self.last_date <= current_time_in_kolkata.date()
+      return self.last_date < get_today_date()
 
     def __str__(self) -> str:
       return self.name

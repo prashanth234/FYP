@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content class="full-height" ref="content">
 
-      <ion-refresher slot="fixed" @ionRefresh="refreshPosts($event)">
+      <ion-refresher slot="fixed" @ionRefresh="refetch($event)">
         <ion-refresher-content
           :pulling-icon="chevronDownCircleOutline"
           pulling-text="Pull to refresh"
@@ -16,185 +16,79 @@
 
         <ion-row>
 
-          <!-- Start of the create post and all posts and breadcrumbs -->
-          <ion-col class="posts" :class="{'post-col': posts?.allPosts?.total > 5}" size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8">
+          <!-- Category details and posts -->
+          <ion-col size="8" size-xs="12" size-sm="12" size-md="8" size-lg="8" size-xl="8"
+            class="posts" :class="{'post-col': posts.total > 5}"
+          >
 
             <ion-row class="ion-justify-content-center">
 
-              <!-- Information about category -->
-              <ion-col size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11" >
-
-                <ion-card style="min-height: 100px;" class="ion-padding border-radius-std ion-no-margin" >
-
-                  <div class="title category">
-                    {{ categoryInfo.name }}
-                  </div>
-
-                  <div class="description category">
-                    {{ categoryInfo.description }}
-                  </div>
-                  
-                </ion-card>
-
-              </ion-col>
-
-              <!-- Competitions for small screens -->
-              <ion-col size="12" class="ion-hide-md-up" style="padding-bottom: 0px;">
-                <competitions
-                  @close-competition="setCategoryDefault()"
-                  @select-competition="loadCompetitionPosts"
-                  :vertical="false"
-                />
-              </ion-col>
-
-              <!-- Feed Heading -->
-              <ion-col size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11">
-                <div class="feed">
-
-                  <div class="title">
-                    Feed
-                  </div>
-
-                  <Refresh
-                    @refresh="refreshPosts(null)"
-                    :refreshing="state.refreshing"
-                  />
-                  
-                  <div style="margin-left: auto;">
-                    <ion-button
-                      v-if="categoryInfo.selectedComptn && !categoryInfo.selectedComptn.expired"
-                      :disabled="state.tabSelected == 'trending'"
-                      @click="tabChanged('trending')"
-                      style="margin-left: 15px;"
-                      class="close-button"
-                      size="small"
-                      shape="round"
-                      color="light"
-                    >
-                      Trending
-                    </ion-button>
-                    <ion-button
-                      v-if="categoryInfo.selectedComptn && categoryInfo.selectedComptn.expired"
-                      :disabled="state.tabSelected == 'winners'"
-                      @click="tabChanged('winners')"
-                      style="margin-left: 15px;"
-                      class="close-button"
-                      size="small"
-                      shape="round"
-                      color="light"
-                    >
-                      Winners
-                    </ion-button>
-                    <ion-button
-                      v-if="categoryInfo.selectedComptn"
-                      :disabled="!categoryInfo.selectedComptn || state.tabSelected == 'allposts'"
-                      @click="tabChanged('allposts')"
-                      class="close-button"
-                      size="small"
-                      shape="round"
-                      color="light"
-                    >
-                      All
-                    </ion-button>
-                  </div>
-                </div>
-              </ion-col>
-
-              <!-- Notes -->
-              <ion-col
-                class="ion-no-padding"
-                size="10" size-xs="12" size-sm="12" size-md="11" size-lg="11" size-xl="11"
+              <!-- Category Details -->
+              <ion-col size="12"
+                style="max-width: 800px;" class="ion-no-padding"
               >
 
-                <ion-card
-                  class="note-card"
-                  color="light"
-                  v-if="categoryInfo.selectedComptn?.expired"
-                >
-                  <ion-card-content class="ion-text-center note-msg">
-                    The contest has concluded! Please take a look at our other ongoing contests.
-                  </ion-card-content>
-                </ion-card>
+                <ion-row>
 
-                <ion-card
-                  class="note-card"
-                  color="light"
-                  v-else-if="state.tabSelected == 'trending'"
-                >
-                  <ion-card-content class="note-msg">
-                    <div class="ion-text-center" v-if="!trendingPosts?.trendingPosts?.posts.length">
-                      Can't spot any trending posts? Be the one who sparks a new wave!<br>Unlock the path to trendiness with just 5 likes for your post!
-                    </div>
-                    <div v-else>
-                      Contest's top 5 posts with at least 5 likes are currently trending here!
-                    </div>
-                  </ion-card-content>
-                </ion-card>
+                  <!-- Information about category -->
+                  <ion-col size="12">
 
-              </ion-col>
+                    <ion-card style="min-height: 100px;" class="ion-padding border-radius-std ion-no-margin" >
 
-              <!-- Single post -->
-              <ion-col
-                v-if="state.pdShow && props.postid"
-                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-              >
-                <SinglePost
-                  :id="props.postid"
-                  :category="props.id"
-                  @more="hidePostDetails(true)"
-                />
-              </ion-col>
+                        <div class="title category">
+                          {{ category.details.name }}
+                        </div>
 
-              <!-- Display the posts -->
-              <ion-col
-                v-show="state.tabSelected == 'allposts' && !state.pdShow"
-                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-                v-for="post in posts?.allPosts?.posts"
-                :key="post.id"
-              >
-                <post :post="post"></post>
-              </ion-col>
+                        <div class="description category">
+                          {{ category.details.description }}
+                        </div>
+                        
+                    </ion-card>
 
-              <!-- Display Trending -->
-              <ion-col
-                v-show="state.tabSelected == 'trending'"
-                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-                v-for="(post, index) in trendingPosts?.trendingPosts?.posts" 
-                :key="index"
-              >
-                <post :post="post"></post>
-              </ion-col>
+                  </ion-col>
 
-              <!-- Display Winners -->
-              <ion-col
-                v-show="state.tabSelected == 'winners'"
-                size="9" size-xs="12" size-sm="10" size-md="8" size-lg="8" size-xl="8"
-                v-for="(winner, index) in state.winners" 
-                :key="index"
-              >
-                <post :post="winner.post" :position="winner.position">
-                </post>
+                  <!-- Competitions for small screens -->
+                  <ion-col size="12"
+                    class="ion-hide-md-up" style="padding-bottom: 0px;"
+                  >
+                    <competitions
+                      @close-competition="loadCompetition"
+                      @select-competition="cancelCompetition"
+                      :vertical="false"
+                      type="category"
+                    />
+                  </ion-col>
+
+                  <!-- Feed -->
+                  <ion-col size="12" class="ion-no-padding">
+                    
+                    <Feed
+                      :posts="posts"
+                      :fetchMoreCompleted="fetchMoreCompleted"
+                      :fetchMore="fetchMore"
+                      :refetch="refetch"
+                      :onChangeCmptType="loadCompetitionType"
+                    />
+                    
+                  </ion-col>
+
+                </ion-row>
+                
               </ion-col>
 
             </ion-row>
 
-            <ion-infinite-scroll 
-              :disabled="state.pdShow || fetchMoreCompleted"
-              :key="`${fetchMoreCompleted}`"
-              @ionInfinite="fetchMore"
-              :threshold="user.success ? '400px' : '30px'"
-            >
-              <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-
           </ion-col>
 
           <!-- Competitions for large screens -->
-          <ion-col class="ion-hide-md-down" size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4">
+          <ion-col size="4" size-xs="12" size-sm="12" size-md="4" size-lg="4" size-xl="4"
+            class="ion-hide-md-down"
+          >
             <competitions
-              @select-competition="loadCompetitionPosts"
-              @close-competition="setCategoryDefault()"
+              @select-competition="loadCompetition"
+              @close-competition="cancelCompetition"
               :vertical="true"
+              type="category"
             />
           </ion-col>
 
@@ -207,131 +101,31 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { RefresherCustomEvent, IonRefresher, IonRefresherContent, IonButton, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow, IonInfiniteScroll, IonInfiniteScrollContent, SegmentValue, IonCardContent, InfiniteScrollCustomEvent, useIonRouter } from '@ionic/vue'
-import { chevronDownCircleOutline } from 'ionicons/icons'
-
-import Post from '@/components/PostContainer.vue'
-import SinglePost from '@/components/SinglePostContainer.vue'
+import { IonRefresher, IonRefresherContent, IonPage, IonCard, IonContent, IonCol, IonGrid, IonRow } from '@ionic/vue'
 import Competitions from '@/components/CompetitionsContainer.vue'
-import Refresh from '@/components/RefreshContainer.vue'
-import { getPosts, getWinners, getTrending } from '@/composables/posts'
+import Feed from '@/components/FeedContainer.vue'
+import { feed, watchRoute } from '@/composables/feed'
 import { scrollTop } from '@/composables/scroll'
-
-import { CompetitionInfo } from '@/utils/interfaces'
-import { Post as PostType } from '@/utils/interfaces'
-
-import { useUserStore } from '@/stores/user'
-import { useCategoryInfoStore } from '@/stores/categoryInfo'
-
-interface Winner {
-  post: PostType,
-  wonByLikes: number,
-  position: number
-}
-
-interface State {
-  competition: CompetitionInfo | null,
-  refreshCreatePost: number,
-  creatingPost: Boolean,
-  tabSelected: SegmentValue | undefined,
-  winners: Array<Winner>,
-  pdShow: boolean,
-  refreshing: boolean
-}
-
-const state: State = reactive({
-  competition: null,
-  creatingPost: false,
-  refreshCreatePost: 1,
-  tabSelected: 'allposts',
-  winners: [],
-  // pdshow is for showing single post details
-  pdShow: false,
-  refreshing: false
-})
-
-const route = useRoute();
-const categoryInfo = useCategoryInfoStore();
-const user = useUserStore();
-const ionRouter = useIonRouter();
+import { chevronDownCircleOutline } from 'ionicons/icons'
 
 const props = defineProps({
   id: String,
   postid: String
 })
 
-// When another category is opened after a category is opened, page is not rendered again so need to watch router params
-watch(() => route.params.id, () => {
-  if (route.name == 'CategoryDetails' && route.params.id == props.id) {
-    categoryInfo.getCategoryInfo(props.id, ionRouter)
-  }
-})
-
-// When the router leaves the details page set default get category details and clear the category information store
-onBeforeRouteLeave(() => {
-  setCategoryDefault()
-  categoryInfo.name && categoryInfo.$reset()
-  props.postid && hidePostDetails(false)
-})
-
-props.postid && hidePostDetails(false)
-props.id && categoryInfo.getCategoryInfo(props.id, ionRouter)
-
 const { content } = scrollTop()
+const { store: category } = watchRoute('CategoryDetails', props.id, props.postid)
 
-const category =  props.id || undefined
-const { posts, getMore, variables, refetch, fetchMoreCompleted } = getPosts('allPosts', category)
-const { variables: trendingVars, refetch: refetchTrending, load: loadTrending, result: trendingPosts } = getTrending()
+const { 
+  posts,
+  fetchMoreCompleted,
+  fetchMore,
+  loadCompetitionType,
+  loadCompetition,
+  cancelCompetition,
+  refetch
+} = feed('allPosts', content, props.id)
 
-function loadCompetitionPosts(competition: CompetitionInfo) {
-  hidePostDetails(true)
-  state.tabSelected = 'allposts'
-  categoryInfo.selectedComptn = competition
-  variables.competition.value = competition.id
-}
-
-function setCategoryDefault() {
-  if (!variables.competition.value) { return }
-  variables.competition.value = undefined
-  categoryInfo.selectedComptn = null
-  state.tabSelected = 'allposts'
-}
-
-async function refreshPosts(event: RefresherCustomEvent | null) {
-  state.refreshing = true
-  if (state.tabSelected == 'trending') {
-    await refetchTrending()
-  } else if (state.tabSelected == 'allposts') {
-    await refetch()
-  }
-  event?.target && event.target.complete && event.target.complete()
-  state.refreshing = false
-}
-
-function tabChanged(value: string) {
-  state.tabSelected = value
-
-  if (value == 'winners') {
-    state.winners = []
-    const { onResult } = getWinners(categoryInfo.selectedComptn?.id)
-    onResult(({data, loading}) => {
-      !loading && (state.winners = data.winners)
-    })
-  } else if (value == 'trending') {
-    trendingVars.competition.value = categoryInfo.selectedComptn?.id
-    loadTrending() || refetchTrending()
-  }
-}
-
-function fetchMore(ev: InfiniteScrollCustomEvent) {
-  getMore(ev, content)
-}
-
-function hidePostDetails (value: boolean) {
-  state.pdShow = !value
-}
 </script>
 
 <style scoped lang="scss">
@@ -351,10 +145,6 @@ ion-grid {
 }
 .post-col {
   min-height: 100vh;
-}
-.close-button {
-  float: right;
-  margin: 0px;
 }
 .category {
   &.title {
