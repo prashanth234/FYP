@@ -52,8 +52,8 @@
                     class="ion-hide-md-up" style="padding-bottom: 0px;"
                   >
                     <competitions
-                      @close-competition="loadCompetition"
-                      @select-competition="cancelCompetition"
+                      @close-competition="cancelCompetition"
+                      @select-competition="loadCompetition"
                       :vertical="false"
                       type="category"
                     />
@@ -63,6 +63,7 @@
                   <ion-col size="12" class="ion-no-padding">
                     
                     <Feed
+                      type="catgory"
                       :posts="posts"
                       :fetchMoreCompleted="fetchMoreCompleted"
                       :fetchMore="fetchMore"
@@ -107,6 +108,7 @@ import Feed from '@/components/FeedContainer.vue'
 import { feed, watchRoute } from '@/composables/feed'
 import { scrollTop } from '@/composables/scroll'
 import { chevronDownCircleOutline } from 'ionicons/icons'
+import { useCategoryInfoStore } from '@/stores/categoryInfo'
 
 const props = defineProps({
   id: String,
@@ -114,9 +116,10 @@ const props = defineProps({
 })
 
 const { content } = scrollTop()
-const { store: category } = watchRoute('CategoryDetails', props.id, props.postid)
+const store = useCategoryInfoStore()
+const { store: category } = watchRoute(store, props.id, props.postid)
 
-const { 
+const {
   posts,
   fetchMoreCompleted,
   fetchMore,
@@ -124,7 +127,7 @@ const {
   loadCompetition,
   cancelCompetition,
   refetch
-} = feed('allPosts', content, props.id)
+} = feed(store, content, props.id)
 
 </script>
 

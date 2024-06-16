@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'entity/:id/posts/:postid?',
         component: () => import('@/views/EntityDetailsPage.vue'),
-        name: 'entityDetails',
+        name: 'EntityDetails',
         props: true
       },
       {

@@ -10,24 +10,24 @@
 		:is-open="state.showCompDetails"
 		@didDismiss="closeCompDetails"
 	>
-		<ion-row v-if="data.selectedComptn" style="overflow: auto; padding: 10px">
+		<ion-row v-if="store.selectedComptn" style="overflow: auto; padding: 10px">
 
-			<ion-col size="12" v-if="data.selectedComptn.message">
-				<alert :message="data.selectedComptn.message" type="info"/>
+			<ion-col size="12" v-if="store.selectedComptn.message">
+				<alert :message="store.selectedComptn.message" type="info"/>
 			</ion-col>
 
 			<ion-col size="12" class="title ion-text-center" >
-				{{ data.selectedComptn.name }}
+				{{ store.selectedComptn.name }}
 			</ion-col>
 
 			<ion-col size="12" style="line-height: 1.7;">
 				
 				<div class="ion-text-start">
 					<span class="comp-header">The Quest:</span>
-					{{ data.selectedComptn.description }}
+					{{ store.selectedComptn.description }}
 				</div>
 
-				<div class="ion-text-center points-table" v-if="data.selectedComptn.points">
+				<div class="ion-text-center points-table" v-if="store.selectedComptn.points">
 
 					<h5>SparkPoints</h5>
 					<table class="mlr-auto">
@@ -74,7 +74,7 @@
 	<ion-card
 		class="note-card"
 		color="light"
-		v-if="!data.details.competitions?.length"
+		v-if="!store.details.competitions?.length"
 	>
 		<ion-card-content class="ion-text-center" style="font-weight: 500;">
 			Comming Soon!
@@ -86,14 +86,14 @@
 			:size-md="props.vertical ? '12' : 'auto'"
 			:size-lg="props.vertical ? '11' : 'auto'"
 			:size-xl="props.vertical ? '10' : 'auto'"
-			v-for="(competition, index) in data.details.competitions"
+			v-for="(competition, index) in store.details.competitions"
 			:key="index"
 		>
 			<ion-card
 				@click="selectCompetition(competition)"
 				class="competition cpointer ion-no-margin"
 				:class="{
-					'competition-selected': data.selectedComptn?.id == competition.id,
+					'competition-selected': store.selectedComptn?.id == competition.id,
 					'expired': competition.expired,
 					'hovered': state.ihovered == index
 				}"
@@ -114,7 +114,7 @@
 					</ion-col>
 				</ion-row>
 				<transition name="slide-fade">
-					<div v-if="data.selectedComptn?.id == competition.id">
+					<div v-if="store.selectedComptn?.id == competition.id">
 						<ion-button
 							class="ion-no-margin float-right"
 							size="small"
@@ -169,9 +169,11 @@ const state: State = reactive({
 	ihovered: null
 })
 
+const store = props.type == 'entity' ? useEntityInfoStore() : useCategoryInfoStore()
+
 const points = computed(() => {
-	if (data.selectedComptn) {
-		const [first, second, third, participation] = data.selectedComptn.points.split(',')
+	if (store.selectedComptn) {
+		const [first, second, third, participation] = store.selectedComptn.points.split(',')
 		return {
 			first,
 			second,
@@ -183,21 +185,19 @@ const points = computed(() => {
 })
 
 const lastDate = computed(() => {
-	return data.selectedComptn ? formatDateToCustomFormat(data.selectedComptn.lastDate) : ''
+	return store.selectedComptn ? formatDateToCustomFormat(store.selectedComptn.lastDate) : ''
 })
 
-const data = props.type == 'entity' ? useEntityInfoStore() : useCategoryInfoStore()
-
 function selectCompetition(competition: CompetitionType) {
-	data.selectedComptn = competition
-	data.hideSinglePost(true)
-	data.tabSelected = 'allposts'
+	store.selectedComptn = competition
+	store.hideSinglePost(true)
+	store.tabSelected = 'allposts'
 	emit('selectCompetition', competition)
 }
 
 function closeCompetition(competition: CompetitionType) {
-	data.selectedComptn = null
-	data.tabSelected = 'allposts'
+	store.selectedComptn = null
+	store.tabSelected = 'allposts'
 	emit('closeCompetition', competition)
 	state.ihovered = null
 }

@@ -1,7 +1,6 @@
 
 import { computed, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useCategoryInfoStore } from '@/stores/categoryInfo'
 import { getPosts, getWinners, getTrending } from '@/composables/posts'
 import { PostType, WinnerType } from '@/utils/interfaces'
 import { InfiniteScrollCustomEvent, RefresherCustomEvent } from '@ionic/vue'
@@ -13,13 +12,12 @@ interface WinnerPostType extends PostType {
   }
 }
 
-export function watchRoute(routeName: string, id?: string, postid?: string) {
+export function watchRoute(store: any, id?: string, postid?: string) {
   const route = useRoute()
-  const store = useCategoryInfoStore()
 
   // When another category is opened after a category is opened, page is not rendered again so need to watch router params
   watch(() => route.params.id, () => {
-    if (route.name == routeName && route.params.id == id) {
+    if (route.name == store.routeName && route.params.id == id) {
       intailize()
     }
   })
@@ -32,7 +30,7 @@ export function watchRoute(routeName: string, id?: string, postid?: string) {
   // When page is loaded for the first time
   function intailize() {
     postid && store.hideSinglePost(false, postid)
-    id && store.getCategoryInfo(id)
+    id && store.getDetails(id)
   }
 
   intailize()
@@ -43,10 +41,9 @@ export function watchRoute(routeName: string, id?: string, postid?: string) {
 }
   
 
-export function feed(type: string, content: any, category?: string, entity?: string, competition?: string) {
+export function feed(store: any, content: any, category?: string, entity?: string, competition?: string) {
   // Abstract method to get entity/category posts and competition posts
-  const store = useCategoryInfoStore()
-  const allPosts = getPosts(type, category, undefined, entity)
+  const allPosts = getPosts(store.queryType, category, undefined, entity)
   const trendingPosts = getTrending()
   const winnerPosts = getWinners()
 
@@ -54,7 +51,7 @@ export function feed(type: string, content: any, category?: string, entity?: str
 
     if (store.tabSelected == 'allposts') {
 
-      return (allPosts.posts.value?.allPosts || {})
+      return (allPosts.posts.value?.[store.queryType] || {})
 
     } else if (store.tabSelected == 'trending') {
 
@@ -108,11 +105,17 @@ export function feed(type: string, content: any, category?: string, entity?: str
 
   async function refetch(event: RefresherCustomEvent | null) {
     store.refreshing = true
+
     if (store.tabSelected == 'trending') {
+
       await (trendingPosts.load() || trendingPosts.refetch())
+
     } else if (store.tabSelected == 'allposts') {
+
       await allPosts.refetch()
+
     }
+    
     event?.target && event.target.complete && event.target.complete()
     store.refreshing = false
   }

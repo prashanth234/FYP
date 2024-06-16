@@ -44,6 +44,17 @@ class Migration(migrations.Migration):
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
+            model_name='competition',
+            name='entity',
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='entity.entity'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='competition',
+            name='category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='categories.category'),
+        ),
+        migrations.AddField(
             model_name='winner',
             name='created_at',
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),

@@ -1,24 +1,32 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { CompetitionType, categoryType } from '@/utils/interfaces'
+import { CompetitionType, CategoryType, TabSelectedType } from '@/utils/interfaces'
 
 // This store stores information about a openend category, through out the app
 
+
+
 export const useCategoryInfoStore = defineStore('categoryInfo', {
-  state: () => ({ 
-    details: {} as categoryType,
+  state: () => ({
+    type: 'category',
+    routeName: 'CategoryDetails',
+    queryType: 'allPosts',
+    details: {} as CategoryType,
     loading: true,
     selectedComptn: null as CompetitionType | null,
-    tabSelected: 'allposts',
+    tabSelected: 'allposts' as TabSelectedType,
     refreshing: false,
     singlePost: false,
     singlePostId: ''
   }),
   getters: {
+    getSinglePostParams(state) {
+      return {category: state.details.id, id: state.singlePostId }
+    }
   },
   actions: {
-    getCategoryInfo(id: string, ionRouter: any = null) {
+    getDetails(id: string, ionRouter: any = null) {
       this.loading = true
 
       const CATEGORY_DETAILS = gql`

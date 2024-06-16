@@ -155,7 +155,10 @@ export function getPosts(
 
   function getMore(ev: InfiniteScrollCustomEvent, content: any) {
 
-    if (fetchMoreCompleted.value) { return }
+    if (fetchMoreCompleted.value || !posts.value) { 
+      ev.target.complete()
+      return 
+    }
 
     // Show max of MAX_POSTS_WITHOUT_LOGIN post if user is not authenticated and ask user to login/register
     if (

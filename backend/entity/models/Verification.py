@@ -21,8 +21,8 @@ class Verification(models.Model):
     )
 
     STATUS_CHOICES = {
-      ('SUCCESS', 'Success'),
       ('PENDING', 'Pending'),
+      ('SUCCESS', 'Success'),
       ('INVAILD', 'Invalid')
     }
 

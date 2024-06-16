@@ -37,11 +37,11 @@ export interface CompetitionType {
   message: string
 }
 
-export interface categoryType {
+export interface CategoryType {
+  id: string,
   name: string,
   description: string,
   key: string,
-  id: string,
   image: string,
   oftype: string,
   count: string,
@@ -71,7 +71,7 @@ export interface EntityDetailsType extends EntityType {
   stats: {
     users: number,
     posts: number,
-    categories: categoryType[]
+    categories: CategoryType[]
   },
   competitions: CompetitionType[]
 }
@@ -81,3 +81,5 @@ export interface WinnerType {
   position: number,
   wonByLikes: number
 }
+
+export type TabSelectedType = 'allposts' | 'trending' | 'winners'

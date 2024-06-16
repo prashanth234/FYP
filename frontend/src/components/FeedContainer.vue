@@ -74,7 +74,7 @@
     </ion-col>
 
     <!-- Posts -->
-    <ion-col size="12" class="ion-no-padding">
+    <ion-col size="12" class="ion-no-padding" style="min-height: 500px;">
 
       <ion-row>
 
@@ -83,8 +83,7 @@
           v-if="store.singlePost && store.details.id"
         >
           <SinglePost
-            :id="store.singlePostId"
-            :category="store.details.id"
+            :params="store.getSinglePostParams"
             @more="store.hideSinglePost(true)"
           />
         </ion-col>
@@ -118,6 +117,7 @@
 <script lang="ts" setup>
 import Refresh from '@/components/RefreshContainer.vue'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import { useEntityInfoStore } from '@/stores/entityInfo'
 import { IonButton, IonCol, IonRow, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/vue'
 import { useUserStore } from '@/stores/user'
 import alert from './AlertContainer.vue'
@@ -126,8 +126,8 @@ import SinglePost from '@/components/SinglePostContainer.vue'
 import { computed } from 'vue'
 
 
-const props = defineProps(['posts', 'fetchMoreCompleted', 'fetchMore', 'refetch', 'onChangeCmptType'])
-const store = useCategoryInfoStore()
+const props = defineProps(['type', 'posts', 'fetchMoreCompleted', 'fetchMore', 'refetch', 'onChangeCmptType'])
+const store = props.type == 'entity' ? useEntityInfoStore()  : useCategoryInfoStore()
 const user = useUserStore();
 
 const noteMessage = computed(() => {

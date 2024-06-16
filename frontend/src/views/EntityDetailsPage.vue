@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content>
 
-      <ion-refresher slot="fixed" @ionRefresh="refreshPosts($event)">
+      <ion-refresher slot="fixed" @ionRefresh="refetch($event)">
         <ion-refresher-content
           :pulling-icon="chevronDownCircleOutline"
           pulling-text="Pull to refresh"
@@ -127,10 +127,10 @@
             v-if="entity.details.competitions?.length"
           >
             <competitions
-              type="entity"
+              @close-competition="cancelCompetition"
+              @select-competition="loadCompetition"
               :vertical="false"
-              @close-competition="closeCompetition"
-              @select-competition="loadCompetitionPosts"
+              :type="store.type"
             />
           </ion-col>
 
@@ -143,68 +143,17 @@
             You're not a member of this entity. Please join to view the posts.
           </ion-col>
 
-          <!-- Show single post for shared posts -->
           <ion-col
             size="12"
-            v-else-if="state.showSinglePost && props.postid"
           >
-            <SinglePost
-              :id="props.postid"
-              :entity="props.id"
-              @more="hidePostDetails(true)"
+            <Feed
+              :type="store.type"
+              :posts="posts"
+              :fetchMoreCompleted="fetchMoreCompleted"
+              :fetchMore="fetchMore"
+              :refetch="refetch"
+              :onChangeCmptType="loadCompetitionType"
             />
-          </ion-col>
-
-
-          <!-- Entity posts -->
-          <ion-col
-            size="12"
-            class="ion-no-padding"
-            v-else-if="entityPosts?.entityPosts.posts.length"
-          >
-
-            <ion-row>
-
-              <ion-col
-                size="12"
-              >
-                <div class="feed">
-                  <div class="title">
-                    Feed
-                  </div>
-                  <Refresh @refresh="refreshPosts(null)" :refreshing="state.refreshing"/>
-                </div>
-              </ion-col>
-
-              <ion-col
-                size="12"
-                v-if="entityPosts.entityPosts.posts.length"
-                v-for="post in entityPosts.entityPosts.posts"
-                :key="post.id"
-              >
-                <post :post="post"></post>
-              </ion-col>
-
-            </ion-row>
-
-            <ion-infinite-scroll 
-              :disabled="state.showSinglePost || fetchMoreCompleted"
-              :key="`${fetchMoreCompleted}`"
-              @ionInfinite="fetchMore"
-              :threshold="user.success ? '400px' : '30px'"
-            >
-              <ion-infinite-scroll-content loading-text="Loading..." loading-spinner="bubbles"></ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-
-          </ion-col>
-
-          <!-- No posts message -->
-          <ion-col
-            size="12"
-            class="ion-text-center text-bold padding-y"
-            v-else
-          >
-            Dive in and share your creative posts! You can be the first to post.
           </ion-col>
 
         </ion-row>
@@ -218,16 +167,11 @@
 <script lang="ts" setup>
 import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent} from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import SocialLinks from '@/components/SocialContainer.vue'
 import JoinEntity from '@/components/JoinEntityContainer.vue'
-import SinglePost from '@/components/SinglePostContainer.vue'
-import Refresh from '@/components/RefreshContainer.vue'
-import { getPosts } from '@/composables/posts'
-import Post from '@/components/PostContainer.vue'
 import TextClamp from 'vue3-text-clamp'
-import { reactive, watch } from 'vue'
+import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { scrollTop } from '@/composables/scroll'
@@ -235,15 +179,8 @@ import { EntityType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
 import { useJoinEntityAPI } from '@/composables/entity'
 import { useEntityInfoStore } from '@/stores/entityInfo'
-import { CompetitionInfo } from '@/utils/interfaces';
-
-
-const user = useUserStore()
-const auth = useAuthStore()
-const toast = useToastStore()
-const { content } = scrollTop()
-const entity  = useEntityInfoStore()
-const route = useRoute()
+import Feed from '@/components/FeedContainer.vue'
+import { feed, watchRoute } from '@/composables/feed'
 
 
 const props = defineProps({
@@ -252,48 +189,26 @@ const props = defineProps({
 })
 
 const state = reactive({
-  showJoinEntity: false,
-  showSinglePost: !!props.postid,
-  refreshing: false
+  showJoinEntity: false
 })
 
-props.id && entity.getEntityDetails(props.id)
+const user = useUserStore()
+const auth = useAuthStore()
+const toast = useToastStore()
+const { content } = scrollTop()
+const store = useEntityInfoStore()
+const { store: entity } = watchRoute(store, props.id, props.postid)
 
-// When another entity is opened after a entity is opened, page is not rendered again so need to watch router params
-watch(() => route.params.id, () => {
-  if (route.name == 'entityDetails' && route.params.id == props.id) {
-    entity.getEntityDetails(props.id)
-  }
-})
-
-// When the router leaves the details page, clear the entity information store
-onBeforeRouteLeave(() => {
-  entity.details.name && entity.$reset()
-  props.postid && hidePostDetails(false)
-})
-
-const { 
-  posts: entityPosts,
-  loading: loadingPosts,
-  getMore,
+const {
+  posts,
   fetchMoreCompleted,
-  refetch,
-  variables
-} = getPosts('entityPosts', undefined, undefined, props.id)
+  fetchMore,
+  loadCompetitionType,
+  loadCompetition,
+  cancelCompetition,
+  refetch
+} = feed(store, content, undefined, props.id)
 
-function loadCompetitionPosts(competition: CompetitionInfo) {
-  hidePostDetails(true)
-  variables.competition.value = competition.id
-}
-
-function closeCompetition() {
-  if (!variables.competition.value) { return }
-  variables.competition.value = undefined
-}
-
-function hidePostDetails(value: boolean) {
-  state.showSinglePost = !value
-}
 
 function openJoinEntity(ed: EntityType) {
   if (!user.success) {
@@ -313,17 +228,6 @@ function openJoinEntity(ed: EntityType) {
     // For private entity ask for code or proof
     state.showJoinEntity = true
   }
-}
-
-function fetchMore(ev: InfiniteScrollCustomEvent) {
-  getMore(ev, content)
-}
-
-async function refreshPosts(event: RefresherCustomEvent | null) {
-  state.refreshing = true
-  await refetch()
-  state.refreshing = false
-  event?.target && event.target.complete && event.target.complete()
 }
 
 </script>

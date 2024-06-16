@@ -1,18 +1,28 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { EntityDetailsType, CompetitionType } from '@/utils/interfaces'
+import { EntityDetailsType, CompetitionType, TabSelectedType } from '@/utils/interfaces'
 
 export const useEntityInfoStore = defineStore('entityInfo', {
   state: () => ({ 
+    type: 'entity',
+    routeName: 'EntityDetails',
+    queryType: 'entityPosts',
     details: {} as EntityDetailsType,
     loading: false,
-    selectedComptn: null as CompetitionType | null
+    selectedComptn: null as CompetitionType | null,
+    tabSelected: 'allposts' as TabSelectedType,
+    refreshing: false,
+    singlePost: false,
+    singlePostId: ''
   }),
   getters: {
+    getSinglePostParams(state) {
+      return {entity: state.details.id, id: state.singlePostId }
+    }
   },
   actions: {
-    getEntityDetails(id: string) {
+    getDetails(id: string) {
       this.loading = true
   
       const ENTITY_DETAILS = gql`
@@ -66,6 +76,10 @@ export const useEntityInfoStore = defineStore('entityInfo', {
       onError(() => {
         this.loading = false
       })
+    },
+    hideSinglePost(value: boolean, id: string='') {
+      this.singlePost = !value
+      this.singlePostId = id
     }
   },
 })

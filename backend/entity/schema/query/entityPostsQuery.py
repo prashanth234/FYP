@@ -26,12 +26,11 @@ class EntityPosts(graphene.ObjectType):
     entity = Entity.objects.get(pk=entity)
     user = info.context.user
 
-    if not (user.is_authenticated and user.user_of_entities.filter(pk=user.id).exists()):
+    if not (user.is_authenticated, user.user_of_entities.filter(pk=entity.id).exists()):
       raise GraphQLError("Failed to get posts.")
     
     if competition:
-      competition = Competition.objects.get(id=competition)
-      queryset = Post.objects.filter(entity=entity, category=competition.category, competition=competition).order_by('-created_at')
+      queryset = Post.objects.filter(competition_id=competition, entity=entity).order_by('-created_at')
     else:
       queryset = Post.objects.filter(entity=entity).order_by('-created_at')
 

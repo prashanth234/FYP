@@ -20,19 +20,22 @@ const toast = useToastStore()
 const ionRouter = useIonRouter()
 const router = useRoute()
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  category: String,
-  entity: String
-})
+interface Params {
+  category?: string,
+  entity?: string,
+  id: string
+}
+
+const props = defineProps<{
+  params: Params
+}>()
+
+
 
 const emit = defineEmits(['more'])
 
 // Get indivual post details if searched using url
-const { post, onError, loading } = getPostDetails(props.id, props.category, props.entity)
+const { post, onError, loading } = getPostDetails(props.params.id, props.params.category, props.params.entity)
 
 onError((error) => {
   if (error?.graphQLErrors) {
