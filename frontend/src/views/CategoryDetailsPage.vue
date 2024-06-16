@@ -24,7 +24,7 @@
             <ion-row class="ion-justify-content-center">
 
               <!-- Category Details -->
-              <ion-col size="12"
+              <ion-col size-xs="12" size-sm="12" size-md="11"
                 style="max-width: 800px;" class="ion-no-padding"
               >
 
