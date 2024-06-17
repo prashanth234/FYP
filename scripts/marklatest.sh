@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -ne 1 ]; then
-    echo "Requries version"
+    echo "Requries version. example ./script.sh 2.0"
     exit 1  # Exit the script with a non-zero status code
 fi
 

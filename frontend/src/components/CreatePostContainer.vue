@@ -340,7 +340,7 @@ function selectEntity(entityId='1') {
 
 function selectDefault() {
   // Select default entity, category, competition based on the page user is in.
-  const { id, selectedComptn } = categoryInfo
+  const { details: {id}, selectedComptn } = categoryInfo
   state.category = id
   state.competition = (!selectedComptn?.expired && selectedComptn?.id) ? selectedComptn.id : ''
   selectEntity(entityInfo.details.id ? entityInfo.details.id : '1')

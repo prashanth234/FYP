@@ -20,11 +20,11 @@ class Verification(models.Model):
       ('JOIN', 'Join'),
     )
 
-    STATUS_CHOICES = {
-      ('PENDING', 'Pending'),
+    STATUS_CHOICES = (
       ('SUCCESS', 'Success'),
+      ('PENDING', 'Pending'),
       ('INVAILD', 'Invalid')
-    }
+    )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
