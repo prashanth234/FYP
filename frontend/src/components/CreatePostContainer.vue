@@ -406,8 +406,10 @@ function createNewPost() {
           entity {
             id,
             stats {
+              id,
               posts,
               categories {
+                id,
                 count
               }
             }
@@ -516,8 +518,8 @@ function createNewPost() {
     state.creatingPost = false
     if (error?.networkError?.response?.statusText == 'Request Entity Too Large') {
       toast.$patch({message: 'Request Entity Too Large', color: 'danger', open: true})
-    } else if (error?.graphQLErrors) {
-      toast.$patch({message: error?.graphQLErrors[0].message, color: 'primary', open: true})
+    } else if (error?.graphQLErrors?.length) {
+      toast.$patch({message: error.graphQLErrors[0].message, color: 'primary', open: true})
     } else {
       toast.$patch({message: 'Error Occured While Uploading Post', color: 'danger', open: true})
     }

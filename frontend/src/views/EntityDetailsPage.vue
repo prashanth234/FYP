@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-content>
+    <ion-content class="full-height" ref="content">
 
       <ion-refresher slot="fixed" @ionRefresh="refetch($event)">
         <ion-refresher-content
@@ -134,16 +134,17 @@
             />
           </ion-col>
 
-          <!-- Ask user to join the entity -->
+          <!-- Ask user to join the entity if entity is private and user not part of entity -->
           <ion-col
             size="12"
             class="ion-text-center ion-padding text-bold padding-y"
-            v-if="entity.details.userAccess != 'SUCCESS'"
+            v-if="!entity.details.ispublic && entity.details.userAccess != 'SUCCESS'"
           >
             You're not a member of this entity. Please join to view the posts.
           </ion-col>
 
           <ion-col
+            v-else
             size="12"
           >
             <Feed

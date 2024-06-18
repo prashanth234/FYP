@@ -356,7 +356,7 @@ function removeError(error: string) {
 .default-entity {
   font-size: 55px;
   padding: 20px;
-  border: 1px solid white;
+  border: 1px solid var(--ion-color-dark);
   border-radius: 50%;
 }
 
@@ -368,7 +368,7 @@ function removeError(error: string) {
   appearance: none;
   background-color: transparent;
   outline: none;
-  width: 0.5px;
+  width: 1px;
   /* for Firefox */
   -moz-appearance: none;
   /* for Chrome */

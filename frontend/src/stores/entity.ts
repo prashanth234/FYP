@@ -28,6 +28,7 @@ export const useEntityStore = defineStore('entity', {
                                             ispublic,
                                             userAccess,
                                             stats {
+                                              id,
                                               users,
                                               posts
                                             }

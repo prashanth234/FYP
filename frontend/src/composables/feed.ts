@@ -15,7 +15,7 @@ interface WinnerPostType extends PostType {
 export function watchRoute(store: any, id?: string, postid?: string) {
   const route = useRoute()
 
-  // When another category is opened after a category is opened, page is not rendered again so need to watch router params
+  // When an opened page is opened again, page is not rendered again so need to watch router params to update the store
   watch(() => route.params.id, () => {
     if (route.name == store.routeName && route.params.id == id) {
       intailize()
@@ -27,12 +27,12 @@ export function watchRoute(store: any, id?: string, postid?: string) {
     store.details.name && store.$reset()
   })
 
-  // When page is loaded for the first time
   function intailize() {
     postid && store.hideSinglePost(false, postid)
-    id && store.getDetails(id)
+    id && store.getDetails(id, route)
   }
 
+  // When page is loaded for the first time
   intailize()
   
   return {

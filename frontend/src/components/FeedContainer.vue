@@ -74,7 +74,7 @@
     </ion-col>
 
     <!-- Posts -->
-    <ion-col size="12" class="ion-no-padding" style="min-height: 500px;">
+    <ion-col size="12" class="ion-no-padding posts-content">
 
       <ion-row>
 
@@ -86,6 +86,14 @@
             :params="store.getSinglePostParams"
             @more="store.hideSinglePost(true)"
           />
+        </ion-col>
+
+        <!-- No posts message -->
+        <ion-col size="12"
+          class="text-bold ion-text-center ion-padding"
+          v-else-if="noPosts"
+        >
+          There are no posts here yet, be the first to share you're creative content.
         </ion-col>
 
         <!-- Display the posts -->
@@ -142,12 +150,19 @@ const noteMessage = computed(() => {
   }
   return ''
 })
+
+const noPosts = computed(() => {
+  return !props.posts.posts?.length
+})
 </script>
 
 <style lang="scss">
 .close-button {
   float: right;
   margin: 0px;
+}
+.posts-content {
+  min-height: 500px;
 }
 </style>
 

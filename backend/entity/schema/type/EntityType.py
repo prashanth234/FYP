@@ -27,14 +27,19 @@ from categories.schema.type.CompetitionType import CompetitionType
 # StatsType = type('StatsType', (graphene.ObjectType,), get_stats_dict())
 
 class CategoryStatType(graphene.ObjectType):
+  id = graphene.String()
   name = graphene.String()
   count = graphene.Int(entity_id=graphene.ID())
   color = graphene.String()
 
 class StatsType(graphene.ObjectType):
+  id = graphene.String()
   users = graphene.Int()
   posts = graphene.Int()
   categories = graphene.List(CategoryStatType)
+
+  def resolve_id(self, info):
+    return self.id
 
   def resolve_users(self, info):
     return self.users.count()
@@ -50,6 +55,7 @@ class StatsType(graphene.ObjectType):
     category_stat = {}
 
     for category in categories:
+      category_stat["id"] = f"{self.id}-{category.id}"
       category_stat["name"] = category.name
       category_stat["color"] = category.color
       category_stat["count"] = posts.filter(category=category).count()

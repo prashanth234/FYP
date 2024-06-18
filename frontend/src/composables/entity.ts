@@ -17,6 +17,7 @@ export function useJoinEntityAPI() {
             id,
             userAccess,
             stats {
+              id,
               users
             }
           }

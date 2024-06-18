@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { CompetitionType, CategoryType, TabSelectedType } from '@/utils/interfaces'
+import { RouteLocationNormalizedLoaded } from 'vue-router'
 
 // This store stores information about a openend category, through out the app
 
@@ -26,7 +27,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
     }
   },
   actions: {
-    getDetails(id: string, ionRouter: any = null) {
+    getDetails(id: string, route: RouteLocationNormalizedLoaded) {
       this.loading = true
 
       const CATEGORY_DETAILS = gql`
@@ -53,13 +54,16 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
 
       onResult(value => {
         if (!value.loading) {
+          if (route.params.id == id) {
             this.$patch({details: value.data.categoryDetails})
-            this.loading = false
+          }
+          this.loading = false
         }
       })
 
       onError((error) => {
-        ionRouter?.replace('/')
+        // ionRouter?.replace('/')
+        
       })
     },
     hideSinglePost(value: boolean, id: string='') {

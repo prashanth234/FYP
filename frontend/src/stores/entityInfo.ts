@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { EntityDetailsType, CompetitionType, TabSelectedType } from '@/utils/interfaces'
+import { RouteLocationNormalizedLoaded } from 'vue-router'
 
 export const useEntityInfoStore = defineStore('entityInfo', {
   state: () => ({ 
@@ -22,7 +23,7 @@ export const useEntityInfoStore = defineStore('entityInfo', {
     }
   },
   actions: {
-    getDetails(id: string) {
+    getDetails(id: string, route: RouteLocationNormalizedLoaded) {
       this.loading = true
   
       const ENTITY_DETAILS = gql`
@@ -50,9 +51,11 @@ export const useEntityInfoStore = defineStore('entityInfo', {
               message
             },
             stats {
+              id,
               users,
               posts,
               categories {
+                id,
                 name,
                 count,
                 color
@@ -68,7 +71,12 @@ export const useEntityInfoStore = defineStore('entityInfo', {
   
       onResult(({data, loading}) => {
         if (!loading) {
-          this.$patch({details: data.entityDetails})
+          // When a post is created or when user is logged/logout, entity details are changed as a result onResult method is called and store is updated.
+          // So making sure that store gets updated, only when current page is entity details page.
+          // Store should only hold the current page details. If the store holds entity details while patching, patch will fail as __typename is only readonly
+          if (route.params.id == id) {
+            this.$patch({details: data.entityDetails})
+          }
           this.loading = false
         }
       })
