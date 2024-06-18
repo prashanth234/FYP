@@ -27,7 +27,7 @@
             class="entity card"
           >
 
-            <img class="image" :src="entity.details.image" />
+            <img class="image" :src="entity.details.image" alt="" />
 
             <ion-button
               v-if="entity.details.userAccess != 'SUCCESS'"
@@ -182,7 +182,7 @@ import { useJoinEntityAPI } from '@/composables/entity'
 import { useEntityInfoStore } from '@/stores/entityInfo'
 import Feed from '@/components/FeedContainer.vue'
 import { feed, watchRoute } from '@/composables/feed'
-
+import gql from 'graphql-tag'
 
 const props = defineProps({
   id: String,
@@ -193,12 +193,51 @@ const state = reactive({
   showJoinEntity: false
 })
 
+const ENTITY_DETAILS = gql`
+  query EntityDetails ($id: ID!) {
+    entityDetails (id: $id) {
+      id,
+      name,
+      description,
+      type,
+      image,
+      city,
+      instagram,
+      linkedin,
+      facebook,
+      userAccess,
+      ispublic,
+      competitions {
+        id,
+        name,
+        description,
+        lastDate,
+        image,
+        expired,
+        points,
+        message
+      },
+      stats {
+        id,
+        users,
+        posts,
+        categories {
+          id,
+          name,
+          count,
+          color
+        }
+      }
+    }
+  }
+`
+
 const user = useUserStore()
 const auth = useAuthStore()
 const toast = useToastStore()
 const { content } = scrollTop()
 const store = useEntityInfoStore()
-const { store: entity } = watchRoute(store, props.id, props.postid)
+const { store: entity } = watchRoute(ENTITY_DETAILS, store, props.id, props.postid)
 
 const {
   posts,
@@ -244,6 +283,7 @@ function openJoinEntity(ed: EntityType) {
     width: 150px;
     height: 150px;
     object-fit: cover;
+    border-width: 0px;
     border-radius:  50%;
     position: absolute;
     left: 20px;

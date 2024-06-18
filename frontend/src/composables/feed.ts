@@ -4,6 +4,8 @@ import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { getPosts, getWinners, getTrending } from '@/composables/posts'
 import { PostType, WinnerType } from '@/utils/interfaces'
 import { InfiniteScrollCustomEvent, RefresherCustomEvent } from '@ionic/vue'
+import { DocumentNode } from 'graphql'
+import { useQuery } from '@vue/apollo-composable'
 
 interface WinnerPostType extends PostType {
   winner: {
@@ -12,12 +14,33 @@ interface WinnerPostType extends PostType {
   }
 }
 
-export function watchRoute(store: any, id?: string, postid?: string) {
+export function watchRoute(QUERY: DocumentNode, store: any, id?: string, postid?: string) {
   const route = useRoute()
+
+  const { result, onResult, onError } = useQuery(QUERY, () => ({
+    id
+  }))
+
+  onResult(({data, loading}) => {
+    if (!loading) {
+      // When a post is created or when user is logged/logout, entity/category details are changed as a result onResult method is called and store is updated.
+      // So making sure that store gets updated, only when current page is entity details page.
+      // Store should only hold the current page details. If the store holds entity details while patching, patch will fail as __typename is only readonly
+      if (route.params.id == id) {
+        store.patchDetails(data)
+      }
+      store.loading = false
+    }
+  })
+  
+  onError(() => {
+    store.loading = false
+  })
 
   // When an opened page is opened again, page is not rendered again so need to watch router params to update the store
   watch(() => route.params.id, () => {
     if (route.name == store.routeName && route.params.id == id) {
+      store.patchDetails(result.value)
       intailize()
     }
   })
@@ -29,7 +52,6 @@ export function watchRoute(store: any, id?: string, postid?: string) {
 
   function intailize() {
     postid && store.hideSinglePost(false, postid)
-    id && store.getDetails(id, route)
   }
 
   // When page is loaded for the first time

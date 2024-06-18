@@ -109,15 +109,37 @@ import { feed, watchRoute } from '@/composables/feed'
 import { scrollTop } from '@/composables/scroll'
 import { chevronDownCircleOutline } from 'ionicons/icons'
 import { useCategoryInfoStore } from '@/stores/categoryInfo'
+import gql from 'graphql-tag'
 
 const props = defineProps({
   id: String,
   postid: String
 })
 
+const CATEGORY_DETAILS = gql`
+  query categoryDetails ($id: ID!) {
+    categoryDetails (id: $id) {
+      id,
+      name,
+      description,
+      oftype,
+      competitions {
+          id,
+          name,
+          description,
+          lastDate,
+          image,
+          expired,
+          points,
+          message
+      }
+    }
+  }
+`
+
 const { content } = scrollTop()
 const store = useCategoryInfoStore()
-const { store: category } = watchRoute(store, props.id, props.postid)
+const { store: category } = watchRoute(CATEGORY_DETAILS, store, props.id, props.postid)
 
 const {
   posts,
