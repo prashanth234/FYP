@@ -51,6 +51,11 @@ class Migration(migrations.Migration):
             name='updated_at',
             field=models.DateTimeField(auto_now=True),
         ),
+        migrations.AlterField(
+            model_name='competition',
+            name='points',
+            field=models.CharField(blank=True, max_length=255, null=True),
+        ),
         migrations.AddField(
             model_name='winner',
             name='created_at',

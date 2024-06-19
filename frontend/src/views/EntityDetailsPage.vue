@@ -123,7 +123,7 @@
           <!-- Competitions -->
           <ion-col
             size="12"
-            style="overflow: auto;"
+            style="padding-bottom: 0px;"
             v-if="entity.details.competitions?.length"
           >
             <competitions
@@ -146,6 +146,7 @@
           <ion-col
             v-else
             size="12"
+            class="ion-no-padding"
           >
             <Feed
               :type="store.type"
@@ -166,7 +167,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent} from '@ionic/vue'
+import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonRefresher, IonRefresherContent } from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import SocialLinks from '@/components/SocialContainer.vue'
@@ -332,7 +333,8 @@ function openJoinEntity(ed: EntityType) {
 }
 
 .stats {
-  margin-top: 20px;
+  margin-top: 15px;
+  margin-bottom: 5px;
   color: black;
   max-width: 750px !important;
 

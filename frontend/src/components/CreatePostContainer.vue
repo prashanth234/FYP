@@ -629,7 +629,7 @@ initialize()
 @media only screen and (max-width: 576px) {
 	// For xs
   .content-container {
-    max-height: calc(100vh - 350px);
+    max-height: calc(100vh - 370px);
   }
 }
 </style>

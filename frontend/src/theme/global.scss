@@ -340,13 +340,3 @@ ion-toolbar {
 .grey-text {
   color: var(--ion-color-step-550, #737373);
 }
-
-.feed {
-  padding: 5px;
-  display: flex;
-  flex-wrap: nowrap;
-  .title {
-    font-size: 18px;
-    font-weight: 580;
-  }
-}

@@ -19,7 +19,7 @@ class Competition(models.Model):
     last_date = models.DateField()
     key = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to=custom_path, default='')
-    points = models.CharField(max_length=255)
+    points = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     message = models.TextField(null=True, blank=True)

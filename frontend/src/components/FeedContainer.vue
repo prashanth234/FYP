@@ -2,11 +2,12 @@
 
   <ion-row>
 
+    <!-- Feed Header -->
     <ion-col size="12">
 
       <div class="feed">
 
-        <div>
+        <div class="header">
           Feed
         </div>
 
@@ -163,6 +164,15 @@ const noPosts = computed(() => {
 }
 .posts-content {
   min-height: 500px;
+}
+.feed {
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 5px;
+  .header {
+    font-size: 18px;
+    font-weight: 580;
+  }
 }
 </style>
 

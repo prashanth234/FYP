@@ -166,7 +166,6 @@ ion-content::part(scroll) {
 }
 ion-grid {
   --ion-grid-padding: 0px;
-  --ion-grid-column-padding: 8px;
 }
 .post-col {
   min-height: 100vh;
