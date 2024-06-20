@@ -23,9 +23,15 @@ class AllPostsQuery(graphene.ObjectType):
     def resolve_all_posts(root, info, category=None, competition=None, per_page=10, cursor=None):
 
         if competition:
-            queryset = Post.objects.filter(competition=competition, ispublic=True).order_by('-created_at')
+            queryset = (Post.objects.filter(competition=competition, ispublic=True)
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .order_by('-created_at'))
         elif category:
-            queryset = Post.objects.filter(category=category, ispublic=True).order_by('-created_at')
+            queryset = (Post.objects.filter(category=category, ispublic=True)
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .order_by('-created_at'))
         else:
             raise GraphQLError("Interest or Contest not found.")
 

@@ -24,11 +24,20 @@ class MyPostsQuery(graphene.ObjectType):
             raise GraphQLError("User not authenticated")
         
         if competition:
-            queryset = Post.objects.filter(competition=competition, user=info.context.user).order_by('-created_at')
+            queryset = (Post.objects.filter(competition=competition, user=info.context.user)
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .order_by('-created_at'))
         elif category:
-            queryset = Post.objects.filter(category=category, user=info.context.user).order_by('-created_at')
+            queryset = (Post.objects.filter(category=category, user=info.context.user)
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .order_by('-created_at'))
         else:
-            queryset = Post.objects.filter(user=info.context.user).order_by('-created_at')
+            queryset = (Post.objects.filter(user=info.context.user)
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .order_by('-created_at'))
 
 
         total = queryset.count()

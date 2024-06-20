@@ -24,9 +24,15 @@ class PostDetailsQuery(graphene.ObjectType):
 
         try:
             if category:
-                post = Post.objects.get(pk=id, category__id=category)
+                post = (Post.objects
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .get(pk=id, category__id=category))
             elif entity:
-                post = Post.objects.get(pk=id, entity__id=entity)
+                post = (Post.objects
+                        .select_related('category', 'user')
+                        .prefetch_related('postfile_set')
+                        .get(pk=id, entity__id=entity))
         except Post.DoesNotExist:
             raise GraphQLError('NOTFOUND')
 

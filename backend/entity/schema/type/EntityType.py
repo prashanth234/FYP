@@ -2,6 +2,7 @@ from graphene_django import DjangoObjectType
 import graphene
 from helpers.urlType import ImageUrlType
 from entity.schema.query.userEntityQuery import UserEntityCheck
+from django.db.models import Count, Q
 
 # Models
 from categories.models.Competition import Competition
@@ -48,18 +49,16 @@ class StatsType(graphene.ObjectType):
     return Post.objects.filter(entity=self.id).count()
   
   def resolve_categories(self, info):
-    posts = Post.objects.filter(entity=self.id)
-    categories = Category.objects.all()
+    top_categories = (Category.objects
+                      .annotate(count=Count('post', filter=Q(post__entity_id=self.id)))
+                      .values('id', 'name', 'color', 'count')
+                      .order_by('-count')[:4])
 
     categories_stats = []
-    category_stat = {}
 
-    for category in categories:
-      category_stat["id"] = f"{self.id}-{category.id}"
-      category_stat["name"] = category.name
-      category_stat["color"] = category.color
-      category_stat["count"] = posts.filter(category=category).count()
-      categories_stats.append(CategoryStatType(**category_stat))
+    for category in top_categories:
+      category["id"] = f"{self.id}-{category['id']}"
+      categories_stats.append(CategoryStatType(**category))
     
     return categories_stats
 

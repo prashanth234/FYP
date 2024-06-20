@@ -30,9 +30,15 @@ class EntityPosts(graphene.ObjectType):
       raise GraphQLError("Failed to get posts.")
     
     if competition:
-      queryset = Post.objects.filter(competition_id=competition, entity=entity).order_by('-created_at')
+      queryset = (Post.objects.filter(competition_id=competition, entity=entity)
+                  .select_related('category', 'user')
+                  .prefetch_related('postfile_set')
+                  .order_by('-created_at'))
     else:
-      queryset = Post.objects.filter(entity=entity).order_by('-created_at')
+      queryset = (Post.objects.filter(entity=entity)
+                  .select_related('category', 'user')
+                  .prefetch_related('postfile_set')
+                  .order_by('-created_at'))
 
     total = queryset.count()
     

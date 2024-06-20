@@ -14,4 +14,6 @@ class Query(graphene.ObjectType):
     )
 
     def resolve_winners(root, info, competition):
-        return Winner.objects.filter(competition=competition).order_by('position')
+        return (Winner.objects.filter(competition=competition)
+                .select_related('post')
+                .order_by('position'))
