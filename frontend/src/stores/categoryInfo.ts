@@ -23,7 +23,7 @@ export const useCategoryInfoStore = defineStore('categoryInfo', {
   },
   actions: {
     patchDetails(data: {categoryDetails: CategoryType}) {
-      this.$patch({details: data.categoryDetails})
+      this.details = data.categoryDetails
     },
     hideSinglePost(value: boolean, id: string='') {
       this.singlePost = !value

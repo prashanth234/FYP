@@ -1,5 +1,6 @@
 <template>
 
+  <!-- If simple just show a button to upload or override button using own component -->
   <div class="simple-uploader" v-if="props.simple">
 
     <input
@@ -7,8 +8,8 @@
       ref="fileupload"
       type="file"
       name="fileUpload"
-      :accept="props.fileType || 'image/*'"
-      @input="$event => props.cropable ? loadImage($event) : reduceImageSize($event)" 
+      :accept="state.acceptType"
+      @input="onFileUpload" 
     />
 
     <slot name="handler" :selectImage="selectImage" :loading="state.processingImage">
@@ -17,9 +18,10 @@
 
   </div>
 
+  <!-- If not simple then showing a design box for upload -->
   <div id="file-upload-form" class="uploader" v-else>
 
-    <input id="file-upload" @change="handleFileUpload" type="file" name="fileUpload" :accept="props.fileType || 'image/*'" />
+    <input id="file-upload" @change="$event => onFileUpload($event, true)" type="file" name="fileUpload" :accept="state.acceptType" />
 
     <label for="file-upload" id="file-drag">
 
@@ -86,6 +88,7 @@ import { IonIcon, IonImg, IonButton, IonModal, IonRow, IonCol, IonSpinner } from
 import { CircleStencil, Cropper, CropperResult } from 'vue-advanced-cropper'
 import { cloudUploadOutline } from 'ionicons/icons'
 import { reactive, ref, onUnmounted } from 'vue'
+import { useToastStore } from '@/stores/toast'
 import type { Ref } from 'vue'
 
 const props = defineProps<{
@@ -108,7 +111,8 @@ interface State {
   cropperPreview: CropperResult | null,
   openCropper: boolean,
   processingImage: boolean,
-  cropperLoading: boolean
+  cropperLoading: boolean,
+  acceptType: string
 }
 
 const state: State = reactive({
@@ -119,92 +123,120 @@ const state: State = reactive({
   cropperPreview: null,
   openCropper: false,
   processingImage: false,
-  cropperLoading: false
+  cropperLoading: false,
+  acceptType: props.fileType || 'image/*'
 })
 
 const cropperRef: Ref<any>  = ref(null)
 const fileupload: Ref<HTMLInputElement | null>  = ref(null)
 
-// Without cropper directly update the model and preview by reducing size
-function reduceImageSize(event: Event) {
-  const {validity, files} = event.target as HTMLInputElement;
+const fileTypes: { [key: string]: RegExp } = {
+  'image/*': /image\/*/,
+  '.pdf': /application\/pdf/
+}
 
-  if (validity.valid && files && files.length) {
-    const file = files[0]
-    const reader = new FileReader()
-    state.processingImage = true
+const toast = useToastStore();
 
-    reader.onload = function (e) {
-      const img = new Image()
-      img.src = e.target?.result as string
+function onFileUpload(event: Event, original=false) {
+  if (props.cropable) {
+    loadImage(event)
+  } else {
+    const {validity, files} = event.target as HTMLInputElement;
 
-      img.onload = function () {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        const maxWidth = 2048 // Adjust this to your desired maximum width
-        const maxHeight = 1620 // Adjust this to your desired maximum height
-        let width = img.width
-        let height = img.height
+    if (validity.valid && files && files.length) {
 
-        if (width > maxWidth || height > maxHeight) {
-          if (width / maxWidth > height / maxHeight) {
-            width = maxWidth
-            height = (img.height / img.width) * maxWidth
-          } else {
-            height = maxHeight;
-            width = (img.width / img.height) * maxHeight
-          }
+      // Check if the uploaded image has a valid type
+      for (let i=0; i < files.length; i++) {
+        const hasValidType = state.acceptType.split(',').some(type => { return fileTypes[type].test(files[i].type) })
+        if (!hasValidType) {
+          toast.$patch({message: 'Please upload a valid image file.', color: 'danger', open: true})
+          return
         }
-
-        canvas.width = width
-        canvas.height = height
-
-        // file.type to get original file type
-        const fileType = 'image/jpeg'
-
-        ctx?.drawImage(img, 0, 0, width, height)
-
-        function handleBlob(blob: Blob | null) {
-          if (blob) {
-            const resizedFile = new File([blob], file.name, { type: fileType });
-            state.image = resizedFile
-            emit('update:modelValue', resizedFile)
-          }
-          state.processingImage = false
-        }
-
-        // You can convert the canvas content back to an image or upload the canvas data directly
-        // For example, convert to a blob and upload using FormData:
-        canvas.toBlob(handleBlob, fileType);
-
-        // Display the resized image in the preview element
-        state.previewImage = canvas.toDataURL(fileType)
-        emit('update:preview', state.previewImage)
       }
-    }
 
-    reader.readAsDataURL(file)
+      // If original is true or file is image
+      if (original || !fileTypes['image/*'].test(files[0].type)) {
+        processOrginalFile(event, files)
+      } else {
+        reduceImageSize(event, files)
+      }
+
+    }
   }
 }
 
-// Without cropper directly update the model and preview
-function handleFileUpload(event: Event) {
-  const {validity, files} = event.target as HTMLInputElement
-  
-  if (validity.valid && files && files.length) {
-    state.image = files[0]
-    
-    emit('update:modelValue', files[0])
+// Without cropper directly update the model and preview by reducing size
+function reduceImageSize(event: Event, files: FileList) {
+  const file = files[0]
+  const reader = new FileReader()
+  state.processingImage = true
 
-    if (files[0]) {
-      const reader = new FileReader()
+  reader.onload = function (e) {
+    const img = new Image()
+    img.src = e.target?.result as string
 
-      reader.onload = () => {
-        state.previewImage = reader.result as string
-        emit('update:preview', state.previewImage)
-      };
-      reader.readAsDataURL(files[0])
+    img.onload = function () {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const maxWidth = 2048 // Adjust this to your desired maximum width
+      const maxHeight = 1620 // Adjust this to your desired maximum height
+      let width = img.width
+      let height = img.height
+
+      if (width > maxWidth || height > maxHeight) {
+        if (width / maxWidth > height / maxHeight) {
+          width = maxWidth
+          height = (img.height / img.width) * maxWidth
+        } else {
+          height = maxHeight;
+          width = (img.width / img.height) * maxHeight
+        }
+      }
+
+      canvas.width = width
+      canvas.height = height
+
+      // file.type to get original file type
+      const fileType = 'image/jpeg'
+
+      ctx?.drawImage(img, 0, 0, width, height)
+
+      function handleBlob(blob: Blob | null) {
+        if (blob) {
+          const resizedFile = new File([blob], file.name, { type: fileType });
+          state.image = resizedFile
+          emit('update:modelValue', resizedFile)
+        }
+        state.processingImage = false
+      }
+
+      // You can convert the canvas content back to an image or upload the canvas data directly
+      // For example, convert to a blob and upload using FormData:
+      canvas.toBlob(handleBlob, fileType);
+
+      // Display the resized image in the preview element
+      state.previewImage = canvas.toDataURL(fileType)
+      emit('update:preview', state.previewImage)
     }
+  }
+
+  reader.readAsDataURL(file)
+}
+
+// Without cropper directly update the model and preview
+function processOrginalFile(event: Event, files: FileList) {
+  state.image = files[0]
+  
+  emit('update:modelValue', files[0])
+
+  if (files[0]) {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      state.previewImage = reader.result as string
+      emit('update:preview', state.previewImage)
+    };
+    reader.readAsDataURL(files[0])
   }
 }
 

@@ -21,7 +21,7 @@ export const useEntityInfoStore = defineStore('entityInfo', {
   },
   actions: {
     patchDetails(data: {entityDetails: EntityDetailsType}) {
-      this.$patch({details: data.entityDetails})
+      this.details = data.entityDetails
     },
     hideSinglePost(value: boolean, id: string='') {
       this.singlePost = !value

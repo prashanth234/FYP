@@ -14,7 +14,7 @@ class CategoryType(ImageUrlType, DjangoObjectType):
     competitions = graphene.List(CompetitionType)
 
     def resolve_competitions(self, info):
-        return Competition.objects.filter(id=self.id, entity_id='1')
+        return Competition.objects.filter(category_id=self.id, entity_id='1')
 
     class Meta:
         model = Category

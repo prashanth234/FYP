@@ -55,7 +55,7 @@
             v-model="state.file"
             :simple="true"
             :cropable="false"
-            file-type="image/*,.pdf"
+            file-type="image/*"
           >
             <template #handler="{selectImage, loading}">
               <ion-button
@@ -78,13 +78,13 @@
             </template>
           </FileUpload>
 
-          <div class="uploaded-filename">
+          <div class="uploaded-filename" v-if="state.file">
             {{ state.file ? state.file.name : '' }}
           </div>
 
         </ion-col>
 
-        <div style="padding: 0px 15px;">
+        <div style="padding: 0px 15px;" v-if="state.errors.length">
           <errors :errors="state.errors"/>
         </div>
 

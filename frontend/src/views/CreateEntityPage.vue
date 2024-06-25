@@ -125,7 +125,7 @@
                 @update:preview="onProofSelect"
                 :simple="true"
                 :cropable="false"
-                file-type="image/*,.pdf"
+                file-type="image/*"
               >
                 <template #handler="{selectImage, loading}">
                   <ion-button
