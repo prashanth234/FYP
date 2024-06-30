@@ -89,21 +89,16 @@
           />
         </ion-col>
 
-        <!-- No posts message -->
-        <ion-col size="12"
-          class="text-bold ion-text-center ion-padding"
-          v-else-if="noPosts"
-        >
-          There are no posts here yet, be the first to share you're creative content.
-        </ion-col>
-
         <!-- Display the posts -->
         <ion-col size="12"
-          v-else
-          v-for="post in posts.posts"
+          v-else-if="!noPosts"
+          v-for="(post, index) in posts.posts"
           :key="post.id"
         >
-          <post :post="post" :position="post.winner?.position"></post>
+          <post
+            :post="post"
+            :position="store.tabSelected == 'winners' ? index + 1 : undefined"
+          ></post>
         </ion-col>
 
       </ion-row>
@@ -139,6 +134,10 @@ const props = defineProps(['type', 'posts', 'fetchMoreCompleted', 'fetchMore', '
 const store = props.type == 'entity' ? useEntityInfoStore()  : useCategoryInfoStore()
 const user = useUserStore();
 
+const noPosts = computed(() => {
+  return !props.posts.posts?.length
+})
+
 const noteMessage = computed(() => {
   if (store.selectedComptn?.expired) {
     return 'The contest has concluded! Please take a look at our other ongoing contests.'
@@ -148,12 +147,10 @@ const noteMessage = computed(() => {
     } else {
       return "Contest's top 5 posts with at least 5 likes are currently trending here!"
     }
+  } else if (noPosts.value) {
+    return "There are no posts here yet, be the first to share you're creative content."
   }
   return ''
-})
-
-const noPosts = computed(() => {
-  return !props.posts.posts?.length
 })
 </script>
 

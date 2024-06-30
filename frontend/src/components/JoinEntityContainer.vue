@@ -1,21 +1,22 @@
 <template>
-  <!-- Join Entity Model -->
+
+  <!-- Join Entity Private Model -->
   <ion-modal
-    class="join-entity-modal"
+    class="entity-modal-private"
     :show-backdrop="true"
     :backdropDismiss="false"
-    :is-open="props.show"
+    :is-open="!props.public && props.show"
     @didDismiss="close"
   >
 
-    <ion-toolbar color="light">
+    <ion-toolbar color="light" class="line">
       <ion-title>Join Entity</ion-title>
       <ion-buttons slot="end">
         <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="close"></ion-icon>
       </ion-buttons>
     </ion-toolbar>
 
-    <ion-grid class="entity-grid">
+    <ion-grid class="grid private-grid">
 
       <ion-row class="ion-text-center">
 
@@ -95,7 +96,7 @@
             size="small"
             style="width: 120px;"
             :disabled="state.loading"
-            @click="submit"
+            @click="requestJoinEntity"
           >
             <ion-spinner 
               class="button-loading-small"
@@ -112,6 +113,73 @@
       </ion-row>
 
     </ion-grid>
+
+  </ion-modal>
+
+  <!-- Join Entity Public Model -->
+  <!-- Added seprate model because when added dynmaic class to model join button is getting disabled -->
+  <ion-modal
+    class="entity-modal-public"
+    :show-backdrop="true"
+    :backdropDismiss="false"
+    :is-open="props.public && props.show"
+    @didDismiss="close"
+  >
+
+    <ion-toolbar color="light" class="line">
+      <ion-title>Join Entity</ion-title>
+      <ion-buttons slot="end">
+        <ion-icon size="large" class="cpointer" :icon="closeOutline" @click="close"></ion-icon>
+      </ion-buttons>
+    </ion-toolbar>
+
+    <ion-grid class="grid">
+
+      <ion-row>
+
+        <ion-col class="text-bold" size="12">
+          To join this entity, I agree to:
+        </ion-col>
+
+        <ion-col class="point" size="12">
+          - Confirm that I am a genuine member of this entity.
+        </ion-col>
+
+        <ion-col class="point" size="12">
+          - Avoid posting any abusive or offensive content.
+        </ion-col>
+
+        <ion-col class="point" size="12">
+          - Adhere to all entity rules and guidelines.
+        </ion-col>
+
+        <ion-col class="point" size="12">
+          - Contact support if I wish to exit the entity.
+        </ion-col>
+
+        <ion-col size="12" class="ion-text-center ion-margin-top">
+
+          <ion-button
+            size="small"
+            style="width: 120px;"
+            :disabled="state.loading"
+            @click="joinEntity"
+          >
+            <ion-spinner 
+              class="button-loading-small"
+              v-if="state.loading"
+              name="crescent"
+            />
+            <span v-else style="font-family: sans-serif;">
+              JOIN
+            </span>
+          </ion-button>
+
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+    
   </ion-modal>
 </template>
 
@@ -127,7 +195,8 @@ import { useJoinEntityAPI } from '@/composables/entity'
 
 const props = defineProps({
   show: Boolean,
-  entity: String
+  entity: String,
+  public: Boolean
 })
 
 const emit = defineEmits(['update:show'])
@@ -158,7 +227,7 @@ function close() {
   emit('update:show', false)
 }
 
-function submit() {
+function requestJoinEntity() {
   state.errors = []
 
   if (!state.code && !state.file) {
@@ -194,26 +263,62 @@ function submit() {
   })
 }
 
+function joinEntity() {
+  // For public entity directly add user to entity
+  state.loading = true
+
+  const { mutate, onDone, onError } = useJoinEntityAPI()
+  mutate({entityId: props.entity})
+
+  onDone(({data}) => {
+    toast.$patch({message: data.joinEntity.message, color: 'success', open: true})
+    state.loading = false
+    close()
+  })
+
+  onError(() => {
+    toast.$patch({message: 'Failed to process request, please try again.', color: 'danger', open: true})
+    state.loading = false
+  })
+}
+
 </script>
 
 <style lang="scss" scoped>
-  .join-entity-modal {
-    // For xs screens
-    --max-width: 100%;
-  }
-  @media only screen and (min-width: 576px) {
-    // For sm and above screens
-    .join-entity-modal {
-      --height: auto;
-      --max-width: 350px;
-    }
-  }
-  .entity-grid {
+
+  .grid {
     --ion-grid-padding: 15px;
+  }
+
+  .private-grid {
     --ion-grid-column-padding: 20px;
 
     .label {
       padding-bottom: 15px;
     }
+  }
+
+  .entity-modal-private {
+    --max-width: 100%;
+  }
+
+  .entity-modal-public {
+    --max-width: 100%;
+  }
+
+  @media only screen and (min-width: 576px) {
+    // For sm and above screens
+    .entity-modal-public {
+      --height: auto;
+      --max-width: 500px;
+    }
+    .entity-modal-private {
+      --height: auto;
+      --max-width: 350px;
+    }
+  }
+  
+  .point {
+    padding-left: 15px;
   }
 </style>

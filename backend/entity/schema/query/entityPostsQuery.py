@@ -26,8 +26,8 @@ class EntityPosts(graphene.ObjectType):
     entity = Entity.objects.get(pk=entity)
     user = info.context.user
 
-    if not entity.ispublic and not (user.is_authenticated, user.user_of_entities.filter(pk=entity.id).exists()):
-      raise GraphQLError("Failed to get posts.")
+    if not entity.ispublic and not (user.is_authenticated and user.user_of_entities.filter(pk=entity.id).exists()):
+      raise GraphQLError("No Access: Failed to get posts.")
     
     if competition:
       queryset = (Post.objects.filter(competition_id=competition, entity=entity)

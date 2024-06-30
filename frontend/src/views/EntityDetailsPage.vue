@@ -19,6 +19,7 @@
           <JoinEntity
             v-model:show="state.showJoinEntity"
             :entity="entity.details.id"
+            :public="entity.details.ispublic"
           />
 
           <!-- Entity Details -->
@@ -28,7 +29,7 @@
           >
 
             <img class="image" :src="entity.details.image" alt="" />
-
+            
             <ion-button
               v-if="entity.details.userAccess != 'SUCCESS'"
               aria-label="join-entity.details"
@@ -258,17 +259,8 @@ function openJoinEntity(ed: EntityType) {
     return
   }
 
-  if (ed.ispublic) {
-    // For public entity directly add user to entity
-    const { mutate, onDone, onError } = useJoinEntityAPI()
-    mutate({entityId: ed.id})
-    onDone(({data}) => {
-      toast.$patch({message: data.joinEntity.message, color: 'success', open: true})
-    })
-  } else {
-    // For private entity ask for code or proof
-    state.showJoinEntity = true
-  }
+  state.showJoinEntity = true
+  return
 }
 
 </script>

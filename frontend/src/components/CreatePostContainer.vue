@@ -97,7 +97,7 @@
                 class="ion-text-start"
                 style="color: var(--ion-color-warning);"
               >
-                Selected entity is private. Posting in the contest makes post public.
+                Selected entity is private. Posting in the Global contest makes post public.
               </ion-col>
 
             </ion-row>
@@ -179,7 +179,7 @@
 <script lang="ts" setup>
 import { useIonRouter, IonSelect, IonSelectOption, IonHeader, IonToolbar, IonTitle, IonButtons, IonIcon, IonTextarea, IonCard, IonSpinner, IonButton, IonCol, IonGrid, IonRow, IonImg } from '@ionic/vue';
 import { useRoute } from 'vue-router';
-import { closeOutline } from 'ionicons/icons'
+import { closeOutline, key } from 'ionicons/icons'
 import FileUploadContainer from '@/components/FileUploadContainer.vue'
 import { reactive, computed } from 'vue'
 import { CompetitionType, EntityType, PostType } from '@/utils/interfaces'
@@ -205,20 +205,22 @@ interface AllPostsType {
 }
 
 interface VariablesType {
-  [key: string]: {
-    category?: string,
-    competition?: string,
-    entity?: string,
-    trending?: boolean,
-  }
+  category?: string,
+  competition?: string,
+  entity?: string,
+  cpType?: string,
+  trending?: boolean
 }
 
-interface CachesType {
-  category: AllPostsType | null,
-  competition: AllPostsType | null,
-  trending: AllPostsType | null,
-  profile: AllPostsType | null,
-  entity: AllPostsType | null
+interface CacheType {
+  [key: string]: {
+    variables: VariablesType,
+    query: any,
+    name: string,
+    ignore?: boolean,
+    max?: number,
+    addEnd?: boolean
+  }
 }
 
 interface Competitions {
@@ -294,6 +296,7 @@ const categoryInfo = useCategoryInfoStore()
 const entityInfo = useEntityInfoStore()
 
 const { QUERY: POST_QUERY } = getQuery('allPosts')
+const { QUERY: CMPTNPOSTS_QUERY } = getQuery('competitionPosts')
 const { QUERY: MYPOSTS_QUERY } = getQuery('myPosts')
 const { QUERY: ENTITYPOSTS_QUERY } = getQuery('entityPosts')
 
@@ -394,6 +397,7 @@ function createNewPost() {
             competition {
               expired
             },
+            ispublic,
             isBot
           },
           coinActivity {
@@ -421,25 +425,41 @@ function createNewPost() {
       variables: postVariables,
       update: (cache, { data: { createPost } }) => {
 
-        let variables: VariablesType = {
-          category: {category: state.category, trending: false},
-          competition: {category: state.category, competition: state.competition, trending: false},
-          trending: {category: state.category, competition: state.competition, trending: true},
-          entity: {entity: state.entity.id},
-          profile: {trending: false}
-        }
-
-        let caches: CachesType = {
-          category: cache.readQuery({ query: POST_QUERY, variables: variables.category }),
-          competition: null,
-          trending: null,
-          profile: cache.readQuery({query: MYPOSTS_QUERY, variables: variables.profile }),
-          entity: cache.readQuery({query: ENTITYPOSTS_QUERY, variables: variables.entity })
+        const cacheData: CacheType = {
+          category: {
+            variables: {category: state.category},
+            query: POST_QUERY,
+            ignore: !(state.entity.ispublic && createPost.post.ispublic), // Ignore if entity is private and post is not public
+            name: 'allPosts'
+          },
+          entity: {
+            variables: {entity: state.entity.id},
+            query: ENTITYPOSTS_QUERY,
+            name: 'entityPosts',
+            ignore: !state.entity.ispublic && state.entity.userAccess != "SUCCESS" // Ignore if enity is private and user don't have access yet
+          },
+          profile: {
+            variables: {},
+            query: MYPOSTS_QUERY,
+            name: 'myPosts'
+          }
         }
 
         if (state.competition) {
-          caches.competition = cache.readQuery({ query: POST_QUERY, variables: variables.competition })
-          caches.trending = cache.readQuery({ query: POST_QUERY, variables: variables.trending })
+          Object.assign(cacheData, {
+            competition: {
+              variables: {competition: state.competition, cpType: 'allposts'},
+              query: CMPTNPOSTS_QUERY,
+              name: 'competitionPosts'
+            },
+            trending: {
+              variables: {competition: state.competition, cpType: 'trending'},
+              query: CMPTNPOSTS_QUERY,
+              name: 'competitionPosts',
+              addEnd: true,
+              max: 5
+            }
+          })
 
           // Update coin activities cache
           const COINACTIVITY_QUERY = getCoinActivityQuery()
@@ -473,25 +493,16 @@ function createNewPost() {
           }
         }
 
-        for (let [key, data] of Object.entries(caches)) {
-          if (data) {
+        for (let [key, obj] of Object.entries(cacheData)) {
 
-            if (key == 'profile') {
-              data = updatePosts('myPosts', data)
-              cache.writeQuery({ query: MYPOSTS_QUERY, data, variables: variables[key] })
-              continue
-            } else if (key == 'trending') {
-              if (data.allPosts.posts.length >= 5) { continue }
-              data = updatePosts('allPosts', data, true)
-            } else if (key == 'entity') {
-              data = updatePosts('entityPosts', data)
-              cache.writeQuery({ query: ENTITYPOSTS_QUERY, data, variables: variables[key] })
-              continue
-            } else {
-              data = updatePosts('allPosts', data)
-            }
+          const { query, variables, name, addEnd, max, ignore } = obj
+          const data: AllPostsType | null = cache.readQuery({ query, variables })
 
-            cache.writeQuery({ query: POST_QUERY, data, variables: variables[key] })
+          if (data && (!ignore && (!max || data[name].posts.length < max))) {
+
+            const updatedData = updatePosts(name, data, addEnd)
+            cache.writeQuery({ query, data: updatedData, variables })
+
           }
         }
 
@@ -503,7 +514,7 @@ function createNewPost() {
 
   onDone(() => {
     if (state.entity.userAccess == 'PENDING') {
-      toast.$patch({message: "Post uploaded. It'll show in the entity once your join entity request is verified.", color: 'success', open: true})
+      toast.$patch({message: "Post uploaded. It'll show in the entity once your part of entity.", color: 'success', open: true})
     } else {
       toast.$patch({message: 'Success! Your post has been uploaded.', color: 'success', open: true})
     }

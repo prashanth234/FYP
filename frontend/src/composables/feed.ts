@@ -1,8 +1,8 @@
 
 import { computed, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { getPosts, getWinners, getTrending } from '@/composables/posts'
-import { PostType, WinnerType } from '@/utils/interfaces'
+import { getPosts } from '@/composables/posts'
+import { PostType } from '@/utils/interfaces'
 import { InfiniteScrollCustomEvent, RefresherCustomEvent } from '@ionic/vue'
 import { DocumentNode } from 'graphql'
 import { useQuery } from '@vue/apollo-composable'
@@ -66,76 +66,42 @@ export function watchRoute(QUERY: DocumentNode, store: any, id?: string, postid?
 export function feed(store: any, content: any, category?: string, entity?: string, competition?: string) {
   // Abstract method to get entity/category posts and competition posts
   const allPosts = getPosts(store.queryType, category, undefined, entity)
-  const trendingPosts = getTrending()
-  const winnerPosts = getWinners()
+  const cPosts = getPosts('competitionPosts', undefined, competition, undefined, 'allposts', true)
+
+  const isCompetition = computed(() => {
+    return !!store.selectedComptn?.id
+  })
 
   const posts = computed(() => {
-
-    if (store.tabSelected == 'allposts') {
-
+    if (isCompetition.value) {
+      return (cPosts.posts.value?.competitionPosts || {})
+    } else {
       return (allPosts.posts.value?.[store.queryType] || {})
-
-    } else if (store.tabSelected == 'trending') {
-
-      return (trendingPosts.posts.value?.trendingPosts || {})
-
-    } else if (store.tabSelected == 'winners') {
-
-      const posts: {posts: WinnerPostType[], total: number} = {posts: [], total: 3}
-
-      winnerPosts.posts.value?.winners.forEach((winner: WinnerType) => {
-        const post: WinnerPostType = {
-          winner: {
-            ...winner,
-            post: undefined
-          },
-          ...winner.post,
-        }
-        posts.posts.push(post)
-      })
-
-      return posts
-
     }
-
-    return {}
   })
 
   function loadCompetitionType(value: string) {
     store.tabSelected = value
-
-    if (value == 'trending') {
-
-      trendingPosts.variables.competition.value = store.selectedComptn?.id
-      trendingPosts.load() || trendingPosts.refetch()
-
-    } else if (value == 'winners') {
-
-      winnerPosts.variables.competition.value = store.selectedComptn?.id
-      winnerPosts.load() || winnerPosts.refetch()
-
-    }
+    cPosts.variables.cpType.value = value
   }
 
   function loadCompetition() {
-    allPosts.variables.competition.value = store.selectedComptn?.id
+    cPosts.variables.competition.value = store.selectedComptn?.id
+    cPosts.load()
   }
 
   function cancelCompetition() {
-    allPosts.variables.competition.value = undefined
+    cPosts.variables.competition.value = undefined
+    cPosts.posts.value = undefined
   }
 
   async function refetch(event: RefresherCustomEvent | null) {
     store.refreshing = true
 
-    if (store.tabSelected == 'trending') {
-
-      await (trendingPosts.load() || trendingPosts.refetch())
-
-    } else if (store.tabSelected == 'allposts') {
-
+    if (isCompetition.value) {
+      await cPosts.refetch()
+    } else {
       await allPosts.refetch()
-
     }
     
     event?.target && event.target.complete && event.target.complete()
@@ -143,7 +109,11 @@ export function feed(store: any, content: any, category?: string, entity?: strin
   }
 
   function fetchMore(ev: InfiniteScrollCustomEvent) {
-    allPosts.getMore(ev, content)
+    if (isCompetition.value) {
+      cPosts.getMore(ev, content)
+    } else {
+      allPosts.getMore(ev, content)
+    }
   }
 
   return {

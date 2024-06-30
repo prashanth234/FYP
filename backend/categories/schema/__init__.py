@@ -1,11 +1,10 @@
 import graphene
 
-from categories.schema import categorySchema, competitionSchema, winnerSchema
+from categories.schema import categorySchema, competitionSchema
 
 class CategoryQuery(
     categorySchema.Query,
     competitionSchema.Query,
-    winnerSchema.Query,
     graphene.ObjectType,
 ):
     pass

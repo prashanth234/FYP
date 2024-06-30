@@ -80,6 +80,30 @@ export function getQuery(type: string) {
         }
       `
     }
+  } else if (type == 'competitionPosts') {
+    return {
+      QUERY: gql`
+        query ${type} (
+          $competition: ID!,
+          $cpType: String,
+          $perPage: Int,
+          $cursor: String
+        ) {
+          ${type} (
+            competition: $competition,
+            cpType: $cpType,
+            perPage: $perPage,
+            cursor: $cursor
+          ) @connection(key: "competition-feed", filter: ["competition", "cpType"]) {
+            posts {
+              ${POST_COMMON_FIELDS},
+              isBot
+            },
+            total
+          }
+        }
+      `
+    }
   } else {
     // Return myPosts query
     return {
@@ -114,7 +138,9 @@ export function getPosts(
   type: string,
   category?: string,
   competition?: string,
-  entity?: string
+  entity?: string,
+  cpType?: string, // Competition Type (trending/winners/allposts)
+  lazy: boolean = false
 ) {
 
   const PER_PAGE = 4
@@ -125,6 +151,7 @@ export function getPosts(
     competition: ref(competition),
     category: ref(category),
     entity: ref(entity),
+    cpType: ref(cpType),
     perPage: PER_PAGE
   }
 
@@ -136,11 +163,21 @@ export function getPosts(
     category: variables.category.value,
     competition: variables.competition.value,
     entity: variables.entity.value,
+    cpType: variables.cpType.value,
     perPage: variables.perPage,
     cursor: undefined
   })
 
-  const { result: posts, loading, fetchMore, refetch } = useQuery(POST_QUERY, queryVariables)
+  let queryResult = null, load =  () => {};
+
+  if (lazy) {
+    queryResult = useLazyQuery(POST_QUERY, queryVariables)
+    load = queryResult.load
+  } else {
+    queryResult = useQuery(POST_QUERY, queryVariables)
+  }
+
+  const { result: posts, loading, fetchMore, refetch } = queryResult
 
   const fetchMoreCompleted = computed(() => {
     if (!posts.value) {
@@ -217,39 +254,40 @@ export function getPosts(
     variables,
     getMore,
     refetch,
+    load,
     fetchMoreCompleted
   }
 }
 
-export function getWinners(competition?: string | undefined) {
-  const WINNERS_QUERY = gql`
-    query winners ($competition: ID!) {
-      winners (competition: $competition) {
-        post {
-          ${POST_COMMON_FIELDS}
-        },
-        position,
-        wonByLikes
-      }
-    }
-  `
+// export function getWinners(competition?: string | undefined) {
+//   const WINNERS_QUERY = gql`
+//     query winners ($competition: ID!) {
+//       winners (competition: $competition) {
+//         post {
+//           ${POST_COMMON_FIELDS}
+//         },
+//         position,
+//         wonByLikes
+//       }
+//     }
+//   `
 
-  const variables = {
-    competition: ref<string|undefined>(competition)
-  }
+//   const variables = {
+//     competition: ref<string|undefined>(competition)
+//   }
 
-  const { result: posts, loading, refetch, onResult, load } = useLazyQuery(WINNERS_QUERY, () => ({
-    competition: variables.competition.value
-  }))
+//   const { result: posts, loading, refetch, onResult, load } = useLazyQuery(WINNERS_QUERY, () => ({
+//     competition: variables.competition.value
+//   }))
 
-  return {
-    posts,
-    refetch,
-    onResult,
-    load,
-    variables
-  }
-}
+//   return {
+//     posts,
+//     refetch,
+//     onResult,
+//     load,
+//     variables
+//   }
+// }
 
 export function getPostDetails(
   id: string,
@@ -279,32 +317,32 @@ export function getPostDetails(
   }
 }
 
-export function getTrending(competition?: string | undefined) {
+// export function getTrending(competition?: string | undefined) {
 
-  const TRENDING_QUERY = gql`
-    query TrendingPosts ($competition: ID!) {
-      trendingPosts (competition: $competition) {
-        posts {
-          ${POST_COMMON_FIELDS}
-        },
-        total
-      }
-    }
-  `
+//   const TRENDING_QUERY = gql`
+//     query TrendingPosts ($competition: ID!) {
+//       trendingPosts (competition: $competition) {
+//         posts {
+//           ${POST_COMMON_FIELDS}
+//         },
+//         total
+//       }
+//     }
+//   `
 
-  const variables = {
-    competition: ref<string|undefined>(competition)
-  }
+//   const variables = {
+//     competition: ref<string|undefined>(competition)
+//   }
 
-  const { result: posts, loading, refetch, onResult, load } = useLazyQuery(TRENDING_QUERY, () => ({
-    competition: variables.competition.value,
-  }))
+//   const { result: posts, loading, refetch, onResult, load } = useLazyQuery(TRENDING_QUERY, () => ({
+//     competition: variables.competition.value,
+//   }))
 
-  return {
-    posts,
-    refetch,
-    onResult,
-    load,
-    variables
-  }
-}
+//   return {
+//     posts,
+//     refetch,
+//     onResult,
+//     load,
+//     variables
+//   }
+// }
