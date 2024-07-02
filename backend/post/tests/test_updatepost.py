@@ -49,7 +49,7 @@ def test_update_post_mutation(authenticate, file_client_query, create_post):
     }
 
     # Check without client authentication
-    # executed = file_client_query(mutation, variables=variables, files={'file': image})
+    # executed = file_client_query(mutation, variables=variables, files={'file': image1})
     # response = json.loads(executed.content)
 
     # assert 'errors' in response
@@ -66,7 +66,7 @@ def test_update_post_mutation(authenticate, file_client_query, create_post):
     # Loop through the files and remove files created
     for post_file in post_files:
         try:
-            shutil.rmtree(os.path.dirname(post_file.file.path))
+            post_file.file and shutil.rmtree(os.path.dirname(post_file.file.path))
         except OSError as e:
             print(f"Error: {e.strerror}")
 

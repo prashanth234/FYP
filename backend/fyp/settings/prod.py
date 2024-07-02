@@ -39,7 +39,7 @@ STORAGES = {
       "region_name": os.environ.get('AWS_S3_REGION_NAME'),
       "endpoint_url": os.environ.get('AWS_S3_ENDPOINT_URL'),
       "addressing_style": "virtual",
-      "file_overwrite": True
+      "file_overwrite": False
     }
   },
   "staticfiles": {

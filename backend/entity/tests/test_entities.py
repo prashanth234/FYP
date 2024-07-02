@@ -13,8 +13,7 @@ def test_fetch_entities(client_query):
             description,
             image,
             city, 
-            type,
-            typeOthers
+            type
           }
         }
       ''')

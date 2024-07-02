@@ -8,14 +8,15 @@ from post.models.Post import Post
 
 
 @pytest.mark.django_db
-def test_create_post_mutation(authenticate, file_client_query, create_category):
+def test_create_post_mutation(authenticate, file_client_query, create_category, create_entity):
     
     category = create_category()
+    entity = create_entity()
 
     # Define the mutation
     mutation = """
-    mutation CreatePost($file: Upload!, $category: ID!, $competition: ID, $description: String!) {
-        createPost(file: $file, category: $category, competition: $competition, description: $description) {
+    mutation CreatePost($file: Upload!, $category: ID!, $entity: ID! $competition: ID, $description: String!) {
+        createPost(file: $file, category: $category, entity: $entity, competition: $competition, description: $description) {
             post {
                 id
                 likes
@@ -68,7 +69,8 @@ def test_create_post_mutation(authenticate, file_client_query, create_category):
     variables = {
         "category": category.id,
         "competition": None,
-        "description": "this is art"
+        "description": "this is art",
+        "entity": entity.id
     }
 
     # Check without client authentication
@@ -81,6 +83,9 @@ def test_create_post_mutation(authenticate, file_client_query, create_category):
 
     # Check post creation with authentication
     client, user, headers = authenticate()
+    entity = create_entity(users=[user])
+    variables["entity"] = entity.id
+
     executed = file_client_query(mutation, variables=variables, files={'file': image1}, headers=headers)
     response = json.loads(executed.content)
 
