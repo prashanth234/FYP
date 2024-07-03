@@ -142,11 +142,7 @@ const noteMessage = computed(() => {
   if (store.selectedComptn?.expired) {
     return 'The contest has concluded! Please take a look at our other ongoing contests.'
   } else if (store.tabSelected == 'trending') {
-    if (props.posts.posts?.length) {
-      return "Can't spot any trending posts? Be the one who sparks a new wave! Unlock the path to trendiness with just 5 likes for your post!"
-    } else {
-      return "Contest's top 5 posts with at least 5 likes are currently trending here!"
-    }
+    return "Share your post with friends and family to reach 5 likes and get featured!"
   } else if (noPosts.value) {
     return "There are no posts here yet, be the first to share you're creative content."
   }

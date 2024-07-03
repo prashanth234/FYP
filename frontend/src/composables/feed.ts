@@ -86,11 +86,14 @@ export function feed(store: any, content: any, category?: string, entity?: strin
   }
 
   function loadCompetition() {
+    // FIXME: Here data is fetched two times
+    cPosts.variables.cpType.value = 'allposts'
     cPosts.variables.competition.value = store.selectedComptn?.id
     cPosts.load()
   }
 
   function cancelCompetition() {
+    // FIXME: Competitinos API is called when below line is excuted, which is not needed.
     cPosts.variables.competition.value = undefined
     cPosts.posts.value = undefined
   }
