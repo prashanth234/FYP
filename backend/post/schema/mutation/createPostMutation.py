@@ -76,14 +76,17 @@ class CreatePostMutation(graphene.Mutation):
                 Verification.objects.get(user=user, entity=entity, status='PENDING')
             except Verification.DoesNotExist:
                 raise GraphQLError("Failed: Join the entity first to post within it.", extensions={'status': 403})
-            
+        
+        # If the contest is global contest then it will be public post
+        ispublic = (True if (competition and competition.category_id == 1) else entity.ispublic)
+
         post = Post(
             user=user,
             description=description,
             category=category,
             competition=competition or None,
             entity=entity,
-            ispublic=(True if competition else entity.ispublic)
+            ispublic=ispublic
         )
         
         post.save()

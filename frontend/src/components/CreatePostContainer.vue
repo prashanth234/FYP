@@ -93,7 +93,11 @@
               </ion-col>
 
               <ion-col
-                v-if="state.competition && !state.entity.ispublic && state.entity.userAccess == 'SUCCESS'"
+                v-if="
+                  state.competition &&
+                  !state.entity.ispublic && 
+                  isGlobalCompetition
+                "
                 class="ion-text-start"
                 style="color: var(--ion-color-warning);"
               >
@@ -267,6 +271,10 @@ const showImageUpload = computed(() => {
   return postType.value == 'IMAGETEXT'
 })
 
+const isGlobalCompetition = computed(() => {
+  return state.competition && state.competitions.globalList.some(item => item.id == state.competition)
+})
+
 const postType = computed(() => {
   // Post edit we have oftype information on post itself
   if (props.post) { return props.post.category.oftype }
@@ -355,6 +363,8 @@ function createNewPost() {
     auth.open()
     return
   }
+
+  state.alertMsg = ''
 
   // Check if user part of entity 
   if (state.entity.userAccess == 'NOTFOUND') {

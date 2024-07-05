@@ -29,6 +29,9 @@ export interface PostType {
 export interface CompetitionType {
   id: string,
   name: string,
+  category: {
+    id: string
+  },
   description: string,
   lastDate: string,
   points: string,
