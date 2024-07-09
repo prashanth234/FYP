@@ -1,16 +1,30 @@
 #!/bin/bash
 
+# CHANGE THE VERSION in .env file first like v2.0.0
+
+# To build production
 # To copy the firebase production configuration
 # To copy index.html with google tag
 
-cp /Users/prashanth/projects/fyp-prod/.env.production /Users/prashanth/projects/FYP/frontend
-cp /Users/prashanth/projects/FYP/frontend/index.html /Users/prashanth/projects/FYP/frontend/index.html.bkp
-cp /Users/prashanth/projects/fyp-prod/index.html /Users/prashanth/projects/FYP/frontend
+if [ "$#" -ne 1 ]; then
+    echo "Provide production credential path"
+    exit 1  # Exit the script with a non-zero status code
+fi
 
-cd /Users/prashanth/projects/FYP && docker compose build frontend
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+FRONTEND_DIR="$SCRIPT_DIR/../frontend"
+CRED_DIR=$1
 
-rm /Users/prashanth/projects/FYP/frontend/.env.production  
-rm /Users/prashanth/projects/FYP/frontend/index.html
-mv /Users/prashanth/projects/FYP/frontend/index.html.bkp /Users/prashanth/projects/FYP/frontend/index.html
+echo "Script Directory - $SCRIPT_DIR"
+echo "Cred Directory - $CRED_DIR"
+echo "Frontend Directory - $FRONTEND_DIR"
 
-# docker compose push frontend
+cd $FRONTEND_DIR && mv index.html index.html.bkp
+cd $CRED_DIR && cp .env.production index.html $FRONTEND_DIR
+
+cd $SCRIPT_DIR/.. && docker compose build frontend backend
+
+cd $FRONTEND_DIR && rm .env.production index.html
+cd $FRONTEND_DIR && mv index.html.bkp index.html
+
+docker compose push frontend backend

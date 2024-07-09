@@ -216,7 +216,6 @@ function submitForm () {
             email,
             phone,
             gender,
-            avatar,
             points,
             verified
           }
@@ -246,6 +245,7 @@ function submitForm () {
         userUpdated: user.userUpdated + 1,
         success: true
       })
+      user.getAvatar()
       auth.close()
       toast.$patch({
         message: `Success! Welcome, ${response.user.username}!`,

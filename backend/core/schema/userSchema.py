@@ -322,11 +322,21 @@ class UserCreationCheckQuery(graphene.ObjectType):
         else:
             return UserCreationCheckType(success=False, errors=errors)
         
+class UserQuery(graphene.ObjectType):
+    user = graphene.Field(UserType)
+
+    def resolve_user(self, info):
+        user = info.context.user
+        if user.is_authenticated:
+            return user
+        return None
+        
 class AuthQuery(
     UserCreationCheckQuery,
     UserAvailableQuery,
     # UserQuery,
     MeQuery,
+    UserQuery,
     graphene.ObjectType
 ):
     pass

@@ -258,7 +258,7 @@ category.getCategories()
 entity.getEntities()
 
 const userAvatar = computed(() => {
-  return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
+  return user.avatar || '/static/core/avatar.svg'
 })
 
 const displayName = computed(() => {
