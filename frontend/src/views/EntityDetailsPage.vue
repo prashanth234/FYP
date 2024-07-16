@@ -87,6 +87,7 @@
                 size="6" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="6"
               >
                 <social-links
+                  v-if="entity.details.id"
                   :linkedin="entity.details.linkedin"
                   :instagram="entity.details.instagram"
                   :facebook="entity.details.facebook"
