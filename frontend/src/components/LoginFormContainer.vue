@@ -99,7 +99,7 @@
 
 <script lang="ts" setup>
 
-import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle, IonCard, IonCardContent } from '@ionic/vue';
+import { IonCol, IonGrid, IonRow, IonInput, IonButton, IonTitle } from '@ionic/vue';
 import gql from 'graphql-tag'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { storeTokens, useAuth } from '@/composables/auth'
@@ -216,7 +216,6 @@ function submitForm () {
             email,
             phone,
             gender,
-            avatar,
             points,
             verified
           }
@@ -246,6 +245,7 @@ function submitForm () {
         userUpdated: user.userUpdated + 1,
         success: true
       })
+      user.getAvatar()
       auth.close()
       toast.$patch({
         message: `Success! Welcome, ${response.user.username}!`,
@@ -253,12 +253,7 @@ function submitForm () {
         open: true
       })
     } else {
-      const keys = Object.keys(response.errors)
-      keys.forEach(key => {
-        response.errors[key].forEach(({message}:{message: string}) => {
-          auth.errors.push(message)
-        })
-      })
+      auth.errors.push(response.errors.message)
     }
     auth.processState(false)
   })

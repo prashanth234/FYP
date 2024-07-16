@@ -1,8 +1,10 @@
 from graphene_django import DjangoObjectType
 from core.models.User import User
 from graphene import ObjectType, Boolean, List, String
+from helpers.urlType import AvatartUrlType
 
-class UserType(DjangoObjectType):
+class UserType(AvatartUrlType, DjangoObjectType):
+
     class Meta:
         model = User
         fields = ("username", "avatar", "id")

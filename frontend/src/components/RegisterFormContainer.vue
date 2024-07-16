@@ -179,14 +179,15 @@ function register (user?: any) {
           })
       } else {
         // Email Registration
+        // response.errors = {username: ['message'], password: ['message']}
         const keys = Object.keys(response.errors)
         keys.forEach(key => {
-          response.errors[key].forEach((response: {message: string}) => {
-            if (response.message.includes('Enter a valid username.')) {
+          response.errors[key].forEach((message: string) => {
+            if (message.includes('Enter a valid username.')) {
               // Also update message in userschema in backend
               auth.errors.push("Username may only contain letters, numbers and special characters @, ., +, -, and _  without spaces.")
             } else {
-              auth.errors.push(response.message)
+              auth.errors.push(message)
             }
           })
         })

@@ -2,7 +2,9 @@ from graphene_django import DjangoObjectType
 
 from core.models.Reward import Reward
 
-class RewardsType(DjangoObjectType):
+from helpers.urlType import ImageUrlType
+
+class RewardsType(ImageUrlType, DjangoObjectType):
 
     class Meta:
         model = Reward

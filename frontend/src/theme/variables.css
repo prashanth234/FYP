@@ -95,7 +95,8 @@ http://ionicframework.com/docs/theming/ */
 
   
   /* Wherever background color is used (like cards, contents, list-sheets etc) */
-  --ion-background-color: #FAFAFA;
+  --ion-background-color: #F2F4F5;
+  /* F2F4F5, EFF3F4 Another alternative for background color */
   --ion-background-color-rgb: 250, 250, 250;
   --ion-card-background: #ffffff;
   --ion-item-background: #ffffff;

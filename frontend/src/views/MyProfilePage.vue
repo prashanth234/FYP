@@ -69,7 +69,7 @@
         </ion-row>
       </ion-grid>
 
-      <ion-infinite-scroll @ionInfinite="getMore">
+      <ion-infinite-scroll @ionInfinite="fetchMore">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
 
@@ -82,13 +82,13 @@
 
 import { reactive } from 'vue'
 import gql from 'graphql-tag'
-import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonIcon, IonButton, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, InfiniteScrollCustomEvent, IonPage, IonContent, IonCol, IonGrid, IonRow, IonModal, IonInfiniteScroll, IonInfiniteScrollContent, SegmentCustomEvent, SegmentValue } from '@ionic/vue';
 import Post from '@/components/PostContainer.vue'
 import CreatePost from '@/components/CreatePostContainer.vue'
 import About from '@/components/AboutContainer.vue'
 // import ChangePassword from '@/components/changePasswordContainer.vue'
 import { useMutation } from '@vue/apollo-composable'
-import { Post as PostType } from '@/utils/interfaces'
+import { PostType } from '@/utils/interfaces'
 import { getPosts } from '@/composables/posts'
 import { warningOutline } from 'ionicons/icons'
 import { useToastStore } from '@/stores/toast'
@@ -127,7 +127,16 @@ function deletePost() {
         id: $id,
       ) {
           success,
-          caId
+          caId,
+          entity {
+            id,
+            stats {
+              posts,
+              categories {
+                count
+              }
+            }
+          }
         } 
     }
   `,
@@ -180,6 +189,13 @@ function editPost(post: PostType, index: number) {
 
 function tabChanged(event: SegmentCustomEvent) {
   state.selectedTab = event.target.value
+}
+
+// Infinate Scroll Event
+
+async function fetchMore(ev: InfiniteScrollCustomEvent) {
+  await getMore(ev, null)
+  setTimeout(() => { ev.target.complete() })
 }
 
 </script>

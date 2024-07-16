@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'corsheaders',
     # 'playground',
     'core',
-    'categories'
+    'categories',
+    'post',
+    'entity'
 ]
 
 MIDDLEWARE = [
@@ -141,7 +143,7 @@ INTERNAL_IPS = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'fyp.schema.schema', # this file doesn't exist yet
+    'SCHEMA': 'fyp.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
@@ -151,7 +153,6 @@ AUTHENTICATION_BACKENDS = [
     'graphql_auth.backends.GraphQLAuthBackend',
     # 'graphql_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
-    
 ]
 
 SIMPLE_JWT = {
@@ -164,7 +165,7 @@ GRAPHQL_AUTH = {
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
     "UPDATE_MUTATION_FIELDS": ['first_name', 'last_name', 'gender'],
     "ALLOW_LOGIN_NOT_VERIFIED": False,
-    "SEND_ACTIVATION_EMAIL": bool(os.environ.get('SEND_ACTIVATION_EMAIL', False)),
+    "SEND_ACTIVATION_EMAIL": os.environ.get('SEND_ACTIVATION_EMAIL', 'False') == 'True' ,
     "EMAIL_TEMPLATE_VARIABLES": {
         "site_domain": os.environ.get('FYP_SITE_DOMAIN', 'localhost'),
         "site_name": os.environ.get('FYP_SITE_NAME', 'FYP'),
@@ -202,7 +203,7 @@ GRAPHQL_JWT = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtpout.secureserver.net'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = f'{os.environ.get("FYP_SITE_NAME")} <{EMAIL_HOST_USER}>'
@@ -214,11 +215,6 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'general.log',
             'formatter': 'verbose'
         }
     },
@@ -235,6 +231,8 @@ LOGGING = {
         }
     }
 }
+
+ADMINS = [("Selfdive", os.environ.get('EMAIL_USER'))]
 
 # APP CONFIG
 

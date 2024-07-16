@@ -5,6 +5,8 @@ import { useQuery } from '@vue/apollo-composable'
 export const useUserStore = defineStore('user', {
   state: () => ({ 
     success: false,
+    token: '',
+    refreshToken: '',
     username: '',
     avatar: '',
     points: 0,
@@ -22,6 +24,21 @@ export const useUserStore = defineStore('user', {
     
   },
   actions: {
+    getAvatar() {
+      const { onResult } = useQuery(gql`   
+                                  query user {
+                                    user {
+                                      avatar,
+                                      id
+                                    }
+                                  }
+                                `)
+      
+      onResult(({data, loading}) => {
+        if (loading) return
+        this.$patch({avatar: data.user?.avatar, userUpdated: this.userUpdated + 1})
+      })
+    },
     getDetails() {
       // Also change in loginformcontainer.vue user query
       const { result, onResult } = useQuery(gql`   
@@ -33,7 +50,6 @@ export const useUserStore = defineStore('user', {
                                       email,
                                       phone,
                                       gender,
-                                      avatar,
                                       points,
                                       verified
                                     }
@@ -50,6 +66,8 @@ export const useUserStore = defineStore('user', {
           this.reset()
         }
       })
+
+      this.getAvatar()
     },
     reset() {
       localStorage.removeItem('fyptoken')

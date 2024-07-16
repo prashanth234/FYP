@@ -3,11 +3,11 @@
 		<ion-row style="padding: 10px">
 			<ion-col size="12">
 				<slot>
-					<ion-row>
-						<ion-col size="auto" v-if="dialog.icon">
-							<ion-icon :icon="dialog.icon" :color="dialog.iconColor" size="large"></ion-icon>
+					<ion-row class="ion-align-items-center">
+						<ion-col style="display: flex;" size="auto" v-if="dialog.icon">
+							<ion-icon class="icon" :icon="dialog.icon" :color="dialog.iconColor"></ion-icon>
 						</ion-col>
-						<ion-col style="padding-left: 5px;">
+						<ion-col style="padding-left: 10px;">
 							<div class="title" v-if="dialog.title">{{dialog.title}}</div>
 							<div class="description"  v-if="dialog.description">{{dialog.description}}</div>
 						</ion-col>
@@ -59,12 +59,17 @@ function onClickButton (button: Button) {
       --max-width: 400px;
     }
   }
+	.icon {
+		font-size: 40px;
+	}
   .title {
-    font-size: 16px;
+    font-size: 18px;
 		font-weight: 500;
+		padding-bottom: 5px;
     color: var(--ion-color-dark);
   }
 	.description {
-		font-size: 14px;
+		font-size: 15px;
+		font-weight: 400;
 	}
 </style>

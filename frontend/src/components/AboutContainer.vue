@@ -15,7 +15,7 @@
               :src="userAvatar"
             />
           </ion-avatar>
-          <div class="camera-icon">
+          <div class="upload-camera-icon">
             <ion-icon :icon="cameraOutline"></ion-icon>
           </div>
         </template>
@@ -142,7 +142,7 @@ function setUserState() {
 setUserState()
 
 const userAvatar = computed(() => {
-  return user.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
+  return user.avatar || '/static/core/avatar.svg'
 })
 
 // Profile image
@@ -300,18 +300,6 @@ function verifyEmail () {
 </script>
 
 <style lang="scss" scoped>
-.camera-icon {
-  position: relative;
-  left: 58px;
-  bottom: 25px;
-  background-color: white;
-  color: black;
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  border-radius: 50%;
-  padding: 6px;
-}
 ion-item {
   &::part(native) {
     padding-left: 2px;

@@ -28,7 +28,7 @@ services:
         - ${FYP_PLATFORM-linux/arm64}
     image: prashanth45/fyp:backend${FYP_VERSION}
     ports:
-      - "8000:8000"
+      - "8002:8000"
     volumes:
       #- /home/prashanth/FYP/backend/fyp/settings/prod.py:/app/fyp/settings/prod.py
         - ${FIREBASE_CONF_PATH}:${GOOGLE_APPLICATION_CREDENTIALS}
@@ -41,11 +41,20 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
       - FYP_SITE_DOMAIN=${FYP_SITE_DOMAIN}
+      - FYP_SITE_NAME=${FYP_SITE_NAME}
       - FYP_SITE_PORT=${FYP_SITE_PORT}
+      - FYP_SITE_PROTOCAL=${FYP_SITE_PROTOCAL}
       - FYP_ALLOWED_HOSTS=${FYP_ALLOWED_HOSTS}
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - SEND_ACTIVATION_EMAIL=${SEND_ACTIVATION_EMAIL}
+      - AWS_S3_ACCESS_KEY_ID=${AWS_S3_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME}
+      - AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL}
     #restart: always
     depends_on:
       db:
@@ -81,7 +90,7 @@ services:
 
   celery:
     container_name: celery
-    image: prashanth45/fyp:backendv1
+    image: prashanth45/fyp:backend${FYP_VERSION}
     command: pipenv run celery -A fyp worker --loglevel=info
     depends_on:
       - redis

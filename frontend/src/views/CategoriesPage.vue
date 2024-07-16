@@ -7,13 +7,13 @@
       <div class="grid-container">
 
 				<div
-					class="grid-item cpointer"
+					class="grid-item cpointer hover"
 					v-for="(cat, index) in category.categories"
 					:key="index"
 					@click="openCategory(cat)"
 				>
 
-					<ion-img class="cat-image" :src="`/media/${cat.image}`" :alt="cat.description">
+					<ion-img class="cat-image" :src="cat.image" :alt="cat.description">
 					</ion-img>
 
 					<div class="cat-title">
@@ -35,12 +35,8 @@
 <script setup lang="ts">
 import { useCategoryStore } from '@/stores/category';
 import { IonPage, IonContent, IonImg, useIonRouter  } from '@ionic/vue';
-import { categoryObject } from '@/utils/interfaces'
+import { CategoryType } from '@/utils/interfaces'
 import { scrollTop } from '@/composables/scroll'
-// import ART from '@/assets/images/categories/ART.jpg'
-// import CRTCFT from '@/assets/images/categories/CRTCFT.jpg'
-// import PHTGRY from '@/assets/images/categories/PHTGRY.jpg'
-// import SHTSTY from '@/assets/images/categories/SHTSTY.jpg'
 
 scrollTop()
 
@@ -49,19 +45,10 @@ const category = useCategoryStore();
 
 // category.getCategories()
 
-function openCategory (category: categoryObject) {
+function openCategory (category: CategoryType) {
   ionRouter.push(`interests/${category.id}/posts`)
 }
 
-// function getImage(type: string) {
-// 	const image:{[key: string]: any} = {
-// 		'ART': ART,
-// 		'CRTCFT': CRTCFT,
-// 		'PHTGRY': PHTGRY,
-// 		'SHTSTY': SHTSTY
-// 	}
-// 	return image[type]
-// }
 </script>
 
 <style scoped>
@@ -90,9 +77,6 @@ function openCategory (category: categoryObject) {
 	flex-direction: column;
 	text-align: center;
 	background: var(--ion-card-background);
-}
-.grid-item:hover {
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 .cat-image::part(image), .cat-image {
   max-width: 100%;

@@ -75,6 +75,25 @@ const routes: Array<RouteRecordRaw> = [
         props: true
       },
       {
+        path: 'entity',
+        component: () => import('@/views/EntityPage.vue'),
+        name: 'entity'
+      },
+      {
+        path: 'entity/create',
+        component: () => import('@/views/CreateEntityPage.vue'),
+        name: 'createEntity',
+        meta: {
+          auth: true
+        }
+      },
+      {
+        path: 'entity/:id/posts/:postid?',
+        component: () => import('@/views/EntityDetailsPage.vue'),
+        name: 'EntityDetails',
+        props: true
+      },
+      {
         path: 'profile',
         component: () => import('@/views/MyProfilePage.vue'),
         name: 'profile',

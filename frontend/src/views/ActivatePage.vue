@@ -66,9 +66,11 @@ try {
       state.message = 'Account verified successfully.'
       // goHome()
     } else {
-      state.message = errors.nonFieldErrors[0].message
+      state.message = errors.message
     }
-    state.loading = false
+    setTimeout(() => {
+      state.loading = false
+    }, 100)
   })
 
 } catch (error) {

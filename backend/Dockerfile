@@ -24,5 +24,5 @@ RUN pipenv run python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Start Gunicorn server
-CMD ["sh", "-c", "pipenv run python manage.py migrate && pipenv run gunicorn --bind 0.0.0.0:8000 fyp.wsgi:application"]
+CMD ["sh", "-c", "pipenv run python manage.py migrate && pipenv run gunicorn --bind 0.0.0.0:8000 --workers=2 fyp.wsgi:application"]
 # CMD ["pipenv", "run", "gunicorn", "--bind", "0.0.0.0:8000", "fyp.wsgi:application"]

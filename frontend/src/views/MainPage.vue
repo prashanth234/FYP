@@ -68,7 +68,7 @@
         </ion-content>
         
 
-        <social-links />
+        <social-links size="25" orglinks class="mr-auto ml-auto"/>
         <doc-links />
       </ion-menu>
 
@@ -219,7 +219,7 @@
 
 <script setup lang="ts">
 import { menuController, IonTabButton, IonTabBar, IonFooter, IonLoading, IonList, IonItem, IonLabel, IonPage, IonButton, IonModal, IonRouterOutlet, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonGrid, IonCol, IonRow,  IonMenu, IonSplitPane, IonButtons, IonMenuButton, IonCard, IonCardContent, IonAvatar, useIonRouter, IonProgressBar } from '@ionic/vue';
-import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, fastFood } from 'ionicons/icons'
+import { addOutline, logOutOutline, closeOutline, homeOutline, personOutline, home as homefull, person, logIn, sparklesOutline, sparkles, help, helpCircle, information, informationCircle, businessOutline, business } from 'ionicons/icons'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { storeTokens, useAuth } from '@/composables/auth'
@@ -238,6 +238,8 @@ import CommonDialog from '@/components/CommonDialogContainer.vue'
 import { warningOutline } from 'ionicons/icons'
 import { useAuthStore } from '@/stores/auth'
 import { useCategoryStore } from '@/stores/category'
+import { useMainStore } from '@/stores/main'
+import { useEntityStore } from '@/stores/entity';
 
 const ionRouter = useIonRouter();
 const router = useRoute();
@@ -247,13 +249,16 @@ const user = useUserStore();
 const toast = useToastStore();
 const dialog = useDialogStore();
 const auth = useAuthStore();
+const main = useMainStore();
 const { resetClientStore } = useAuth();
 const category = useCategoryStore();
+const entity = useEntityStore();
 
 category.getCategories()
+entity.getEntities()
 
 const userAvatar = computed(() => {
-  return user?.avatar ? `/media/${user.avatar}` : '/static/core/avatar.svg'
+  return user.avatar || '/static/core/avatar.svg'
 })
 
 const displayName = computed(() => {
@@ -280,6 +285,15 @@ const state = reactive({
       dicon: homeOutline,
       micon: homefull,
       action: navigate.bind(null, '/')
+    },
+    {
+      name: 'Entities',
+      rname: 'entity',
+      rpath: '/entity',
+      auth: false,
+      dicon: businessOutline,
+      micon: business,
+      action: navigate.bind(null, '/entity')
     },
     {
       name: 'Rewards',
@@ -312,7 +326,6 @@ const state = reactive({
       name: 'About',
       auth: false,
       dicon: information,
-      micon: informationCircle,
       action: showAbout,
       maction: showAbout
     },
@@ -332,9 +345,9 @@ const isUserLogged = computed(() => {
 
 function addNewPost () {
   if (!user.success) {
-  auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
-  auth.open()
-  return
+    auth.showMessage('Ready to share your content? Log in and start posting!', 'info')
+    auth.open()
+    return
   }
   postDialog.open()
 }
@@ -445,8 +458,8 @@ function confirmLogout() {
   ]
 
   dialog.show(
-    'Are you sure you want to log out?',
     '',
+    'Are you sure you want to log out?',
     buttons,
     warningOutline,
     'warning'

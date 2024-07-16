@@ -1,7 +1,7 @@
 import graphene
 # import graphql_jwt
 from graphql_auth import mutations
-from graphql_auth.schema import MeQuery
+from graphql_auth.queries import MeQuery
 from graphene_file_upload.scalars import Upload
 from graphql import GraphQLError
 from django.core.files.base import ContentFile
@@ -322,11 +322,21 @@ class UserCreationCheckQuery(graphene.ObjectType):
         else:
             return UserCreationCheckType(success=False, errors=errors)
         
+class UserQuery(graphene.ObjectType):
+    user = graphene.Field(UserType)
+
+    def resolve_user(self, info):
+        user = info.context.user
+        if user.is_authenticated:
+            return user
+        return None
+        
 class AuthQuery(
     UserCreationCheckQuery,
     UserAvailableQuery,
     # UserQuery,
     MeQuery,
+    UserQuery,
     graphene.ObjectType
 ):
     pass

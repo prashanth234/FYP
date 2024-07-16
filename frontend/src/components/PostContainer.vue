@@ -41,10 +41,10 @@
         >
         
           <picture class="ml-auto mr-auto">
-            <source :srcset="`/media/${post.postfileSet[0].file.replace('.jpeg', '_lg.webp')}`" media="(min-width: 600px)" />
-            <source :srcset="`/media/${post.postfileSet[0].file.replace('.jpeg', '_md.webp')}`" media="(max-width: 600px)" />
+            <source :srcset="post.postfileSet[0].files.lg" media="(min-width: 600px)" />
+            <source :srcset="post.postfileSet[0].files.md" media="(max-width: 600px)" />
             <img
-              :src="`/media/${post.postfileSet[0].file}`"
+              :src="post.postfileSet[0].files.og"
               :alt="post.description"
               :width="post.postfileSet[0].width"
               :height="post.postfileSet[0].height"
@@ -178,7 +178,7 @@ const share = reactive({
   show: false
 })
 
-share.url = `${document.URL}/${props.post.id}`
+share.url = document.URL.replace(/posts.*/, `posts/${props.post.id}`)
 
 const emit = defineEmits<{
   (e: 'editPost'): void
@@ -186,7 +186,7 @@ const emit = defineEmits<{
 }>()
 
 const userAvatar = computed(() => {
-  return props.post.user.avatar ? `/media/${props.post.user.avatar}` : '/static/core/avatar.svg'
+  return props.post.user.avatar || '/static/core/avatar.svg'
 })
 
 function sharePost() {

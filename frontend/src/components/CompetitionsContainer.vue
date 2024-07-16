@@ -10,20 +10,24 @@
 		:is-open="state.showCompDetails"
 		@didDismiss="closeCompDetails"
 	>
-		<ion-row v-if="categoryInfo.selectedComptn" style="overflow: auto; padding: 10px">
+		<ion-row v-if="store.selectedComptn" class="card" style="overflow: auto; padding: 10px">
 
 			<ion-col size="12" class="title ion-text-center" >
-				{{ categoryInfo.selectedComptn.name }}
+				{{ store.selectedComptn.name }}
+			</ion-col>
+
+			<ion-col size="12" v-if="store.selectedComptn.message">
+				<alert :message="store.selectedComptn.message" type="info"/>
 			</ion-col>
 
 			<ion-col size="12" style="line-height: 1.7;">
 				
 				<div class="ion-text-start">
 					<span class="comp-header">The Quest:</span>
-					{{ categoryInfo.selectedComptn.description }}
+					{{ store.selectedComptn.description }}
 				</div>
 
-				<div class="ion-text-center points-table">
+				<div class="ion-text-center points-table" v-if="store.selectedComptn.points">
 
 					<h5>SparkPoints</h5>
 					<table class="mlr-auto">
@@ -33,15 +37,15 @@
 							<th>3rd Place</th>
 						</tr>
 						<tr>
-							<td>3000</td>
-							<td>2000</td>
-							<td>1500</td>
+							<td>{{ points.first }}</td>
+							<td>{{ points.second }}</td>
+							<td>{{ points.third }}</td>
 						</tr>
 					</table>
 
 					<div class="ion-text-start" style="display: flex;">
 						<div class="mlr-auto">
-							<span class="comp-header">Participation</span>: 250<br>
+							<span v-if="points.participation"><span class="comp-header">Participation</span>: {{ points.participation }}</span><br>
 							<span class="comp-header">Last Date</span>: {{ lastDate }}
 						</div>
 					</div>
@@ -53,8 +57,8 @@
 					<ol class="ion-no-margin" style="color: grey; line-height: 1.5;">
 						<li>To maintain fairness, it is essential that participants create their own content. Entries obtained from the internet will not be taken into consideration.</li>
 						<li>Winners will be chosen based on our team’s assessment and the likes received for each post.</li>
-						<li>The winner's participation points will be included in the total winning points.</li>
-						<li>Participation and Winner points will be credited once the contest ends within 2 business days.</li>
+						<li v-if="store.selectedComptn.points">The winner's participation points will be included in the total winning points.</li>
+						<li v-if="store.selectedComptn.points">Participation and Winner points will be credited once the contest ends within 2 business days.</li>
 					</ol>
 				</div>
 			</ion-col>
@@ -70,130 +74,221 @@
 	<ion-card
 		class="note-card"
 		color="light"
-		v-if="!categoryInfo.competitionSet.length"
+		v-if="!store.details.competitions?.length"
 	>
 		<ion-card-content class="ion-text-center" style="font-weight: 500;">
 			Comming Soon!
 		</ion-card-content>
 	</ion-card>
 
-	<ion-row :class="{'ion-nowrap horizantal-row': !props.vertical}" class="ion-justify-content-start">
+	<ion-row :class="{'ion-nowrap ion-align-items-center': !props.vertical}">
+
 		<ion-col
-			:size-md="props.vertical ? '12' : 'auto'"
-			:size-lg="props.vertical ? '11' : 'auto'"
-			:size-xl="props.vertical ? '10' : 'auto'"
-			v-for="(competition, index) in categoryInfo.competitionSet"
-			:key="index"
+			size="auto"
+			v-if="!props.vertical && state.showNavIcons"
+			@click="moveLeft"
+			class="cpointer ion-hide-md-down"
+			style="padding-left: 0px;"
 		>
-			<ion-card
-				@click="selectCompetition(competition)"
-				class="competition cpointer ion-no-margin"
-				:class="{
-					'competition-selected': categoryInfo.selectedComptn?.id == competition.id,
-					'expired': competition.expired,
-					'hovered': state.ihovered == index
-				}"
-				@mouseover="state.ihovered = index"
-      	@mouseout="state.ihovered = null"
-			>
-				<ion-row class="details ion-nowrap">
-					<ion-col size="auto" class="ion-padding-end">
-						<ion-img :src="`media/${competition.image}`" :alt="competition.description"></ion-img>
-					</ion-col>
-					<ion-col style="overflow: hidden;">
-						<div class="title overflow-ellipsis">
-							{{ competition.name }}
-						</div>
-						<div class="cat-description" :title="competition.description">
-							{{ competition.description }}
-						</div>
-					</ion-col>
-				</ion-row>
-				<transition name="slide-fade">
-					<div v-if="categoryInfo.selectedComptn?.id == competition.id">
-						<ion-button
-							class="ion-no-margin float-right"
-							size="small"
-							@click.stop="moreCompDetails(competition)"
-							v-if="!competition.expired"
-						>
-							More
-						</ion-button>
-						<ion-button
-							@click.stop="closeCompetition(competition)"
-							class="ion-no-margin cancel-button float-right"
-							size="small"
-							color="light"
-						>
-							Cancel
-						</ion-button>
-					</div>
-				</transition>
-			</ion-card>
+			<ion-icon 
+				class="comp-nav-icons"
+				:icon="chevronBackOutline"
+			></ion-icon>
 		</ion-col>
+
+		<ion-col 
+			ref="competitions"
+			class="ion-no-padding competitions-row"
+		>
+
+			<ion-row
+				:class="{'ion-nowrap horizantal-row': !props.vertical}"
+				class="ion-justify-content-start"
+			>
+
+				<ion-col
+					:size-md="props.vertical ? '12' : 'auto'"
+					:size-lg="props.vertical ? '11' : 'auto'"
+					:size-xl="props.vertical ? '10' : 'auto'"
+					v-for="(competition, index) in store.details.competitions"
+					:key="index"
+				>
+					<ion-card
+						@click="selectCompetition(competition)"
+						class="competition cpointer ion-no-margin"
+						:class="{
+							'competition-selected': store.selectedComptn?.id == competition.id,
+							'expired': competition.expired,
+							'hovered': state.ihovered == index
+						}"
+						@mouseover="state.ihovered = index"
+						@mouseout="state.ihovered = null"
+					>
+						<ion-row class="details ion-nowrap">
+
+							<ion-col size="auto" class="ion-padding-end">
+								<ion-img :src="competition.image" :alt="competition.description"></ion-img>
+							</ion-col>
+
+							<ion-col style="overflow: hidden;">
+								<div class="title overflow-ellipsis">
+									{{ competition.name }}
+								</div>
+								<div class="cat-description" :title="competition.description">
+									{{ competition.description }}
+								</div>
+							</ion-col>
+
+						</ion-row>
+
+						<transition name="slide-fade">
+
+							<div v-if="store.selectedComptn?.id == competition.id">
+
+								<ion-button
+									class="ion-no-margin float-right"
+									size="small"
+									@click.stop="moreCompDetails(competition)"
+									v-if="!competition.expired"
+								>
+									More
+								</ion-button>
+
+								<ion-button
+									@click.stop="closeCompetition(competition)"
+									class="ion-no-margin cancel-button float-right"
+									size="small"
+									color="light"
+								>
+									Cancel
+								</ion-button>
+
+							</div>
+
+						</transition>
+						
+					</ion-card>
+				</ion-col>
+
+			</ion-row>
+
+		</ion-col>
+
+		<ion-col
+			size="auto"
+			v-if="!props.vertical && state.showNavIcons"
+			@click="moveRight"
+			class="cpointer ion-hide-md-down"
+			style="padding-right: 0px;"
+		>
+			<ion-icon 
+				class="comp-nav-icons"
+				:icon="chevronForwardOutline"
+			></ion-icon>
+		</ion-col>
+
 	</ion-row>
 
 </template>
 
 <script lang="ts" setup>
 
-import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent } from '@ionic/vue';
+import { IonRow, IonCol, IonCard, IonButton, IonImg, IonModal, IonCardContent, IonIcon } from '@ionic/vue';
+import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons'
 import { useCategoryInfoStore } from '@/stores/categoryInfo';
-import { CompetitionInfo } from '@/utils/interfaces';
-import { reactive, computed } from 'vue';
+import { useEntityInfoStore } from '@/stores/entityInfo';
+import { CompetitionType } from '@/utils/interfaces';
+import { reactive, computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import { formatDateToCustomFormat  } from '@/utils/common';
+import alert from './AlertContainer.vue'
 
 const props = defineProps<{
-	vertical: Boolean
+	vertical: Boolean,
+	type: String
 }>()
 
 const emit = defineEmits<{
-  (e: 'selectCompetition', competition: CompetitionInfo): void;
-	(e: 'closeCompetition', competition: CompetitionInfo): void;
+  (e: 'selectCompetition', competition: CompetitionType): void;
+	(e: 'closeCompetition', competition: CompetitionType): void;
 }>()
 
 interface State {
 	showCompDetails: boolean,
-	ihovered: number | null
+	ihovered: number | null,
+	showNavIcons: boolean
 }
 
 const state: State = reactive({
 	showCompDetails: false,
-	ihovered: null
+	ihovered: null,
+	showNavIcons: false
 })
 
+const competitions = ref<any>(null)
+
+function moveLeft() {
+	competitions.value.$el.scrollTo({
+    left: competitions.value.$el.scrollLeft - 300,
+    behavior: 'smooth'
+  })
+}
+
+function moveRight() {
+	competitions.value.$el.scrollTo({
+    left: competitions.value.$el.scrollLeft + 300,
+    behavior: 'smooth'
+  })
+}
+
+function controlNavIcons() {
+	state.showNavIcons = competitions.value.$el.scrollWidth > competitions.value.$el.clientWidth
+}
+
+onMounted(() => {
+	setTimeout(() => { 
+		window.addEventListener('resize', controlNavIcons)
+		controlNavIcons() 
+	}, 10)
+})
+
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', controlNavIcons)
+})
+
+const store = props.type == 'entity' ? useEntityInfoStore() : useCategoryInfoStore()
+
 const points = computed(() => {
-	if (categoryInfo.selectedComptn) {
-		// return categoryInfo.selectedComptn.points.split(',').sort((a, b) => {
-		// 	return parseInt(b) - parseInt('a')
-		// })
-		const [firstplace, secondplace, thridplace, pariticipation] = categoryInfo.selectedComptn.points.split(',')
+	if (store.selectedComptn) {
+		const [first, second, third, participation] = store.selectedComptn.points.split(',')
 		return {
-			'1st Place': firstplace,
-			'2nd Place': secondplace,
-			'3rd Place': thridplace,
-			'Participation': pariticipation
+			first,
+			second,
+			third,
+			participation
 		}
 	}
-	return []
+	return {}
 })
 
 const lastDate = computed(() => {
-	return categoryInfo.selectedComptn ? formatDateToCustomFormat(categoryInfo.selectedComptn.lastDate) : ''
+	return store.selectedComptn ? formatDateToCustomFormat(store.selectedComptn.lastDate) : ''
 })
 
-const categoryInfo = useCategoryInfoStore()
-
-function selectCompetition(competition: CompetitionInfo) {
+function selectCompetition(competition: CompetitionType) {
+	store.selectedComptn = competition
+	store.hideSinglePost(true)
+	store.tabSelected = 'allposts'
 	emit('selectCompetition', competition)
 }
 
-function closeCompetition(competition: CompetitionInfo) {
+function closeCompetition(competition: CompetitionType) {
+	store.selectedComptn = null
+	store.tabSelected = 'allposts'
 	emit('closeCompetition', competition)
 	state.ihovered = null
 }
 
-function moreCompDetails(competition: CompetitionInfo) {
+function moreCompDetails(competition: CompetitionType) {
 	state.showCompDetails = true
 }
 
@@ -246,7 +341,6 @@ function closeCompDetails() {
 	box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
 }
 .horizantal-row {
-	overflow-y: auto;
 	.competition {
 		min-width: 250px;
 	}
@@ -274,7 +368,9 @@ function closeCompDetails() {
 @media only screen and (min-width: 576px) {
 	// For sm and above screens
 	.comp-details-modal {
-		--height: min(530px, 95vh);
+		--background: transparent;
+		--box-shadow: none;
+		--height: min(580px, 95vh);
 		--min-width: 800px !important;
 		--max-width: 800px !important;
 	}
@@ -352,6 +448,19 @@ function closeCompDetails() {
 		color: white;
 		font-weight: 550;
 	}
+}
+
+.comp-nav-icons {
+	font-size: 25px;
+	color: var(--ion-color-medium-tint);
+	&:hover {
+		color: var(--ion-color-dark);
+	}
+}
+
+.competitions-row {
+	flex: 1;
+	overflow-x: auto;
 }
 
 </style>

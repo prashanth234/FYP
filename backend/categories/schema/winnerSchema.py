@@ -8,7 +8,12 @@ from categories.schema.type.WinnerType import WinnerType
 
 class Query(graphene.ObjectType):
 
-    winners = graphene.List(WinnerType, competition=graphene.Int())
+    winners = graphene.List(
+        WinnerType,
+        competition=graphene.ID(required=True)
+    )
 
     def resolve_winners(root, info, competition):
-        return Winner.objects.filter(competition=competition).order_by('position')
+        return (Winner.objects.filter(competition=competition)
+                .select_related('post')
+                .order_by('position'))

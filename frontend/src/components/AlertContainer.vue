@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { informationCircleOutline, checkmarkCircleOutline, warningOutline, closeCircleOutline } from 'ionicons/icons'
 import { reactive } from 'vue';
+import { IonIcon} from '@ionic/vue';
 
 const props = defineProps({
   message: String,
@@ -78,5 +79,10 @@ const icons: Icons = reactive({
     background-color: var(--alert-bg-error);
     color: var(--ion-color-danger);
     border-color: var(--ion-color-danger);
+  }
+
+  .alert-light {
+    background-color: var(--ion-color-light-tint);
+    border-color: var(--ion-color-light-shade);
   }
 </style>

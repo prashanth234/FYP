@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Verification Request</title>
+</head>
+<body>
+    <p>Hello Admin,</p>
+    
+    <p>A new verification request has been created. Here are the details:</p>
+    
+    <ul>
+        <li><strong>User:</strong> {{ user }}</li>
+        <li><strong>Request Type:</strong> {{ request_type }}</li>
+        <li><strong>Entity:</strong> {{ entity }}</li>
+        <li><strong>Request Date:</strong> {{ request_date }}</li>
+    </ul>
+    
+    <p>Please take necessary action to process this verification request.</p>
+    
+    <p>Thank you,</p>
+    <p>{{ site_name }} Team</p>
+</body>
+</html>

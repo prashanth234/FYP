@@ -1,55 +1,33 @@
 import { defineStore } from 'pinia'
-import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import { CompetitionInfo } from '@/utils/interfaces'
+import { CompetitionType, CategoryType, TabSelectedType } from '@/utils/interfaces'
+
+// This store stores information about a openend category, through out the app
 
 export const useCategoryInfoStore = defineStore('categoryInfo', {
-  state: () => ({ 
-    id: '',
-    name: '',
-    description: '',
-    oftype: '',
-    competitionSet: [] as CompetitionInfo[],
+  state: () => ({
+    type: 'category',
+    routeName: 'CategoryDetails',
+    queryType: 'allPosts',
+    details: {} as CategoryType,
     loading: true,
-    selectedComptn: null as CompetitionInfo | null
+    selectedComptn: null as CompetitionType | null,
+    tabSelected: 'allposts' as TabSelectedType,
+    refreshing: false,
+    singlePost: false,
+    singlePostId: ''
   }),
   getters: {
+    getSinglePostParams(state) {
+      return {category: state.details.id, id: state.singlePostId }
+    }
   },
   actions: {
-    getCategoryInfo (id: string, ionRouter: any) {
-      this.loading = true
-      const { result, onResult, onError } = useQuery(gql`
-                                    query categoryDetails ($id: Int!) {
-                                        categoryDetails (id: $id) {
-                                            id,
-                                            name,
-                                            description,
-                                            oftype,
-                                            competitionSet {
-                                                id,
-                                                name,
-                                                description,
-                                                lastDate,
-                                                image,
-                                                expired,
-                                                points
-                                            }
-                                        }
-                                    }
-                                    `, {
-                                    id: id,
-                                  })
-
-      onResult(value => {
-        if (!value.loading) {
-            this.$patch(value.data.categoryDetails)
-            this.loading = false
-        }
-      })
-
-      onError((error) => {
-        ionRouter.replace('/')
-      })
+    patchDetails(data: {categoryDetails: CategoryType}) {
+      this.details = data.categoryDetails
+    },
+    hideSinglePost(value: boolean, id: string='') {
+      this.singlePost = !value
+      this.singlePostId = id
     }
   },
 })
