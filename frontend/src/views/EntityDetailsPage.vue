@@ -173,6 +173,7 @@
             class="ion-no-padding"
           >
             <Feed
+              :delete-cntrl="entity.details.isAdmin"
               :type="store.type"
               :posts="posts"
               :fetchMoreCompleted="fetchMoreCompleted"

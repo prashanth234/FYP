@@ -5,31 +5,38 @@
       <ion-list class="ion-no-padding">
 
         <ion-item lines="none" class="line" style="padding: 5px 0px;">
+
           <ion-avatar slot="start" style="margin: 0px 10px 0px 0px">
             <img
               alt="avatar"
               :src="userAvatar"
             />
           </ion-avatar>
+
           <ion-label>
             {{ post.user.username }}
           </ion-label>
+
           <ion-icon
             v-if="props.showEdit && (!post.competition || !post.competition.expired)"
             @click.stop="emit('editPost')"
             class="cpointer edit operations"
             :icon="pencilOutline"
           />
+
           <ion-icon 
-            v-if="props.showEdit && (!post.competition || !post.competition.expired)"
+            v-if="props.showDelete && (!post.competition || !post.competition.expired)"
             @click.stop="emit('deletePost')"
             class="cpointer delete operations"
             :icon="trashOutline"
           />
+
           <div v-if="props.position">
             <strong>#{{props.position}}</strong>
           </div>
+
           <ion-badge v-else-if="post.isBot" color="primary" slot="end" style="margin-right: -5px; font-size: 12px; font-weight: 550;">Sample</ion-badge>
+
         </ion-item>
 
         <ion-item
@@ -70,6 +77,7 @@
         </ion-item>
 
         <ion-item lines="none" class="line-top" style="padding: 8px 0px 8px 5px;">
+
           <transition name="slide-up" mode="out-in">
             <div v-if="post.userLiked" style="height: 28px;">
               <Clapped
@@ -88,12 +96,14 @@
               ></ClapOutline>
             </div>
           </transition>
+
           <ion-label
             v-if="!post.isBot"
             class="like-count-label"
           > 
             <span>{{ post.likes < 0 ? 0 : post.likes }}</span>
           </ion-label>
+
           <ion-modal
             class="share-modal"
             :is-open="share.show"
@@ -131,6 +141,7 @@
               </div>
             </div>
           </ion-modal>
+          
           <ion-icon
             v-if="!post.isBot"
             @click="sharePost()"
@@ -162,7 +173,7 @@ import { useAuthStore } from '@/stores/auth';
 
 const user = useUserStore()
 const auth = useAuthStore()
-const props = defineProps(['post', 'showEdit', 'position'])
+const props = defineProps(['post', 'showEdit', 'showDelete', 'position'])
 
 const share = reactive({
   url: '',

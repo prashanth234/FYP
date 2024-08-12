@@ -49,7 +49,10 @@ export function getQuery(type: string) {
             cursor: $cursor
           ) @connection(key: "entity-feed", filter: ["entity", "competition"]) {
             posts {
-              ${POST_COMMON_FIELDS}
+              ${POST_COMMON_FIELDS},
+              competition {
+                expired
+              }
             },
             total
           }
