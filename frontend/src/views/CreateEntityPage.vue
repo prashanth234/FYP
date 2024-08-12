@@ -8,11 +8,17 @@
         <ion-grid class="create-entity-grid card">
           <ion-row class="ion-justify-content-center ion-text-center">
 
+            <!-- Title -->
             <ion-col size="12">
-              <div style="font-size: 22px; font-weight: 590;">Request Entity</div>
-              <div style="font-size: 15px; padding: 5px 0px;">Be the one to represent your entity</div>
+              <div style="font-size: 22px; font-weight: 590;">
+                {{ props.editId ? 'Edit Entity' : 'Request Entity' }}
+              </div>
+              <div v-if="!props.editId" style="font-size: 15px; padding: 5px 0px;">
+                Be the one to represent your entity
+              </div>
             </ion-col>
 
+            <!-- Image -->
             <ion-col size="auto">
               <FileUpload
                 v-model:preview="state.imagePreview"
@@ -29,6 +35,7 @@
                       :image="state.imagePreview.image"
                       :coordinates="state.imagePreview.coordinates"
                     />
+                    <img v-else-if="state.image" class="image" :src="state.image" alt="" />
                     <ion-icon v-else class="default-entity" :icon="businessOutline"></ion-icon>
                   </ion-avatar>
                   <div class="upload-camera-icon">
@@ -38,6 +45,7 @@
               </FileUpload>
             </ion-col>
 
+            <!-- Name -->
             <ion-col size="12">
               <ion-input
                 class="custom-input"
@@ -49,6 +57,7 @@
               </ion-input>
             </ion-col>
 
+            <!-- Description -->
             <ion-col size="12">
               <ion-input
                 class="custom-input"
@@ -59,7 +68,8 @@
               </ion-input>
             </ion-col>
             
-            <ion-col size="12" class="ion-text-start">
+            <!-- Entity Type -->
+            <ion-col size="12" class="ion-text-start" v-if="!props.editId">
               <ion-select
                 class="custom-select"
                 v-model="state.type"
@@ -80,7 +90,8 @@
               </ion-select>
             </ion-col>
 
-            <ion-col size="12" v-if="state.type == 'Others'">
+            <!-- Entity Type Others -->
+            <ion-col size="12" v-if="state.type == 'Others' && !props.editId" >
               <ion-input
                 class="custom-input"
                 v-model="state.otherType"
@@ -105,6 +116,7 @@
               </ion-select>
             </ion-col> -->
 
+            <!-- City -->
             <ion-col size="12">
               <ion-input
                 class="custom-input"
@@ -115,8 +127,76 @@
               >
               </ion-input>
             </ion-col>
+
+            <ion-col v-if="props.editId" size="12" class="ion-no-padding">
+
+              <ion-row>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.maps"
+                    type="text"
+                    placeholder="Maps Link"
+                  >
+                  </ion-input>
+                </ion-col>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.phone"
+                    type="tel"
+                    placeholder="WhatsApp"
+                  >
+                  </ion-input>
+                </ion-col>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.email"
+                    type="email"
+                    placeholder="Email"
+                  >
+                  </ion-input>
+                </ion-col>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.instagram"
+                    type="text"
+                    placeholder="Instagram"                  >
+                  </ion-input>
+                </ion-col>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.facebook"
+                    type="text"
+                    placeholder="Facebook"
+                  >
+                  </ion-input>
+                </ion-col>
+
+                <ion-col size="12">
+                  <ion-input
+                    class="custom-input"
+                    v-model="state.linkedin"
+                    type="text"
+                    placeholder="Linkedin"
+                  >
+                  </ion-input>
+                </ion-col>
+
+              </ion-row>
+
+            </ion-col>
             
-            <ion-col size="12">
+            <!-- ID Upload -->
+            <ion-col size="12" v-if="!props.editId">
               <div style="padding-bottom: 10px;">
                 Upload any ID that shows you belong to the entity
               </div>
@@ -154,10 +234,12 @@
               
             </ion-col>
 
+            <!-- Errors -->
             <div :class="{'errors-div': state.errors.length}">
               <errors :errors="state.errors"/>
             </div>
 
+            <!-- Submit -->
             <ion-col size="12">
 
               <ion-button
@@ -191,8 +273,8 @@
 
 <script lang="ts" setup>
 import { IonSelect, useIonRouter, IonSelectOption, IonGrid, IonPage, IonContent, IonInput, IonAvatar, IonIcon, IonRow, IonCol, IonButton, IonSpinner, IonCard } from '@ionic/vue'
-import { reactive } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
+import { ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { cameraOutline, businessOutline, checkmarkCircleOutline } from 'ionicons/icons'
 import { Preview, CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
@@ -201,9 +283,28 @@ import FileUpload from '@/components/FileUploadContainer.vue'
 import { useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useDialogStore } from '@/stores/dialog'
+import { useEntityInfoStore } from '@/stores/entityInfo'
+import { pick, differenceByValue } from '@/utils/common'
 
+const props = defineProps({
+  editId: String
+})
+
+const route = useRoute()
+
+// When page is opended again for edit, model data needed to be updated
+watch(() => route.params.editId, () => {
+  if (route.name == 'editEntity' && route.params.editId == props.editId) {
+    getEntityDetails()
+  }
+})
+
+// On first time page load
+props.editId && getEntityDetails()
 
 interface State {
+  id?: string,
+  edit: boolean,
   name: string,
   description: string,
   type: string,
@@ -215,6 +316,12 @@ interface State {
   errors: string[],
   proof: any,
   imagePreview: CropperResult | undefined,
+  instagram: string,
+  facebook: string,
+  linkedin: string,
+  phone: string,
+  email: string,
+  maps: string,
   entities: string[]
 }
 
@@ -230,6 +337,13 @@ const intialState: State = {
   errors: [],
   proof: undefined,
   imagePreview: undefined,
+  instagram: '',
+  facebook: '',
+  linkedin: '',
+  phone: '',
+  email: '',
+  maps: '',
+  edit: false,
   // Also update entites in backend
   entities: [
     "School",
@@ -239,10 +353,10 @@ const intialState: State = {
   ]
 }
 
-const state: State = reactive({...intialState})
+const state = ref<State>({...intialState})
 
 onBeforeRouteLeave(() => {
-  Object.assign(state, intialState)
+  Object.assign(state.value, intialState)
 })
 
 const toast = useToastStore()
@@ -252,18 +366,18 @@ const dialog = useDialogStore()
 const TYPE_ERROR = 'Please select the entity type.'
 const PROOF_ERROR = 'Please upload ID to continue.'
 
-function submit() {
-  state.errors = []
+function createEntityDetails() {
+  state.value.errors = []
 
-  if (!state.type || !state.city || !state.proof) {
-    !state.type && state.errors.push(TYPE_ERROR)
-    !state.proof && state.errors.push(PROOF_ERROR)
+  if (!state.value.type || !state.value.city || !state.value.proof) {
+    !state.value.type && state.value.errors.push(TYPE_ERROR)
+    !state.value.proof && state.value.errors.push(PROOF_ERROR)
     return
   }
 
-  state.loading = true
+  state.value.loading = true
 
-  const { name, description, type: entityType, otherType, image, city, proof } = state
+  const { name, description, type: entityType, otherType, image, city, proof } = state.value
 
   let variables = {
     name, description, image, proof, city, entityType, otherType, type: entityType
@@ -298,14 +412,14 @@ function submit() {
     if (data.createEntity.success) {
       showSuccessPopup(data.createEntity.message)
     } else {
-      state.errors.push(data.createEntity.message)
+      state.value.errors.push(data.createEntity.message)
     }
-    state.loading = false
+    state.value.loading = false
   })
 
   onError(() => {
     toast.$patch({message: 'Failed to process request, please try again.', color: 'danger', open: true})
-    state.loading = false
+    state.value.loading = false
   })
   
 }
@@ -332,7 +446,7 @@ function routerToEntity() {
 }
 
 function onTypeChange() {
-  state.otherType = ''
+  state.value.otherType = ''
   removeError(TYPE_ERROR)
 }
 
@@ -341,7 +455,92 @@ function onProofSelect() {
 }
 
 function removeError(error: string) {
-  state.errors = state.errors.filter(item => item != error)
+  state.value.errors = state.value.errors.filter(item => item != error)
+}
+
+function submit() {
+  if (props.editId) {
+    updateEntityDetails()
+  } else {
+    createEntityDetails()
+  }
+}
+
+////////////// EDIT //////////////
+
+const editProperties: (keyof State)[] = ['name', 'description', 'instagram', 'facebook', 'linkedin', 'phone', 'email', 'image', 'city', 'maps']
+let orginalData: any = {}
+
+function getEntityDetails(){
+  const entity = useEntityInfoStore()
+  // Update the local state
+  Object.assign(state.value, entity.details)
+  // Store original data of later reference during api update
+  orginalData = pick(state.value, editProperties)
+  entity.$reset()
+}
+
+function updateEntityDetails(){
+
+  state.value.errors = []
+
+  const variables = differenceByValue(orginalData, state.value, editProperties)
+  const keys = Object.keys(variables)
+  
+  if (!keys.length) {
+    toast.$patch({message: 'Everything looks good—no updates found!', color: 'primary', open: true})
+    return
+  }
+
+  variables.id = state.value.id
+
+  const { mutate, onDone, onError } = useMutation(gql`    
+    
+    mutation editEntity ($id: String!, $name: String, $description: String, $image: Upload, $city: String, $instagram: String, $facebook: String, $linkedin: String, $phone: String, $email: String, $maps: String) { 
+      editEntity (
+        id: $id,
+        name: $name,
+        description: $description,
+        image: $image,
+        city: $city,
+        instagram: $instagram,
+        facebook: $facebook,
+        linkedin: $linkedin,
+        phone: $phone,
+        email: $email,
+        maps: $maps
+      ) {
+          success,
+          details {
+            id,
+            ${keys.join()}
+          },
+          message
+        }
+    }
+
+  `, () => ({
+      variables: variables
+    })
+
+  )
+
+  mutate()
+
+  onDone(({data}) => {
+    if (data.editEntity.success) {
+      toast.$patch({message: 'Your entity information has been updated successfully!', color: 'success', open: true})
+      ionRouter.back()
+    } else {
+      state.value.errors.push(data.editEntity.message)
+    }
+    state.value.loading = false
+  })
+
+  onError(() => {
+    toast.$patch({message: 'Failed to process request, please try again.', color: 'danger', open: true})
+    state.value.loading = false
+  })
 }
 
 </script>

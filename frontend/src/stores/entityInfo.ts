@@ -12,7 +12,9 @@ export const useEntityInfoStore = defineStore('entityInfo', {
     tabSelected: 'allposts' as TabSelectedType,
     refreshing: false,
     singlePost: false,
-    singlePostId: ''
+    singlePostId: '',
+    // When route is changed from details page store details are cleared, so if set to true clear store manually after usage
+    preserve: false
   }),
   getters: {
     getSinglePostParams(state) {

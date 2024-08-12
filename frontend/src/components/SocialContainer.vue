@@ -60,9 +60,9 @@ const entityLinks: Links = {}
 if (!props.orglinks) {
   props.instagram && (entityLinks.instagram = props.instagram)
   props.facebook && (entityLinks.facebook = props.facebook)
-  props.whatsapp && (entityLinks.whatsapp = props.whatsapp)
+  props.whatsapp && (entityLinks.whatsapp = `https://wa.me/${props.whatsapp}`)
   props.linkedin && (entityLinks.linkedin = props.linkedin)
-  props.mail && (entityLinks.mail = props.mail)
+  props.mail && (entityLinks.mail = `mailto:${props.mail}`)
   orglinks = entityLinks
 }
 

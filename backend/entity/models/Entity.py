@@ -44,6 +44,7 @@ class Entity(models.Model):
     linkedin = models.TextField(max_length=300, null=True, blank=True)
     facebook = models.TextField(max_length=300, null=True, blank=True)
     instagram = models.TextField(max_length=300, null=True, blank=True)
+    maps = models.TextField(max_length=300, null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -42,6 +42,17 @@
               <span style="font-family: sans-serif;">{{ entity.details.userAccess == 'PENDING' ? 'Requested' : 'JOIN'}}</span>
             </ion-button>
 
+            <ion-button
+              v-else-if="entity.details.isAdmin"
+              aria-label="edit.details"
+              fill="outline"
+              class="join-entity"
+              @click="editEntityDetails(entity.details)"
+              size="small"
+            >
+              EDIT
+            </ion-button>
+
             <ion-row class="details ion-padding">
 
               <!-- Title -->
@@ -67,7 +78,16 @@
                 </div>
                 <div class="subtitle" style="padding-top: 5px">
                   <ion-icon class="icon" :icon="locationOutline"></ion-icon>
-                  <div class="text">{{ entity.details.city }}</div>
+                  <a 
+                    v-if="entity.details.maps"
+                    :href="entity.details.maps"
+                    target="_blank"
+                    class="text"
+                    style="text-decoration: none;"
+                  >
+                    {{ entity.details.city }}
+                  </a>
+                  <div v-else class="text">{{ entity.details.city }}</div>
                 </div>
               </ion-col>
 
@@ -91,6 +111,8 @@
                   :linkedin="entity.details.linkedin"
                   :instagram="entity.details.instagram"
                   :facebook="entity.details.facebook"
+                  :whatsapp="entity.details.phone"
+                  :mail="entity.details.email"
                   size="30"
                   style="padding: 0px; float: right;"
                 />
@@ -169,7 +191,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonRefresher, IonRefresherContent } from '@ionic/vue'
+import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonRefresher, IonRefresherContent, useIonRouter } from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import SocialLinks from '@/components/SocialContainer.vue'
@@ -181,7 +203,6 @@ import { useUserStore } from '@/stores/user'
 import { scrollTop } from '@/composables/scroll'
 import { EntityType } from '@/utils/interfaces'
 import { useToastStore } from '@/stores/toast'
-import { useJoinEntityAPI } from '@/composables/entity'
 import { useEntityInfoStore } from '@/stores/entityInfo'
 import Feed from '@/components/FeedContainer.vue'
 import { feed, watchRoute } from '@/composables/feed'
@@ -205,11 +226,15 @@ const ENTITY_DETAILS = gql`
       type,
       image,
       city,
+      maps,
+      phone,
+      email,
       instagram,
       linkedin,
       facebook,
       userAccess,
       ispublic,
+      isAdmin,
       competitions {
         id,
         name,
@@ -241,6 +266,7 @@ const toast = useToastStore()
 const { content } = scrollTop()
 const store = useEntityInfoStore()
 const { store: entity } = watchRoute(ENTITY_DETAILS, store, props.id, props.postid)
+const ionRouter = useIonRouter();
 
 const {
   posts,
@@ -262,6 +288,11 @@ function openJoinEntity(ed: EntityType) {
 
   state.showJoinEntity = true
   return
+}
+
+function editEntityDetails(ed: EntityType) {
+  store.preserve = true
+  ionRouter.push(`/entity/${ed.id}`)
 }
 
 </script>

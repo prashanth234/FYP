@@ -47,7 +47,7 @@ export function watchRoute(QUERY: DocumentNode, store: any, id?: string, postid?
 
   // When the router leaves the details page set default get category details and clear the category information store
   onBeforeRouteLeave(() => {
-    store.details.name && store.$reset()
+    !store.preserve && (store.details.name && store.$reset())
   })
 
   function intailize() {

@@ -66,7 +66,12 @@ class EntityType(ImageUrlType, DjangoObjectType):
 
   stats = graphene.Field(StatsType)
   user_access = graphene.String()
+  is_admin = graphene.Boolean()
   competitions = graphene.List(CompetitionType)
+
+  def resolve_is_admin(self, info):
+    user = info.context.user
+    return not user.is_authenticated or user.admin_of_entities.filter(pk=self.id).exists()
 
   def resolve_stats(self, info):
     return self
@@ -94,10 +99,14 @@ class EntityType(ImageUrlType, DjangoObjectType):
       "type",
       "stats",
       "linkedin",
+      "maps",
+      "phone",
+      "email",
       "facebook",
       "instagram",
       "user_access",
       "ispublic",
+      "is_admin",
       "competitions"
     )
     convert_choices_to_enum = False

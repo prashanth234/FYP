@@ -6,6 +6,7 @@ from entity.schema.query.userEntityQuery import UserEntityCheck
 
 from entity.schema.mutation.joinEntityMutation import JoinEntity
 from entity.schema.mutation.createEntityMutation import CreateEntity
+from entity.schema.mutation.editEntityMutation import EditEntity
 
 class EntityQuery(
     Entities,
@@ -19,6 +20,7 @@ class EntityQuery(
 class EntityMutation(
     JoinEntity,
     CreateEntity,
+    EditEntity,
     graphene.ObjectType
 ):
     pass
