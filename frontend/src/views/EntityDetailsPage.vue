@@ -174,6 +174,7 @@
           >
             <Feed
               :delete-cntrl="entity.details.isAdmin"
+              :show-by-owner-tag="true"
               :type="store.type"
               :posts="posts"
               :fetchMoreCompleted="fetchMoreCompleted"

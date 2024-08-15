@@ -52,7 +52,8 @@ export function getQuery(type: string) {
               ${POST_COMMON_FIELDS},
               competition {
                 expired
-              }
+              },
+              byEntityAdmin
             },
             total
           }
@@ -76,7 +77,11 @@ export function getQuery(type: string) {
           ) @connection(key: "feed", filter: ["category", "competition"]) {
             posts {
               ${POST_COMMON_FIELDS},
-              isBot
+              isBot,
+              entity {
+                id,
+                name
+              }
             },
             total
           }
@@ -100,6 +105,10 @@ export function getQuery(type: string) {
           ) @connection(key: "competition-feed", filter: ["competition", "cpType"]) {
             posts {
               ${POST_COMMON_FIELDS},
+              entity {
+                id,
+                name
+              },
               isBot
             },
             total

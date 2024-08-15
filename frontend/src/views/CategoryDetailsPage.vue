@@ -65,6 +65,7 @@
                     <Feed
                       type="catgory"
                       :posts="posts"
+                      :show-from-entity-tag="true"
                       :fetchMoreCompleted="fetchMoreCompleted"
                       :fetchMore="fetchMore"
                       :refetch="refetch"

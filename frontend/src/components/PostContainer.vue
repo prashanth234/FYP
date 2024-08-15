@@ -4,7 +4,7 @@
     <ion-card-content @dblclick="likePost()" class="ion-no-padding">
       <ion-list class="ion-no-padding">
 
-        <ion-item lines="none" class="line" style="padding: 5px 0px;">
+        <ion-item lines="none" class="line" style="padding: 8px 0px;">
 
           <ion-avatar slot="start" style="margin: 0px 10px 0px 0px">
             <img
@@ -13,9 +13,21 @@
             />
           </ion-avatar>
 
-          <ion-label>
+          <div>
             {{ post.user.username }}
-          </ion-label>
+            <div
+              v-if="props.showByOwnerTag && post.byEntityAdmin"
+              class="post-subtitle"
+            >
+              Post by Owner
+            </div>
+            <div
+              v-else-if="props.showFromEntityTag && post.entity"
+              class="post-subtitle one-line-ellipsis"
+            >
+              {{ `From ${post.entity.name} Entity` }}
+            </div>
+          </div>
 
           <ion-icon
             v-if="props.showEdit && (!post.competition || !post.competition.expired)"
@@ -173,7 +185,14 @@ import { useAuthStore } from '@/stores/auth';
 
 const user = useUserStore()
 const auth = useAuthStore()
-const props = defineProps(['post', 'showEdit', 'showDelete', 'position'])
+const props = defineProps([
+  'post',
+  'showEdit',
+  'showDelete',
+  'position',
+  'showByOwnerTag',
+  'showFromEntityTag'
+])
 
 const share = reactive({
   url: '',
@@ -366,5 +385,10 @@ function likePost() {
   .slide-up-leave-to {
     opacity: 0;
     transform: translateY(-30px);
+  }
+  
+  .post-subtitle {
+    font-size: 14px;
+    color: grey;
   }
 </style>

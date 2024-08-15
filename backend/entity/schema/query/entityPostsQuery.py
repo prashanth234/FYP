@@ -31,12 +31,12 @@ class EntityPosts(graphene.ObjectType):
     
     if competition:
       queryset = (Post.objects.filter(competition_id=competition, entity=entity)
-                  .select_related('category', 'user')
+                  .select_related('category', 'user', 'entity')
                   .prefetch_related('postfile_set')
                   .order_by('-created_at'))
     else:
       queryset = (Post.objects.filter(entity=entity)
-                  .select_related('category', 'user')
+                  .select_related('category', 'user', 'entity')
                   .prefetch_related('postfile_set')
                   .order_by('-created_at'))
 

@@ -10,6 +10,7 @@ from post.models.Like import *
 
 # Type
 from core.schema.type.UserType import UserType
+from entity.schema.type.EntityType import EntityType
 
 class FilesType(graphene.ObjectType):
 
@@ -57,6 +58,11 @@ class PostType(DjangoObjectType):
     like_count = graphene.Int()
     user_liked = graphene.Boolean()
     likes = graphene.Int()
+    by_entity_admin = graphene.Boolean()
+    entity = graphene.Field(EntityType)
+
+    def resolve_by_entity_admin(self, info):
+        return self.entity.admins.filter(id=self.user.id).exists()
 
     def resolve_like_count(self, info):
         return Like.objects.filter(item_type=ContentType.objects.get_for_model(self), item_id=self.id).count()
@@ -71,6 +77,9 @@ class PostType(DjangoObjectType):
     
     class Meta:
         model = Post
-        fields = ("id", "description", "user", "category", "competition", "postfile_set", "like_count", "user_liked", "likes", "created_at", 'is_bot', 'ispublic')
+        fields = ("id", "description", "user", "category", "competition", "postfile_set",
+                  "like_count", "user_liked", "likes", "created_at", 'is_bot', 'ispublic',
+                  "by_entity_admin"
+                 )
         # filter_fields = ["category", "competition"]
         # interfaces = (graphene.relay.Node, )

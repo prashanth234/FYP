@@ -116,6 +116,8 @@
           <post
             :post="post"
             :position="store.tabSelected == 'winners' ? index + 1 : undefined"
+            :show-by-owner-tag="props.showByOwnerTag"
+            :show-from-entity-tag="props.showFromEntityTag"
             :show-edit="props.editCntrl"
             :show-delete="props.deleteCntrl"
             @editPost="editPost(post, index)"
@@ -170,7 +172,9 @@ const props = defineProps([
   'title',
   'noPostsMsg',
   'deleteCntrl',
-  'editCntrl'
+  'editCntrl',
+  'showByOwnerTag',
+  'showFromEntityTag'
 ])
 
 const store = props.type == 'entity' ? useEntityInfoStore()  : (props.type == 'profile' ? useProfileInfoStore() : useCategoryInfoStore())

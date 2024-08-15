@@ -222,6 +222,14 @@ ion-button {
   text-overflow: ellipsis;
 }
 
+.one-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
