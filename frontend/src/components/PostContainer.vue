@@ -13,7 +13,7 @@
             />
           </ion-avatar>
 
-          <div>
+          <div style="flex: 1">
             {{ post.user.username }}
             <div
               v-if="props.showByOwnerTag && post.byEntityAdmin"

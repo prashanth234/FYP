@@ -7,6 +7,7 @@ from graphql import GraphQLError
 # Models
 from entity.models.Verification import Verification
 from entity.models.Entity import Entity
+from core.models.User import User
 
 # Authentication
 from graphql_jwt.decorators import login_required
@@ -33,6 +34,7 @@ class EditEntityMutation(graphene.Mutation):
     phone = graphene.String()
     email = graphene.String()
     city = graphene.String()
+    admins = graphene.List(graphene.ID)
 
   # The class attributes define the response of the mutation
   success = graphene.Boolean()
@@ -53,7 +55,8 @@ class EditEntityMutation(graphene.Mutation):
               facebook=None,
               maps=None,
               image=None,
-              description=None
+              description=None,
+              admins=None
             ):
 
     user = info.context.user
@@ -97,6 +100,12 @@ class EditEntityMutation(graphene.Mutation):
 
     if email:
       entity.email = email
+
+    if admins:
+      valid_admins = User.objects.filter(user_of_entities=entity, id__in=admins)
+      entity.admins.set(valid_admins)
+      entity.refresh_from_db()
+      logger.info(f'User: {user.username} has updated admins to {valid_admins}')
 
     entity.save()
 

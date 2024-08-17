@@ -69,7 +69,10 @@ class CreatePostMutation(graphene.Mutation):
             category = Category.objects.get(pk=category)
 
         # Check if user part of entity if not check if verification is pending
-        entity = Entity.objects.get(pk=entity, verified=True)
+        try: 
+            entity = Entity.objects.get(pk=entity, verified=True)
+        except Entity.DoesNotExist:
+            raise GraphQLError("Entity Not Found.")
 
         if not user.user_of_entities.filter(pk=entity.id).exists():
             try:

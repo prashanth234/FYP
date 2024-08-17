@@ -107,6 +107,8 @@ class EntityType(ImageUrlType, DjangoObjectType):
       "user_access",
       "ispublic",
       "is_admin",
-      "competitions"
+      "competitions",
+      "admins",
+      "verify_users"
     )
     convert_choices_to_enum = False

@@ -2,10 +2,10 @@
 
   <!-- Join Entity Private Model -->
   <ion-modal
-    class="entity-modal-private"
+    class="entity-modal-verify"
     :show-backdrop="true"
     :backdropDismiss="false"
-    :is-open="!props.public && props.show"
+    :is-open="props.verify && props.show"
     @didDismiss="close"
   >
 
@@ -119,10 +119,10 @@
   <!-- Join Entity Public Model -->
   <!-- Added seprate model because when added dynmaic class to model join button is getting disabled -->
   <ion-modal
-    class="entity-modal-public"
+    class="entity-modal-no-verify"
     :show-backdrop="true"
     :backdropDismiss="false"
-    :is-open="props.public && props.show"
+    :is-open="!props.verify && props.show"
     @didDismiss="close"
   >
 
@@ -181,6 +181,7 @@
     </ion-grid>
     
   </ion-modal>
+  
 </template>
 
 <script lang="ts" setup>
@@ -196,7 +197,7 @@ import { useJoinEntityAPI } from '@/composables/entity'
 const props = defineProps({
   show: Boolean,
   entity: String,
-  public: Boolean
+  verify: Boolean
 })
 
 const emit = defineEmits(['update:show'])
@@ -264,7 +265,7 @@ function requestJoinEntity() {
 }
 
 function joinEntity() {
-  // For public entity directly add user to entity
+  // If verify is false directly add user to entity
   state.loading = true
 
   const { mutate, onDone, onError } = useJoinEntityAPI()
@@ -298,21 +299,21 @@ function joinEntity() {
     }
   }
 
-  .entity-modal-private {
+  .entity-modal-verify {
     --max-width: 100%;
   }
 
-  .entity-modal-public {
+  .entity-modal-no-verify {
     --max-width: 100%;
   }
 
   @media only screen and (min-width: 576px) {
     // For sm and above screens
-    .entity-modal-public {
+    .entity-modal-no-verify {
       --height: auto;
       --max-width: 500px;
     }
-    .entity-modal-private {
+    .entity-modal-verify {
       --height: auto;
       --max-width: 350px;
     }

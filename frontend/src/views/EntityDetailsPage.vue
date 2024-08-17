@@ -19,7 +19,7 @@
           <JoinEntity
             v-model:show="state.showJoinEntity"
             :entity="entity.details.id"
-            :public="entity.details.ispublic"
+            :verify="entity.details.verifyUsers"
           />
 
           <!-- Entity Details -->
@@ -237,6 +237,11 @@ const ENTITY_DETAILS = gql`
       userAccess,
       ispublic,
       isAdmin,
+      verifyUsers,
+      admins {
+        id,
+        username
+      },
       competitions {
         id,
         name,

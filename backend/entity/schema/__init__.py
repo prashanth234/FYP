@@ -1,6 +1,6 @@
 import graphene
 
-from entity.schema.query.entityQuery import Entities, EntityDetails
+from entity.schema.query.entityQuery import Entities, EntityDetails, EntityUsers
 from entity.schema.query.entityPostsQuery import EntityPosts
 from entity.schema.query.userEntityQuery import UserEntityCheck
 
@@ -12,6 +12,7 @@ class EntityQuery(
     Entities,
     EntityDetails,
     EntityPosts,
+    EntityUsers,
     UserEntityCheck,
     graphene.ObjectType,
 ):

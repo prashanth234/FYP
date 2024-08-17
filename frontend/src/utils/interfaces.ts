@@ -86,3 +86,9 @@ export interface WinnerType {
 }
 
 export type TabSelectedType = 'allposts' | 'trending' | 'winners'
+
+export interface UserType {
+  id: string,
+  avatar: string,
+  username: string
+}

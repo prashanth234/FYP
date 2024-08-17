@@ -32,10 +32,12 @@ class Entity(models.Model):
     image = models.ImageField(upload_to=custom_upload_to, default='', null=True, blank=True)
     ispublic = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
+    # if True: Users need to create a verification request to entity admin
+    verify_users = models.BooleanField(default=False)
     code = models.CharField(max_length=10, unique=True, null=True, blank=True)
 
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_of_entities', blank=True)
-    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='admin_of_entities')
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='admin_of_entities', blank=True)
 
     city = models.TextField(null=True, blank=True)    
     phone = models.CharField(max_length=150, null=True, blank=True, unique=True)

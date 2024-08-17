@@ -69,9 +69,10 @@ def verification_post_save(sender, instance, created, **kwargs):
       except Exception as e:
         logging.info(f'Failed to add user to entity - Verification: {instance.id}, error: {str(e)}')
     elif instance.request == 'CREATE':
-      # If verification is succesfull and mark entity as public
+      # If verification is succesfull and mark entity as verified
       logging.info(f'Marking the entity as public - Verification: {instance.id}')
       instance.entity.users.add(instance.user)
+      instance.entity.admins.add(instance.user)
       instance.entity.verified = True
       instance.entity.save()
 

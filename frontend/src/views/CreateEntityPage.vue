@@ -80,13 +80,13 @@
                 required
               >
                 <select v-if="!state.type" slot="end" required class="select-required"></select>
-                <ion-select-option
-                  v-for="(entity, index) in state.entities"
-                  :value="entity"
-                  :key="index"
-                >
-                  {{ entity }}
-                </ion-select-option>
+                  <ion-select-option
+                    v-for="(entity, index) in state.entities"
+                    :value="entity"
+                    :key="index"
+                  >
+                    {{ entity }}
+                  </ion-select-option>
               </ion-select>
             </ion-col>
 
@@ -128,7 +128,7 @@
               </ion-input>
             </ion-col>
 
-            <ion-col v-if="props.editId" size="12" class="ion-no-padding">
+            <ion-col v-if="props.editId" size="12" class="ion-no-padding ion-text-start">
 
               <ion-row>
 
@@ -191,6 +191,29 @@
                   </ion-input>
                 </ion-col>
 
+                <ion-col size="12">
+                  <ion-select
+                    :multiple="true"
+                    class="custom-select"
+                    v-model="state.admins"
+                    placeholder="Admins"
+                    label-placement="stacked"
+                    interface="popover"
+                    required
+                  >
+                    <ion-select-option
+                      v-for="(user, index) in state.users"
+                      :value="user"
+                      :key="index"
+                    >
+                      {{ user.username }}
+                    </ion-select-option>
+                  </ion-select>
+                  <div v-if="!state.admins.length" class="error-msg">
+                    Please pick at least one admin.
+                  </div>
+                </ion-col>
+
               </ion-row>
 
             </ion-col>
@@ -246,7 +269,7 @@
                 color="success"
                 size="small"
                 style="width: 200px;"
-                :disabled="state.loading"
+                :disabled="disableSubmit"
                 type="submit"
               >
                 <ion-spinner 
@@ -273,34 +296,25 @@
 
 <script lang="ts" setup>
 import { IonSelect, useIonRouter, IonSelectOption, IonGrid, IonPage, IonContent, IonInput, IonAvatar, IonIcon, IonRow, IonCol, IonButton, IonSpinner, IonCard } from '@ionic/vue'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { cameraOutline, businessOutline, checkmarkCircleOutline } from 'ionicons/icons'
 import { Preview, CropperResult } from 'vue-advanced-cropper'
 import { useToastStore } from '@/stores/toast'
 import errors from '@/components/ErrorContainer.vue'
 import FileUpload from '@/components/FileUploadContainer.vue'
-import { useMutation } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { useDialogStore } from '@/stores/dialog'
 import { useEntityInfoStore } from '@/stores/entityInfo'
 import { pick, differenceByValue } from '@/utils/common'
+import { UserType} from '@/utils/interfaces'
 
 const props = defineProps({
   editId: String
 })
 
 const route = useRoute()
-
-// When page is opended again for edit, model data needed to be updated
-watch(() => route.params.editId, () => {
-  if (route.name == 'editEntity' && route.params.editId == props.editId) {
-    getEntityDetails()
-  }
-})
-
-// On first time page load
-props.editId && getEntityDetails()
 
 interface State {
   id?: string,
@@ -322,7 +336,9 @@ interface State {
   phone: string,
   email: string,
   maps: string,
-  entities: string[]
+  entities: string[],
+  admins: UserType[],
+  users: UserType[]
 }
 
 const intialState: State = {
@@ -350,13 +366,38 @@ const intialState: State = {
     "College",
     "Institute",
     "Others"
-  ]
+  ],
+  admins: [],
+  users: []
 }
 
 const state = ref<State>({...intialState})
 
+const disableSubmit = computed(() => {
+  const data = state.value
+  if (props.editId) {
+    return data.loading || !data.admins.length
+  } else {
+    return data.loading
+  }
+})
+
+const editProperties: (keyof State)[] = ['name', 'description', 'instagram', 'facebook', 'linkedin', 'phone', 'email', 'image', 'city', 'maps']
+let orginalData: any = {}
+
+// When page is opended again for edit, model data needed to be updated
+watch(() => route.params.editId, () => {
+  if (route.name == 'editEntity' && route.params.editId == props.editId) {
+    getEntityDetails()
+  }
+})
+
+// On first time page load
+props.editId && getEntityDetails()
+
 onBeforeRouteLeave(() => {
-  Object.assign(state.value, intialState)
+  Object.assign(state.value, {...intialState, users: [], admins: [], errors: []}),
+  orginalData = {}
 })
 
 const toast = useToastStore()
@@ -468,16 +509,43 @@ function submit() {
 
 ////////////// EDIT //////////////
 
-const editProperties: (keyof State)[] = ['name', 'description', 'instagram', 'facebook', 'linkedin', 'phone', 'email', 'image', 'city', 'maps']
-let orginalData: any = {}
-
 function getEntityDetails(){
   const entity = useEntityInfoStore()
   // Update the local state
   Object.assign(state.value, entity.details)
   // Store original data of later reference during api update
   orginalData = pick(state.value, editProperties)
+  entity.details.id && getEntityUsers(entity.details.id)
   entity.$reset()
+}
+
+function getEntityUsers(id: string) {
+  const QUERY = gql `
+    query ($id: ID!) { 
+      entityUsers (id: $id) {
+        id,
+        username
+      }
+    }
+  `
+  const { onResult, onError } = useQuery(QUERY, () => ({
+    id
+  }))
+
+  onResult(({data, loading}) => {
+    if (!loading) {
+      const admins: UserType[] = []
+      orginalData.adminIds = new Set(state.value.admins.map((user: UserType) => user.id))
+      data.entityUsers.forEach((user: UserType) => {
+        orginalData.adminIds.has(user.id) && (admins.push(user))
+        state.value.users.push(user)
+      })
+      state.value.admins = admins
+    }
+  })
+  
+  onError(() => {
+  })
 }
 
 function updateEntityDetails(){
@@ -485,6 +553,18 @@ function updateEntityDetails(){
   state.value.errors = []
 
   const variables = differenceByValue(orginalData, state.value, editProperties)
+
+  // Admins
+  const admins: string[] = []
+  let sameAdmins = (state.value.admins.length == orginalData.adminIds.length)
+
+  state.value.admins.forEach((admin: UserType) => {
+    !orginalData.adminIds.has(admin.id) && (sameAdmins = false)
+    admins.push(admin.id)
+  })
+  
+  !sameAdmins && (variables.admins = admins)
+
   const keys = Object.keys(variables)
   
   if (!keys.length) {
@@ -496,7 +576,7 @@ function updateEntityDetails(){
 
   const { mutate, onDone, onError } = useMutation(gql`    
     
-    mutation editEntity ($id: String!, $name: String, $description: String, $image: Upload, $city: String, $instagram: String, $facebook: String, $linkedin: String, $phone: String, $email: String, $maps: String) { 
+    mutation editEntity ($id: String!, $name: String, $description: String, $image: Upload, $city: String, $instagram: String, $facebook: String, $linkedin: String, $phone: String, $email: String, $maps: String, $admins: [ID]) { 
       editEntity (
         id: $id,
         name: $name,
@@ -508,12 +588,14 @@ function updateEntityDetails(){
         linkedin: $linkedin,
         phone: $phone,
         email: $email,
-        maps: $maps
+        maps: $maps,
+        admins: $admins
       ) {
           success,
           details {
             id,
-            ${keys.join()}
+            isAdmin,
+            ${keys.join().replace('admins', 'admins { id, username }')}
           },
           message
         }
@@ -572,5 +654,10 @@ function updateEntityDetails(){
   -moz-appearance: none;
   /* for Chrome */
   -webkit-appearance: none;
+}
+.error-msg {
+  margin-top: 5px;
+  margin-left: 2px;
+  color: var(--ion-color-danger-tint);
 }
 </style>
