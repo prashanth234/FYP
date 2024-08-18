@@ -25,7 +25,7 @@ jobs:
           push: true
           platforms: linux/arm64
           context: "{{defaultContext}}:backend"
-          tags: prashanth45/fyp:backendv1
+          tags: prashanth45/fyp:backendvlatest
       -
         name: Frontend - Build and Push
         uses: docker/build-push-action@v5
@@ -33,6 +33,6 @@ jobs:
           push: true
           context: "{{defaultContext}}:frontend"
           platforms: linux/arm64
-          tags: prashanth45/fyp:frontendv1
+          tags: prashanth45/fyp:frontendvlatest
 
       
