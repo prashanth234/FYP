@@ -122,6 +122,36 @@
 
           </ion-col>
 
+          <!-- Admin actions -->
+          <ion-col
+            size="12"
+          >
+            <ion-row v-if="entity.details.isAdmin">
+
+              <ion-col size="12" class="ion-no-padding" style="padding: 5px 0px;">
+                <ion-accordion-group expand="inset" style="margin: 0px;">
+                  <ion-accordion value="first">
+                    <ion-item slot="header">
+                      <ion-label>Pending Requests</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">
+                      <JoinRequests :entityId="entity.details.id" />
+                    </div>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-col>
+
+              <ion-col size="auto">
+                <ion-button shape="round" fill="outline">Create Contest</ion-button>
+              </ion-col>
+
+              <ion-col size="auto">
+                <ion-button shape="round" fill="outline">Create Event</ion-button>
+              </ion-col>
+
+            </ion-row>
+          </ion-col>
+
           <!-- Entity Stats -->
           <ion-col 
             size="12"
@@ -193,7 +223,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonRefresher, IonRefresherContent, useIonRouter } from '@ionic/vue'
+import { IonLabel, IonAccordion, IonAccordionGroup, IonItem, IonPage, IonContent, IonRow, IonCol, IonGrid, IonIcon, IonButton, IonRefresher, IonRefresherContent, useIonRouter } from '@ionic/vue'
 import { businessOutline, locationOutline, chevronDownCircleOutline } from 'ionicons/icons'
 import Competitions from '@/components/CompetitionsContainer.vue'
 import SocialLinks from '@/components/SocialContainer.vue'
@@ -209,6 +239,7 @@ import { useEntityInfoStore } from '@/stores/entityInfo'
 import Feed from '@/components/FeedContainer.vue'
 import { feed, watchRoute } from '@/composables/feed'
 import gql from 'graphql-tag'
+import JoinRequests from '@/components/JoinRequestsContainer.vue'
 
 const props = defineProps({
   id: String,
@@ -302,6 +333,10 @@ function editEntityDetails(ed: EntityType) {
   ionRouter.push(`/entity/${ed.id}`)
 }
 
+function routeTo(to: string, ed: EntityType) {
+  ionRouter.push(`/${to}/${ed.id}`)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -364,7 +399,7 @@ function editEntityDetails(ed: EntityType) {
 }
 
 .stats {
-  margin-top: 15px;
+  // margin-top: 15px;
   margin-bottom: 5px;
   color: black;
   max-width: 750px !important;
@@ -432,5 +467,12 @@ function editEntityDetails(ed: EntityType) {
 .padding-y {
   padding-top: 25px;
   padding-bottom: 25px;
+}
+
+ion-accordion.accordion-collapsing ion-item[slot='header'],
+ion-accordion.accordion-collapsed ion-item[slot='header'],
+ion-accordion.accordion-expanding ion-item[slot='header'],
+ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: var(--ion-card-background);
 }
 </style>

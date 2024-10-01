@@ -71,7 +71,7 @@ class EntityType(ImageUrlType, DjangoObjectType):
 
   def resolve_is_admin(self, info):
     user = info.context.user
-    return not user.is_authenticated or user.admin_of_entities.filter(pk=self.id).exists()
+    return not user.is_authenticated or UserEntityCheck.has_access(user, self.id, True)
 
   def resolve_stats(self, info):
     return self

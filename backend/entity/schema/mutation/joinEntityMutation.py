@@ -42,19 +42,19 @@ class JoinEntityMutation(graphene.Mutation):
     except Entity.DoesNotExist:
       raise GraphQLError("Entity not found.")
     
-    is_entity_public = entity.ispublic
+    verify_users = entity.verify_users
     
-    if not is_entity_public and code == None and file == None:
+    if verify_users and code == None and file == None:
       logger.error(f'User: {user.username} - trying to join the entity without file or code')
-      raise GraphQLError("Category with this ID does not exist.")
+      raise GraphQLError("Failed to join entity")
     
     if entity.users.filter(id=user.id).exists():
       return JoinEntityMutation(success=False, message='User is already part of the entity.')
     
     success = True
 
-    if is_entity_public or code:
-      if is_entity_public or entity.code == code:
+    if not verify_users or code:
+      if not verify_users or entity.code == code:
         entity.users.add(user)
         entity.save()
         logger.info(f'User: {user.username} - Added to the entity: {entity.id}')

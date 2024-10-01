@@ -20,7 +20,7 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'fyp_prod_clone',
+    'NAME': 'fyp_prod_clone2',
     'HOST': 'localhost',
     'USER': 'root',
     'PASSWORD': 'root',

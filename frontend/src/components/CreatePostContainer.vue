@@ -371,6 +371,9 @@ function createNewPost() {
     state.alertMsg = `You're not part of the ${state.entity.name} entity. Join it to post there, or click upload to post in Selfdive entity.`
     selectEntity()
     return
+  } else if (state.entity.userAccess == 'PENDING') {
+    state.alertMsg = `Your request to join the ${state.entity.name} entity is pending. Please wait for approval before posting.`
+    return
   }
 
   // Description check for short stories

@@ -20,9 +20,12 @@ class UserEntityCheck(graphene.ObjectType):
   )
 
   @classmethod
-  def has_access(cls, user, entity_id):
+  def has_access(cls, user, entity_id, isadmin=False):
     # check if user has access to the entity
-    return cls.get_status(user, entity_id) == 'SUCCESS'
+    if isadmin:
+      return user.admin_of_entities.filter(pk=entity_id).exists()
+    else:
+      return cls.get_status(user, entity_id) == 'SUCCESS'
 
   @classmethod
   def get_status(cls, user, entity_id):
