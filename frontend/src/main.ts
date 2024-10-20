@@ -24,15 +24,16 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/global.scss';
 
-
 import 'vue-advanced-cropper/dist/style.css';
 
-// import store from './vuex';
 import { createPinia } from 'pinia';
 
 import VueSocialSharing from 'vue-social-sharing';
 
 import "./firebase.js"
+
+import animateTitle from './utils/animateTitle';
+import { checkAndBringUp } from './utils/manageBackend';
 
 const pinia = createPinia()
 
@@ -41,8 +42,14 @@ const app = createApp(App)
   .use(router)
   .use(pinia)
   .use(VueSocialSharing);
-  // .use(store)
   
-router.isReady().then(() => {
+router.isReady().then(async () => {
+
+  if (import.meta.env.VITE_START_APP_URL) {
+    const titleContainer = animateTitle('Selfdive')
+    await checkAndBringUp()
+    titleContainer.remove();
+  }
+  
   app.mount('#app');
 });

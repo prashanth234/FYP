@@ -20,6 +20,15 @@ services:
       - backend
     #restart: always
 
+  api-backend:
+    container_name: api-backend
+    build:
+      context: ./backend
+      dockerfile: DockerfileNginx
+      platforms:
+          - ${FYP_PLATFORM-linux/arm64}
+    image: prashanth45/fyp:api-backend${FYP_VERSION}
+
   backend:
     container_name: backend
     build: 

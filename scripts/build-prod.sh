@@ -7,7 +7,7 @@
 # To copy index.html with google tag
 
 if [ "$#" -ne 1 ]; then
-    echo "Provide production credential path"
+    echo "Provide production credential path: /Users/prashanth/projects/selfdive/fyp-prod"
     exit 1  # Exit the script with a non-zero status code
 fi
 
@@ -22,9 +22,9 @@ echo "Frontend Directory - $FRONTEND_DIR"
 cd $FRONTEND_DIR && mv index.html index.html.bkp
 cd $CRED_DIR && cp .env.production index.html $FRONTEND_DIR
 
-cd $SCRIPT_DIR/.. && docker compose build frontend backend
+# cd $SCRIPT_DIR/.. && docker compose build frontend backend
 
-cd $FRONTEND_DIR && rm .env.production index.html
-cd $FRONTEND_DIR && mv index.html.bkp index.html
+# cd $FRONTEND_DIR && rm .env.production index.html
+# cd $FRONTEND_DIR && mv index.html.bkp index.html
 
-docker compose push frontend backend
+# docker compose push frontend backend

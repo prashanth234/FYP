@@ -8,7 +8,8 @@ SECRET_KEY = os.environ.setdefault('SECRET_KEY', 'django-insecure-beqx(l-u0_s2(%
 # List of hosts that are allowed to serve your application
 ALLOWED_HOSTS = os.environ.setdefault('FYP_ALLOWED_HOSTS', 'localhost').split(',') 
 
-CORS_ORIGIN_ALLOW_ALL = False
+#CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOWED_ORIGINS = os.environ.setdefault('FYP_ALLOWED_CORIGINS', '').split(',') 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

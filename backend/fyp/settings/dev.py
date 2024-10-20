@@ -10,9 +10,9 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Allow cross origins
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ALLOWED_ORIGINS = [
-  # 'http://localhost:8100'
-]
+# CORS_ALLOWED_ORIGINS = [
+#   'http://localhost:8100'
+# ]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -20,7 +20,7 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'fyp_prod_clone',
+    'NAME': 'fyp_prod_clone2',
     'HOST': 'localhost',
     'USER': 'root',
     'PASSWORD': 'root',
