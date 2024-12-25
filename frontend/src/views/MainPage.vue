@@ -374,10 +374,11 @@ function checkAuthStatus() {
   if (token) {
 
     // Verify if the token is vaild or not
-    const { mutate, onDone } = useMutation(gql`
-      mutation verifyToken ($token: String!) {
+    const { mutate, onDone, onError } = useMutation(gql`
+      mutation verifyToken ($token: String!, $entity: String!) {
           verifyToken (
-            token: $token
+            token: $token,
+            entity: $entity
           ) {
             success,
             errors,
@@ -387,7 +388,8 @@ function checkAuthStatus() {
       `,
       {
         variables: {
-          token
+          token,
+          entity: main.entity
         },
         fetchPolicy: "no-cache"
       }
@@ -402,10 +404,17 @@ function checkAuthStatus() {
         user.$patch({success: true})
         state.loading = false
         user.getDetails()
-      } else {
-        // If not vaild, refresh the token
+      } else if (verifyToken.errors) {
         logout(false)
 
+        const code = verifyToken.errors.code
+
+        if (['entity_not_found', 'access_denied'].includes(code)) {
+          state.loading = false
+          return
+        }
+        
+        // If not vaild, refresh the token
         const { mutate, onDone } = useMutation(gql`
           mutation ($refreshToken: String!) {
               refreshToken (
@@ -474,6 +483,14 @@ function logout(showToast: boolean = true) {
   dialog.open = false
 }
 
+function storeEntityInfo() {
+  const hostname = window.location.hostname
+  const parts = hostname.split('.')
+  // TODO: length should be greater than 2
+  main.entity = parts.length > 1 ? parts[0] : ''
+}
+
+storeEntityInfo()
 checkAuthStatus()
 
 </script>

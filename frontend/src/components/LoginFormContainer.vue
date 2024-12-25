@@ -202,8 +202,8 @@ function submitForm () {
 
   // Also me Query when this query is updated
   const { mutate, onDone, onError } = useMutation(gql`    
-      mutation Login ($email: String, $phone: String, $password: String!) {
-        tokenAuth(email: $email, phone: $phone, password: $password) {
+      mutation Login ($email: String, $phone: String, $password: String!, $entity: String!) {
+        tokenAuth(email: $email, phone: $phone, password: $password, entity: $entity) {
           success,
           errors,
           unarchiving,
@@ -226,7 +226,8 @@ function submitForm () {
         // Parameters
         variables: {
           ...auth.emailOrPhone,
-          password: auth.fields.password1
+          password: auth.fields.password1,
+          entity: 'test'
         },
         fetchPolicy: "no-cache"
       }

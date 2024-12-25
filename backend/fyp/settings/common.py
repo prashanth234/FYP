@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'core.middleware.coreMiddleWare.CoreMiddleware',
 ]
 
 ROOT_URLCONF = 'fyp.urls'
@@ -160,7 +161,7 @@ SIMPLE_JWT = {
 }
 
 GRAPHQL_AUTH = {
-    "LOGIN_ALLOWED_FIELDS": ['email', 'phone'],
+    "LOGIN_ALLOWED_FIELDS": ['email', 'phone', 'entity'],
     "REGISTER_MUTATION_FIELDS": ['username'],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ['email', 'phone'],
     "UPDATE_MUTATION_FIELDS": ['first_name', 'last_name', 'gender'],
