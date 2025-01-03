@@ -14,6 +14,7 @@ import CategoriesDetailsPage from '@/views/CategoryDetailsPage.vue'
 
 
 import { useUserStore } from '@/stores/user'
+import { useMainStore } from '@/stores/main'
 
 // import TempChild from '@/views/TempChild.vue'
 // import TempPage from '@/views/TempPage.vue'
@@ -141,8 +142,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const user = useUserStore()
-
-  if (to.meta.auth && !user.success) {
+  const main = useMainStore()
+  main.getentity()
+  const entityNotMain = main.entity && (to.path != '/')
+  
+  if ((to.meta.auth || entityNotMain) && !user.success) {
     // Redirect the user to the login page if they are not authenticated
     next('/')
   } else {

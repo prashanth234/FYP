@@ -1,10 +1,6 @@
-from graphql_auth import mutations
-from graphql import GraphQLError
+from authentication import mutations
 import graphene
-from core.models.User import User
-from entity.models.Entity import Entity
-from entity.schema.query.userEntityQuery import UserEntityCheck
-from django.utils.translation import gettext as _
+from .common import verify_entity, verify_user, verify_entity_access
 
 class CustomVerifyToken(mutations.VerifyToken):
 
@@ -13,22 +9,24 @@ class CustomVerifyToken(mutations.VerifyToken):
     entity = graphene.String()
 
   @classmethod
-  def mutate(cls, root, info, entity=None, **kwargs):
-    # Call the original verify token logic
+  def mutate(cls, root, info, entity='sd', **kwargs):
+    # Check if the entity exists
+    if entity:
+      entity_res = verify_entity(entity)
+      if not entity_res["success"]:
+        return cls(**entity_res)
+
+    # Verify the token
     result = super().mutate(root, info, **kwargs)
 
+    # If token is valid, check if the user belongs the requested entity
     if result.success and entity:
-      try:
-        entity = Entity.objects.get(key=entity, ispublic=True)
-      except Entity.DoesNotExist:
-        return cls(success=False, errors={"message": _("entity doesn't exist."), "code": "entity_not_found"})
+
+      user_res = verify_user(result.payload["username"])
+      response = verify_entity_access(user=user_res["user"], entity=entity_res["entity"])
+
+      # Throw error if user doesn't belong to entity even if token is valid
+      if not response["success"]:
+        return cls(**response)
       
-      try:
-        user = User.objects.get(username=result.payload['username'])
-      except:
-        return cls(success=False, errors={"message": _("user doesn't exist"), "code": "access_denied"})
-
-      if not UserEntityCheck.has_access(user=user, entity_id=entity.id):
-        return cls(success=False, errors={"message": _("no access"), "code": "access_denied"})
-
     return result

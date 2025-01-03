@@ -1,9 +1,9 @@
-from graphql_auth.utils import revoke_user_refresh_token
-from graphql_auth.signals import user_verified
+from authentication.utils import revoke_user_refresh_token
+from authentication.signals import user_verified
 from graphql import GraphQLError
 from core.models.User import User
 import graphene
-from graphql_auth import mutations
+from authentication import mutations
 
 # Firebase
 from firebase_admin import auth

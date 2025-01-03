@@ -10,5 +10,13 @@ export const useMainStore = defineStore('main', {
   getters: {
   },
   actions: {
+    getentity() {
+      if (!this.entity) {
+        const hostname = window.location.hostname
+        const parts = hostname.split('.')
+        // TODO: length should be greater than 2
+        this.entity = parts.length > 1 ? parts[0] : ''
+      }
+    }
   },
 })

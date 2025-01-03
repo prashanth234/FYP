@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'django_filters',
     # refresh tokens are optional
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'graphql_auth',
+    'authentication',
     'corsheaders',
     # 'playground',
     'core',
@@ -151,7 +151,7 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_auth.backends.GraphQLAuthBackend',
+    'authentication.backends.GraphQLAuthBackend',
     # 'graphql_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
@@ -178,22 +178,22 @@ GRAPHQL_AUTH = {
 # Public mutations don't require user to be logged in. You should add all of them in GRAPHQL_JWT["JWT_ALLOW_ANY_CLASSES"] setting.
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_EXPIRATION_DELTA": timedelta(days=60),
     # "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=30),
-    "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
-    # optional
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    # "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
+    # optional (below one and above two options are used for refresh token handling)
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": False,
     "JWT_ALLOW_ANY_CLASSES": [
-        "graphql_auth.mutations.Register",
-        "graphql_auth.mutations.VerifyAccount",
-        "graphql_auth.mutations.ResendActivationEmail",
-        "graphql_auth.mutations.SendPasswordResetEmail",
-        "graphql_auth.mutations.PasswordReset",
-        "graphql_auth.mutations.ObtainJSONWebToken",
-        "graphql_auth.mutations.VerifyToken",
-        "graphql_auth.mutations.RefreshToken",
-        "graphql_auth.mutations.RevokeToken",
-        "graphql_auth.mutations.VerifySecondaryEmail",
+        "authentication.mutations.Register",
+        "authentication.mutations.VerifyAccount",
+        "authentication.mutations.ResendActivationEmail",
+        "authentication.mutations.SendPasswordResetEmail",
+        "authentication.mutations.PasswordReset",
+        "authentication.mutations.ObtainJSONWebToken",
+        "authentication.mutations.VerifyToken",
+        "authentication.mutations.RefreshToken",
+        "authentication.mutations.RevokeToken",
+        "authentication.mutations.VerifySecondaryEmail",
     ],
 }
 

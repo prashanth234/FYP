@@ -1,6 +1,6 @@
 import graphene
-from graphql_auth import mutations
-from graphql_auth.queries import MeQuery
+from authentication import mutations
+from authentication.queries import MeQuery
 
 from core.schema.mutation.registerMutation import VerifyAndRegisterMutation, ChangePasswordMutation
 from core.schema.mutation.verifyTokenMutation import CustomVerifyToken

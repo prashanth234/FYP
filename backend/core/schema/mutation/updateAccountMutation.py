@@ -1,7 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from core.models.User import User
-from graphql_auth.models import UserStatus
+from authentication.models import UserStatus
 
 # Type
 from core.schema.type.UserType import UserType

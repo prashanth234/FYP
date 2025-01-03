@@ -17,7 +17,7 @@ class RewardAdmin(admin.ModelAdmin):
 class FaqAdmin(admin.ModelAdmin):
     list_display = ['question', 'answer', 'order', 'type']
 
-app = apps.get_app_config('graphql_auth')
+app = apps.get_app_config('authentication')
 
 for model_name, model in app.models.items():
     admin.site.register(model)

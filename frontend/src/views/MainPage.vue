@@ -153,7 +153,7 @@
       @didDismiss="auth.close"
     >
       <ion-progress-bar v-if="auth.processing" type="indeterminate"></ion-progress-bar>
-      <ion-button v-else @click="auth.close" :disabled="auth.processing" class="close-login" fill="clear">
+      <ion-button v-else @click="auth.close" :disabled="auth.processing || !!main.entity" class="close-login" fill="clear">
         <ion-icon size="large" :icon="closeOutline"></ion-icon>
       </ion-button>
       <login-container style="margin-top: 20px;" />
@@ -406,49 +406,53 @@ function checkAuthStatus() {
         user.getDetails()
       } else if (verifyToken.errors) {
         logout(false)
+        state.loading = false
 
-        const code = verifyToken.errors.code
-
-        if (['entity_not_found', 'access_denied'].includes(code)) {
-          state.loading = false
-          return
-        }
+        // const code = verifyToken.errors.code
         
+        // // If the token assoiated user is not allowed for the the entity, so no need of refresh
+        // if (['entity_not_found', 'access_denied'].includes(code)) {
+        //   state.loading = false
+        //   return
+        // }
+        
+        // TODO: Expire the token after some days and use refresh token to generate new token
         // If not vaild, refresh the token
-        const { mutate, onDone } = useMutation(gql`
-          mutation ($refreshToken: String!) {
-              refreshToken (
-                refreshToken: $refreshToken
-              ) {
-                success,
-                errors,
-                payload,
-                token,
-                refreshToken
-              }
-            }
-          `,
-          {
-            variables: {
-              refreshToken
-            },
-            fetchPolicy: "no-cache"
-          }
-        )
+        // const { mutate, onDone } = useMutation(gql`
+        //   mutation ($refreshToken: String!) {
+        //       refreshToken (
+        //         refreshToken: $refreshToken
+        //       ) {
+        //         success,
+        //         errors,
+        //         payload,
+        //         token,
+        //         refreshToken
+        //       }
+        //     }
+        //   `,
+        //   {
+        //     variables: {
+        //       refreshToken
+        //     },
+        //     fetchPolicy: "no-cache"
+        //   }
+        // )
 
-        mutate()
+        // mutate()
 
-        onDone(({data: {refreshToken}}) => {
-          if (refreshToken.success) {
-            storeTokens(refreshToken, 'refresh')
-            user.getDetails()
-          }
-          state.loading = false
-        })
+        // onDone(({data: {refreshToken}}) => {
+        //   if (refreshToken.success) {
+        //     storeTokens(refreshToken, 'refresh')
+        //     user.getDetails()
+        //   }
+        //   state.loading = false
+        // })
       }
     })
   } else {
     state.loading = false
+    main.entity && auth.open()
   }
 }
 
@@ -481,16 +485,10 @@ function logout(showToast: boolean = true) {
   resetClientStore()
   showToast && toast.$patch({message: "Logged out. See you again soon!", color: 'success', open: true})
   dialog.open = false
+  main.entity && auth.open()
 }
 
-function storeEntityInfo() {
-  const hostname = window.location.hostname
-  const parts = hostname.split('.')
-  // TODO: length should be greater than 2
-  main.entity = parts.length > 1 ? parts[0] : ''
-}
-
-storeEntityInfo()
+main.getentity()
 checkAuthStatus()
 
 </script>
@@ -540,6 +538,7 @@ checkAuthStatus()
   .login-modal {
     // For xs screens
     --max-width: 100%;
+    --backdrop-opacity: 1;
     // --height: auto;
   }
   .create-post-modal {

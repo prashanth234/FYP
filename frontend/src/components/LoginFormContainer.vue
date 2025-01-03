@@ -107,11 +107,13 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import errors from './ErrorContainer.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useMainStore } from '@/stores/main'
 import alert from './AlertContainer.vue'
 
 const user = useUserStore();
 const toast = useToastStore();
 const auth = useAuthStore();
+const main = useMainStore();
 const { resetClientStore } = useAuth();
 // const { emailphoneref } = useEmailPhoneFocus();
 
@@ -208,7 +210,6 @@ function submitForm () {
           errors,
           unarchiving,
           token,
-          refreshToken,
           user {
             username,
             firstName,
@@ -227,7 +228,7 @@ function submitForm () {
         variables: {
           ...auth.emailOrPhone,
           password: auth.fields.password1,
-          entity: 'test'
+          entity: main.entity
         },
         fetchPolicy: "no-cache"
       }

@@ -3,7 +3,7 @@ from django.conf import settings
 
 from core.models.CoinActivity import CoinActivity
 from entity.models.Entity import Entity
-from graphql_auth.signals import user_verified
+from authentication.signals import user_verified
 import logging
 
 logger = logging.getLogger(__name__)
